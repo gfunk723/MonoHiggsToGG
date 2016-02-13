@@ -815,20 +815,21 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	if (leadTightSelel || subleadTightSelel) numpassing++;
 	if (leadLooseSelel || subleadLooseSelel) numpassingloose++;
 
-	//if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
-	
-	// ADDED MVA PHOTON SELECTION
-	// MVA values come from FLASHgg and replace the Cut-Based Photon ID	
-	float leadMVA     = diphoPtr->leadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
-	float subleadMVA     = diphoPtr->subLeadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
-	
-	bool leadMVASel = false;
-	if (leadMVA > -0.9) leadMVASel = true;
-	bool subleadMVASel = false;
-	if (subleadMVA > -0.9) subleadMVASel = true;
-
-	if (!leadMVASel || !subleadMVASel) continue;
+	if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
 	selectedDipho.push_back(theDiphoton); 
+	
+	//// ADDED MVA PHOTON SELECTION
+	//// MVA values come from FLASHgg and replace the Cut-Based Photon ID	
+	//float leadMVA     = diphoPtr->leadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
+	//float subleadMVA     = diphoPtr->subLeadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
+	//
+	//bool leadMVASel = false;
+	//if (leadMVA > -0.9) leadMVASel = true;
+	//bool subleadMVASel = false;
+	//if (subleadMVA > -0.9) subleadMVASel = true;
+
+	//if (!leadMVASel || !subleadMVASel) continue;
+	//selectedDipho.push_back(theDiphoton); 
 	
       }
      
@@ -1200,7 +1201,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		eff_end++;	  
 		
 	
-		std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
+		//std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
                 //-------> pass each photon ID cut separately
 		// medium working point selection
 		passSieie1 = passSieieCuts( sceta1, sieie1);

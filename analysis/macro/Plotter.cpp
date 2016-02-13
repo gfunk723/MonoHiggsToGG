@@ -230,9 +230,9 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
-      if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
+     // if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
-        if (hltDiphoton30Mass95==1){ //passes trigger
+        if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
 
           // to remove duplicate events 
 	  // original implementation:
@@ -486,7 +486,7 @@ void Plotter::DoPlots(int prompt){
           }
  
         }// end if passes trigger
-      }// end if passes mass,pt,EV cuts 
+      //}// end if passes mass,pt,EV cuts 
       
       if (hltDiphoton30Mass95==1){ //passes trigger
         if(passAll2 && pt2 > mgg/4) fTH1DMap["phi1_pho2pass"]->Fill(phi1,Weight);

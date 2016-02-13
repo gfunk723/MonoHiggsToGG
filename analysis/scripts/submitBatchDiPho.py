@@ -17,7 +17,7 @@ def main():
 
     parser = optparse.OptionParser(usage=usage)
     now = datetime.datetime.now()
-    defaultoutputdir='job_'+str(now.year)+str(now.month)+str(now.day)+"_"+str(now.hour)+str(now.minute)+str(now.second)
+    defaultoutputdir='job_'+str(now.year)+str(now.month)+str(now.day)+"_"+str(now.hour)#+str(now.minute)+str(now.second)
 
     parser.add_option('-q', '--queue', action='store', dest='queue', help='run in batch in queue specified as option (default -q 8nh)', default='8nh')
     parser.add_option('-n', '--nfileperjob', action='store', dest='nfileperjob', help='split the jobs with n files read/batch job' , default=1, type='int')
