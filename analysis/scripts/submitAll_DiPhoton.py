@@ -25,6 +25,7 @@
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py QCD_Pt-40toInf     	1  5  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 108240   1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GluGluHToGG		1 10  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.087842 1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VH				1 11  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.004499 1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py privVH			1 11  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.004499 1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DYJetsToLL			1 12  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 6025.2   1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ttHJetToGG			1 21  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.00107 1 #0.5085pb * 0.002br 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VBFHToGG			1 22  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.007496 1 #3.748pb * 0.002br 
