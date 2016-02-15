@@ -64,6 +64,21 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   Float_t	  pfmetPhi;
   Float_t	  pfmetSumEt;
   Float_t	  t1pfmet;
+  Float_t         t1p2pfmet;
+  Float_t         t1pfmetJetEnUp;
+  Float_t         t1pfmetJetEnDown;
+  Float_t         t1pfmetJetResUp;
+  Float_t         t1pfmetJetResDown;
+  Float_t         t1pfmetMuonEnUp;
+  Float_t         t1pfmetMuonEnDown;
+  Float_t         t1pfmetElectronEnUp;
+  Float_t         t1pfmetElectronEnDown;
+  Float_t         t1pfmetTauEnUp;
+  Float_t         t1pfmetTauEnDown;
+  Float_t         t1pfmetPhotonEnUp;
+  Float_t         t1pfmetPhotonEnDown;
+  Float_t         t1pfmetUnclusteredEnUp;
+  Float_t         t1pfmetUnclusteredEnDown;
   Float_t	  t1pfmetPhi;
   Float_t	  t1pfmetSumEt;
   Float_t	  calomet;
@@ -198,6 +213,21 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   TBranch	 *b_pfmetPhi;
   TBranch	 *b_pfmetSumEt;
   TBranch	 *b_t1pfmet;
+  TBranch        *b_t1p2pfmet;   //!
+  TBranch        *b_t1pfmetJetEnUp;   //!
+  TBranch        *b_t1pfmetJetEnDown;   //!
+  TBranch        *b_t1pfmetJetResUp;   //!
+  TBranch        *b_t1pfmetJetResDown;   //!
+  TBranch        *b_t1pfmetMuonEnUp;   //!
+  TBranch        *b_t1pfmetMuonEnDown;   //!
+  TBranch        *b_t1pfmetElectronEnUp;   //!
+  TBranch        *b_t1pfmetElectronEnDown;   //!
+  TBranch        *b_t1pfmetTauEnUp;   //!
+  TBranch        *b_t1pfmetTauEnDown;   //!
+  TBranch        *b_t1pfmetPhotonEnUp;   //!
+  TBranch        *b_t1pfmetPhotonEnDown;   //!
+  TBranch        *b_t1pfmetUnclusteredEnUp;   //!
+  TBranch        *b_t1pfmetUnclusteredEnDown;   //!
   TBranch	 *b_t1pfmetPhi;
   TBranch	 *b_t1pfmetSumEt;
   TBranch	 *b_calomet;
@@ -332,6 +362,21 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   treeOrig->SetBranchAddress("pfmetPhi", &pfmetPhi, &b_pfmetPhi);
   treeOrig->SetBranchAddress("pfmetSumEt", &pfmetSumEt, &b_pfmetSumEt);
   treeOrig->SetBranchAddress("t1pfmet", &t1pfmet, &b_t1pfmet);
+  treeOrig->SetBranchAddress("t1p2pfmet", &t1p2pfmet, &b_t1p2pfmet);
+  treeOrig->SetBranchAddress("t1pfmetJetEnUp", &t1pfmetJetEnUp, &b_t1pfmetJetEnUp);
+  treeOrig->SetBranchAddress("t1pfmetJetEnDown", &t1pfmetJetEnDown, &b_t1pfmetJetEnDown);
+  treeOrig->SetBranchAddress("t1pfmetJetResUp", &t1pfmetJetResUp, &b_t1pfmetJetResUp);
+  treeOrig->SetBranchAddress("t1pfmetJetResDown", &t1pfmetJetResDown, &b_t1pfmetJetResDown);
+  treeOrig->SetBranchAddress("t1pfmetMuonEnUp", &t1pfmetMuonEnUp, &b_t1pfmetMuonEnUp);
+  treeOrig->SetBranchAddress("t1pfmetMuonEnDown", &t1pfmetMuonEnDown, &b_t1pfmetMuonEnDown);
+  treeOrig->SetBranchAddress("t1pfmetElectronEnUp", &t1pfmetElectronEnUp, &b_t1pfmetElectronEnUp);
+  treeOrig->SetBranchAddress("t1pfmetElectronEnDown", &t1pfmetElectronEnDown, &b_t1pfmetElectronEnDown);
+  treeOrig->SetBranchAddress("t1pfmetTauEnUp", &t1pfmetTauEnUp, &b_t1pfmetTauEnUp);
+  treeOrig->SetBranchAddress("t1pfmetTauEnDown", &t1pfmetTauEnDown, &b_t1pfmetTauEnDown);
+  treeOrig->SetBranchAddress("t1pfmetPhotonEnUp", &t1pfmetPhotonEnUp, &b_t1pfmetPhotonEnUp);
+  treeOrig->SetBranchAddress("t1pfmetPhotonEnDown", &t1pfmetPhotonEnDown, &b_t1pfmetPhotonEnDown);
+  treeOrig->SetBranchAddress("t1pfmetUnclusteredEnUp", &t1pfmetUnclusteredEnUp, &b_t1pfmetUnclusteredEnUp);
+  treeOrig->SetBranchAddress("t1pfmetUnclusteredEnDown", &t1pfmetUnclusteredEnDown, &b_t1pfmetUnclusteredEnDown);
   treeOrig->SetBranchAddress("t1pfmetPhi", &t1pfmetPhi, &b_t1pfmetPhi);
   treeOrig->SetBranchAddress("t1pfmetSumEt", &t1pfmetSumEt, &b_t1pfmetSumEt);
   treeOrig->SetBranchAddress("calomet", &calomet, &b_calomet);
@@ -484,6 +529,21 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     theTreeNew->Branch("pfmetPhi", &pfmetPhi, "pfmetPhi/F");
     theTreeNew->Branch("pfmetSumEt", &pfmetSumEt, "pfmetSumEt/F");
     theTreeNew->Branch("t1pfmet", &t1pfmet, "t1pfmet/F");
+    theTreeNew->Branch("t1p2pfmet", &t1p2pfmet, &b_t1p2pfmet);
+    theTreeNew->Branch("t1pfmetJetEnUp", &t1pfmetJetEnUp, &b_t1pfmetJetEnUp);
+    theTreeNew->Branch("t1pfmetJetEnDown", &t1pfmetJetEnDown, &b_t1pfmetJetEnDown);
+    theTreeNew->Branch("t1pfmetJetResUp", &t1pfmetJetResUp, &b_t1pfmetJetResUp);
+    theTreeNew->Branch("t1pfmetJetResDown", &t1pfmetJetResDown, &b_t1pfmetJetResDown);
+    theTreeNew->Branch("t1pfmetMuonEnUp", &t1pfmetMuonEnUp, &b_t1pfmetMuonEnUp);
+    theTreeNew->Branch("t1pfmetMuonEnDown", &t1pfmetMuonEnDown, &b_t1pfmetMuonEnDown);
+    theTreeNew->Branch("t1pfmetElectronEnUp", &t1pfmetElectronEnUp, &b_t1pfmetElectronEnUp);
+    theTreeNew->Branch("t1pfmetElectronEnDown", &t1pfmetElectronEnDown, &b_t1pfmetElectronEnDown);
+    theTreeNew->Branch("t1pfmetTauEnUp", &t1pfmetTauEnUp, &b_t1pfmetTauEnUp);
+    theTreeNew->Branch("t1pfmetTauEnDown", &t1pfmetTauEnDown, &b_t1pfmetTauEnDown);
+    theTreeNew->Branch("t1pfmetPhotonEnUp", &t1pfmetPhotonEnUp, &b_t1pfmetPhotonEnUp);
+    theTreeNew->Branch("t1pfmetPhotonEnDown", &t1pfmetPhotonEnDown, &b_t1pfmetPhotonEnDown);
+    theTreeNew->Branch("t1pfmetUnclusteredEnUp", &t1pfmetUnclusteredEnUp, &b_t1pfmetUnclusteredEnUp);
+    theTreeNew->Branch("t1pfmetUnclusteredEnDown", &t1pfmetUnclusteredEnDown, &b_t1pfmetUnclusteredEnDown);
     theTreeNew->Branch("t1pfmetPhi", &t1pfmetPhi, "t1pfmetPhi/F");
     theTreeNew->Branch("t1pfmetSumEt", &t1pfmetSumEt, "t1pfmetSumEt/F");
     theTreeNew->Branch("calomet", &calomet, "calomet/F");

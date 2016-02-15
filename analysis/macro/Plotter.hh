@@ -88,7 +88,22 @@ private:
   Float_t	mgg;
   Float_t	ptgg;
   Float_t	t1pfmet; 
-  Float_t	t1pfmetphi; 
+  Float_t       t1p2pfmet;
+  Float_t       t1pfmetJetEnUp;
+  Float_t       t1pfmetJetEnDown;
+  Float_t       t1pfmetJetResUp;
+  Float_t       t1pfmetJetResDown;
+  Float_t       t1pfmetMuonEnUp;
+  Float_t       t1pfmetMuonEnDown;
+  Float_t       t1pfmetElectronEnUp;
+  Float_t       t1pfmetElectronEnDown;
+  Float_t       t1pfmetTauEnUp;
+  Float_t       t1pfmetTauEnDown;
+  Float_t       t1pfmetPhotonEnUp;
+  Float_t       t1pfmetPhotonEnDown;
+  Float_t       t1pfmetUnclusteredEnUp;
+  Float_t       t1pfmetUnclusteredEnDown;
+  Float_t	t1pfmetPhi; 
   Float_t	t1pfmetSumEt; 
   Float_t	pfmet; 
   Float_t	pfmetphi; 
@@ -195,6 +210,21 @@ private:
   TBranch	*b_mgg;
   TBranch	*b_ptgg;
   TBranch	*b_t1pfmet;
+  TBranch       *b_t1p2pfmet;   //!
+  TBranch       *b_t1pfmetJetEnUp;   //!
+  TBranch       *b_t1pfmetJetEnDown;   //!
+  TBranch       *b_t1pfmetJetResUp;   //!
+  TBranch       *b_t1pfmetJetResDown;   //!
+  TBranch       *b_t1pfmetMuonEnUp;   //!
+  TBranch       *b_t1pfmetMuonEnDown;   //!
+  TBranch       *b_t1pfmetElectronEnUp;   //!
+  TBranch       *b_t1pfmetElectronEnDown;   //!
+  TBranch       *b_t1pfmetTauEnUp;   //!
+  TBranch       *b_t1pfmetTauEnDown;   //!
+  TBranch       *b_t1pfmetPhotonEnUp;   //!
+  TBranch       *b_t1pfmetPhotonEnDown;   //!
+  TBranch       *b_t1pfmetUnclusteredEnUp;   //!
+  TBranch       *b_t1pfmetUnclusteredEnDown;   //!
   TBranch	*b_t1pfmetPhi;
   TBranch	*b_t1pfmetSumEt;
   TBranch	*b_pfmet;

@@ -351,7 +351,7 @@ void Plotter::DoPlots(int prompt){
           fTH1DMap["nvtx"]->Fill(nvtx,Weight);
           fTH1DMap["pt1"]->Fill(pt1,Weight);
           fTH1DMap["pt2"]->Fill(pt2,Weight);
-          fTH1DMap["t1pfmetphi"]->Fill(t1pfmetphi,Weight);
+          fTH1DMap["t1pfmetphi"]->Fill(t1pfmetPhi,Weight);
           fTH1DMap["pfmetphi"]->Fill(pfmetphi,Weight);
           fTH1DMap["calometphi"]->Fill(calometphi,Weight);
           fTH1DMap["phi1"]->Fill(phi1,Weight);
@@ -374,8 +374,8 @@ void Plotter::DoPlots(int prompt){
           fTH1DMap["eleveto2"]->Fill(eleveto2,Weight);
 
           fTH1DMap["phigg"]->Fill(fLorenzVecgg.Phi(),Weight); 
-          fTH1DMap["dphi_ggmet"]->Fill(deltaPhi(fLorenzVecgg.Phi(),t1pfmetphi),Weight);
-          fTH1DMap["absdphi_ggmet"]->Fill(TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetphi)),Weight);
+          fTH1DMap["dphi_ggmet"]->Fill(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi),Weight);
+          fTH1DMap["absdphi_ggmet"]->Fill(TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi)),Weight);
           fTH1DMap["deta_gg"]->Fill((eta1-eta2),Weight);
           fTH1DMap["absdeta_gg"]->Fill(TMath::Abs(eta1-eta2),Weight);
           //if (!isData){
@@ -417,7 +417,7 @@ void Plotter::DoPlots(int prompt){
           } 
           if (passBoth){
             fTH1DMap["nvtx_n-1"]->Fill(nvtx,Weight);
-            fTH1DMap["t1pfmetphi_n-1"]->Fill(t1pfmetphi,Weight);  
+            fTH1DMap["t1pfmetphi_n-1"]->Fill(t1pfmetPhi,Weight);  
             fTH1DMap["pfmetphi_n-1"]->Fill(pfmetphi,Weight);
             fTH1DMap["calometphi_n-1"]->Fill(calometphi,Weight);
             if (isData && doBlind){// BLIND THE DATA
@@ -763,7 +763,22 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("mgg",    &mgg,     &b_mgg);
   tpho->SetBranchAddress("ptgg",   &ptgg,    &b_ptgg);
   tpho->SetBranchAddress("t1pfmet", &t1pfmet, &b_t1pfmet);   
-  tpho->SetBranchAddress("t1pfmetPhi", &t1pfmetphi, &b_t1pfmetPhi);   
+  tpho->SetBranchAddress("t1p2pfmet", &t1p2pfmet, &b_t1p2pfmet);
+  tpho->SetBranchAddress("t1pfmetJetEnUp", &t1pfmetJetEnUp, &b_t1pfmetJetEnUp);
+  tpho->SetBranchAddress("t1pfmetJetEnDown", &t1pfmetJetEnDown, &b_t1pfmetJetEnDown);
+  tpho->SetBranchAddress("t1pfmetJetResUp", &t1pfmetJetResUp, &b_t1pfmetJetResUp);
+  tpho->SetBranchAddress("t1pfmetJetResDown", &t1pfmetJetResDown, &b_t1pfmetJetResDown);
+  tpho->SetBranchAddress("t1pfmetMuonEnUp", &t1pfmetMuonEnUp, &b_t1pfmetMuonEnUp);
+  tpho->SetBranchAddress("t1pfmetMuonEnDown", &t1pfmetMuonEnDown, &b_t1pfmetMuonEnDown);
+  tpho->SetBranchAddress("t1pfmetElectronEnUp", &t1pfmetElectronEnUp, &b_t1pfmetElectronEnUp);
+  tpho->SetBranchAddress("t1pfmetElectronEnDown", &t1pfmetElectronEnDown, &b_t1pfmetElectronEnDown);
+  tpho->SetBranchAddress("t1pfmetTauEnUp", &t1pfmetTauEnUp, &b_t1pfmetTauEnUp);
+  tpho->SetBranchAddress("t1pfmetTauEnDown", &t1pfmetTauEnDown, &b_t1pfmetTauEnDown);
+  tpho->SetBranchAddress("t1pfmetPhotonEnUp", &t1pfmetPhotonEnUp, &b_t1pfmetPhotonEnUp);
+  tpho->SetBranchAddress("t1pfmetPhotonEnDown", &t1pfmetPhotonEnDown, &b_t1pfmetPhotonEnDown);
+  tpho->SetBranchAddress("t1pfmetUnclusteredEnUp", &t1pfmetUnclusteredEnUp, &b_t1pfmetUnclusteredEnUp);
+  tpho->SetBranchAddress("t1pfmetUnclusteredEnDown", &t1pfmetUnclusteredEnDown, &b_t1pfmetUnclusteredEnDown);
+  tpho->SetBranchAddress("t1pfmetPhi", &t1pfmetPhi, &b_t1pfmetPhi);
   tpho->SetBranchAddress("t1pfmetSumEt", &t1pfmetSumEt, &b_t1pfmetSumEt);   
   tpho->SetBranchAddress("pfmet", &pfmet, &b_pfmet);   
   tpho->SetBranchAddress("pfmetPhi", &pfmetphi, &b_pfmetPhi);   

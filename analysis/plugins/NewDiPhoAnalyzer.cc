@@ -625,1025 +625,1025 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     trigLivia++;
     h_selection->Fill(0.,perEveW);
     numPassingCuts[0]++;
-  } 
-  //if (hltDiphoton30Mass95) std::cout << "  MADE IT PASSED HLT !!!! " << std::endl; 
+  
  
-  // Setup bool to check that events in MC actually pass trigger requirements
-  bool passesLeadTrigSel = false;
-  bool passesSubLeadTrigSel = false;
-  bool passesMassTrigSel = false;
-  bool passesTrigger = false;
+    // Setup bool to check that events in MC actually pass trigger requirements
+    bool passesLeadTrigSel = false;
+    bool passesSubLeadTrigSel = false;
+    bool passesMassTrigSel = false;
+    bool passesTrigger = false;
 
-  // Get MET
-  if( METs->size() != 1 )
-    { std::cout << "WARNING number of MET is not equal to 1" << std::endl; }
-  Ptr<pat::MET> theMET = METs->ptrAt( 0 );
+    // Get MET
+    if( METs->size() != 1 )
+      { std::cout << "WARNING number of MET is not equal to 1" << std::endl; }
+    Ptr<pat::MET> theMET = METs->ptrAt( 0 );
 
 
-  // Loop over diphoton candidates
-  if (diPhotons->size()>0) {
-    onerecoLivia++;
-  
-    // Diphoton candidates: preselection
-    vector<int> preselDipho;
-    vector<int> preselDiphoAcc;
-    vector<int> preselDiphoR9;
-    vector<int> preselDiphoIso;
-    vector<int> preselDiphoIsoRel;
-    vector<int> preselDiphoHoE;
+    // Loop over diphoton candidates
+    if (diPhotons->size()>0) {
+      onerecoLivia++;
     
-    for( size_t diphotonlooper = 0; diphotonlooper < diPhotons->size() /*&& diphotonlooper < 1*/; diphotonlooper++ ) {
-
-      Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( diphotonlooper );      
+      // Diphoton candidates: preselection
+      vector<int> preselDipho;
+      vector<int> preselDiphoAcc;
+      vector<int> preselDiphoR9;
+      vector<int> preselDiphoIso;
+      vector<int> preselDiphoIsoRel;
+      vector<int> preselDiphoHoE;
       
-      float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();         
-      float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9(); 
-      float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
-      float leadSieie  = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
-      float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();
-      float leadPhIso  = diphoPtr->leadingPhoton()->egPhotonIso();
-      float leadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
-     
-      bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
+      for( size_t diphotonlooper = 0; diphotonlooper < diPhotons->size() /*&& diphotonlooper < 1*/; diphotonlooper++ ) {
 
-      float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta(); 
-      float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();              
-      float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), leadScEta, subleadR9noZS,run, sampleID);
-      float subleadSieie  = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta(); 
-      float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
-      float subleadPhIso  = diphoPtr->leadingPhoton()->egPhotonIso();
-      float subleadChIsoNoRho = diphoPtr->subLeadingPhoton()->egChargedHadronIso();
-      float subleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());      
-      bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
-
-      passesLeadTrigSel = LeadPhoTriggerSel(leadScEta,leadHoE,leadR9noZS,leadSieie,leadPhIso,leadPt); 
-      passesSubLeadTrigSel = SubLeadPhoTriggerSel(subleadScEta,subleadHoE,subleadR9noZS,subleadSieie,subleadPhIso,subleadChIsoNoRho,subleadPt); 
-      float diPhoMass = diphoPtr->mass(); 
-       if (diPhoMass >= 95.0) passesMassTrigSel = true;
-      if (passesMassTrigSel && passesLeadTrigSel && passesSubLeadTrigSel) passesTrigger = true; 
-      if(leadPresel && subleadPresel && passesTrigger==0)notrigLivia++;
-      if(leadPresel && subleadPresel && passesMassTrigSel==0)nomasstrigLivia++;
-      if(leadPresel && subleadPresel && passesLeadTrigSel==0)noleadtrigLivia++;
-      if(leadPresel && subleadPresel && passesSubLeadTrigSel==0)nosubleadtrigLivia++;
-     
-      //excercise for syncronyzation livia 
-      if(geometrical_acceptance(leadScEta,subleadScEta)){
-	preselDiphoAcc.push_back(diphotonlooper);
-	if(subleadR9noZS>0.8 && leadR9noZS>0.8){
-	  preselDiphoR9.push_back(diphotonlooper);
-	  if(subleadChIso<20 && leadChIso < 20){
-	    preselDiphoIso.push_back(diphotonlooper);
-	    if(subleadChIso/subleadPt < 0.3 && leadChIso/leadPt < 0.3){
-	      preselDiphoIsoRel.push_back(diphotonlooper);
-	      if(subleadHoE <0.8 && leadHoE< 0.8){
-		preselDiphoHoE.push_back(diphotonlooper);
-	      }
-	    }
-	  }
-	}
-      }
-      if (/*!passesTrigger ||*/ !leadPresel || !subleadPresel) continue;   
-      preselDipho.push_back(diphotonlooper);
-    }
-     //excercise for synchronyzation livia 
-    if (preselDiphoAcc.size()>0) {
-      preselAccLivia++;
-    }
-    if (preselDiphoR9.size()>0) {
-      preselR9Livia++;
-    }
-    if (preselDiphoIso.size()>0) {
-      preselIsoLivia++;
-    }
-    if (preselDiphoIsoRel.size()>0) {
-      preselIsoRelLivia++;
-    }
-    if (preselDiphoHoE.size()>0) {
-      preselHoELivia++;
-    }
-    if (preselDipho.size()>0) {
-      preselLivia++;
-      h_selection->Fill(1.,perEveW);
-      numPassingCuts[1]++;
-     
-      // Diphoton candidates: Id/isolation selection
-      vector<int> selectedDipho;
-      for( size_t diphotonlooper = 0; diphotonlooper < preselDipho.size(); diphotonlooper++ ) {
-
-	int theDiphoton = preselDipho[diphotonlooper];
-	Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-
-	float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-	float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-	float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
-        float leadSieienoZS = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
-	float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();	
-	float leadChIso  = TMath::Max(diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
-	float leadNeuIso = TMath::Max(diphoPtr->leadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
-	float leadPhoIso = TMath::Max(diphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
-	
-        // medium working point selection
-	int passLeadSieie = passSieieCuts( leadScEta, leadSieienoZS );
-        int passLeadCHiso = passCHisoCuts( leadScEta, leadChIso, leadPt );
-        int passLeadNHiso = passNHisoCuts( leadScEta, leadNeuIso, leadPt );
-        int passLeadPHiso = passPHisoCuts( leadScEta, leadPhoIso, leadPt );
-	int passLeadHoe   = passHoeCuts( leadScEta, leadHoE );
-        // tight working point selection
-	int passTightLeadSieie = passTightSieieCuts( leadScEta, leadSieienoZS );
-        int passTightLeadCHiso = passTightCHisoCuts( leadScEta, leadChIso, leadPt );
-        int passTightLeadNHiso = passTightNHisoCuts( leadScEta, leadNeuIso, leadPt );
-        int passTightLeadPHiso = passTightPHisoCuts( leadScEta, leadPhoIso, leadPt );
-	int passTightLeadHoe   = passTightHoeCuts( leadScEta, leadHoE );
-	// loose working point selection
-	int passLooseLeadSieie = passLooseSieieCuts( leadScEta, leadSieienoZS );
-        int passLooseLeadCHiso = passLooseCHisoCuts( leadScEta, leadChIso, leadPt );
-        int passLooseLeadNHiso = passLooseNHisoCuts( leadScEta, leadNeuIso, leadPt );
-        int passLooseLeadPHiso = passLoosePHisoCuts( leadScEta, leadPhoIso, leadPt );
-	int passLooseLeadHoe   = passLooseHoeCuts( leadScEta, leadHoE );
-	//eleveto
-        int passLeadElVeto = 0;
-        int numberpassingEV1 = 0;
-	if (diphoPtr->leadingPhoton()->passElectronVeto()) passLeadElVeto = 1;
-        if (passLeadElVeto) numberpassingEV1++;
-	bool leadSelel      = testPhotonIsolation( passLeadSieie, passLeadCHiso, passLeadNHiso, passLeadPHiso, passLeadHoe, 1);//passLeadElVeto);// FIXME 
-        bool leadTightSelel = testPhotonIsolation( passTightLeadSieie, passTightLeadCHiso, passTightLeadNHiso, passTightLeadPHiso, passTightLeadHoe, 1); 
-        bool leadLooseSelel = testPhotonIsolation( passLooseLeadSieie, passLooseLeadCHiso, passLooseLeadNHiso, passLooseLeadPHiso, passLooseLeadHoe, 1); 
-
-	//look at subleading
-	float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
-	float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
-        float subleadSieienoZS = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
-	float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
-	float subleadChIso  = TMath::Max(diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
-	float subleadNeuIso = TMath::Max(diphoPtr->subLeadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
-	float subleadPhoIso = TMath::Max(diphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
-       
-	
-	// medium working point selection
-	int passSubLeadSieie = passSieieCuts( subleadScEta, subleadSieienoZS );
-        int passSubLeadCHiso = passCHisoCuts( subleadScEta, subleadChIso, subleadPt );
-        int passSubLeadNHiso = passNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
-        int passSubLeadPHiso = passPHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
-	int passSubLeadHoe   = passHoeCuts( subleadScEta, subleadHoE );
-	// tight working point selection
-	int passTightSubLeadSieie = passTightSieieCuts( subleadScEta, subleadSieienoZS );
-        int passTightSubLeadCHiso = passTightCHisoCuts( subleadScEta, subleadChIso, subleadPt );
-        int passTightSubLeadNHiso = passTightNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
-        int passTightSubLeadPHiso = passTightPHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
-	int passTightSubLeadHoe   = passTightHoeCuts( subleadScEta, subleadHoE );
-	// loose working point selection
-	int passLooseSubLeadSieie = passLooseSieieCuts( subleadScEta, subleadSieienoZS );
-        int passLooseSubLeadCHiso = passLooseCHisoCuts( subleadScEta, subleadChIso, subleadPt );
-        int passLooseSubLeadNHiso = passLooseNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
-        int passLooseSubLeadPHiso = passLoosePHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
-	int passLooseSubLeadHoe   = passLooseHoeCuts( subleadScEta, subleadHoE );
-
-      
-        //int passSubLeadElVeto = 0;
-        //int numberpassingEV2 = 0;
-	//if (diphoPtr->subLeadingPhoton()->passElectronVeto()) passSubLeadElVeto = 1;
-	//if (passSubLeadElVeto) numberpassingEV2++;
-	bool subleadSelel      = testPhotonIsolation( passSubLeadSieie, passSubLeadCHiso, passSubLeadNHiso, passSubLeadPHiso, passSubLeadHoe, 1);// passSubLeadElVeto);// FIXME
-        bool subleadTightSelel = testPhotonIsolation( passTightSubLeadSieie, passTightSubLeadCHiso, passTightSubLeadNHiso, passTightSubLeadPHiso, passTightSubLeadHoe, 1);
-        bool subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, passLooseSubLeadPHiso, passLooseSubLeadHoe, 1);
-
-        int numpassingmed = 0;
-	int numpassing = 0;
-        int numpassingloose = 0;
-	if (leadSelel || subleadSelel) numpassingmed++;
-	if (leadTightSelel || subleadTightSelel) numpassing++;
-	if (leadLooseSelel || subleadLooseSelel) numpassingloose++;
-
-	if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
-	selectedDipho.push_back(theDiphoton); 
-	
-	//// ADDED MVA PHOTON SELECTION
-	//// MVA values come from FLASHgg and replace the Cut-Based Photon ID	
-	//float leadMVA     = diphoPtr->leadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
-	//float subleadMVA     = diphoPtr->subLeadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
-	//
-	//bool leadMVASel = false;
-	//if (leadMVA > -0.9) leadMVASel = true;
-	//bool subleadMVASel = false;
-	//if (subleadMVA > -0.9) subleadMVASel = true;
-
-	//if (!leadMVASel || !subleadMVASel) continue;
-	//selectedDipho.push_back(theDiphoton); 
-	
-      }
-     
-      if (selectedDipho.size()>0) {
-	selLivia++;
-	h_selection->Fill(2.,perEveW);
-	numPassingCuts[2]++;
+        Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( diphotonlooper );      
         
-	vector<int> elvetoDipho;
-	for( size_t diphotonlooper = 0; diphotonlooper < selectedDipho.size(); diphotonlooper++ ) {
-	int theDiphoton = selectedDipho[diphotonlooper];
-	Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-	int passSubLeadElVeto = 0;
-        int numberpassingEV2 = 0;
-	if (diphoPtr->subLeadingPhoton()->passElectronVeto()) passSubLeadElVeto = 1;
-	if (passSubLeadElVeto) numberpassingEV2++;
-	//eleveto
-        int passLeadElVeto = 0;
-        int numberpassingEV1 = 0;
-	if (diphoPtr->leadingPhoton()->passElectronVeto()) passLeadElVeto = 1;
-        if (passLeadElVeto) numberpassingEV1++;
-	if(!passLeadElVeto || !passSubLeadElVeto)continue;
-	elvetoDipho.push_back(theDiphoton);
+        float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();         
+        float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9(); 
+        float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+        float leadSieie  = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
+        float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();
+        float leadPhIso  = diphoPtr->leadingPhoton()->egPhotonIso();
+        float leadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
+       
+        bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
+
+        float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta(); 
+        float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();              
+        float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), leadScEta, subleadR9noZS,run, sampleID);
+        float subleadSieie  = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta(); 
+        float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
+        float subleadPhIso  = diphoPtr->leadingPhoton()->egPhotonIso();
+        float subleadChIsoNoRho = diphoPtr->subLeadingPhoton()->egChargedHadronIso();
+        float subleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());      
+        bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
+
+        passesLeadTrigSel = LeadPhoTriggerSel(leadScEta,leadHoE,leadR9noZS,leadSieie,leadPhIso,leadPt); 
+        passesSubLeadTrigSel = SubLeadPhoTriggerSel(subleadScEta,subleadHoE,subleadR9noZS,subleadSieie,subleadPhIso,subleadChIsoNoRho,subleadPt); 
+        float diPhoMass = diphoPtr->mass(); 
+         if (diPhoMass >= 95.0) passesMassTrigSel = true;
+        if (passesMassTrigSel && passesLeadTrigSel && passesSubLeadTrigSel) passesTrigger = true; 
+        if(leadPresel && subleadPresel && passesTrigger==0)notrigLivia++;
+        if(leadPresel && subleadPresel && passesMassTrigSel==0)nomasstrigLivia++;
+        if(leadPresel && subleadPresel && passesLeadTrigSel==0)noleadtrigLivia++;
+        if(leadPresel && subleadPresel && passesSubLeadTrigSel==0)nosubleadtrigLivia++;
+       
+        //excercise for syncronyzation livia 
+        if(geometrical_acceptance(leadScEta,subleadScEta)){
+          preselDiphoAcc.push_back(diphotonlooper);
+          if(subleadR9noZS>0.8 && leadR9noZS>0.8){
+            preselDiphoR9.push_back(diphotonlooper);
+            if(subleadChIso<20 && leadChIso < 20){
+              preselDiphoIso.push_back(diphotonlooper);
+              if(subleadChIso/subleadPt < 0.3 && leadChIso/leadPt < 0.3){
+                preselDiphoIsoRel.push_back(diphotonlooper);
+                if(subleadHoE <0.8 && leadHoE< 0.8){
+          	preselDiphoHoE.push_back(diphotonlooper);
+                }
+              }
+            }
+          }
+        }
+        if (/*!passesTrigger ||*/ !leadPresel || !subleadPresel) continue;   
+        preselDipho.push_back(diphotonlooper);
       }
-	if (elvetoDipho.size()>0) {
-	  elvetoLivia++;
-	  h_selection->Fill(3.,perEveW);
-	  numPassingCuts[3]++;
-	
-	// Diphoton candidates: pT cuts
-	  vector<int> kineDipho;
-	  for( size_t diphotonlooper = 0; diphotonlooper < elvetoDipho.size(); diphotonlooper++ ) {
-	    
-	    int theDiphoton = elvetoDipho[diphotonlooper];
-	    Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-	    
-	    float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-	    float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-	    float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
-	    
-	    float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
-	    float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	    float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
-	    
-	    if (leadPt<30 || subleadPt<20) continue;      
-	    
-	    kineDipho.push_back(theDiphoton);
-	  }
+       //excercise for synchronyzation livia 
+      if (preselDiphoAcc.size()>0) {
+        preselAccLivia++;
+      }
+      if (preselDiphoR9.size()>0) {
+        preselR9Livia++;
+      }
+      if (preselDiphoIso.size()>0) {
+        preselIsoLivia++;
+      }
+      if (preselDiphoIsoRel.size()>0) {
+        preselIsoRelLivia++;
+      }
+      if (preselDiphoHoE.size()>0) {
+        preselHoELivia++;
+      }
+      if (preselDipho.size()>0) {
+        preselLivia++;
+        h_selection->Fill(1.,perEveW);
+        numPassingCuts[1]++;
+       
+        // Diphoton candidates: Id/isolation selection
+        vector<int> selectedDipho;
+        for( size_t diphotonlooper = 0; diphotonlooper < preselDipho.size(); diphotonlooper++ ) {
 
-	if (kineDipho.size()>0) {
-	  kinLivia++;
-            h_selection->Fill(4.,perEveW);
-            numPassingCuts[4]++;
+          int theDiphoton = preselDipho[diphotonlooper];
+          Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
+
+          float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
+          float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
+          float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+          float leadSieienoZS = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
+          float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();	
+          float leadChIso  = TMath::Max(diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
+          float leadNeuIso = TMath::Max(diphoPtr->leadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
+          float leadPhoIso = TMath::Max(diphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
+          
+          // medium working point selection
+          int passLeadSieie = passSieieCuts( leadScEta, leadSieienoZS );
+          int passLeadCHiso = passCHisoCuts( leadScEta, leadChIso, leadPt );
+          int passLeadNHiso = passNHisoCuts( leadScEta, leadNeuIso, leadPt );
+          int passLeadPHiso = passPHisoCuts( leadScEta, leadPhoIso, leadPt );
+          int passLeadHoe   = passHoeCuts( leadScEta, leadHoE );
+          // tight working point selection
+          int passTightLeadSieie = passTightSieieCuts( leadScEta, leadSieienoZS );
+          int passTightLeadCHiso = passTightCHisoCuts( leadScEta, leadChIso, leadPt );
+          int passTightLeadNHiso = passTightNHisoCuts( leadScEta, leadNeuIso, leadPt );
+          int passTightLeadPHiso = passTightPHisoCuts( leadScEta, leadPhoIso, leadPt );
+          int passTightLeadHoe   = passTightHoeCuts( leadScEta, leadHoE );
+          // loose working point selection
+          int passLooseLeadSieie = passLooseSieieCuts( leadScEta, leadSieienoZS );
+          int passLooseLeadCHiso = passLooseCHisoCuts( leadScEta, leadChIso, leadPt );
+          int passLooseLeadNHiso = passLooseNHisoCuts( leadScEta, leadNeuIso, leadPt );
+          int passLooseLeadPHiso = passLoosePHisoCuts( leadScEta, leadPhoIso, leadPt );
+          int passLooseLeadHoe   = passLooseHoeCuts( leadScEta, leadHoE );
+          //eleveto
+          int passLeadElVeto = 0;
+          int numberpassingEV1 = 0;
+          if (diphoPtr->leadingPhoton()->passElectronVeto()) passLeadElVeto = 1;
+          if (passLeadElVeto) numberpassingEV1++;
+          bool leadSelel      = testPhotonIsolation( passLeadSieie, passLeadCHiso, passLeadNHiso, passLeadPHiso, passLeadHoe, 1);//passLeadElVeto);// FIXME 
+          bool leadTightSelel = testPhotonIsolation( passTightLeadSieie, passTightLeadCHiso, passTightLeadNHiso, passTightLeadPHiso, passTightLeadHoe, 1); 
+          bool leadLooseSelel = testPhotonIsolation( passLooseLeadSieie, passLooseLeadCHiso, passLooseLeadNHiso, passLooseLeadPHiso, passLooseLeadHoe, 1); 
+
+          //look at subleading
+          float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
+          float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
+          float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
+          float subleadSieienoZS = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
+          float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
+          float subleadChIso  = TMath::Max(diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
+          float subleadNeuIso = TMath::Max(diphoPtr->subLeadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
+          float subleadPhoIso = TMath::Max(diphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
          
-	  // Diphoton candidates: mgg cut
-	  vector<int> kinScalDipho;
-	  for( size_t diphotonlooper = 0; diphotonlooper < kineDipho.size(); diphotonlooper++ ) {
+          
+          // medium working point selection
+          int passSubLeadSieie = passSieieCuts( subleadScEta, subleadSieienoZS );
+          int passSubLeadCHiso = passCHisoCuts( subleadScEta, subleadChIso, subleadPt );
+          int passSubLeadNHiso = passNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
+          int passSubLeadPHiso = passPHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
+          int passSubLeadHoe   = passHoeCuts( subleadScEta, subleadHoE );
+          // tight working point selection
+          int passTightSubLeadSieie = passTightSieieCuts( subleadScEta, subleadSieienoZS );
+          int passTightSubLeadCHiso = passTightCHisoCuts( subleadScEta, subleadChIso, subleadPt );
+          int passTightSubLeadNHiso = passTightNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
+          int passTightSubLeadPHiso = passTightPHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
+          int passTightSubLeadHoe   = passTightHoeCuts( subleadScEta, subleadHoE );
+          // loose working point selection
+          int passLooseSubLeadSieie = passLooseSieieCuts( subleadScEta, subleadSieienoZS );
+          int passLooseSubLeadCHiso = passLooseCHisoCuts( subleadScEta, subleadChIso, subleadPt );
+          int passLooseSubLeadNHiso = passLooseNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
+          int passLooseSubLeadPHiso = passLoosePHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
+          int passLooseSubLeadHoe   = passLooseHoeCuts( subleadScEta, subleadHoE );
 
-	    int theDiphoton = kineDipho[diphotonlooper];
-	    Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-	    
-	    //float thisSystemMgg = diphoPtr->mass();
+        
+          //int passSubLeadElVeto = 0;
+          //int numberpassingEV2 = 0;
+          //if (diphoPtr->subLeadingPhoton()->passElectronVeto()) passSubLeadElVeto = 1;
+          //if (passSubLeadElVeto) numberpassingEV2++;
+          bool subleadSelel      = testPhotonIsolation( passSubLeadSieie, passSubLeadCHiso, passSubLeadNHiso, passSubLeadPHiso, passSubLeadHoe, 1);// passSubLeadElVeto);// FIXME
+          bool subleadTightSelel = testPhotonIsolation( passTightSubLeadSieie, passTightSubLeadCHiso, passTightSubLeadNHiso, passTightSubLeadPHiso, passTightSubLeadHoe, 1);
+          bool subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, passLooseSubLeadPHiso, passLooseSubLeadHoe, 1);
 
-	   
-	    float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-	    float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-	    float leadPhi  = diphoPtr->leadingPhoton()->phi();   	
-	    float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
-	 
-	    float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
-	    float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	    float subleadPhi  = diphoPtr->subLeadingPhoton()->phi();   	
-	    float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
-      
-	    TLorentzVector* p1=new TLorentzVector(0,0,0,0);;
-	    TLorentzVector* p2=new TLorentzVector(0,0,0,0);;
-	    p1->SetPtEtaPhiM(leadPt,diphoPtr->leadingPhoton()->eta() , leadPhi, 0);
-	    p2->SetPtEtaPhiM(subleadPt, diphoPtr->subLeadingPhoton()->eta(), subleadPhi, 0);
-	    float thisSystemMggCorr = (*p1+*p2).M();
+          int numpassingmed = 0;
+          int numpassing = 0;
+          int numpassingloose = 0;
+          if (leadSelel || subleadSelel) numpassingmed++;
+          if (leadTightSelel || subleadTightSelel) numpassing++;
+          if (leadLooseSelel || subleadLooseSelel) numpassingloose++;
 
-	
-	    // if (thisSystemMggCorr<50 ) continue; 
-	    if (leadPt< thisSystemMggCorr/3 || subleadPt<thisSystemMggCorr/4) continue; //Livia correction: add scaling pt cuts
+          if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
+          selectedDipho.push_back(theDiphoton); 
+          
+          //// ADDED MVA PHOTON SELECTION
+          //// MVA values come from FLASHgg and replace the Cut-Based Photon ID	
+          //float leadMVA     = diphoPtr->leadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
+          //float subleadMVA     = diphoPtr->subLeadingPhoton()->phoIdMvaDWrtVtx(diphoPtr->vtx());
+          //
+          //bool leadMVASel = false;
+          //if (leadMVA > -0.9) leadMVASel = true;
+          //bool subleadMVASel = false;
+          //if (subleadMVA > -0.9) subleadMVASel = true;
 
-	    kinScalDipho.push_back(theDiphoton);
-	  }
-  
-	  if (kinScalDipho.size()>0) {
-	    kinScalLivia++;
-	    h_selection->Fill(5.,perEveW);
-	    numPassingCuts[5]++;
-            
-	    vector<int> vtxDipho;
-	    for( size_t diphotonlooper = 0; diphotonlooper < kinScalDipho.size(); diphotonlooper++ ) {  
-	      int theDiphoton = kinScalDipho[diphotonlooper];
-	      Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( theDiphoton );
-	      bool goodVtx = true;
-	      int theVertex = candDiphoPtr->vertexIndex();
-	      float vtxX = (primaryVertices->ptrAt(theVertex))->position().x();
-	      float vtxY = (primaryVertices->ptrAt(theVertex))->position().y();
-	      float d0vtx = sqrt( vtxX*vtxX + vtxY*vtxY );
-	      if ( (primaryVertices->ptrAt(theVertex))->ndof()<=4 )  goodVtx = false;
-	      if (fabs(d0vtx)>2) goodVtx = false;
-	      if (fabs((primaryVertices->ptrAt(theVertex))->position().z())>=24) goodVtx = false;
-	      bool isVtxFake = ((primaryVertices->ptrAt(theVertex))->ndof()==0) && ((primaryVertices->ptrAt(theVertex))->chi2()==0);   // chiara: also && tracks.empty, but can not be used here
-	      if (isVtxFake) goodVtx = false;
-	      if(!goodVtx)continue;
-	      vtxDipho.push_back(theDiphoton);
-	    }
-	    
-	    if(vtxDipho.size()>0){
-	      vtxLivia++;
-	      h_selection->Fill(6.,perEveW);
-	      numPassingCuts[6]++;
-	      vector<int> massDipho;
-	      for( size_t diphotonlooper = 0; diphotonlooper < vtxDipho.size(); diphotonlooper++ ) {  
-		int theDiphoton = vtxDipho[diphotonlooper];
-		Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-		float theMass = diphoPtr->mass();
-		
-		//correct mass for smearing and scaling
-		float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-		float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-		float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
-		float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	      
-		float leadSmearing	= getSmearingValue( leadScEta, leadR9noZS,0);
-		float subleadSmearing	= getSmearingValue( subleadScEta,subleadR9noZS  ,0);
+          //if (!leadMVASel || !subleadMVASel) continue;
+          //selectedDipho.push_back(theDiphoton); 
+          
+        }
+       
+        if (selectedDipho.size()>0) {
+          selLivia++;
+          h_selection->Fill(2.,perEveW);
+          numPassingCuts[2]++;
+          
+          vector<int> elvetoDipho;
+          for( size_t diphotonlooper = 0; diphotonlooper < selectedDipho.size(); diphotonlooper++ ) {
+          int theDiphoton = selectedDipho[diphotonlooper];
+          Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
+          int passSubLeadElVeto = 0;
+          int numberpassingEV2 = 0;
+          if (diphoPtr->subLeadingPhoton()->passElectronVeto()) passSubLeadElVeto = 1;
+          if (passSubLeadElVeto) numberpassingEV2++;
+          //eleveto
+          int passLeadElVeto = 0;
+          int numberpassingEV1 = 0;
+          if (diphoPtr->leadingPhoton()->passElectronVeto()) passLeadElVeto = 1;
+          if (passLeadElVeto) numberpassingEV1++;
+          if(!passLeadElVeto || !passSubLeadElVeto)continue;
+          elvetoDipho.push_back(theDiphoton);
+        }
+          if (elvetoDipho.size()>0) {
+            elvetoLivia++;
+            h_selection->Fill(3.,perEveW);
+            numPassingCuts[3]++;
+          
+          // Diphoton candidates: pT cuts
+            vector<int> kineDipho;
+            for( size_t diphotonlooper = 0; diphotonlooper < elvetoDipho.size(); diphotonlooper++ ) {
+              
+              int theDiphoton = elvetoDipho[diphotonlooper];
+              Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
+              
+              float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
+              float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
+              float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+              
+              float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
+              float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
+              float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
+              
+              if (leadPt<30 || subleadPt<20) continue;      
+              
+              kineDipho.push_back(theDiphoton);
+            }
 
-		//float leadSmearingUp	= getSmearingValue(leadScEta, leadR9noZS,1);
-		//float subleadSmearingUp	= getSmearingValue( subleadScEta,subleadR9noZS ,1);
+          if (kineDipho.size()>0) {
+            kinLivia++;
+              h_selection->Fill(4.,perEveW);
+              numPassingCuts[4]++;
+           
+            // Diphoton candidates: mgg cut
+            vector<int> kinScalDipho;
+            for( size_t diphotonlooper = 0; diphotonlooper < kineDipho.size(); diphotonlooper++ ) {
 
-		//float leadSmearingDown	= getSmearingValue( leadScEta, leadR9noZS ,-1);
-		//float subleadSmearingDown	= getSmearingValue( subleadScEta,subleadR9noZS,-1 );
+              int theDiphoton = kineDipho[diphotonlooper];
+              Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
+              
+              //float thisSystemMgg = diphoPtr->mass();
 
-		float gaussMean		= 1.0;
-              	
-		TRandom Rand1(event);
-		float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
-		//float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
-		//float Smear1Down	= Rand1.Gaus(gaussMean,leadSmearingDown);
+             
+              float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
+              float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
+              float leadPhi  = diphoPtr->leadingPhoton()->phi();   	
+              float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+           
+              float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
+              float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
+              float subleadPhi  = diphoPtr->subLeadingPhoton()->phi();   	
+              float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
+        
+              TLorentzVector* p1=new TLorentzVector(0,0,0,0);;
+              TLorentzVector* p2=new TLorentzVector(0,0,0,0);;
+              p1->SetPtEtaPhiM(leadPt,diphoPtr->leadingPhoton()->eta() , leadPhi, 0);
+              p2->SetPtEtaPhiM(subleadPt, diphoPtr->subLeadingPhoton()->eta(), subleadPhi, 0);
+              float thisSystemMggCorr = (*p1+*p2).M();
 
-		TRandom Rand2(event+83941);
-		float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
-		//float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
-		//float Smear2Down	= Rand2.Gaus(gaussMean,subleadSmearingDown);
+          
+              // if (thisSystemMggCorr<50 ) continue; 
+              if (leadPt< thisSystemMggCorr/3 || subleadPt<thisSystemMggCorr/4) continue; //Livia correction: add scaling pt cuts
 
-		float massCorrSmear	= theMass*sqrt(Smear1*Smear2);
-		//float massCorrSmearUp	= theMass*sqrt(Smear1Up*Smear2Up);
-		//float massCorrSmearDown	= theMass*sqrt(Smear1Down*Smear2Down);
-		
-		// scaling of Data
-		float leadScaling	= getScalingValue( sampleID, leadScEta, leadR9noZS , run, 0);
-		float subleadScaling	= getScalingValue( sampleID, subleadScEta, subleadR9noZS, run, 0);
+              kinScalDipho.push_back(theDiphoton);
+            }
+    
+            if (kinScalDipho.size()>0) {
+              kinScalLivia++;
+              h_selection->Fill(5.,perEveW);
+              numPassingCuts[5]++;
+              
+              vector<int> vtxDipho;
+              for( size_t diphotonlooper = 0; diphotonlooper < kinScalDipho.size(); diphotonlooper++ ) {  
+                int theDiphoton = kinScalDipho[diphotonlooper];
+                Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( theDiphoton );
+                bool goodVtx = true;
+                int theVertex = candDiphoPtr->vertexIndex();
+                float vtxX = (primaryVertices->ptrAt(theVertex))->position().x();
+                float vtxY = (primaryVertices->ptrAt(theVertex))->position().y();
+                float d0vtx = sqrt( vtxX*vtxX + vtxY*vtxY );
+                if ( (primaryVertices->ptrAt(theVertex))->ndof()<=4 )  goodVtx = false;
+                if (fabs(d0vtx)>2) goodVtx = false;
+                if (fabs((primaryVertices->ptrAt(theVertex))->position().z())>=24) goodVtx = false;
+                bool isVtxFake = ((primaryVertices->ptrAt(theVertex))->ndof()==0) && ((primaryVertices->ptrAt(theVertex))->chi2()==0);   // chiara: also && tracks.empty, but can not be used here
+                if (isVtxFake) goodVtx = false;
+                if(!goodVtx)continue;
+                vtxDipho.push_back(theDiphoton);
+              }
+              
+              if(vtxDipho.size()>0){
+                vtxLivia++;
+                h_selection->Fill(6.,perEveW);
+                numPassingCuts[6]++;
+                vector<int> massDipho;
+                for( size_t diphotonlooper = 0; diphotonlooper < vtxDipho.size(); diphotonlooper++ ) {  
+          	int theDiphoton = vtxDipho[diphotonlooper];
+          	Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
+          	float theMass = diphoPtr->mass();
+          	
+          	//correct mass for smearing and scaling
+          	float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
+          	float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
+          	float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
+          	float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
+                
+          	float leadSmearing	= getSmearingValue( leadScEta, leadR9noZS,0);
+          	float subleadSmearing	= getSmearingValue( subleadScEta,subleadR9noZS  ,0);
 
-		//float leadScalingUp	= getScalingValue(leadScEta, leadR9noZS,run,1);
-		//float subleadScalingUp	= getScalingValue(subleadScEta,subleadR9noZS ,run,1);
+          	//float leadSmearingUp	= getSmearingValue(leadScEta, leadR9noZS,1);
+          	//float subleadSmearingUp	= getSmearingValue( subleadScEta,subleadR9noZS ,1);
 
-		//float leadScalingDown	= getScalingValue(leadScEta, leadR9noZS ,run,-1);
-		//float subleadScalingDown= getScalingValue(subleadScEta,subleadR9noZS ,run,-1);
+          	//float leadSmearingDown	= getSmearingValue( leadScEta, leadR9noZS ,-1);
+          	//float subleadSmearingDown	= getSmearingValue( subleadScEta,subleadR9noZS,-1 );
 
-		float Scaling		= leadScaling*subleadScaling;
-		//float ScalingUp		= leadScalingUp*subleadScalingUp;
-		//float ScalingDown	= leadScalingDown*subleadScalingDown;
+          	float gaussMean		= 1.0;
+                	
+          	TRandom Rand1(event);
+          	float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
+          	//float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
+          	//float Smear1Down	= Rand1.Gaus(gaussMean,leadSmearingDown);
 
-		float massCorrScale	= theMass*sqrt(Scaling);
-		//float massCorrScaleUp	= theMass*sqrt(ScalingUp);
-		//float massCorrScaleDown	= theMass*sqrt(ScalingDown);
-		
-		float theMassCorr = theMass;
-	
-		// final theMassCorr (has Smearing or Scaling applied)
-		if (sampleID>0 && sampleID<10000){
-		  theMassCorr = massCorrSmear;	  // smear mass for MC
-		  }
-                else theMassCorr = massCorrScale; // scale mass for Data
-		
-		if (theMassCorr <= 100 || theMassCorr >= 180) continue;
-		massDipho.push_back(theDiphoton);
-	      }
+          	TRandom Rand2(event+83941);
+          	float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
+          	//float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
+          	//float Smear2Down	= Rand2.Gaus(gaussMean,subleadSmearingDown);
 
-	      if(massDipho.size()>0){
-		massLivia++;
-		h_selection->Fill(7.,perEveW);
-		numPassingCuts[7]++;
-		
-		// Diphoton candidates choice: highest scalar sum pT
-		float maxSumPt = -999.;
-		int candIndex = 9999; // This int will store the index of the best diphoton candidate
-		for( size_t diphotonlooper = 0; diphotonlooper < massDipho.size(); diphotonlooper++ ) {  
-		  int theDiphoton = massDipho[diphotonlooper];
-		  Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-		  float thisSumPt = diphoPtr->leadingPhoton()->et() + diphoPtr->subLeadingPhoton()->et();
-		  if (thisSumPt>maxSumPt) {
-		    maxSumPt = thisSumPt;
-		    candIndex = theDiphoton;
-		  }
-		}
-	    
-	    if (candIndex<999) {
-	      
-	      Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( candIndex );
-		 
-	     	// to be kept in the tree
-		float ptgg, mgg;
-		int eventClass;
-		float pt1,ptUncorr1, ptOverM1, eta1, phi1;
-		float sceta1;
-		float r91, sieie1, hoe1, scRawEne1;
-		float chiso1, phoiso1, neuiso1;
-		float pt2, ptUncorr2,ptOverM2, eta2, phi2;
-		float sceta2;
-		float r92, sieie2, hoe2, scRawEne2;
-		float chiso2, phoiso2, neuiso2;
-		int presel1, presel2, sel1, sel2, tightsel1, tightsel2, loosesel1, loosesel2;
-		int vtxIndex;
-		float vtxX, vtxY, vtxZ;
-		int genmatch1, genmatch2;
-		float genmgg;
-		float geniso1, geniso2;
-		float higgsVtxX, higgsVtxY, higgsVtxZ;
-		float genVtxX, genVtxY, genVtxZ; 
-		int eleveto1, eleveto2;
-		float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi, t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
-		float t1pfmetJetEnUp ,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown,t1pfmetElectronEnUp   ,t1pfmetElectronEnDown   ,t1pfmetTauEnUp,t1pfmetTauEnDown, t1pfmetPhotonEnUp, t1pfmetPhotonEnDown,t1pfmetUnclusteredEnUp,t1pfmetUnclusteredEnDown;
-                int passCHiso1, passCHiso2, passNHiso1, passNHiso2, passPHiso1, passPHiso2, passSieie1, passSieie2, passHoe1, passHoe2;
-                int passTightCHiso1, passTightCHiso2, passTightNHiso1, passTightNHiso2, passTightPHiso1, passTightPHiso2, passTightSieie1, passTightSieie2, passTightHoe1, passTightHoe2;
-                int passLooseCHiso1, passLooseCHiso2, passLooseNHiso1, passLooseNHiso2, passLoosePHiso1, passLoosePHiso2, passLooseSieie1, passLooseSieie2, passLooseHoe1, passLooseHoe2;
-		int nEle, nMuons, nJets, nLooseBjets, nMediumBjets;
-		int vhtruth;
+          	float massCorrSmear	= theMass*sqrt(Smear1*Smear2);
+          	//float massCorrSmearUp	= theMass*sqrt(Smear1Up*Smear2Up);
+          	//float massCorrSmearDown	= theMass*sqrt(Smear1Down*Smear2Down);
+          	
+          	// scaling of Data
+          	float leadScaling	= getScalingValue( sampleID, leadScEta, leadR9noZS , run, 0);
+          	float subleadScaling	= getScalingValue( sampleID, subleadScEta, subleadR9noZS, run, 0);
 
-		float massCorrSmear, massCorrScale, massRaw;
-		float massCorrSmearUp, massCorrSmearDown;
-		float massCorrScaleUp, massCorrScaleDown;
-		int genZ;
-		float ptZ, etaZ, phiZ;
+          	//float leadScalingUp	= getScalingValue(leadScEta, leadR9noZS,run,1);
+          	//float subleadScalingUp	= getScalingValue(subleadScEta,subleadR9noZS ,run,1);
 
-		// fully selected event: tree re-initialization                                                                          
-		initTreeStructure();        
-		
-		//met type1 corrected
-		t1pfmet = theMET->pt();
-		t1pfmetPhi = theMET->phi();
-		t1pfmetSumEt = theMET->sumEt();
+          	//float leadScalingDown	= getScalingValue(leadScEta, leadR9noZS ,run,-1);
+          	//float subleadScalingDown= getScalingValue(subleadScEta,subleadR9noZS ,run,-1);
 
+          	float Scaling		= leadScaling*subleadScaling;
+          	//float ScalingUp		= leadScalingUp*subleadScalingUp;
+          	//float ScalingDown	= leadScalingDown*subleadScalingDown;
 
-		//add MET systematic variables Livia
-		t1pfmetJetEnUp           = theMET->shiftedPt(pat::MET::JetEnUp);
-		t1pfmetJetEnDown         = theMET->shiftedPt(pat::MET::JetEnDown);
-		t1pfmetJetResUp          = theMET->shiftedPt(pat::MET::JetResUp);
-		t1pfmetJetResDown        = theMET->shiftedPt(pat::MET::JetResDown);
-		t1pfmetMuonEnUp          = theMET->shiftedPt(pat::MET::MuonEnUp);
-		t1pfmetMuonEnDown          = theMET->shiftedPt(pat::MET::MuonEnDown);
-		t1pfmetElectronEnUp   = theMET->shiftedPt(pat::MET::ElectronEnUp);
-		t1pfmetElectronEnDown    = theMET->shiftedPt(pat::MET::ElectronEnDown);
-		t1pfmetTauEnUp         = theMET->shiftedPt(pat::MET::TauEnUp);
-		t1pfmetTauEnDown         = theMET->shiftedPt(pat::MET::TauEnDown);
-		t1pfmetPhotonEnUp      = theMET->shiftedPt(pat::MET::PhotonEnUp);
-		t1pfmetPhotonEnDown      = theMET->shiftedPt(pat::MET::PhotonEnDown);
-	  	t1pfmetUnclusteredEnUp = theMET->shiftedPt(pat::MET::UnclusteredEnUp);
-		t1pfmetUnclusteredEnDown = theMET->shiftedPt(pat::MET::UnclusteredEnDown);
+          	float massCorrScale	= theMass*sqrt(Scaling);
+          	//float massCorrScaleUp	= theMass*sqrt(ScalingUp);
+          	//float massCorrScaleDown	= theMass*sqrt(ScalingDown);
+          	
+          	float theMassCorr = theMass;
+          
+          	// final theMassCorr (has Smearing or Scaling applied)
+          	if (sampleID>0 && sampleID<10000){
+          	  theMassCorr = massCorrSmear;	  // smear mass for MC
+          	  }
+                  else theMassCorr = massCorrScale; // scale mass for Data
+          	
+          	if (theMassCorr <= 100 || theMassCorr >= 180) continue;
+          	massDipho.push_back(theDiphoton);
+                }
 
-		//met correction type 1+2
-		t1p2pfmet = theMET->corPt(pat::MET::Type1XY);
+                if(massDipho.size()>0){
+          	massLivia++;
+          	h_selection->Fill(7.,perEveW);
+          	numPassingCuts[7]++;
+          	
+          	// Diphoton candidates choice: highest scalar sum pT
+          	float maxSumPt = -999.;
+          	int candIndex = 9999; // This int will store the index of the best diphoton candidate
+          	for( size_t diphotonlooper = 0; diphotonlooper < massDipho.size(); diphotonlooper++ ) {  
+          	  int theDiphoton = massDipho[diphotonlooper];
+          	  Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
+          	  float thisSumPt = diphoPtr->leadingPhoton()->et() + diphoPtr->subLeadingPhoton()->et();
+          	  if (thisSumPt>maxSumPt) {
+          	    maxSumPt = thisSumPt;
+          	    candIndex = theDiphoton;
+          	  }
+          	}
+              
+              if (candIndex<999) {
+                
+                Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( candIndex );
+          	 
+               	// to be kept in the tree
+          	float ptgg, mgg;
+          	int eventClass;
+          	float pt1,ptUncorr1, ptOverM1, eta1, phi1;
+          	float sceta1;
+          	float r91, sieie1, hoe1, scRawEne1;
+          	float chiso1, phoiso1, neuiso1;
+          	float pt2, ptUncorr2,ptOverM2, eta2, phi2;
+          	float sceta2;
+          	float r92, sieie2, hoe2, scRawEne2;
+          	float chiso2, phoiso2, neuiso2;
+          	int presel1, presel2, sel1, sel2, tightsel1, tightsel2, loosesel1, loosesel2;
+          	int vtxIndex;
+          	float vtxX, vtxY, vtxZ;
+          	int genmatch1, genmatch2;
+          	float genmgg;
+          	float geniso1, geniso2;
+          	float higgsVtxX, higgsVtxY, higgsVtxZ;
+          	float genVtxX, genVtxY, genVtxZ; 
+          	int eleveto1, eleveto2;
+          	float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi, t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
+          	float t1pfmetJetEnUp ,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown,t1pfmetElectronEnUp   ,t1pfmetElectronEnDown   ,t1pfmetTauEnUp,t1pfmetTauEnDown, t1pfmetPhotonEnUp, t1pfmetPhotonEnDown,t1pfmetUnclusteredEnUp,t1pfmetUnclusteredEnDown;
+                  int passCHiso1, passCHiso2, passNHiso1, passNHiso2, passPHiso1, passPHiso2, passSieie1, passSieie2, passHoe1, passHoe2;
+                  int passTightCHiso1, passTightCHiso2, passTightNHiso1, passTightNHiso2, passTightPHiso1, passTightPHiso2, passTightSieie1, passTightSieie2, passTightHoe1, passTightHoe2;
+                  int passLooseCHiso1, passLooseCHiso2, passLooseNHiso1, passLooseNHiso2, passLoosePHiso1, passLoosePHiso2, passLooseSieie1, passLooseSieie2, passLooseHoe1, passLooseHoe2;
+          	int nEle, nMuons, nJets, nLooseBjets, nMediumBjets;
+          	int vhtruth;
 
-		//uncorrected met
-		pfmet = theMET->uncorPt();
-		pfmetPhi = theMET->uncorPhi();
-		pfmetSumEt = theMET->uncorSumEt();
-		calomet = theMET->caloMETPt();
-		calometPhi = theMET->caloMETPhi();
-		calometSumEt = theMET->caloMETSumEt();
+          	float massCorrSmear, massCorrScale, massRaw;
+          	float massCorrSmearUp, massCorrSmearDown;
+          	float massCorrScaleUp, massCorrScaleDown;
+          	int genZ;
+          	float ptZ, etaZ, phiZ;
 
-		
-		//-------> diphoton system properties 
-		ptgg = candDiphoPtr->pt();
-		massRaw  = candDiphoPtr->mass();
-
-		//-------> individual photon properties
-		sceta1    = (candDiphoPtr->leadingPhoton()->superCluster())->eta();
-		r91	  = candDiphoPtr->leadingPhoton()->full5x5_r9();
-		ptUncorr1       = candDiphoPtr->leadingPhoton()->et();
-		pt1     = getPtCorrected(ptUncorr1, sceta1, r91, run, sampleID);
-		ptOverM1  = pt1/massRaw;
-		eta1      = candDiphoPtr->leadingPhoton()->eta();
-		phi1      = candDiphoPtr->leadingPhoton()->phi();
-		sieie1	  = candDiphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
-		hoe1      = candDiphoPtr->leadingPhoton()->hadTowOverEm();
-		scRawEne1 = candDiphoPtr->leadingPhoton()->superCluster()->rawEnergy();
-		chiso1    = TMath::Max(candDiphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
-		neuiso1   = TMath::Max(candDiphoPtr->leadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
-		phoiso1   = TMath::Max(candDiphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
-
-		eleveto1  = 0;
-		if (candDiphoPtr->leadingPhoton()->passElectronVeto()) eleveto1 = 1;
-		sceta2    = (candDiphoPtr->subLeadingPhoton()->superCluster())->eta();
-		r92	  = candDiphoPtr->subLeadingPhoton()->full5x5_r9();
-		ptUncorr2       = candDiphoPtr->subLeadingPhoton()->et();
-		pt2     = getPtCorrected(ptUncorr2, sceta2, r92, run, sampleID);
-		ptOverM2  = pt2/massRaw;
-		eta2      = candDiphoPtr->subLeadingPhoton()->eta();
-		phi2      = candDiphoPtr->subLeadingPhoton()->phi();
-		sieie2	  = candDiphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
-		hoe2      = candDiphoPtr->subLeadingPhoton()->hadTowOverEm();
-		scRawEne2 = candDiphoPtr->subLeadingPhoton()->superCluster()->rawEnergy();
-		chiso2    = TMath::Max(candDiphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
-		neuiso2   = TMath::Max(candDiphoPtr->subLeadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);      	       
-		phoiso2   = TMath::Max(candDiphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
-	
-		eleveto2  = 0;
-		if (candDiphoPtr->subLeadingPhoton()->passElectronVeto()) eleveto2 = 1;
-	
-		//-------> photon selection (should be on, may be useful for extra studies
-		presel1 = isGammaPresel( sceta1, pt1, r91, chiso1, hoe1 ); 
-		presel2 = isGammaPresel( sceta2, pt2, r92, chiso2, hoe2 ); 
-	
-		
-		// correct mass for smearing and scaling
-		float leadSmearing	  = getSmearingValue( sceta1, r91, 0 );
-		float subleadSmearing	  = getSmearingValue( sceta2, r92, 0 );
-		// smear up and down for systematics
-		float leadSmearingUp	  = getSmearingValue( sceta1, r91, 1 );
-		float subleadSmearingUp	  = getSmearingValue( sceta2, r92, 1 );
-		float leadSmearingDown	  = getSmearingValue( sceta1, r91, -1 );
-		float subleadSmearingDown = getSmearingValue( sceta2, r92, -1 );
-
-
-		float gaussMean		= 1.0;
-              	
-		TRandom Rand1(event);
-		float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
-		float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
-		float Smear1Down	= Rand1.Gaus(gaussMean,leadSmearingDown);
-
-		TRandom Rand2(event+83941);
-		float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
-		float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
-		float Smear2Down	= Rand2.Gaus(gaussMean,subleadSmearingDown);
-
-		massCorrSmear		= massRaw*sqrt(Smear1*Smear2);
-		massCorrSmearUp	        = massRaw*sqrt(Smear1Up*Smear2Up);
-		massCorrSmearDown	= massRaw*sqrt(Smear1Down*Smear2Down);
-
-		// scaling of Data
-		float leadScaling	= getScalingValue(sampleID, sceta1, r91, run, 0);
-		float subleadScaling	= getScalingValue(sampleID, sceta2, r92, run, 0);
-
-		// scale up and down for systematics
-		float leadScalingUp	= getScalingValue(sampleID, sceta1, r91 ,run, 1);
-		float subleadScalingUp	= getScalingValue(sampleID, sceta2, r92 ,run, 1);
-
-		float leadScalingDown	= getScalingValue(sampleID, sceta1, r91 ,run, -1);
-		float subleadScalingDown= getScalingValue(sampleID, sceta2, r92 ,run, -1);
-
-		float Scaling		= leadScaling*subleadScaling;
-		float ScalingUp		= leadScalingUp*subleadScalingUp;
-		float ScalingDown	= leadScalingDown*subleadScalingDown;
-
-		massCorrScale		= massRaw*sqrt(Scaling);
-		massCorrScaleUp		= massRaw*sqrt(ScalingUp);
-		massCorrScaleDown	= massRaw*sqrt(ScalingDown);
-
-		// final mgg (has Smearing or Scaling applied)
-		if (sampleID>0 && sampleID<10000){
-		  mgg = massCorrSmear;	  // smear mass for MC
-		  }
-                else mgg = massCorrScale; // scale mass for Data
-		
-		eff_end++;	  
-		
-	
-		//std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
-                //-------> pass each photon ID cut separately
-		// medium working point selection
-		passSieie1 = passSieieCuts( sceta1, sieie1);
-		passSieie2 = passSieieCuts( sceta2, sieie2);
-                passCHiso1 = passCHisoCuts( sceta1, chiso1, pt1);
-                passCHiso2 = passCHisoCuts( sceta2, chiso2, pt2);
-		passNHiso1 = passNHisoCuts( sceta1, neuiso1, pt1);
-		passNHiso2 = passNHisoCuts( sceta2, neuiso2, pt2);
-		passPHiso1 = passPHisoCuts( sceta1, phoiso1, pt1);
-		passPHiso2 = passPHisoCuts( sceta2, phoiso2, pt2);
-		passHoe1   = passHoeCuts( sceta1, hoe1);
-		passHoe2   = passHoeCuts( sceta2, hoe2);
-
-		// tight working point selection
-		passTightSieie1 = passTightSieieCuts( sceta1, sieie1);
-		passTightSieie2 = passTightSieieCuts( sceta2, sieie2);
-                passTightCHiso1 = passTightCHisoCuts( sceta1, chiso1, pt1);
-                passTightCHiso2 = passTightCHisoCuts( sceta2, chiso2, pt2);
-		passTightNHiso1 = passTightNHisoCuts( sceta1, neuiso1, pt1);
-		passTightNHiso2 = passTightNHisoCuts( sceta2, neuiso2, pt2);
-		passTightPHiso1 = passTightPHisoCuts( sceta1, phoiso1, pt1);
-		passTightPHiso2 = passTightPHisoCuts( sceta2, phoiso2, pt2);
-		passTightHoe1   = passTightHoeCuts( sceta1, hoe1);
-		passTightHoe2   = passTightHoeCuts( sceta2, hoe2);
-
-		// loose working point selection
-		passLooseSieie1 = passLooseSieieCuts( sceta1, sieie1);
-		passLooseSieie2 = passLooseSieieCuts( sceta2, sieie2);
-                passLooseCHiso1 = passLooseCHisoCuts( sceta1, chiso1, pt1);
-                passLooseCHiso2 = passLooseCHisoCuts( sceta2, chiso2, pt2);
-		passLooseNHiso1 = passLooseNHisoCuts( sceta1, neuiso1, pt1);
-		passLooseNHiso2 = passLooseNHisoCuts( sceta2, neuiso2, pt2);
-		passLoosePHiso1 = passLoosePHisoCuts( sceta1, phoiso1, pt1);
-		passLoosePHiso2 = passLoosePHisoCuts( sceta2, phoiso2, pt2);
-		passLooseHoe1   = passLooseHoeCuts( sceta1, hoe1);
-		passLooseHoe2   = passLooseHoeCuts( sceta2, hoe2);
-
- 		//-------> pass all photon ID cuts above + electronVeto
-		sel1 = testPhotonIsolation( passSieie1, passCHiso1, passNHiso1, passPHiso1, passHoe1, eleveto1 );
-		sel2 = testPhotonIsolation( passSieie2, passCHiso2, passNHiso2, passPHiso2, passHoe2, eleveto2 );
-		tightsel1 = testPhotonIsolation( passTightSieie1, passTightCHiso1, passTightNHiso1, passTightPHiso1, passTightHoe1, eleveto1 );
-		tightsel2 = testPhotonIsolation( passTightSieie2, passTightCHiso2, passTightNHiso2, passTightPHiso2, passTightHoe2, eleveto2 );
-		loosesel1 = testPhotonIsolation( passLooseSieie1, passLooseCHiso1, passLooseNHiso1, passLoosePHiso1, passLooseHoe1, eleveto1 );
-		loosesel2 = testPhotonIsolation( passLooseSieie2, passLooseCHiso2, passLooseNHiso2, passLoosePHiso2, passLooseHoe2, eleveto2 );
-
-		//-------> event class
-		float maxEta = sceta1;
-		if (fabs(sceta2)>fabs(sceta1)) maxEta = sceta2;
-		
-		float minR9 = r92;
-		if ( r91<r92 ) minR9 = r91;
-		
-		eventClass = -1;
-		if (fabs(maxEta)<1.5 && minR9>0.94) eventClass = 0;
-		else if (fabs(maxEta)<1.5 && minR9<0.94) eventClass = 1;
-		else if (fabs(maxEta)>1.5 && minR9>0.94) eventClass = 2;
-		else if (fabs(maxEta)>1.5 && minR9<0.94) eventClass = 3;
-
-		//-------> vtx info
-		vtxIndex = candDiphoPtr->vertexIndex();
-		vtxX= candDiphoPtr->vtx()->x();
-		vtxY= candDiphoPtr->vtx()->y();
-		vtxZ= candDiphoPtr->vtx()->z();
-		
-		//-------> generated vtx info
-		genVtxX = -999.;
-		genVtxY = -999.;
-		genVtxZ = -999.;
-		higgsVtxX  = -999.;
-		higgsVtxY  = -999.;
-		higgsVtxZ  = -999.;
-		if (sampleID>0 && sampleID<10000) {     // MC
-		  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
-		    
-		    if( genParticles->ptrAt( genLoop )->pdgId() != 2212 || genParticles->ptrAt( genLoop )->vertex().z() != 0. ) { // pdg1d=2212 is proton vtx
-		      genVtxX = genParticles->ptrAt( genLoop )->vertex().x();
-		      genVtxY = genParticles->ptrAt( genLoop )->vertex().y();
-		      genVtxZ = genParticles->ptrAt( genLoop )->vertex().z();
-		      break;
-		    }
-		  }
-		}
-		if (sampleID>0 && sampleID<10000) {     // MC
-		  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
-		    if( genParticles->ptrAt( genLoop )->pdgId() == 25 || genParticles->ptrAt( genLoop )->pdgId()==22 ){ // Higgs or Photon 
-		      higgsVtxX = genParticles->ptrAt( genLoop )->vertex().x();// Margaret added Higgs vtx
-		      higgsVtxY = genParticles->ptrAt( genLoop )->vertex().y();// Margaret added Higgs vtx
-		      higgsVtxZ = genParticles->ptrAt( genLoop )->vertex().z();// Margaret added Higgs vtx
-		      break;
-		    }
-		  }
-		}
-	      	
-		//-------> photons, MC truth match
-		genmatch1 = -999;
-		genmatch2 = -999;
-		geniso1   = -999.;
-		geniso2   = -999.;
-		if (sampleID>0 && sampleID<10000) {   
-
-		  const auto & genPhotons = *genPhotonsHandle;
-		  
-		  if (candDiphoPtr->leadingPhoton()->hasMatchedGenPhoton()) {
-		    genmatch1 = (candDiphoPtr->leadingPhoton()->genMatchType() == Photon::kPrompt); 
-		    for (unsigned int j = 0 ; j < genPhotons.size() ; j++) {   
-		      auto igen = genPhotons[j].ptr();
-		      if ( igen->status() != 1 || igen->pdgId() != 22 ) continue; 
-		      if ( fabs(igen->eta()-candDiphoPtr->leadingPhoton()->matchedGenPhoton()->eta())<0.001 && fabs(igen->phi()-candDiphoPtr->leadingPhoton()->matchedGenPhoton()->phi())<0.001 ) {
-			auto & extra = genPhotons[j];
-			geniso1 = extra.genIso();
-			break;
-		      }
-		    }
-		  }
-		  
-		  if (candDiphoPtr->subLeadingPhoton()->hasMatchedGenPhoton()) {
-		    genmatch2 = (candDiphoPtr->subLeadingPhoton()->genMatchType() == Photon::kPrompt); 
-		    for (unsigned int j = 0 ; j < genPhotons.size() ; j++) {   
-		      auto igen = genPhotons[j].ptr();
-		      if ( igen->status() != 1 || igen->pdgId() != 22 ) continue; 
-		      if ( fabs(igen->eta()-candDiphoPtr->subLeadingPhoton()->matchedGenPhoton()->eta())<0.001 && fabs(igen->phi()-candDiphoPtr->subLeadingPhoton()->matchedGenPhoton()->phi())<0.001 ) {
-			auto & extra = genPhotons[j];
-			geniso2 = extra.genIso();
-			break;
-		      }
-		    }
-		  }
-		}
-		
-	
-
-		// chiaraaaaa
-		// --> only for VH: check the mc truth for Higgs studies
-		vhtruth = -1;
-		if (sampleID==11) { //this is VH
-		  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
-		    if (genParticles->ptrAt( genLoop )->mother(0)) {
-		      int mothid = fabs(genParticles->ptrAt( genLoop )->mother(0)->pdgId());
-		      if (mothid==23) {
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())<=6 )  { vhtruth = 0; break; }
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==11 ) { vhtruth = 1; break; }
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==13 ) { vhtruth = 2; break; }
-		      }
-		      if (mothid==24) {
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())<=6 )  { vhtruth = 3; break; }
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==11 ) { vhtruth = 4; break; }
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==13 ) { vhtruth = 5; break; }
-		      } 
-		      if (mothid==23 || mothid==24) {
-			if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==15 ) { vhtruth = 6; break; }
-		      }
-		    }
-		  }
-		}
-
-		// Margaret added for Z'->ZH comparisons with SM ZH
-		genZ = -1;
-		ptZ  = -999.;
-		etaZ = -999.;
-		phiZ = -999.;
-		if (sampleID==11 || sampleID==20){ //VH or ZpZH
-		  for (unsigned int genLoop = 0; genLoop < genParticles->size(); genLoop++){
-		    int thePdgId = fabs(genParticles->ptrAt( genLoop )->pdgId()); 
-		    if (thePdgId!=23) continue;// if it is not a Z boson
-		    genZ = 1;
-		    ptZ = genParticles->ptrAt( genLoop )->pt();
-		    etaZ = genParticles->ptrAt( genLoop )->eta();
-		    phiZ = genParticles->ptrAt( genLoop )->phi();
-		  }
-		}
-		//--------> gen level mgg for signal samples
-		genmgg = -999.;
-		if (sampleID>99 && sampleID<10000) {  // signal only 
-
-		  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
-		    
-		    genmgg = -1999.;
-
-		    if ( genParticles->ptrAt( genLoop )->pdgId()==5100039) {  // graviton
-
-		      if (genParticles->ptrAt( genLoop )->numberOfDaughters()!=2) {
-			genmgg = -2999.;
-			break;
-		      }
-
-		      int statusd1 = genParticles->ptrAt( genLoop )->daughter(0)->status();
-		      int statusd2 = genParticles->ptrAt( genLoop )->daughter(1)->status();
-		      int pdgidd1  = genParticles->ptrAt( genLoop )->daughter(0)->pdgId();
-		      int pdgidd2  = genParticles->ptrAt( genLoop )->daughter(1)->pdgId();
-		      if (statusd1!=1 || statusd2!=1 || pdgidd1!=22 || pdgidd2!=22) { 
-			genmgg = -3999.;
-			break;
-		      }
-
-		      float ptd1  = genParticles->ptrAt( genLoop )->daughter(0)->pt();
-		      float ptd2  = genParticles->ptrAt( genLoop )->daughter(1)->pt();
-		      float etad1 = genParticles->ptrAt( genLoop )->daughter(0)->eta();
-		      float etad2 = genParticles->ptrAt( genLoop )->daughter(1)->eta();
-		      float phid1 = genParticles->ptrAt( genLoop )->daughter(0)->phi();
-		      float phid2 = genParticles->ptrAt( genLoop )->daughter(1)->phi();
-		      
-		      TLorentzVector *myGenD1 = new TLorentzVector(0,0,0,0);
-		      TLorentzVector *myGenD2 = new TLorentzVector(0,0,0,0);
-		      myGenD1->SetPtEtaPhiM(ptd1, etad1, phid1, 0.);
-		      myGenD2->SetPtEtaPhiM(ptd2, etad2, phid2, 0.);
-		      genmgg = (*myGenD1+*myGenD2).M();
-
-		      break;
-		    }
-		  }
-		}
-		
-		// leptons and jets
-		nEle   = 0;
-		nMuons = 0;
-		nJets  = 0;     
-		nLooseBjets  = 0;   
-		nMediumBjets = 0;  
-		/*	
-		// Muons =>
-		// 0.25 suggested by muon pog for loose isolation
-		// 0.3  (distance from the photons) => seems reasonable to me. 0.5 was used in globe
-		// pT>20
-		vector<Ptr<flashgg::Muon> > goodMuons = 
-		  selectMuons( theMuons->ptrs(), candDiphoPtr, pirmaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
-		nMuons = goodMuons.size();
-
-		// Electrons =>
-		// pT>20 (maybe can be put higher?)
-		// 0.3 (distance from the photons) => seems reasonable to me
-		std::vector<edm::Ptr<Electron> > goodElectrons = 
-		  selectMediumElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
-		nEle = goodElectrons.size();
-
-		// Jets     
-		unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex();  
-		for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
-		  
-		  edm::Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
-
-		  // jet selection: kinematics and id - hardcoded
-		  if( fabs( thejet->eta() ) > 2.4 ) continue;     // chiara: we only consider central jets 
-		  if( thejet->pt() < 30. ) continue;  
-		  if( !thejet->passesPuJetId( candDiphoPtr ) ) continue;   
-		  
-		  // far from the photons => 0.3 seems reasonable to me   
-		  float dRPhoLeadJet    = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->leadingPhoton()->superCluster()->eta(), candDiphoPtr->leadingPhoton()->superCluster()->phi() ) ;
-		  float dRPhoSubLeadJet = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->subLeadingPhoton()->superCluster()->eta(), candDiphoPtr->subLeadingPhoton()->superCluster()->phi() );
-		  if( dRPhoLeadJet < 0.3 || dRPhoSubLeadJet < 0.3 ) continue;
-
-		  // close to muons?
-		  float matchMu = false;
-		  for( unsigned int muonIndex = 0; muonIndex < goodMuons.size(); muonIndex++ ) {  
-		    Ptr<flashgg::Muon> muon = goodMuons[muonIndex];   
-		    float dRJetMuon = deltaR( thejet->eta(), thejet->phi(), muon->eta(), muon->phi() ) ; 
-		    if (dRJetMuon < 0.3 ) matchMu = true;   
-		  }
-		  
-		  // close to electrons?
-		  float matchEle = false;
-		  for( unsigned int ElectronIndex = 0; ElectronIndex < goodElectrons.size(); ElectronIndex++ ) {   
-		    Ptr<Electron> Electron = goodElectrons[ElectronIndex];  
-		    float dRJetElectron = deltaR( thejet->eta(), thejet->phi(), Electron->eta(), Electron->phi() ) ;  
-		    if( dRJetElectron < 0.3 ) matchEle = true;  
-		  }
-		  
-		  // far from possible muons and electrons       
-		  if (matchMu || matchEle) continue;
-
-		  nJets++;     
-		  float bDiscriminatorValue = thejet->bDiscriminator( bTag_ );    
-		  if( bDiscriminatorValue > 0.244 ) nLooseBjets++;        // hardcoded
-		  if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded
-		  
-		} // loop over jets
-		*/
-		// Variables for the tree
-		treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
-		treeDipho_.hltPhoton36Photon22Mass15=hltPhoton36Photon22Mass15;
-		treeDipho_.hltPhoton42Photon25Mass15=hltPhoton42Photon25Mass15;
-		treeDipho_.hltDiphoton30Mass95=hltDiphoton30Mass95;
-  		treeDipho_.hltDiphoton30Mass70=hltDiphoton30Mass70;
-  		treeDipho_.hltDiphoton30Mass55=hltDiphoton30Mass55;
-  		treeDipho_.hltDiphoton30Mass55PV=hltDiphoton30Mass55PV;
-  		treeDipho_.hltDiphoton30Mass55EB=hltDiphoton30Mass55EB;
-		treeDipho_.run = run;
-		treeDipho_.event = event;
-		treeDipho_.lumi = lumi;
-		treeDipho_.nvtx = nvtx;
-		treeDipho_.rho = rho;
-		treeDipho_.sampleID = sampleID;  
-		treeDipho_.totXsec = totXsec;  
-		treeDipho_.pu_weight = pu_weight;
-		treeDipho_.pu_n = pu_n;
-		treeDipho_.sumDataset = sumDataset;
-		treeDipho_.perEveW = perEveW;
-		treeDipho_.pfmet = pfmet;
-		treeDipho_.pfmet = pfmetPhi;
-		treeDipho_.pfmet = pfmetSumEt;
-		treeDipho_.t1pfmet = t1pfmet;
-		treeDipho_.t1p2pfmet = t1p2pfmet;
-		treeDipho_.t1pfmetJetEnUp          = t1pfmetJetEnUp;           
-		treeDipho_.t1pfmetJetEnDown        = t1pfmetJetEnDown        ;
-		treeDipho_.t1pfmetJetResUp         = t1pfmetJetResUp         ;
-		treeDipho_.t1pfmetJetResDown       = t1pfmetJetResDown       ;
-		treeDipho_.t1pfmetMuonEnUp         = t1pfmetMuonEnUp         ;
-		treeDipho_.t1pfmetMuonEnDown         = t1pfmetMuonEnDown         ;
-		treeDipho_.t1pfmetElectronEnUp   = t1pfmetElectronEnUp   ;
-		treeDipho_.t1pfmetElectronEnDown   = t1pfmetElectronEnDown   ;
-		treeDipho_.t1pfmetTauEnUp        = t1pfmetTauEnUp        ;
-		treeDipho_.t1pfmetTauEnDown        = t1pfmetTauEnDown        ;
-		treeDipho_.t1pfmetPhotonEnUp     = t1pfmetPhotonEnUp     ;
-		treeDipho_.t1pfmetPhotonEnDown     = t1pfmetPhotonEnDown     ;
-		treeDipho_.t1pfmetUnclusteredEnUp= t1pfmetUnclusteredEnUp;
-		treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
+          	// fully selected event: tree re-initialization                                                                          
+          	initTreeStructure();        
+          	
+          	//met type1 corrected
+          	t1pfmet = theMET->pt();
+          	t1pfmetPhi = theMET->phi();
+          	t1pfmetSumEt = theMET->sumEt();
 
 
+          	//add MET systematic variables Livia
+          	t1pfmetJetEnUp		= theMET->shiftedPt(pat::MET::JetEnUp);
+          	t1pfmetJetEnDown	= theMET->shiftedPt(pat::MET::JetEnDown);
+          	t1pfmetJetResUp		= theMET->shiftedPt(pat::MET::JetResUp);
+          	t1pfmetJetResDown	= theMET->shiftedPt(pat::MET::JetResDown);
+          	t1pfmetMuonEnUp		= theMET->shiftedPt(pat::MET::MuonEnUp);
+          	t1pfmetMuonEnDown	= theMET->shiftedPt(pat::MET::MuonEnDown);
+          	t1pfmetElectronEnUp	= theMET->shiftedPt(pat::MET::ElectronEnUp);
+          	t1pfmetElectronEnDown	= theMET->shiftedPt(pat::MET::ElectronEnDown);
+          	t1pfmetTauEnUp		= theMET->shiftedPt(pat::MET::TauEnUp);
+          	t1pfmetTauEnDown	= theMET->shiftedPt(pat::MET::TauEnDown);
+          	t1pfmetPhotonEnUp	= theMET->shiftedPt(pat::MET::PhotonEnUp);
+          	t1pfmetPhotonEnDown	= theMET->shiftedPt(pat::MET::PhotonEnDown);
+            	t1pfmetUnclusteredEnUp	= theMET->shiftedPt(pat::MET::UnclusteredEnUp);
+          	t1pfmetUnclusteredEnDown= theMET->shiftedPt(pat::MET::UnclusteredEnDown);
 
-		treeDipho_.t1pfmetPhi = t1pfmetPhi;
-		treeDipho_.t1pfmetSumEt = t1pfmetSumEt;
-		treeDipho_.calomet = calomet;
-		treeDipho_.calometPhi = calometPhi;
-		treeDipho_.calometSumEt = calometSumEt;
-		treeDipho_.ptgg = ptgg;
-		treeDipho_.mgg = mgg;
-		treeDipho_.eventClass = eventClass;
-		treeDipho_.pt1 = pt1;
-		treeDipho_.ptUncorr1 = ptUncorr1;
-		treeDipho_.ptOverM1 = ptOverM1;
-		treeDipho_.eta1 = eta1;
-		treeDipho_.phi1 = phi1;
-		treeDipho_.sceta1 = sceta1;
-		treeDipho_.r91 = r91;
-		treeDipho_.sieie1 = sieie1;
-		treeDipho_.hoe1 = hoe1; 
-		treeDipho_.scRawEne1 = scRawEne1;
-		treeDipho_.chiso1 = chiso1; 
-		treeDipho_.phoiso1 = phoiso1; 
-		treeDipho_.neuiso1 = neuiso1;
-		treeDipho_.eleveto1 = eleveto1;
-		treeDipho_.pt2 = pt2;
-		treeDipho_.ptUncorr2 = ptUncorr2;
-		treeDipho_.ptOverM2 = ptOverM2;
-		treeDipho_.eta2 = eta2;
-		treeDipho_.phi2 = phi2;
-		treeDipho_.sceta2 = sceta2;
-		treeDipho_.r92 = r92;
-		treeDipho_.sieie2 = sieie2;
-		treeDipho_.hoe2 = hoe2; 
-		treeDipho_.scRawEne2 = scRawEne2;
-		treeDipho_.chiso2 = chiso2; 
-		treeDipho_.phoiso2 = phoiso2; 
-		treeDipho_.neuiso2 = neuiso2;
-		treeDipho_.eleveto2 = eleveto2;
-		treeDipho_.presel1 = presel1;
-		treeDipho_.presel2 = presel2;
-		treeDipho_.sel1 = sel1;
-		treeDipho_.sel2 = sel2;
-		treeDipho_.tightsel1 = tightsel1;
-		treeDipho_.tightsel2 = tightsel2;
-		treeDipho_.loosesel1 = loosesel1;
-		treeDipho_.loosesel2 = loosesel2;
-		treeDipho_.vtxIndex = vtxIndex;
-		treeDipho_.vtxX = vtxX;
-		treeDipho_.vtxY = vtxY;
-		treeDipho_.vtxZ = vtxZ;
-		treeDipho_.genmatch1 = genmatch1; 
-		treeDipho_.genmatch2 = genmatch2; 
-		treeDipho_.genmgg  = genmgg;        // -999: not enough gen level gamma; -1999: strange association with reco
-		treeDipho_.geniso1 = geniso1; 
-		treeDipho_.geniso2 = geniso2; 
-		treeDipho_.higgsVtxX = higgsVtxX;
-		treeDipho_.higgsVtxY = higgsVtxY;
-		treeDipho_.higgsVtxZ = higgsVtxZ;
-		treeDipho_.genVtxX = genVtxX;
-		treeDipho_.genVtxY = genVtxY;
-		treeDipho_.genVtxZ = genVtxZ;
-		treeDipho_.passCHiso1 = passCHiso1;
-		treeDipho_.passCHiso2 = passCHiso2;
-		treeDipho_.passNHiso1 = passNHiso1;
-		treeDipho_.passNHiso2 = passNHiso2;
-		treeDipho_.passPHiso1 = passPHiso1;
-		treeDipho_.passPHiso2 = passPHiso2;
-		treeDipho_.passSieie1 = passSieie1;
-		treeDipho_.passSieie2 = passSieie2;
-		treeDipho_.passHoe1 = passHoe1;
-		treeDipho_.passHoe2 = passHoe2;	
-		treeDipho_.passTightCHiso1 = passTightCHiso1;
-		treeDipho_.passTightCHiso2 = passTightCHiso2;
-		treeDipho_.passTightNHiso1 = passTightNHiso1;
-		treeDipho_.passTightNHiso2 = passTightNHiso2;
-		treeDipho_.passTightPHiso1 = passTightPHiso1;
-		treeDipho_.passTightPHiso2 = passTightPHiso2;
-		treeDipho_.passTightSieie1 = passTightSieie1;
-		treeDipho_.passTightSieie2 = passTightSieie2;
-		treeDipho_.passTightHoe1 = passTightHoe1;
-		treeDipho_.passTightHoe2 = passTightHoe2;	
-		treeDipho_.passLooseCHiso1 = passLooseCHiso1;
-		treeDipho_.passLooseCHiso2 = passLooseCHiso2;
-		treeDipho_.passLooseNHiso1 = passLooseNHiso1;
-		treeDipho_.passLooseNHiso2 = passLooseNHiso2;
-		treeDipho_.passLoosePHiso1 = passLoosePHiso1;
-		treeDipho_.passLoosePHiso2 = passLoosePHiso2;
-		treeDipho_.passLooseSieie1 = passLooseSieie1;
-		treeDipho_.passLooseSieie2 = passLooseSieie2;
-		treeDipho_.passLooseHoe1 = passLooseHoe1;
-		treeDipho_.passLooseHoe2 = passLooseHoe2;	
-		treeDipho_.nEle   = nEle;
-		treeDipho_.nMuons = nMuons;
-		treeDipho_.nJets  = nJets;
-		treeDipho_.nLooseBjets  = nLooseBjets;
-		treeDipho_.nMediumBjets = nMediumBjets;
-		treeDipho_.vhtruth = vhtruth;
-		treeDipho_.metF_GV = metF_GV;
-		treeDipho_.metF_HBHENoise = metF_HBHENoise;
-		treeDipho_.metF_HBHENoiseIso = metF_HBHENoiseIso;
-		treeDipho_.metF_CSC = metF_CSC;
-		treeDipho_.metF_eeBadSC = metF_eeBadSC;
-		treeDipho_.massCorrSmear = massCorrSmear;
-		treeDipho_.massCorrSmearUp = massCorrSmearUp;
-		treeDipho_.massCorrSmearDown = massCorrSmearDown;
-		treeDipho_.massCorrScale = massCorrScale;
-		treeDipho_.massCorrScaleUp = massCorrScaleUp;
-		treeDipho_.massCorrScaleDown = massCorrScaleDown;
-		treeDipho_.massRaw = massRaw;
-		treeDipho_.genZ	= genZ;
-		treeDipho_.ptZ = ptZ;
-		treeDipho_.etaZ = etaZ;
-		treeDipho_.phiZ = phiZ;
-	
-		// Filling the trees
-		DiPhotonTree->Fill();
-		
-	      } // candIndex>-999
-	    } // mass dipho
-	  } // vtx dipho
-	} // kin scaling 
-      } // kine
-      } // elveto
-    } // selected
-  } // preselected  
-  }// at least one reco
+          	//met correction type 1+2
+          	t1p2pfmet = theMET->corPt(pat::MET::Type1XY);
+
+          	//uncorrected met
+          	pfmet = theMET->uncorPt();
+          	pfmetPhi = theMET->uncorPhi();
+          	pfmetSumEt = theMET->uncorSumEt();
+          	calomet = theMET->caloMETPt();
+          	calometPhi = theMET->caloMETPhi();
+          	calometSumEt = theMET->caloMETSumEt();
+
+          	
+          	//-------> diphoton system properties 
+          	ptgg = candDiphoPtr->pt();
+          	massRaw  = candDiphoPtr->mass();
+
+          	//-------> individual photon properties
+          	sceta1    = (candDiphoPtr->leadingPhoton()->superCluster())->eta();
+          	r91	  = candDiphoPtr->leadingPhoton()->full5x5_r9();
+          	ptUncorr1       = candDiphoPtr->leadingPhoton()->et();
+          	pt1     = getPtCorrected(ptUncorr1, sceta1, r91, run, sampleID);
+          	ptOverM1  = pt1/massRaw;
+          	eta1      = candDiphoPtr->leadingPhoton()->eta();
+          	phi1      = candDiphoPtr->leadingPhoton()->phi();
+          	sieie1	  = candDiphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
+          	hoe1      = candDiphoPtr->leadingPhoton()->hadTowOverEm();
+          	scRawEne1 = candDiphoPtr->leadingPhoton()->superCluster()->rawEnergy();
+          	chiso1    = TMath::Max(candDiphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
+          	neuiso1   = TMath::Max(candDiphoPtr->leadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
+          	phoiso1   = TMath::Max(candDiphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
+
+          	eleveto1  = 0;
+          	if (candDiphoPtr->leadingPhoton()->passElectronVeto()) eleveto1 = 1;
+          	sceta2    = (candDiphoPtr->subLeadingPhoton()->superCluster())->eta();
+          	r92	  = candDiphoPtr->subLeadingPhoton()->full5x5_r9();
+          	ptUncorr2       = candDiphoPtr->subLeadingPhoton()->et();
+          	pt2     = getPtCorrected(ptUncorr2, sceta2, r92, run, sampleID);
+          	ptOverM2  = pt2/massRaw;
+          	eta2      = candDiphoPtr->subLeadingPhoton()->eta();
+          	phi2      = candDiphoPtr->subLeadingPhoton()->phi();
+          	sieie2	  = candDiphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
+          	hoe2      = candDiphoPtr->subLeadingPhoton()->hadTowOverEm();
+          	scRawEne2 = candDiphoPtr->subLeadingPhoton()->superCluster()->rawEnergy();
+          	chiso2    = TMath::Max(candDiphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
+          	neuiso2   = TMath::Max(candDiphoPtr->subLeadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);      	       
+          	phoiso2   = TMath::Max(candDiphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
+          
+          	eleveto2  = 0;
+          	if (candDiphoPtr->subLeadingPhoton()->passElectronVeto()) eleveto2 = 1;
+          
+          	//-------> photon selection (should be on, may be useful for extra studies
+          	presel1 = isGammaPresel( sceta1, pt1, r91, chiso1, hoe1 ); 
+          	presel2 = isGammaPresel( sceta2, pt2, r92, chiso2, hoe2 ); 
+          
+          	
+          	// correct mass for smearing and scaling
+          	float leadSmearing	  = getSmearingValue( sceta1, r91, 0 );
+          	float subleadSmearing	  = getSmearingValue( sceta2, r92, 0 );
+          	// smear up and down for systematics
+          	float leadSmearingUp	  = getSmearingValue( sceta1, r91, 1 );
+          	float subleadSmearingUp	  = getSmearingValue( sceta2, r92, 1 );
+          	float leadSmearingDown	  = getSmearingValue( sceta1, r91, -1 );
+          	float subleadSmearingDown = getSmearingValue( sceta2, r92, -1 );
+
+
+          	float gaussMean		= 1.0;
+                	
+          	TRandom Rand1(event);
+          	float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
+          	float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
+          	float Smear1Down	= Rand1.Gaus(gaussMean,leadSmearingDown);
+
+          	TRandom Rand2(event+83941);
+          	float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
+          	float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
+          	float Smear2Down	= Rand2.Gaus(gaussMean,subleadSmearingDown);
+
+          	massCorrSmear		= massRaw*sqrt(Smear1*Smear2);
+          	massCorrSmearUp	        = massRaw*sqrt(Smear1Up*Smear2Up);
+          	massCorrSmearDown	= massRaw*sqrt(Smear1Down*Smear2Down);
+
+          	// scaling of Data
+          	float leadScaling	= getScalingValue(sampleID, sceta1, r91, run, 0);
+          	float subleadScaling	= getScalingValue(sampleID, sceta2, r92, run, 0);
+
+          	// scale up and down for systematics
+          	float leadScalingUp	= getScalingValue(sampleID, sceta1, r91 ,run, 1);
+          	float subleadScalingUp	= getScalingValue(sampleID, sceta2, r92 ,run, 1);
+
+          	float leadScalingDown	= getScalingValue(sampleID, sceta1, r91 ,run, -1);
+          	float subleadScalingDown= getScalingValue(sampleID, sceta2, r92 ,run, -1);
+
+          	float Scaling		= leadScaling*subleadScaling;
+          	float ScalingUp		= leadScalingUp*subleadScalingUp;
+          	float ScalingDown	= leadScalingDown*subleadScalingDown;
+
+          	massCorrScale		= massRaw*sqrt(Scaling);
+          	massCorrScaleUp		= massRaw*sqrt(ScalingUp);
+          	massCorrScaleDown	= massRaw*sqrt(ScalingDown);
+
+          	// final mgg (has Smearing or Scaling applied)
+          	if (sampleID>0 && sampleID<10000){
+          	  mgg = massCorrSmear;	  // smear mass for MC
+          	  }
+                  else mgg = massCorrScale; // scale mass for Data
+          	
+          	eff_end++;	  
+          	
+          
+          	//std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
+                  //-------> pass each photon ID cut separately
+          	// medium working point selection
+          	passSieie1 = passSieieCuts( sceta1, sieie1);
+          	passSieie2 = passSieieCuts( sceta2, sieie2);
+                  passCHiso1 = passCHisoCuts( sceta1, chiso1, pt1);
+                  passCHiso2 = passCHisoCuts( sceta2, chiso2, pt2);
+          	passNHiso1 = passNHisoCuts( sceta1, neuiso1, pt1);
+          	passNHiso2 = passNHisoCuts( sceta2, neuiso2, pt2);
+          	passPHiso1 = passPHisoCuts( sceta1, phoiso1, pt1);
+          	passPHiso2 = passPHisoCuts( sceta2, phoiso2, pt2);
+          	passHoe1   = passHoeCuts( sceta1, hoe1);
+          	passHoe2   = passHoeCuts( sceta2, hoe2);
+
+          	// tight working point selection
+          	passTightSieie1 = passTightSieieCuts( sceta1, sieie1);
+          	passTightSieie2 = passTightSieieCuts( sceta2, sieie2);
+                  passTightCHiso1 = passTightCHisoCuts( sceta1, chiso1, pt1);
+                  passTightCHiso2 = passTightCHisoCuts( sceta2, chiso2, pt2);
+          	passTightNHiso1 = passTightNHisoCuts( sceta1, neuiso1, pt1);
+          	passTightNHiso2 = passTightNHisoCuts( sceta2, neuiso2, pt2);
+          	passTightPHiso1 = passTightPHisoCuts( sceta1, phoiso1, pt1);
+          	passTightPHiso2 = passTightPHisoCuts( sceta2, phoiso2, pt2);
+          	passTightHoe1   = passTightHoeCuts( sceta1, hoe1);
+          	passTightHoe2   = passTightHoeCuts( sceta2, hoe2);
+
+          	// loose working point selection
+          	passLooseSieie1 = passLooseSieieCuts( sceta1, sieie1);
+          	passLooseSieie2 = passLooseSieieCuts( sceta2, sieie2);
+                  passLooseCHiso1 = passLooseCHisoCuts( sceta1, chiso1, pt1);
+                  passLooseCHiso2 = passLooseCHisoCuts( sceta2, chiso2, pt2);
+          	passLooseNHiso1 = passLooseNHisoCuts( sceta1, neuiso1, pt1);
+          	passLooseNHiso2 = passLooseNHisoCuts( sceta2, neuiso2, pt2);
+          	passLoosePHiso1 = passLoosePHisoCuts( sceta1, phoiso1, pt1);
+          	passLoosePHiso2 = passLoosePHisoCuts( sceta2, phoiso2, pt2);
+          	passLooseHoe1   = passLooseHoeCuts( sceta1, hoe1);
+          	passLooseHoe2   = passLooseHoeCuts( sceta2, hoe2);
+
+          	//-------> pass all photon ID cuts above + electronVeto
+          	sel1 = testPhotonIsolation( passSieie1, passCHiso1, passNHiso1, passPHiso1, passHoe1, eleveto1 );
+          	sel2 = testPhotonIsolation( passSieie2, passCHiso2, passNHiso2, passPHiso2, passHoe2, eleveto2 );
+          	tightsel1 = testPhotonIsolation( passTightSieie1, passTightCHiso1, passTightNHiso1, passTightPHiso1, passTightHoe1, eleveto1 );
+          	tightsel2 = testPhotonIsolation( passTightSieie2, passTightCHiso2, passTightNHiso2, passTightPHiso2, passTightHoe2, eleveto2 );
+          	loosesel1 = testPhotonIsolation( passLooseSieie1, passLooseCHiso1, passLooseNHiso1, passLoosePHiso1, passLooseHoe1, eleveto1 );
+          	loosesel2 = testPhotonIsolation( passLooseSieie2, passLooseCHiso2, passLooseNHiso2, passLoosePHiso2, passLooseHoe2, eleveto2 );
+
+          	//-------> event class
+          	float maxEta = sceta1;
+          	if (fabs(sceta2)>fabs(sceta1)) maxEta = sceta2;
+          	
+          	float minR9 = r92;
+          	if ( r91<r92 ) minR9 = r91;
+          	
+          	eventClass = -1;
+          	if (fabs(maxEta)<1.5 && minR9>0.94) eventClass = 0;
+          	else if (fabs(maxEta)<1.5 && minR9<0.94) eventClass = 1;
+          	else if (fabs(maxEta)>1.5 && minR9>0.94) eventClass = 2;
+          	else if (fabs(maxEta)>1.5 && minR9<0.94) eventClass = 3;
+
+          	//-------> vtx info
+          	vtxIndex = candDiphoPtr->vertexIndex();
+          	vtxX= candDiphoPtr->vtx()->x();
+          	vtxY= candDiphoPtr->vtx()->y();
+          	vtxZ= candDiphoPtr->vtx()->z();
+          	
+          	//-------> generated vtx info
+          	genVtxX = -999.;
+          	genVtxY = -999.;
+          	genVtxZ = -999.;
+          	higgsVtxX  = -999.;
+          	higgsVtxY  = -999.;
+          	higgsVtxZ  = -999.;
+          	if (sampleID>0 && sampleID<10000) {     // MC
+          	  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
+          	    
+          	    if( genParticles->ptrAt( genLoop )->pdgId() != 2212 || genParticles->ptrAt( genLoop )->vertex().z() != 0. ) { // pdg1d=2212 is proton vtx
+          	      genVtxX = genParticles->ptrAt( genLoop )->vertex().x();
+          	      genVtxY = genParticles->ptrAt( genLoop )->vertex().y();
+          	      genVtxZ = genParticles->ptrAt( genLoop )->vertex().z();
+          	      break;
+          	    }
+          	  }
+          	}
+          	if (sampleID>0 && sampleID<10000) {     // MC
+          	  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
+          	    if( genParticles->ptrAt( genLoop )->pdgId() == 25 || genParticles->ptrAt( genLoop )->pdgId()==22 ){ // Higgs or Photon 
+          	      higgsVtxX = genParticles->ptrAt( genLoop )->vertex().x();// Margaret added Higgs vtx
+          	      higgsVtxY = genParticles->ptrAt( genLoop )->vertex().y();// Margaret added Higgs vtx
+          	      higgsVtxZ = genParticles->ptrAt( genLoop )->vertex().z();// Margaret added Higgs vtx
+          	      break;
+          	    }
+          	  }
+          	}
+                	
+          	//-------> photons, MC truth match
+          	genmatch1 = -999;
+          	genmatch2 = -999;
+          	geniso1   = -999.;
+          	geniso2   = -999.;
+          	if (sampleID>0 && sampleID<10000) {   
+
+          	  const auto & genPhotons = *genPhotonsHandle;
+          	  
+          	  if (candDiphoPtr->leadingPhoton()->hasMatchedGenPhoton()) {
+          	    genmatch1 = (candDiphoPtr->leadingPhoton()->genMatchType() == Photon::kPrompt); 
+          	    for (unsigned int j = 0 ; j < genPhotons.size() ; j++) {   
+          	      auto igen = genPhotons[j].ptr();
+          	      if ( igen->status() != 1 || igen->pdgId() != 22 ) continue; 
+          	      if ( fabs(igen->eta()-candDiphoPtr->leadingPhoton()->matchedGenPhoton()->eta())<0.001 && fabs(igen->phi()-candDiphoPtr->leadingPhoton()->matchedGenPhoton()->phi())<0.001 ) {
+          		auto & extra = genPhotons[j];
+          		geniso1 = extra.genIso();
+          		break;
+          	      }
+          	    }
+          	  }
+          	  
+          	  if (candDiphoPtr->subLeadingPhoton()->hasMatchedGenPhoton()) {
+          	    genmatch2 = (candDiphoPtr->subLeadingPhoton()->genMatchType() == Photon::kPrompt); 
+          	    for (unsigned int j = 0 ; j < genPhotons.size() ; j++) {   
+          	      auto igen = genPhotons[j].ptr();
+          	      if ( igen->status() != 1 || igen->pdgId() != 22 ) continue; 
+          	      if ( fabs(igen->eta()-candDiphoPtr->subLeadingPhoton()->matchedGenPhoton()->eta())<0.001 && fabs(igen->phi()-candDiphoPtr->subLeadingPhoton()->matchedGenPhoton()->phi())<0.001 ) {
+          		auto & extra = genPhotons[j];
+          		geniso2 = extra.genIso();
+          		break;
+          	      }
+          	    }
+          	  }
+          	}
+          	
+          
+
+          	// chiaraaaaa
+          	// --> only for VH: check the mc truth for Higgs studies
+          	vhtruth = -1;
+          	if (sampleID==11) { //this is VH
+          	  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
+          	    if (genParticles->ptrAt( genLoop )->mother(0)) {
+          	      int mothid = fabs(genParticles->ptrAt( genLoop )->mother(0)->pdgId());
+          	      if (mothid==23) {
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())<=6 )  { vhtruth = 0; break; }
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==11 ) { vhtruth = 1; break; }
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==13 ) { vhtruth = 2; break; }
+          	      }
+          	      if (mothid==24) {
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())<=6 )  { vhtruth = 3; break; }
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==11 ) { vhtruth = 4; break; }
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==13 ) { vhtruth = 5; break; }
+          	      } 
+          	      if (mothid==23 || mothid==24) {
+          		if ( fabs(genParticles->ptrAt( genLoop )->pdgId())==15 ) { vhtruth = 6; break; }
+          	      }
+          	    }
+          	  }
+          	}
+
+          	// Margaret added for Z'->ZH comparisons with SM ZH
+          	genZ = -1;
+          	ptZ  = -999.;
+          	etaZ = -999.;
+          	phiZ = -999.;
+          	if (sampleID==11 || sampleID==20){ //VH or ZpZH
+          	  for (unsigned int genLoop = 0; genLoop < genParticles->size(); genLoop++){
+          	    int thePdgId = fabs(genParticles->ptrAt( genLoop )->pdgId()); 
+          	    if (thePdgId!=23) continue;// if it is not a Z boson
+          	    genZ = 1;
+          	    ptZ = genParticles->ptrAt( genLoop )->pt();
+          	    etaZ = genParticles->ptrAt( genLoop )->eta();
+          	    phiZ = genParticles->ptrAt( genLoop )->phi();
+          	  }
+          	}
+          	//--------> gen level mgg for signal samples
+          	genmgg = -999.;
+          	if (sampleID>99 && sampleID<10000) {  // signal only 
+
+          	  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
+          	    
+          	    genmgg = -1999.;
+
+          	    if ( genParticles->ptrAt( genLoop )->pdgId()==5100039) {  // graviton
+
+          	      if (genParticles->ptrAt( genLoop )->numberOfDaughters()!=2) {
+          		genmgg = -2999.;
+          		break;
+          	      }
+
+          	      int statusd1 = genParticles->ptrAt( genLoop )->daughter(0)->status();
+          	      int statusd2 = genParticles->ptrAt( genLoop )->daughter(1)->status();
+          	      int pdgidd1  = genParticles->ptrAt( genLoop )->daughter(0)->pdgId();
+          	      int pdgidd2  = genParticles->ptrAt( genLoop )->daughter(1)->pdgId();
+          	      if (statusd1!=1 || statusd2!=1 || pdgidd1!=22 || pdgidd2!=22) { 
+          		genmgg = -3999.;
+          		break;
+          	      }
+
+          	      float ptd1  = genParticles->ptrAt( genLoop )->daughter(0)->pt();
+          	      float ptd2  = genParticles->ptrAt( genLoop )->daughter(1)->pt();
+          	      float etad1 = genParticles->ptrAt( genLoop )->daughter(0)->eta();
+          	      float etad2 = genParticles->ptrAt( genLoop )->daughter(1)->eta();
+          	      float phid1 = genParticles->ptrAt( genLoop )->daughter(0)->phi();
+          	      float phid2 = genParticles->ptrAt( genLoop )->daughter(1)->phi();
+          	      
+          	      TLorentzVector *myGenD1 = new TLorentzVector(0,0,0,0);
+          	      TLorentzVector *myGenD2 = new TLorentzVector(0,0,0,0);
+          	      myGenD1->SetPtEtaPhiM(ptd1, etad1, phid1, 0.);
+          	      myGenD2->SetPtEtaPhiM(ptd2, etad2, phid2, 0.);
+          	      genmgg = (*myGenD1+*myGenD2).M();
+
+          	      break;
+          	    }
+          	  }
+          	}
+          	
+          	// leptons and jets
+          	nEle   = 0;
+          	nMuons = 0;
+          	nJets  = 0;     
+          	nLooseBjets  = 0;   
+          	nMediumBjets = 0;  
+          	/*	
+          	// Muons =>
+          	// 0.25 suggested by muon pog for loose isolation
+          	// 0.3  (distance from the photons) => seems reasonable to me. 0.5 was used in globe
+          	// pT>20
+          	vector<Ptr<flashgg::Muon> > goodMuons = 
+          	  selectMuons( theMuons->ptrs(), candDiphoPtr, pirmaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
+          	nMuons = goodMuons.size();
+
+          	// Electrons =>
+          	// pT>20 (maybe can be put higher?)
+          	// 0.3 (distance from the photons) => seems reasonable to me
+          	std::vector<edm::Ptr<Electron> > goodElectrons = 
+          	  selectMediumElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
+          	nEle = goodElectrons.size();
+
+          	// Jets     
+          	unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex();  
+          	for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
+          	  
+          	  edm::Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
+
+          	  // jet selection: kinematics and id - hardcoded
+          	  if( fabs( thejet->eta() ) > 2.4 ) continue;     // chiara: we only consider central jets 
+          	  if( thejet->pt() < 30. ) continue;  
+          	  if( !thejet->passesPuJetId( candDiphoPtr ) ) continue;   
+          	  
+          	  // far from the photons => 0.3 seems reasonable to me   
+          	  float dRPhoLeadJet    = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->leadingPhoton()->superCluster()->eta(), candDiphoPtr->leadingPhoton()->superCluster()->phi() ) ;
+          	  float dRPhoSubLeadJet = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->subLeadingPhoton()->superCluster()->eta(), candDiphoPtr->subLeadingPhoton()->superCluster()->phi() );
+          	  if( dRPhoLeadJet < 0.3 || dRPhoSubLeadJet < 0.3 ) continue;
+
+          	  // close to muons?
+          	  float matchMu = false;
+          	  for( unsigned int muonIndex = 0; muonIndex < goodMuons.size(); muonIndex++ ) {  
+          	    Ptr<flashgg::Muon> muon = goodMuons[muonIndex];   
+          	    float dRJetMuon = deltaR( thejet->eta(), thejet->phi(), muon->eta(), muon->phi() ) ; 
+          	    if (dRJetMuon < 0.3 ) matchMu = true;   
+          	  }
+          	  
+          	  // close to electrons?
+          	  float matchEle = false;
+          	  for( unsigned int ElectronIndex = 0; ElectronIndex < goodElectrons.size(); ElectronIndex++ ) {   
+          	    Ptr<Electron> Electron = goodElectrons[ElectronIndex];  
+          	    float dRJetElectron = deltaR( thejet->eta(), thejet->phi(), Electron->eta(), Electron->phi() ) ;  
+          	    if( dRJetElectron < 0.3 ) matchEle = true;  
+          	  }
+          	  
+          	  // far from possible muons and electrons       
+          	  if (matchMu || matchEle) continue;
+
+          	  nJets++;     
+          	  float bDiscriminatorValue = thejet->bDiscriminator( bTag_ );    
+          	  if( bDiscriminatorValue > 0.244 ) nLooseBjets++;        // hardcoded
+          	  if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded
+          	  
+          	} // loop over jets
+          	*/
+          	// Variables for the tree
+          	treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
+          	treeDipho_.hltPhoton36Photon22Mass15=hltPhoton36Photon22Mass15;
+          	treeDipho_.hltPhoton42Photon25Mass15=hltPhoton42Photon25Mass15;
+          	treeDipho_.hltDiphoton30Mass95=hltDiphoton30Mass95;
+    		treeDipho_.hltDiphoton30Mass70=hltDiphoton30Mass70;
+    		treeDipho_.hltDiphoton30Mass55=hltDiphoton30Mass55;
+    		treeDipho_.hltDiphoton30Mass55PV=hltDiphoton30Mass55PV;
+    		treeDipho_.hltDiphoton30Mass55EB=hltDiphoton30Mass55EB;
+          	treeDipho_.run = run;
+          	treeDipho_.event = event;
+          	treeDipho_.lumi = lumi;
+          	treeDipho_.nvtx = nvtx;
+          	treeDipho_.rho = rho;
+          	treeDipho_.sampleID = sampleID;  
+          	treeDipho_.totXsec = totXsec;  
+          	treeDipho_.pu_weight = pu_weight;
+          	treeDipho_.pu_n = pu_n;
+          	treeDipho_.sumDataset = sumDataset;
+          	treeDipho_.perEveW = perEveW;
+          	treeDipho_.pfmet = pfmet;
+          	treeDipho_.pfmet = pfmetPhi;
+          	treeDipho_.pfmet = pfmetSumEt;
+          	treeDipho_.t1pfmet = t1pfmet;
+          	treeDipho_.t1p2pfmet = t1p2pfmet;
+          	treeDipho_.t1pfmetJetEnUp          = t1pfmetJetEnUp;           
+          	treeDipho_.t1pfmetJetEnDown        = t1pfmetJetEnDown        ;
+          	treeDipho_.t1pfmetJetResUp         = t1pfmetJetResUp         ;
+          	treeDipho_.t1pfmetJetResDown       = t1pfmetJetResDown       ;
+          	treeDipho_.t1pfmetMuonEnUp         = t1pfmetMuonEnUp         ;
+          	treeDipho_.t1pfmetMuonEnDown         = t1pfmetMuonEnDown         ;
+          	treeDipho_.t1pfmetElectronEnUp   = t1pfmetElectronEnUp   ;
+          	treeDipho_.t1pfmetElectronEnDown   = t1pfmetElectronEnDown   ;
+          	treeDipho_.t1pfmetTauEnUp        = t1pfmetTauEnUp        ;
+          	treeDipho_.t1pfmetTauEnDown        = t1pfmetTauEnDown        ;
+          	treeDipho_.t1pfmetPhotonEnUp     = t1pfmetPhotonEnUp     ;
+          	treeDipho_.t1pfmetPhotonEnDown     = t1pfmetPhotonEnDown     ;
+          	treeDipho_.t1pfmetUnclusteredEnUp= t1pfmetUnclusteredEnUp;
+          	treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
+
+
+
+          	treeDipho_.t1pfmetPhi = t1pfmetPhi;
+          	treeDipho_.t1pfmetSumEt = t1pfmetSumEt;
+          	treeDipho_.calomet = calomet;
+          	treeDipho_.calometPhi = calometPhi;
+          	treeDipho_.calometSumEt = calometSumEt;
+          	treeDipho_.ptgg = ptgg;
+          	treeDipho_.mgg = mgg;
+          	treeDipho_.eventClass = eventClass;
+          	treeDipho_.pt1 = pt1;
+          	treeDipho_.ptUncorr1 = ptUncorr1;
+          	treeDipho_.ptOverM1 = ptOverM1;
+          	treeDipho_.eta1 = eta1;
+          	treeDipho_.phi1 = phi1;
+          	treeDipho_.sceta1 = sceta1;
+          	treeDipho_.r91 = r91;
+          	treeDipho_.sieie1 = sieie1;
+          	treeDipho_.hoe1 = hoe1; 
+          	treeDipho_.scRawEne1 = scRawEne1;
+          	treeDipho_.chiso1 = chiso1; 
+          	treeDipho_.phoiso1 = phoiso1; 
+          	treeDipho_.neuiso1 = neuiso1;
+          	treeDipho_.eleveto1 = eleveto1;
+          	treeDipho_.pt2 = pt2;
+          	treeDipho_.ptUncorr2 = ptUncorr2;
+          	treeDipho_.ptOverM2 = ptOverM2;
+          	treeDipho_.eta2 = eta2;
+          	treeDipho_.phi2 = phi2;
+          	treeDipho_.sceta2 = sceta2;
+          	treeDipho_.r92 = r92;
+          	treeDipho_.sieie2 = sieie2;
+          	treeDipho_.hoe2 = hoe2; 
+          	treeDipho_.scRawEne2 = scRawEne2;
+          	treeDipho_.chiso2 = chiso2; 
+          	treeDipho_.phoiso2 = phoiso2; 
+          	treeDipho_.neuiso2 = neuiso2;
+          	treeDipho_.eleveto2 = eleveto2;
+          	treeDipho_.presel1 = presel1;
+          	treeDipho_.presel2 = presel2;
+          	treeDipho_.sel1 = sel1;
+          	treeDipho_.sel2 = sel2;
+          	treeDipho_.tightsel1 = tightsel1;
+          	treeDipho_.tightsel2 = tightsel2;
+          	treeDipho_.loosesel1 = loosesel1;
+          	treeDipho_.loosesel2 = loosesel2;
+          	treeDipho_.vtxIndex = vtxIndex;
+          	treeDipho_.vtxX = vtxX;
+          	treeDipho_.vtxY = vtxY;
+          	treeDipho_.vtxZ = vtxZ;
+          	treeDipho_.genmatch1 = genmatch1; 
+          	treeDipho_.genmatch2 = genmatch2; 
+          	treeDipho_.genmgg  = genmgg;        // -999: not enough gen level gamma; -1999: strange association with reco
+          	treeDipho_.geniso1 = geniso1; 
+          	treeDipho_.geniso2 = geniso2; 
+          	treeDipho_.higgsVtxX = higgsVtxX;
+          	treeDipho_.higgsVtxY = higgsVtxY;
+          	treeDipho_.higgsVtxZ = higgsVtxZ;
+          	treeDipho_.genVtxX = genVtxX;
+          	treeDipho_.genVtxY = genVtxY;
+          	treeDipho_.genVtxZ = genVtxZ;
+          	treeDipho_.passCHiso1 = passCHiso1;
+          	treeDipho_.passCHiso2 = passCHiso2;
+          	treeDipho_.passNHiso1 = passNHiso1;
+          	treeDipho_.passNHiso2 = passNHiso2;
+          	treeDipho_.passPHiso1 = passPHiso1;
+          	treeDipho_.passPHiso2 = passPHiso2;
+          	treeDipho_.passSieie1 = passSieie1;
+          	treeDipho_.passSieie2 = passSieie2;
+          	treeDipho_.passHoe1 = passHoe1;
+          	treeDipho_.passHoe2 = passHoe2;	
+          	treeDipho_.passTightCHiso1 = passTightCHiso1;
+          	treeDipho_.passTightCHiso2 = passTightCHiso2;
+          	treeDipho_.passTightNHiso1 = passTightNHiso1;
+          	treeDipho_.passTightNHiso2 = passTightNHiso2;
+          	treeDipho_.passTightPHiso1 = passTightPHiso1;
+          	treeDipho_.passTightPHiso2 = passTightPHiso2;
+          	treeDipho_.passTightSieie1 = passTightSieie1;
+          	treeDipho_.passTightSieie2 = passTightSieie2;
+          	treeDipho_.passTightHoe1 = passTightHoe1;
+          	treeDipho_.passTightHoe2 = passTightHoe2;	
+          	treeDipho_.passLooseCHiso1 = passLooseCHiso1;
+          	treeDipho_.passLooseCHiso2 = passLooseCHiso2;
+          	treeDipho_.passLooseNHiso1 = passLooseNHiso1;
+          	treeDipho_.passLooseNHiso2 = passLooseNHiso2;
+          	treeDipho_.passLoosePHiso1 = passLoosePHiso1;
+          	treeDipho_.passLoosePHiso2 = passLoosePHiso2;
+          	treeDipho_.passLooseSieie1 = passLooseSieie1;
+          	treeDipho_.passLooseSieie2 = passLooseSieie2;
+          	treeDipho_.passLooseHoe1 = passLooseHoe1;
+          	treeDipho_.passLooseHoe2 = passLooseHoe2;	
+          	treeDipho_.nEle   = nEle;
+          	treeDipho_.nMuons = nMuons;
+          	treeDipho_.nJets  = nJets;
+          	treeDipho_.nLooseBjets  = nLooseBjets;
+          	treeDipho_.nMediumBjets = nMediumBjets;
+          	treeDipho_.vhtruth = vhtruth;
+          	treeDipho_.metF_GV = metF_GV;
+          	treeDipho_.metF_HBHENoise = metF_HBHENoise;
+          	treeDipho_.metF_HBHENoiseIso = metF_HBHENoiseIso;
+          	treeDipho_.metF_CSC = metF_CSC;
+          	treeDipho_.metF_eeBadSC = metF_eeBadSC;
+          	treeDipho_.massCorrSmear = massCorrSmear;
+          	treeDipho_.massCorrSmearUp = massCorrSmearUp;
+          	treeDipho_.massCorrSmearDown = massCorrSmearDown;
+          	treeDipho_.massCorrScale = massCorrScale;
+          	treeDipho_.massCorrScaleUp = massCorrScaleUp;
+          	treeDipho_.massCorrScaleDown = massCorrScaleDown;
+          	treeDipho_.massRaw = massRaw;
+          	treeDipho_.genZ	= genZ;
+          	treeDipho_.ptZ = ptZ;
+          	treeDipho_.etaZ = etaZ;
+          	treeDipho_.phiZ = phiZ;
+          
+          	// Filling the trees
+          	DiPhotonTree->Fill();
+          	
+                } // candIndex>-999
+              } // mass dipho
+            } // vtx dipho
+          } // kin scaling 
+        } // kine
+        } // elveto
+      } // selected
+    } // preselected  
+  } // at least one reco
+  } // passes hlt 
 
   // delete
   //delete lazyToolnoZS;
