@@ -5,16 +5,18 @@
 // found on file: diPhotons.root
 //////////////////////////////////////////////////////////
 
-#ifndef metcorr2016_h
-#define metcorr2016_h
+#ifndef METCorr2016_h
+#define METCorr2016_h
 
-#include <TROOT.h>
-#include <TChain.h>
-#include <TFile.h>
+#include "Style.hh"
+#include "TROOT.h"
+#include "TChain.h"
+#include "TFile.h"
+#include "TLorentzVector.h"
 
 // Header file for the classes stored in the TTree if any.
 
-class metcorr2016 {
+class METCorr2016 {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
@@ -325,8 +327,8 @@ public :
    TBranch        *b_b_etaZ;   //!
    TBranch        *b_b_phiZ;   //!
 
-   metcorr2016(TTree *tree=0);
-   virtual ~metcorr2016();
+   METCorr2016(TTree *tree=0, TString inDir="", TString outDir="", TString inSpecies="");
+   virtual ~METCorr2016();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
@@ -334,40 +336,52 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+   private:
+   TString	name;
+   TString	species;
+   TString	inFile;
+
 };
 
 #endif
 
-#ifdef metcorr2016_cxx
-metcorr2016::metcorr2016(TTree *tree) : fChain(0) 
+#ifdef METCorr2016_cxx
+ METCorr2016::METCorr2016(TTree *tree, TString inDir, TString outDir, TString inSpecies) : fChain(0) 
 {
+
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
+  name = inDir; 
+  species = inSpecies; 
+  inFile = Form("%s%s.root",name.Data(),species.Data());
+
   if (tree == 0) {
     //TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("2HDM_mZP600.root");
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("DoubleEG.root");
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(Form("%s.root",species.Data()));
     if (!f || !f->IsOpen()) {
       //f = new TFile("2HDM_mZP600.root");
-      f = new TFile("DoubleEG.root");
+      f = new TFile(inFile);
     }
     f->GetObject("DiPhotonTree",tree);
   }
   Init(tree);
 }
 
-metcorr2016::~metcorr2016()
+METCorr2016::~METCorr2016()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
+   std::cout << "Finished calculating MET correction" << std::endl;
 }
 
-Int_t metcorr2016::GetEntry(Long64_t entry)
+Int_t METCorr2016::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t metcorr2016::LoadTree(Long64_t entry)
+Long64_t METCorr2016::LoadTree(Long64_t entry)
 {
 // Set the environment to read one entry
    if (!fChain) return -5;
@@ -380,17 +394,21 @@ Long64_t metcorr2016::LoadTree(Long64_t entry)
    return centry;
 }
 
-void metcorr2016::Init(TTree *tree)
+void METCorr2016::Init(TTree *tree)
 {
    // The Init() function is called when the selector needs to initialize
-   // a new tree or chain. Typically here the branch addresses and branch
+   // a new tree or chain. Typically here the  addresses and branch
    // pointers of the tree will be set.
    // It is normally not necessary to make changes to the generated
    // code, but the routine can be extended by the user if needed.
    // Init() will be called many times when running on PROOF
    // (once per file to be processed).
 
-   // Set branch addresses and branch pointers
+   // Set  addresses and branch pointers
+
+   std::cout << "tree is " << tree << std::endl;
+
+   if (tree->InheritsFrom("TChain")) ((TChain*)tree)->LoadTree(0);
    if (!tree) return;
    fChain = tree;
    fCurrent = -1;
@@ -549,7 +567,7 @@ void metcorr2016::Init(TTree *tree)
    Notify();
 }
 
-Bool_t metcorr2016::Notify()
+Bool_t METCorr2016::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -560,18 +578,18 @@ Bool_t metcorr2016::Notify()
    return kTRUE;
 }
 
-void metcorr2016::Show(Long64_t entry)
+void METCorr2016::Show(Long64_t entry)
 {
 // Print contents of entry.
 // If entry is not specified, print current entry
    if (!fChain) return;
    fChain->Show(entry);
 }
-Int_t metcorr2016::Cut(Long64_t entry)
+Int_t METCorr2016::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    return 1;
 }
-#endif // #ifdef metcorr2016_cxx
+#endif // #ifdef METCorr2016_cxx

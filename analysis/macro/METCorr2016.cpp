@@ -1,5 +1,7 @@
-#define metcorr2016_cxx
-#include "metcorr2016.h"
+#define METCorr2016_cxx
+
+#include "METCorr2016.hh"
+#include "Style.hh"
 #include <TH2.h>
 #include <TF1.h>
 #include <TStyle.h>
@@ -7,7 +9,7 @@
 #include <TProfile.h>
 #include <TLorentzVector.h>
 
-void metcorr2016::Loop()
+void METCorr2016::Loop()
 {
   if (fChain == 0) return;
   
@@ -22,14 +24,14 @@ void metcorr2016::Loop()
   TH1D metphinew("metphinew","",100,-3.14,3.14);
   
   Long64_t nentries = fChain->GetEntriesFast();
-  cout << nentries << endl;
+  std::cout << nentries << std::endl;
 
   Long64_t nbytes = 0, nb = 0;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if (jentry%100000 == 0) cout << "Events " << jentry << "/" << nentries << " processed 1' round" << endl;
+    if (jentry%100000 == 0) std::cout << "Events " << jentry << "/" << nentries << " processed 1' round" << std::endl;
     
     //if(dipho_BDTOutput<-0.2) continue;  // loose presel already there
     if(pt1<33) continue;
@@ -58,7 +60,7 @@ void metcorr2016::Loop()
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
-    if (jentry%100000 == 0) cout << "Events " << jentry << "/" << nentries << " processed 2' round" << endl;
+    if (jentry%100000 == 0) std::cout << "Events " << jentry << "/" << nentries << " processed 2' round" << std::endl;
     
     //if(dipho_BDTOutput<-0.2) continue;
     if(pt1<33) continue;
@@ -93,6 +95,6 @@ void metcorr2016::Loop()
   temp->Close() ;
   temp->Delete();
   
-  cout << "px = t1pfmet*cos(t1pfmetPhi) -(" << px0 << " + " << px1 << " * t1pfmetSumEt)" << endl;
-  cout << "py = t1pfmet*sin(t1pfmetPhi) -(" << py0 << " + " << py1 << " * t1pfmetSumEt)" << endl;
+  std::cout << "px = t1pfmet*cos(t1pfmetPhi) -(" << px0 << " + " << px1 << " * t1pfmetSumEt)" << std::endl;
+  std::cout << "py = t1pfmet*sin(t1pfmetPhi) -(" << py0 << " + " << py1 << " * t1pfmetSumEt)" << std::endl;
 }

@@ -11,10 +11,12 @@
 #include "Combiner.hh"
 #include "Comparer.hh"
 #include "ReweightPU.hh"
+#include "METCorr2016.hh"
 #include "ABCDMethod.hh"
 #include "Style.hh"
 
 #include "TROOT.h"
+#include "TTree.h"
 #include "TStyle.h"
 #include <iostream>
 
@@ -43,9 +45,10 @@ int main(){
   TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_afterSynch_CutBased/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
-  bool doPlots = true;		// make plots for each sample individually
-  bool doComb = true;		// make stack/overlay plots
-  bool doABCD = true;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doMETCorr = true;	// determine the MET correction for MC and data
+  bool doPlots = false;		// make plots for each sample individually
+  bool doComb = false;		// make stack/overlay plots
+  bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
@@ -79,6 +82,31 @@ int main(){
       makePURWfiles = false;
     }
   }
+
+  /////////////////////////////////////////////////////
+  //
+  // MET Correction
+  //
+  // Inputs to METCorr
+  // 1st : input directory of samples
+  // 2nd : output directory
+  // 3rd : name of sample
+  //
+  /////////////////////////////////////////////////////
+  
+  if (doMETCorr){
+
+    std::cout << "Get MET Phi Correction MC" << std::endl;
+    METCorr2016 * metcorrMC = new METCorr2016(0,inDir,outDir,"2HDM_mZP600");
+    metcorrMC->Loop();    
+    delete metcorrMC;
+    
+    std::cout << "Get MET Phi Correction Data" << std::endl;
+    METCorr2016 * metcorrData = new METCorr2016(0,inDir,outDir,"DoubleEG");
+    metcorrData->Loop();    
+    delete metcorrData;    
+  } 
+
 
   /////////////////////////////////////////////////////
   //
