@@ -244,9 +244,20 @@ void Plotter::DoPlots(int prompt){
 
 	  numPassingAll++;
 
-	  Double_t t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
-	  Double_t t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
-	  Double_t t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+	  // t1pfmet phi Correction
+	  Double_t t1pfmetCorrX;
+	  Double_t t1pfmetCorrY;
+	  Double_t t1pfmetCorrE;
+	  if (doMETcorr){
+	    t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
+	    t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+	    t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+          }
+          else{ 
+	    t1pfmetCorrX = 0; 
+	    t1pfmetCorrY = 0; 
+	    t1pfmetCorrE = 0;
+	  } 
 	  TLorentzVector correctedMet;
 	  correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
 	  Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
