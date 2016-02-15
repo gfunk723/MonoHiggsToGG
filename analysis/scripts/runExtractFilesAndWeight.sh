@@ -2,7 +2,27 @@
 #run extractJSONS.py for all samples in file
 
 # FLASHgg version 1_1_0 w/ MET syst for 25ns
-python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/Data/DoubleEG.json		-o DoubleEG		-d lists_25ns_v1_1_0_wMETsys
+#python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/Data/DoubleEG.json	-o DoubleEG		-d lists_25ns_v1_1_0_wMETsys
+
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/GJet_Pt-20to40.json	-o GJet_Pt-20to40	-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/GJet_Pt-40toInf.json	-o GJet_Pt-40toInf	-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/VHToGG_M125.json	-o VH			-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/QCD_Pt-30to40.json	-o QCD_Pt-30to40	-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/QCD_Pt-40toInf.json	-o QCD_Pt-40toInf	-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/QCD_Pt-30toInf.json	-o QCD_Pt-30toInf	-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/DiPhoton.json		-o DiPhoton		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/GluGluHToGG_M-125.json	-o GluGluHToGG		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/DYJetsToLL.json		-o DYJetsToLL		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/ttHJetToGG_M125.json	-o ttHJetToGG		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/VBFHToGG_M-125.json	-o VBFHToGG		-d lists_25ns_v1_1_0_wMETsys
+
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP600.json	-o 2HDM_MZP600		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP800.json	-o 2HDM_MZP800		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP1000.json	-o 2HDM_MZP1000		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP1200.json	-o 2HDM_MZP1200		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP1400.json	-o 2HDM_MZP1400		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP1700.json	-o 2HDM_MZP1700		-d lists_25ns_v1_1_0_wMETsys
+python extractFilesAndWeight.py -i lists_25ns_v1_1_0_wMETsys/MC/2HDM_MZP2500.json	-o 2HDM_MZP2500		-d lists_25ns_v1_1_0_wMETsys
 
 
 
