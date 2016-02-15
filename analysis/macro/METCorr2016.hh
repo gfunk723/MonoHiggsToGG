@@ -327,13 +327,13 @@ public :
    TBranch        *b_b_etaZ;   //!
    TBranch        *b_b_phiZ;   //!
 
-   METCorr2016(TTree *tree=0, TString inDir="", TString outDir="", TString inSpecies="", DblVec & metCorr[2]={1.0,1.0} );
+   METCorr2016(TTree *tree=0, TString inDir="", TString outDir="", TString inSpecies="");
    virtual ~METCorr2016();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop();
+   DblVec  Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 
@@ -347,7 +347,7 @@ public :
 #endif
 
 #ifdef METCorr2016_cxx
- METCorr2016::METCorr2016(TTree *tree, TString inDir, TString outDir, TString inSpecies, DblVec & metCorr) : fChain(0) 
+ METCorr2016::METCorr2016(TTree *tree, TString inDir, TString outDir, TString inSpecies) : fChain(0) 
 {
 
 // if parameter tree is not specified (or zero), connect the file

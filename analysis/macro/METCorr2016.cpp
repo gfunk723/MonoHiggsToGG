@@ -9,9 +9,13 @@
 #include <TProfile.h>
 #include <TLorentzVector.h>
 
-void METCorr2016::Loop()
+DblVec METCorr2016::Loop()
 {
-  if (fChain == 0) return;
+  DblVec metcorr;
+  metcorr.resize(4);
+  for (UInt_t i=0; i<metcorr.size(); i++) metcorr[i]=0.0;
+
+  //if (fChain == 0) return;
   
   TFile *temp=new TFile("metstudy.root", "RECREATE");
   TProfile metx("metx","",100,100,2500);
@@ -97,4 +101,11 @@ void METCorr2016::Loop()
   
   std::cout << "px = t1pfmet*cos(t1pfmetPhi) -(" << px0 << " + " << px1 << " * t1pfmetSumEt)" << std::endl;
   std::cout << "py = t1pfmet*sin(t1pfmetPhi) -(" << py0 << " + " << py1 << " * t1pfmetSumEt)" << std::endl;
+
+  
+  metcorr[0]=px0;
+  metcorr[1]=px1;
+  metcorr[2]=py0;
+  metcorr[3]=py1;
+  return metcorr;
 }

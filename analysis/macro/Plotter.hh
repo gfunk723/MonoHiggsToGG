@@ -40,7 +40,7 @@ typedef TH2DMap::iterator		TH2DMapIter;
 
 class Plotter{
 public:
-  Plotter(const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, const TString type);
+  Plotter(const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, const TString type, Bool_t doMETCorr, const DblVec metcorr);
   ~Plotter();
 
   void DoPlots(int prompt);  
@@ -70,6 +70,9 @@ private:
   TLorentzVector	fLorenzVec1;
   TLorentzVector	fLorenzVec2;
   TLorentzVector	fLorenzVecgg;
+
+  Bool_t		doMETcorr;
+  DblVec		fMETCorr;
 
   DblVec		fPUWeights;
   Double_t 		fLumi;

@@ -3,11 +3,13 @@
 #include "../../../DataFormats/Math/interface/deltaPhi.h"
 #include "mkPlotsLivia/CMS_lumi.C"
 
-Plotter::Plotter( TString inName, TString outName, TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, TString type){
+Plotter::Plotter( TString inName, TString outName, TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, TString type, Bool_t doMETCorr, const DblVec metCorr){
 
   fType = type;  
   isData = Data;
   doBlind = Blind;
+  doMETcorr = doMETCorr;
+  fMETCorr = metCorr;
 
   // Get ROOT file
   name = inName;
@@ -242,6 +244,13 @@ void Plotter::DoPlots(int prompt){
 
 	  numPassingAll++;
 
+	  Double_t t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
+	  Double_t t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+	  Double_t t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+	  TLorentzVector correctedMet;
+	  correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+	  Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
+
           // split events by eta
           EB1 = false;
           EB2 = false;
@@ -327,6 +336,7 @@ void Plotter::DoPlots(int prompt){
               fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
               fTH2DMap["t1pfmet_PU"]->Fill(nvtx,t1pfmet,Weight);
               fTH2DMap["t1pfmet_ptgg"]->Fill(ptgg,t1pfmet,Weight);
+              fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorrE,Weight);
             }
             if (pfmet < 100) fTH1DMap["pfmet"]->Fill(pfmet,Weight);
             if (calomet < 100) fTH1DMap["calomet"]->Fill(calomet,Weight);
@@ -336,6 +346,7 @@ void Plotter::DoPlots(int prompt){
             fTH1DMap["mgg"]->Fill(mgg,Weight);
             fTH1DMap["ptgg"]->Fill(ptgg,Weight);
             fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
+            fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorrE,Weight);
             fTH1DMap["pfmet"]->Fill(pfmet,Weight);
             fTH1DMap["calomet"]->Fill(calomet,Weight);
             fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
@@ -352,6 +363,7 @@ void Plotter::DoPlots(int prompt){
           fTH1DMap["pt1"]->Fill(pt1,Weight);
           fTH1DMap["pt2"]->Fill(pt2,Weight);
           fTH1DMap["t1pfmetphi"]->Fill(t1pfmetPhi,Weight);
+          fTH1DMap["t1pfmetphiCorr"]->Fill(t1pfmetPhiCorr,Weight);
           fTH1DMap["pfmetphi"]->Fill(pfmetphi,Weight);
           fTH1DMap["calometphi"]->Fill(calometphi,Weight);
           fTH1DMap["phi1"]->Fill(phi1,Weight);
@@ -557,6 +569,8 @@ void Plotter::SetUpPlots(){
   fTH1DMap["ptgg"]		= Plotter::MakeTH1DPlot("ptgg","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
   fTH1DMap["t1pfmet"]		= Plotter::MakeTH1DPlot("t1pfmet","",75,0.,900,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetphi"]	= Plotter::MakeTH1DPlot("t1pfmetphi","",20,-4.,4.,"E_{T}^{miss} #phi","");
+  fTH1DMap["t1pfmetCorr"]	= Plotter::MakeTH1DPlot("t1pfmetCorr","",75,0.,900,"E_{T}^{miss} (GeV)",""); 
+  fTH1DMap["t1pfmetphiCorr"]	= Plotter::MakeTH1DPlot("t1pfmetphiCorr","",20,-4.,4.,"E_{T}^{miss} #phi","");
   fTH1DMap["pfmet"]		= Plotter::MakeTH1DPlot("pfmet","",100,0.,1000,"PF MET (GeV)","");
   fTH1DMap["pfmetphi"]		= Plotter::MakeTH1DPlot("pfmetphi","",80,-4.,4.,"PF MET #phi","");
   fTH1DMap["calomet"]		= Plotter::MakeTH1DPlot("calomet","",100,0.,1000,"calo MET (GeV)","");
