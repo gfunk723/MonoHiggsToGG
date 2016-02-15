@@ -91,18 +91,24 @@ int main(){
   // 1st : input directory of samples
   // 2nd : output directory
   // 3rd : name of sample
+  // 4th : metCorr output vector 
   //
   /////////////////////////////////////////////////////
-  
+ 
+  DblVec	metCorr_MC;
+  DblVec	metCorr_Data;
+  metCorr_MC.resize(2);
+  metCorr_Data.resize(2);
+ 
   if (doMETCorr){
 
     std::cout << "Get MET Phi Correction MC" << std::endl;
-    METCorr2016 * metcorrMC = new METCorr2016(0,inDir,outDir,"2HDM_mZP600");
+    METCorr2016 * metcorrMC = new METCorr2016(0,inDir,outDir,"2HDM_mZP600",metCorr_MC);
     metcorrMC->Loop();    
     delete metcorrMC;
     
     std::cout << "Get MET Phi Correction Data" << std::endl;
-    METCorr2016 * metcorrData = new METCorr2016(0,inDir,outDir,"DoubleEG");
+    METCorr2016 * metcorrData = new METCorr2016(0,inDir,outDir,"DoubleEG",metCorr_Data);
     metcorrData->Loop();    
     delete metcorrData;    
   } 
