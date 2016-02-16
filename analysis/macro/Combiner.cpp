@@ -360,24 +360,35 @@ void Combiner::MakeMETEffPlots(){
   fOutFile->cd();
   gStyle->SetOptStat(0);
 
-  for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
-    for (UInt_t mc = 0; mc < fNSig; mc++){
-      if (fInSigTH1DHists[th1d][mc]->Integral() > 0){
-        fInSigTH1DHists[th1d][mc]->Scale(1.0/fInSigTH1DHists[th1d][mc]->Integral());
-      }
-      fInSigTH1DHists[th1d][mc]->SetFillColor(0);
+  fOutSigMETEffTH1DHists.resize(fNSig);
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    fOutSigMETEffTH1DHists[mc].resize(fNMETPlots);
+    for (UInt_t th1d = 0; th1d < (fIndexMET+fNMETPlots); th1d++){
+      //fOutSigMETEffTH1DHists[mc][th1d] = fInSigTH1DHists[th1d][mc]->Clone();
     }
-    for (UInt_t mc = 0; mc < fNBkg; mc++){
-      if (fInBkgTH1DHists[th1d][mc]->Integral() > 0 ){
-        fInBkgTH1DHists[th1d][mc]->Scale(1.0/fInBkgTH1DHists[th1d][mc]->Integral());
-      }
-      fInBkgTH1DHists[th1d][mc]->SetFillColor(0);
-      //fInBkgTH1DHists[th1d][mc]->SetLineColor(fColorMap[fBkgNames[mc]]);
-    }
+  } 
 
-  Double_t maxOverlay = -100;
-  maxOverlay = Combiner::GetMaximum(th1d, false);
-  }
+
+
+  //for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
+  //  for (UInt_t mc = 0; mc < fNSig; mc++){
+  //    fOutSigMETEffTH1DHists[th1d][mc] = fInSigTH1DHists[th1d][mc]->Clone();
+  //    if (fInSigTH1DHists[th1d][mc]->Integral() > 0){
+  //      fInSigTH1DHists[th1d][mc]->Scale(1.0/fInSigTH1DHists[th1d][mc]->Integral());
+  //    }
+  //    fInSigTH1DHists[th1d][mc]->SetFillColor(0);
+  //  }
+  //  for (UInt_t mc = 0; mc < fNBkg; mc++){
+  //    if (fInBkgTH1DHists[th1d][mc]->Integral() > 0 ){
+  //      fInBkgTH1DHists[th1d][mc]->Scale(1.0/fInBkgTH1DHists[th1d][mc]->Integral());
+  //    }
+  //    fInBkgTH1DHists[th1d][mc]->SetFillColor(0);
+  //    //fInBkgTH1DHists[th1d][mc]->SetLineColor(fColorMap[fBkgNames[mc]]);
+  //  }
+
+  //Double_t maxOverlay = -100;
+  //maxOverlay = Combiner::GetMaximum(th1d, false);
+  //}
 
 
   //// start by drawing the sig first

@@ -225,7 +225,7 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
-      if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){
+      if (/*pt1 > 0.65*mgg && pt2 > 0.25*mgg*/ true){
       //if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
@@ -245,6 +245,8 @@ void Plotter::DoPlots(int prompt){
 	  if (doMETcorr){
 	    t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
 	    t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+            //std::cout << "px = t1pfmet*cos(t1pfmetPhi) - (" << fMETCorr[0] << " + " << fMETCorr[1] << "*t1pfmetSumEt)" << std::endl;
+            //std::cout << "py = t1pfmet*sin(t1pfmetPhi) - (" << fMETCorr[2] << " + " << fMETCorr[3] << "*t1pfmetSumEt)" << std::endl;
 	    t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
           }
           else{ 
@@ -255,6 +257,7 @@ void Plotter::DoPlots(int prompt){
 	  TLorentzVector correctedMet;
 	  correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
 	  Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
+	  Double_t t1pfmetCorr = correctedMet.Pt();
 
           // split events by eta
           EB1 = false;
@@ -338,12 +341,14 @@ void Plotter::DoPlots(int prompt){
               fTH2DMap["mgg_PU"]->Fill(nvtx,mgg,Weight);
               fTH2DMap["mgg_ptgg"]->Fill(ptgg,mgg,Weight);
             }
+            //fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
+            //fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
             if (t1pfmet < 100){
               fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
               fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
               fTH2DMap["t1pfmet_PU"]->Fill(nvtx,t1pfmet,Weight);
               fTH2DMap["t1pfmet_ptgg"]->Fill(ptgg,t1pfmet,Weight);
-              fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorrE,Weight);
+              fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorr,Weight);
             }
             if (pfmet < 100) fTH1DMap["pfmet"]->Fill(pfmet,Weight);
             if (calomet < 100) fTH1DMap["calomet"]->Fill(calomet,Weight);
@@ -353,7 +358,7 @@ void Plotter::DoPlots(int prompt){
             fTH1DMap["mgg"]->Fill(mgg,Weight);
             fTH1DMap["ptgg"]->Fill(ptgg,Weight);
             fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
-            fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorrE,Weight);
+            fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorr,Weight);
             fTH1DMap["t1pfmetJetEnUp"]->Fill(t1pfmetJetEnUp,Weight);
             fTH1DMap["t1pfmetJetEnDown"]->Fill(t1pfmetJetEnDown,Weight);
   	    fTH1DMap["t1pfmetJetResUp"]->Fill(t1pfmetJetResUp,Weight);

@@ -92,8 +92,8 @@ private:
   TH1DVecVec	fInBkgTH1DHists;
   TH1DVecVec	fInSigTH1DHists;
 
-  TH1DVec	fOutBkgMETEffTH1DHists;
-  TH1DVec	fOutSigMETEffTH1DHists;
+  TH1DVecVec	fOutBkgMETEffTH1DHists;
+  TH1DVecVec	fOutSigMETEffTH1DHists;
 
   TH1DVec	fOutBkgTH1DHists;
   TH1DVec	fOutSigTH1DHists;

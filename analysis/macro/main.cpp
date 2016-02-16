@@ -41,13 +41,13 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString inDir = "data/25ns_v1-1-0_ReReco_afterSynch_CutBased/"; 		// input directory of the samples
-  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_afterSynch_CutBased/";	// output directory to send results
+  TString inDir = "data/25ns_v1-1-0_ReReco_wMETsys/"; 		// input directory of the samples
+  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wMETsys/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = true;	// determine the MET correction for MC and data
   bool doPlots = true;		// make plots for each sample individually
-  bool doComb = true;		// make stack/overlay plots
+  bool doComb = false;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
@@ -102,7 +102,7 @@ int main(){
   if (doMETCorr){
 
     std::cout << "Get MET Phi Correction MC" << std::endl;
-    METCorr2016 * metcorrMC = new METCorr2016(0,inDir,outDir,"2HDM_mZP600");
+    METCorr2016 * metcorrMC = new METCorr2016(0,inDir,outDir,"DiPhoton");
     metCorrMC = metcorrMC->Loop();    
     delete metcorrMC;
     
