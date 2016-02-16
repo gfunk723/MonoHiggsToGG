@@ -300,7 +300,7 @@ private:
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
   edm::InputTag genInfo_;
   EDGetTokenT<View<reco::GenParticle> > genPartToken_;
-    std::vector<edm::InputTag> inputTagJets_;     
+  std::vector<edm::InputTag> inputTagJets_;     
   EDGetTokenT<View<Electron> > electronToken_;   
   EDGetTokenT<View<flashgg::Muon> > muonToken_;        
 
@@ -386,7 +386,8 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" ) ),   
   electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ) ) ),
   muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ), 
-  METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag", InputTag( "slimmedMETs" ) ) ) ),
+  METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
+  //METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag", InputTag( "slimmedMETs::FLASHggMicroAOD" ) ) ) ),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
   triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) )
 { 
@@ -1078,20 +1079,20 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 
 		//add MET systematic variables Livia
-		t1pfmetJetEnUp           = theMET->shiftedPt(pat::MET::JetEnUp);
-		t1pfmetJetEnDown         = theMET->shiftedPt(pat::MET::JetEnDown);
-		t1pfmetJetResUp          = theMET->shiftedPt(pat::MET::JetResUp);
-		t1pfmetJetResDown        = theMET->shiftedPt(pat::MET::JetResDown);
-		t1pfmetMuonEnUp          = theMET->shiftedPt(pat::MET::MuonEnUp);
-		t1pfmetMuonEnDown          = theMET->shiftedPt(pat::MET::MuonEnDown);
-		t1pfmetElectronEnUp   = theMET->shiftedPt(pat::MET::ElectronEnUp);
-		t1pfmetElectronEnDown    = theMET->shiftedPt(pat::MET::ElectronEnDown);
-		t1pfmetTauEnUp         = theMET->shiftedPt(pat::MET::TauEnUp);
-		t1pfmetTauEnDown         = theMET->shiftedPt(pat::MET::TauEnDown);
-		t1pfmetPhotonEnUp      = theMET->shiftedPt(pat::MET::PhotonEnUp);
-		t1pfmetPhotonEnDown      = theMET->shiftedPt(pat::MET::PhotonEnDown);
-	  	t1pfmetUnclusteredEnUp = theMET->shiftedPt(pat::MET::UnclusteredEnUp);
-		t1pfmetUnclusteredEnDown = theMET->shiftedPt(pat::MET::UnclusteredEnDown);
+		t1pfmetJetEnUp		= theMET->shiftedPt(pat::MET::JetEnUp);
+		t1pfmetJetEnDown	= theMET->shiftedPt(pat::MET::JetEnDown);
+		t1pfmetJetResUp		= theMET->shiftedPt(pat::MET::JetResUp);
+		t1pfmetJetResDown	= theMET->shiftedPt(pat::MET::JetResDown);
+		t1pfmetMuonEnUp		= theMET->shiftedPt(pat::MET::MuonEnUp);
+		t1pfmetMuonEnDown	= theMET->shiftedPt(pat::MET::MuonEnDown);
+		t1pfmetElectronEnUp	= theMET->shiftedPt(pat::MET::ElectronEnUp);
+		t1pfmetElectronEnDown	= theMET->shiftedPt(pat::MET::ElectronEnDown);
+		t1pfmetTauEnUp		= theMET->shiftedPt(pat::MET::TauEnUp);
+		t1pfmetTauEnDown	= theMET->shiftedPt(pat::MET::TauEnDown);
+		t1pfmetPhotonEnUp	= theMET->shiftedPt(pat::MET::PhotonEnUp);
+		t1pfmetPhotonEnDown	= theMET->shiftedPt(pat::MET::PhotonEnDown);
+	  	t1pfmetUnclusteredEnUp	= theMET->shiftedPt(pat::MET::UnclusteredEnUp);
+		t1pfmetUnclusteredEnDown= theMET->shiftedPt(pat::MET::UnclusteredEnDown);
 
 		//met correction type 1+2
 		t1p2pfmet = theMET->corPt(pat::MET::Type1XY);
@@ -1202,7 +1203,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		eff_end++;	  
 		
 	
-		std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
+		//std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
                 //-------> pass each photon ID cut separately
 		// medium working point selection
 		passSieie1 = passSieieCuts( sceta1, sieie1);
@@ -1509,14 +1510,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		treeDipho_.t1pfmetJetResUp         = t1pfmetJetResUp         ;
 		treeDipho_.t1pfmetJetResDown       = t1pfmetJetResDown       ;
 		treeDipho_.t1pfmetMuonEnUp         = t1pfmetMuonEnUp         ;
-		treeDipho_.t1pfmetMuonEnDown         = t1pfmetMuonEnDown         ;
-		treeDipho_.t1pfmetElectronEnUp   = t1pfmetElectronEnUp   ;
+		treeDipho_.t1pfmetMuonEnDown       = t1pfmetMuonEnDown       ;
+		treeDipho_.t1pfmetElectronEnUp     = t1pfmetElectronEnUp     ;
 		treeDipho_.t1pfmetElectronEnDown   = t1pfmetElectronEnDown   ;
-		treeDipho_.t1pfmetTauEnUp        = t1pfmetTauEnUp        ;
+		treeDipho_.t1pfmetTauEnUp          = t1pfmetTauEnUp          ;
 		treeDipho_.t1pfmetTauEnDown        = t1pfmetTauEnDown        ;
-		treeDipho_.t1pfmetPhotonEnUp     = t1pfmetPhotonEnUp     ;
+		treeDipho_.t1pfmetPhotonEnUp       = t1pfmetPhotonEnUp       ;
 		treeDipho_.t1pfmetPhotonEnDown     = t1pfmetPhotonEnDown     ;
-		treeDipho_.t1pfmetUnclusteredEnUp= t1pfmetUnclusteredEnUp;
+		treeDipho_.t1pfmetUnclusteredEnUp  = t1pfmetUnclusteredEnUp  ;
 		treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
 
 
