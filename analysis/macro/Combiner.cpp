@@ -375,7 +375,7 @@ void Combiner::MakeMETEffPlots(){
   fColorMapMETEff["JetUnclEnUp"]	= kGreen;
   fColorMapMETEff["JetUnclEnDown"]	= kGreen;
 
-  // setup plot legend
+  // setup plot legend for signal
   std::vector<TLegend* > fMETEffLegend;
   fMETEffLegend.resize(fNSig);
   for (UInt_t mc = 0; mc < fNSig; mc++){
@@ -386,10 +386,23 @@ void Combiner::MakeMETEffPlots(){
     fMETEffLegend[mc]->SetTextSize(0.03);//0.035
     fMETEffLegend[mc]->SetLineWidth(2);
   }
+  // setup plot legend for background 
+  std::vector<TLegend* > fBkgMETEffLegend;
+  fBkgMETEffLegend.resize(fNBkg);
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    fBkgMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    fBkgMETEffLegend[mc]->SetNColumns(2);
+    fBkgMETEffLegend[mc]->SetBorderSize(4);
+    fBkgMETEffLegend[mc]->SetLineColor(kBlack);
+    fBkgMETEffLegend[mc]->SetTextSize(0.03);//0.035
+    fBkgMETEffLegend[mc]->SetLineWidth(2);
+  }
 
   // copy the plots and normalize them
   fOutSigMETEffTH1DHists.resize(fNMETPlots);
+  fOutBkgMETEffTH1DHists.resize(fNMETPlots);
   for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+    // sig
     fOutSigMETEffTH1DHists[th1d].resize(fNSig);
     for (UInt_t mc = 0; mc < fNSig; mc++){
       fOutSigMETEffTH1DHists[th1d][mc] = (TH1D*) fInSigTH1DHists[th1d+fIndexMET][mc]->Clone();
@@ -402,10 +415,26 @@ void Combiner::MakeMETEffPlots(){
       fOutSigMETEffTH1DHists[th1d][mc]->GetYaxis()->SetTitle("");
       if (th1d!=0) fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
     }
+    // bkg
+    fOutBkgMETEffTH1DHists[th1d].resize(fNBkg);
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      fOutBkgMETEffTH1DHists[th1d][mc] = (TH1D*) fInBkgTH1DHists[th1d+fIndexMET][mc]->Clone();
+      if (fOutBkgMETEffTH1DHists[th1d][mc]->Integral() > 0){
+        fOutBkgMETEffTH1DHists[th1d][mc]->Scale(1.0/fOutBkgMETEffTH1DHists[th1d][mc]->Integral());
+      } 
+      fOutBkgMETEffTH1DHists[th1d][mc]->SetFillColor(0);
+      fOutBkgMETEffTH1DHists[th1d][mc]->SetLineColor(fColorMapMETEff[SystMET[th1d]]);
+      fOutBkgMETEffTH1DHists[th1d][mc]->SetTitle(fBkgNames[mc]);
+      fOutBkgMETEffTH1DHists[th1d][mc]->GetYaxis()->SetTitle("");
+      if (th1d!=0) fBkgMETEffLegend[mc]->AddEntry(fOutBkgMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
+    }
   }
   // add original MET distribution last in legend
   for (UInt_t mc = 0; mc < fNSig; mc++){
     fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[0][mc],SystMET[0],"l"); 
+  }  
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    fBkgMETEffLegend[mc]->AddEntry(fOutBkgMETEffTH1DHists[0][mc],SystMET[0],"l"); 
   }  
 
   TCanvVec fOutSigMETEffCanvas;
@@ -454,6 +483,54 @@ void Combiner::MakeMETEffPlots(){
     delete fOutSigMETEffPad[mc];
     delete fOutSigMETEffCanvas[mc];
     for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ delete fOutSigMETEffTH1DHists[th1d][mc]; }
+  }
+
+  TCanvVec fOutBkgMETEffCanvas;
+  fOutBkgMETEffCanvas.resize(fNBkg); 
+  std::vector<TPad* > fOutBkgMETEffPad;
+  fOutBkgMETEffPad.resize(fNBkg); 
+
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    gStyle->SetOptStat(0);
+    // setup canvases
+    fOutBkgMETEffCanvas[mc] = new TCanvas(fBkgNames[mc].Data(),"");
+    if (fOutBkgMETEffCanvas[mc] == (TCanvas*)"NULL") std::cout << "CANVAS IS NULL" << std::endl;
+    fOutBkgMETEffCanvas[mc]->cd();
+    fOutBkgMETEffCanvas[mc]->Draw();
+    // setup pads
+    fOutBkgMETEffPad[mc] = new TPad("","",0.01,0.2,0.99,1.);
+    fOutBkgMETEffPad[mc]->SetBottomMargin(0);
+    fOutBkgMETEffPad[mc]->SetRightMargin(0.06); 
+    fOutBkgMETEffPad[mc]->SetLeftMargin(0.12); 
+    fOutBkgMETEffPad[mc]->Draw(); 
+    fOutBkgMETEffPad[mc]->cd(); 
+
+    Double_t maxval, maxvaltest = 0.;
+    // draw the plots on top of each other
+    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+      // find the maximum
+      maxvaltest = fOutBkgMETEffTH1DHists[th1d][mc]->GetMaximum();
+      if (maxvaltest > maxval) maxval = maxvaltest;
+      fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*1.5);
+      if (th1d == 0) fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+      else fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+    }
+    fOutBkgMETEffTH1DHists[0][mc]->SetLineWidth(2); 
+    fOutBkgMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
+
+    fBkgMETEffLegend[mc]->Draw("SAME");
+
+    // make right format for output plots & save them
+    fOutBkgMETEffPad[mc]->SetLogy(0); 
+    CMSLumi(fOutBkgMETEffCanvas[mc],11,lumi);
+    fOutBkgMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
+    fOutFile->cd();
+    fOutBkgMETEffCanvas[mc]->Write(Form("METEff_%s",fBkgNames[mc].Data()));
+
+    delete fBkgMETEffLegend[mc];
+    delete fOutBkgMETEffPad[mc];
+    delete fOutBkgMETEffCanvas[mc];
+    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ delete fOutBkgMETEffTH1DHists[th1d][mc]; }
   }
 
 }// end Combiner::MakeMETEffPlots
