@@ -258,7 +258,6 @@ void Combiner::FindMETEfficiencies(){
     else fDataMET[th1d-fIndexMET]=0; 
   }
 
-  std::vector<TString> SystMET;
   SystMET.push_back("Original");
   SystMET.push_back("JetEnUp");
   SystMET.push_back("JetEnDown");
@@ -275,28 +274,28 @@ void Combiner::FindMETEfficiencies(){
   SystMET.push_back("JetUnclEnUp");
   SystMET.push_back("JetUnclEnDown");
 
-  std::cout << " ---------------------------------------------------------------- " << std::endl;
-  std::cout << " ---------------------------------------------------------------- " << std::endl;
-  std::cout << "MET Efficiencies for Systematics " << std::endl; 
-  std::cout << " ---------------------------------------------------------------- " << std::endl;
-  std::cout << " ---------------------------------------------------------------- " << std::endl;
-  //for (UInt_t i=0; i < fNMETPlots; i++){
-  //  std::cout << " Data		: " << SystMET[i] << "		= " << fDataMETEff[i+fNMETPlots] << " / " << fDataMETEff[i] << "	= " << fDataMET[i] << std::endl;
+  //std::cout << " ---------------------------------------------------------------- " << std::endl;
+  //std::cout << " ---------------------------------------------------------------- " << std::endl;
+  //std::cout << "MET Efficiencies for Systematics " << std::endl; 
+  //std::cout << " ---------------------------------------------------------------- " << std::endl;
+  //std::cout << " ---------------------------------------------------------------- " << std::endl;
+  ////for (UInt_t i=0; i < fNMETPlots; i++){
+  ////  std::cout << " Data		: " << SystMET[i] << "		= " << fDataMETEff[i+fNMETPlots] << " / " << fDataMETEff[i] << "	= " << fDataMET[i] << std::endl;
+  ////}
+  ////std::cout << " ---------------------------------------------------------------- " << std::endl;
+  //for (UInt_t mc=0; mc < fNSig; mc++){
+  //  for (UInt_t i=0; i < fNMETPlots; i++){
+  //    std::cout << fSigNames[mc] << " 	: " << SystMET[i] << "		= " << fSigMETEff[mc][i+fNMETPlots] << " / " << fSigMETEff[mc][i] << "	= " << fSigMET[mc][i] << std::endl;
+  //  }
+  //  std::cout << " ---------------------------------------------------------------- " << std::endl;
+  //}
+  //for (UInt_t mc=0; mc < fNBkg; mc++){
+  //  for (UInt_t i=0; i < fNMETPlots; i++){
+  //    std::cout << fBkgNames[mc] << " 	: " << SystMET[i] << "		= " << fBkgMETEff[mc][i+fNMETPlots] << " / " << fBkgMETEff[mc][i] << "	= " << fBkgMET[mc][i] << std::endl;
+  //  }
+  //  std::cout << " ---------------------------------------------------------------- " << std::endl;
   //}
   //std::cout << " ---------------------------------------------------------------- " << std::endl;
-  for (UInt_t mc=0; mc < fNSig; mc++){
-    for (UInt_t i=0; i < fNMETPlots; i++){
-      std::cout << fSigNames[mc] << " 	: " << SystMET[i] << "		= " << fSigMETEff[mc][i+fNMETPlots] << " / " << fSigMETEff[mc][i] << "	= " << fSigMET[mc][i] << std::endl;
-    }
-    std::cout << " ---------------------------------------------------------------- " << std::endl;
-  }
-  for (UInt_t mc=0; mc < fNBkg; mc++){
-    for (UInt_t i=0; i < fNMETPlots; i++){
-      std::cout << fBkgNames[mc] << " 	: " << SystMET[i] << "		= " << fBkgMETEff[mc][i+fNMETPlots] << " / " << fBkgMETEff[mc][i] << "	= " << fBkgMET[mc][i] << std::endl;
-    }
-    std::cout << " ---------------------------------------------------------------- " << std::endl;
-  }
-  std::cout << " ---------------------------------------------------------------- " << std::endl;
 
   // write as a table for Latex
   std::ofstream	fOutTableTxtFile;
@@ -358,79 +357,82 @@ void Combiner::MakeMETEffPlots(){
   // Make comparison plots of MET shapes after the various corrections
   // go into the output file
   fOutFile->cd();
-  gStyle->SetOptStat(0);
 
-  fOutSigMETEffTH1DHists.resize(fNSig);
+  // setup color map for different MET shapes
+  fColorMapMETEff["Original"]		= kBlack;
+  fColorMapMETEff["JetEnUp"]		= kGreen-9;
+  fColorMapMETEff["JetEnDown"]		= kYellow+8;
+  fColorMapMETEff["JetResUp"]		= kOrange-3;
+  fColorMapMETEff["JetResDown"]		= kOrange-2;
+  fColorMapMETEff["MuonEnUp"]		= kTeal-1;
+  fColorMapMETEff["MuonEnDown"]		= kTeal-7;
+  fColorMapMETEff["EleEnUp"]		= kPink-7;
+  fColorMapMETEff["EleEnDown"]		= kPink-2;
+  fColorMapMETEff["TauEnUp"]		= kRed;
+  fColorMapMETEff["TauEnDown"]		= kRed+2;
+  fColorMapMETEff["PhoEnUp"]		= kBlue-1;
+  fColorMapMETEff["PhoEnDown"]		= kBlue-2;
+  fColorMapMETEff["JetUnclEnUp"]	= kYellow-7;
+  fColorMapMETEff["JetUnclEnDown"]	= kYellow-5;
+
+  // setup plot legend
+  std::vector<TLegend* > fMETEffLegend;
+  fMETEffLegend.resize(fNSig);
   for (UInt_t mc = 0; mc < fNSig; mc++){
-    fOutSigMETEffTH1DHists[mc].resize(fNMETPlots);
-    for (UInt_t th1d = 0; th1d < (fIndexMET+fNMETPlots); th1d++){
-      //fOutSigMETEffTH1DHists[mc][th1d] = fInSigTH1DHists[th1d][mc]->Clone();
+    fMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    fMETEffLegend[mc]->SetNColumns(2);
+    fMETEffLegend[mc]->SetBorderSize(4);
+    fMETEffLegend[mc]->SetLineColor(kBlack);
+    fMETEffLegend[mc]->SetTextSize(0.03);//0.035
+    fMETEffLegend[mc]->SetLineWidth(2);
+  }
+
+  // copy the plots and normalize them
+  fOutSigMETEffTH1DHists.resize(fNMETPlots);
+  for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+    fOutSigMETEffTH1DHists[th1d].resize(fNSig);
+    for (UInt_t mc = 0; mc < fNSig; mc++){
+      fOutSigMETEffTH1DHists[th1d][mc] = (TH1D*) fInSigTH1DHists[th1d+fIndexMET][mc]->Clone();
+      if (fOutSigMETEffTH1DHists[th1d][mc]->Integral() > 0){
+        fOutSigMETEffTH1DHists[th1d][mc]->Scale(1.0/fOutSigMETEffTH1DHists[th1d][mc]->Integral());
+      } 
+      fOutSigMETEffTH1DHists[th1d][mc]->SetFillColor(0);
+      fOutSigMETEffTH1DHists[th1d][mc]->SetLineColor(fColorMapMETEff[SystMET[th1d]]);
+      fOutSigMETEffTH1DHists[th1d][mc]->SetTitle("");
+      fOutSigMETEffTH1DHists[th1d][mc]->GetYaxis()->SetTitle("");
+      fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
     }
   } 
 
+  TCanvVec fOutSigMETEffCanvas;
+  fOutSigMETEffCanvas.resize(fNSig); 
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    gStyle->SetOptStat(0);
+    fOutSigMETEffCanvas[mc] = new TCanvas(fSigNames[mc].Data(),"");
+    if (fOutSigMETEffCanvas[mc] == (TCanvas*)"NULL") std::cout << "CANVAS IS NULL" << std::endl;
+    fOutSigMETEffCanvas[mc]->cd();
+    fOutSigMETEffCanvas[mc]->Draw();
 
+    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+      if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+      else fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+    }
 
-  //for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
-  //  for (UInt_t mc = 0; mc < fNSig; mc++){
-  //    fOutSigMETEffTH1DHists[th1d][mc] = fInSigTH1DHists[th1d][mc]->Clone();
-  //    if (fInSigTH1DHists[th1d][mc]->Integral() > 0){
-  //      fInSigTH1DHists[th1d][mc]->Scale(1.0/fInSigTH1DHists[th1d][mc]->Integral());
-  //    }
-  //    fInSigTH1DHists[th1d][mc]->SetFillColor(0);
-  //  }
-  //  for (UInt_t mc = 0; mc < fNBkg; mc++){
-  //    if (fInBkgTH1DHists[th1d][mc]->Integral() > 0 ){
-  //      fInBkgTH1DHists[th1d][mc]->Scale(1.0/fInBkgTH1DHists[th1d][mc]->Integral());
-  //    }
-  //    fInBkgTH1DHists[th1d][mc]->SetFillColor(0);
-  //    //fInBkgTH1DHists[th1d][mc]->SetLineColor(fColorMap[fBkgNames[mc]]);
-  //  }
+    fMETEffLegend[mc]->Draw("SAME");
 
-  //Double_t maxOverlay = -100;
-  //maxOverlay = Combiner::GetMaximum(th1d, false);
-  //}
+    // make right format for output plots & save them
+    CMSLumi(fOutSigMETEffCanvas[mc],11,lumi);
+    fOutSigMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+    fOutFile->cd();
+    fOutSigMETEffCanvas[mc]->Write(Form("METEff_%s",fSigNames[mc].Data()));
 
+    delete fOutSigMETEffCanvas[mc];
+    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ delete fOutSigMETEffTH1DHists[th1d][mc]; }
+    delete fMETEffLegend[mc];
+  }
 
-  //// start by drawing the sig first
-  //if (isLogY) fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1E3);
-  //else fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1.1);
-
-  ////fInSigTH1DHists[th1d][0]->SetMinimum(0.0);
-  ////if (fNData > 0) fInSigTH1DHists[th1d][0]->SetMinimum(minOverlay*0.9);
-  ////if (th1d==fIndexMgg){ 
-  ////  //fInSigTH1DHists[th1d][0]->SetMinimum(0.001); 
-  ////  fInSigTH1DHists[th1d][0]->SetMaximum(10);
-  ////}
-
-  //fInSigTH1DHists[th1d][0]->SetTitle("");
-  //fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
-  //fInSigTH1DHists[th1d][0]->Draw("hist");
-
-  //for (UInt_t mc = 0; mc < fNBkg; mc++){
-  //  fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
-  //}
-  //for (UInt_t mc = 0; mc < fNSig; mc++){
-  //  fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
-  //}
-  ////if (fNData > 0) fOutDataTH1DHists[th1d]->Draw("PE SAME");
-
-  //fTH1DLegends[th1d]->Draw("SAME"); 
-
-  //TString suffix = "";
-  //if (isLogY) suffix="_log";
-
-  //fOutTH1DStackPads[th1d]->SetLogy(isLogY);
-  //fOutTH1DCanvases[th1d]->cd();
-
-  //CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
-
-  //fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_comb%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
-  //fOutFile->cd();
-  //fOutTH1DCanvases[th1d]->Write(Form("%s%s_comb%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
 
 }// end Combiner::MakeMETEffPlots
-
-
 
 
 
