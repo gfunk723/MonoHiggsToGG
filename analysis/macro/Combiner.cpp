@@ -360,20 +360,20 @@ void Combiner::MakeMETEffPlots(){
 
   // setup color map for different MET shapes
   fColorMapMETEff["Original"]		= kBlack;
-  fColorMapMETEff["JetEnUp"]		= kGreen-9;
-  fColorMapMETEff["JetEnDown"]		= kYellow+8;
+  fColorMapMETEff["JetEnUp"]		= kYellow;
+  fColorMapMETEff["JetEnDown"]		= kYellow;
   fColorMapMETEff["JetResUp"]		= kOrange-3;
-  fColorMapMETEff["JetResDown"]		= kOrange-2;
+  fColorMapMETEff["JetResDown"]		= kOrange-3;
   fColorMapMETEff["MuonEnUp"]		= kTeal-1;
-  fColorMapMETEff["MuonEnDown"]		= kTeal-7;
-  fColorMapMETEff["EleEnUp"]		= kPink-7;
-  fColorMapMETEff["EleEnDown"]		= kPink-2;
+  fColorMapMETEff["MuonEnDown"]		= kTeal-1;
+  fColorMapMETEff["EleEnUp"]		= kMagenta;
+  fColorMapMETEff["EleEnDown"]		= kMagenta;
   fColorMapMETEff["TauEnUp"]		= kRed;
-  fColorMapMETEff["TauEnDown"]		= kRed+2;
-  fColorMapMETEff["PhoEnUp"]		= kBlue-1;
-  fColorMapMETEff["PhoEnDown"]		= kBlue-2;
-  fColorMapMETEff["JetUnclEnUp"]	= kYellow-7;
-  fColorMapMETEff["JetUnclEnDown"]	= kYellow-5;
+  fColorMapMETEff["TauEnDown"]		= kRed;
+  fColorMapMETEff["PhoEnUp"]		= kBlue+2;
+  fColorMapMETEff["PhoEnDown"]		= kBlue+2;
+  fColorMapMETEff["JetUnclEnUp"]	= kGreen;
+  fColorMapMETEff["JetUnclEnDown"]	= kGreen;
 
   // setup plot legend
   std::vector<TLegend* > fMETEffLegend;
@@ -398,42 +398,65 @@ void Combiner::MakeMETEffPlots(){
       } 
       fOutSigMETEffTH1DHists[th1d][mc]->SetFillColor(0);
       fOutSigMETEffTH1DHists[th1d][mc]->SetLineColor(fColorMapMETEff[SystMET[th1d]]);
-      fOutSigMETEffTH1DHists[th1d][mc]->SetTitle("");
+      fOutSigMETEffTH1DHists[th1d][mc]->SetTitle(fSigNames[mc]);
       fOutSigMETEffTH1DHists[th1d][mc]->GetYaxis()->SetTitle("");
-      fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
+      if (th1d!=0) fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
     }
-  } 
+  }
+  // add original MET distribution last in legend
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[0][mc],SystMET[0],"l"); 
+  }  
 
   TCanvVec fOutSigMETEffCanvas;
   fOutSigMETEffCanvas.resize(fNSig); 
+  std::vector<TPad* > fOutSigMETEffPad;
+  fOutSigMETEffPad.resize(fNSig); 
+
   for (UInt_t mc = 0; mc < fNSig; mc++){
     gStyle->SetOptStat(0);
+    // setup canvases
     fOutSigMETEffCanvas[mc] = new TCanvas(fSigNames[mc].Data(),"");
     if (fOutSigMETEffCanvas[mc] == (TCanvas*)"NULL") std::cout << "CANVAS IS NULL" << std::endl;
     fOutSigMETEffCanvas[mc]->cd();
     fOutSigMETEffCanvas[mc]->Draw();
+    // setup pads
+    fOutSigMETEffPad[mc] = new TPad("","",0.01,0.2,0.99,1.);
+    fOutSigMETEffPad[mc]->SetBottomMargin(0);
+    fOutSigMETEffPad[mc]->SetRightMargin(0.06); 
+    fOutSigMETEffPad[mc]->SetLeftMargin(0.12); 
+    fOutSigMETEffPad[mc]->Draw(); 
+    fOutSigMETEffPad[mc]->cd(); 
 
+    Double_t maxval, maxvaltest = 0.;
+    // draw the plots on top of each other
     for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+      // find the maximum
+      maxvaltest = fOutSigMETEffTH1DHists[th1d][mc]->GetMaximum();
+      if (maxvaltest > maxval) maxval = maxvaltest;
+      fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*1.5);
       if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
       else fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
     }
+    fOutSigMETEffTH1DHists[0][mc]->SetLineWidth(2); 
+    fOutSigMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
 
     fMETEffLegend[mc]->Draw("SAME");
 
     // make right format for output plots & save them
+    fOutSigMETEffPad[mc]->SetLogy(0); 
     CMSLumi(fOutSigMETEffCanvas[mc],11,lumi);
     fOutSigMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
     fOutFile->cd();
     fOutSigMETEffCanvas[mc]->Write(Form("METEff_%s",fSigNames[mc].Data()));
 
+    delete fMETEffLegend[mc];
+    delete fOutSigMETEffPad[mc];
     delete fOutSigMETEffCanvas[mc];
     for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ delete fOutSigMETEffTH1DHists[th1d][mc]; }
-    delete fMETEffLegend[mc];
   }
 
-
 }// end Combiner::MakeMETEffPlots
-
 
 
 
@@ -945,13 +968,12 @@ void Combiner::InitTH1DNames(){
   fTH1DNames.push_back("nvtx"); 
   fIndexNvtx = fTH1DNames.size()-1;
   fTH1DNames.push_back("t1pfmetphi");
-  fTH1DNames.push_back("t1pfmet");
   //fTH1DNames.push_back("pfmetphi");
   //fTH1DNames.push_back("pfmet");
   //fTH1DNames.push_back("calometphi");
   //fTH1DNames.push_back("calomet");
 
-  // photon variables
+  //// photon variables
   fTH1DNames.push_back("pt1");
   fTH1DNames.push_back("pt2");     
   fTH1DNames.push_back("eta1");
@@ -981,6 +1003,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("t1pfmetCorr");
     fTH1DNames.push_back("t1pfmetphiCorr");
     fTH1DNames.push_back("t1pfmet_zoom");
+    fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
     fTH1DNames.push_back("JetEnUp");
     fTH1DNames.push_back("JetEnDown");

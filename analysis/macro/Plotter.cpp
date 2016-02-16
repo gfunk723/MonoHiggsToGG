@@ -580,7 +580,6 @@ void Plotter::SetUpPlots(){
   fTH1DMap["nvtx"]		= Plotter::MakeTH1DPlot("nvtx","",40,0.,40.,"nvtx","");
   fTH1DMap["mgg"]		= Plotter::MakeTH1DPlot("mgg","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
   fTH1DMap["ptgg"]		= Plotter::MakeTH1DPlot("ptgg","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
-  fTH1DMap["t1pfmet"]		= Plotter::MakeTH1DPlot("t1pfmet","",75,0.,900,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetphi"]	= Plotter::MakeTH1DPlot("t1pfmetphi","",20,-4.,4.,"E_{T}^{miss} #phi","");
   fTH1DMap["t1pfmetCorr"]	= Plotter::MakeTH1DPlot("t1pfmetCorr","",75,0.,900,"E_{T}^{miss} (GeV)",""); 
   fTH1DMap["t1pfmetphiCorr"]	= Plotter::MakeTH1DPlot("t1pfmetphiCorr","",20,-4.,4.,"E_{T}^{miss} #phi","");
@@ -608,20 +607,22 @@ void Plotter::SetUpPlots(){
   fTH1DMap["r92"]		= Plotter::MakeTH1DPlot("r92","",50,0.,1.1,"R9(#gamma2)","");
   fTH1DMap["eleveto1"]		= Plotter::MakeTH1DPlot("eleveto1","",2,0,2.0,"Electron Veto(#gamma1)","");
   fTH1DMap["eleveto2"]		= Plotter::MakeTH1DPlot("eleveto2","",2,0,2.0,"Electron Veto(#gamma2)","");
-  fTH1DMap["t1pfmetJetEnUp"]	= Plotter::MakeTH1DPlot("JetEnUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetJetEnDown"]	= Plotter::MakeTH1DPlot("JetEnDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetJetResUp"]	= Plotter::MakeTH1DPlot("JetResUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetJetResDown"] = Plotter::MakeTH1DPlot("JetResDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetMuonEnUp"]	= Plotter::MakeTH1DPlot("MuonEnUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetMuonEnDown"]	= Plotter::MakeTH1DPlot("MuonEnDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetEleEnUp"]	= Plotter::MakeTH1DPlot("EleEnUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetEleEnDown"]	= Plotter::MakeTH1DPlot("EleEnDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetTauEnUp"]	= Plotter::MakeTH1DPlot("TauEnUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetTauEnDown"]	= Plotter::MakeTH1DPlot("TauEnDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetPhoEnUp"]	= Plotter::MakeTH1DPlot("PhoEnUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetPhoEnDown"]	= Plotter::MakeTH1DPlot("PhoEnDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetUnclEnUp"]	= Plotter::MakeTH1DPlot("UnclEnUp","",75,0.,900,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetUnclEnDown"]	= Plotter::MakeTH1DPlot("UnclEnDown","",75,0.,900,"E_{T}^{miss} (GeV)","");
+
+  fTH1DMap["t1pfmet"]		= Plotter::MakeTH1DPlot("t1pfmet","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetJetEnUp"]	= Plotter::MakeTH1DPlot("JetEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetJetEnDown"]	= Plotter::MakeTH1DPlot("JetEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetJetResUp"]	= Plotter::MakeTH1DPlot("JetResUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetJetResDown"] = Plotter::MakeTH1DPlot("JetResDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetMuonEnUp"]	= Plotter::MakeTH1DPlot("MuonEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetMuonEnDown"]	= Plotter::MakeTH1DPlot("MuonEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetEleEnUp"]	= Plotter::MakeTH1DPlot("EleEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetEleEnDown"]	= Plotter::MakeTH1DPlot("EleEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetTauEnUp"]	= Plotter::MakeTH1DPlot("TauEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetTauEnDown"]	= Plotter::MakeTH1DPlot("TauEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetPhoEnUp"]	= Plotter::MakeTH1DPlot("PhoEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetPhoEnDown"]	= Plotter::MakeTH1DPlot("PhoEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetUnclEnUp"]	= Plotter::MakeTH1DPlot("UnclEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetUnclEnDown"]	= Plotter::MakeTH1DPlot("UnclEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
 
   // n minus 1 plots
   //fTH1DMap["nvtx_n-1"]		= Plotter::MakeTH1DPlot("nvtx_n-1","",40,0.,40.,"nvtx","");

@@ -45,9 +45,9 @@ int main(){
   TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wMETsys/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = true;	// determine the MET correction for MC and data
-  bool doPlots = true;		// make plots for each sample individually
-  bool doComb = false;		// make stack/overlay plots
+  bool doMETCorr = false;	// determine the MET correction for MC and data
+  bool doPlots = false;		// make plots for each sample individually
+  bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
