@@ -1,4 +1,6 @@
 #include "Combiner.hh"
+#include <iostream>
+#include <fstream>
 
 Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type){
 
@@ -188,9 +190,238 @@ void Combiner::DoComb(){
   }// end loop over th1d histos
 
   //if (addText!="_n-1") Combiner::MakeEffPlots();
+  if (addText!="_n-1") Combiner::FindMETEfficiencies();
   Combiner::MakeOutputCanvas();
 
 }// end Combiner::DoComb
+
+void Combiner::FindMETEfficiencies(){
+  // Finds the efficiency for each sample (integral of events passing 80 GeV cut over all selected events)
+  // Integrals are computed also including the overflow bin
+  // Also plots for each sample the MET shape for the different corrections to visualize the effect
+
+  fNMETPlots = 15;
+  UInt_t fNMETCat = fNMETPlots*2;
+
+  DblVecVec fSigMETEff;
+  DblVecVec fBkgMETEff;
+  DblVec    fDataMETEff;
+  fSigMETEff.resize(fNSig);
+  fBkgMETEff.resize(fNBkg);
+
+  DblVecVec fSigMET;
+  DblVecVec fBkgMET;
+  DblVec    fDataMET;
+  fSigMET.resize(fNSig);
+  fBkgMET.resize(fNBkg);
+   
+
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    fSigMETEff[mc].resize(fNMETCat); 
+    fSigMET[mc].resize(fNMETCat); 
+    for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
+      UInt_t maxbin = fInSigTH1DHists[th1d][mc]->GetSize(); 
+      UInt_t minbin = fInSigTH1DHists[th1d][mc]->GetXaxis()->FindBin(80.0);
+      UInt_t zerbin = fInSigTH1DHists[th1d][mc]->GetXaxis()->FindBin(0.0);
+      UInt_t effbin1 = th1d-fIndexMET;
+      UInt_t effbin2 = th1d-fIndexMET+fNMETPlots;
+      fSigMETEff[mc][th1d-fIndexMET+fNMETPlots] = fInSigTH1DHists[th1d][mc]->Integral(minbin,maxbin);// events above 80 GeV
+      fSigMETEff[mc][th1d-fIndexMET] = fInSigTH1DHists[th1d][mc]->Integral(zerbin,maxbin);// all events 
+      if (fSigMETEff[mc][th1d-fIndexMET] > 0) fSigMET[mc][th1d-fIndexMET] = (fSigMETEff[mc][th1d-fIndexMET+fNMETPlots]/fSigMETEff[mc][th1d-fIndexMET]);
+      else fSigMET[mc][th1d-fIndexMET]=0; 
+    }
+  }  
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    fBkgMETEff[mc].resize(fNMETCat); 
+    fBkgMET[mc].resize(fNMETCat); 
+    for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
+      UInt_t maxbin = fInBkgTH1DHists[th1d][mc]->GetSize(); 
+      UInt_t minbin = fInBkgTH1DHists[th1d][mc]->GetXaxis()->FindBin(80.0);
+      UInt_t effbin1 = th1d-fIndexMET;
+      UInt_t effbin2 = th1d-fIndexMET+fNMETPlots;
+      fBkgMETEff[mc][th1d-fIndexMET+fNMETPlots] = fInBkgTH1DHists[th1d][mc]->Integral(minbin,maxbin);// events above 80 GeV
+      fBkgMETEff[mc][th1d-fIndexMET] = fInBkgTH1DHists[th1d][mc]->Integral();// all events
+      if (fBkgMETEff[mc][th1d-fIndexMET] > 0) fBkgMET[mc][th1d-fIndexMET] = fBkgMETEff[mc][th1d-fIndexMET+fNMETPlots]/fBkgMETEff[mc][th1d-fIndexMET];
+      else fBkgMET[mc][th1d-fIndexMET]=0; 
+    }
+  }  
+  fDataMETEff.resize(fNMETCat);
+  fDataMET.resize(fNMETCat);
+  for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
+    UInt_t maxbin = fOutDataTH1DHists[th1d]->GetSize(); 
+    UInt_t minbin = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(80.0);
+    UInt_t effbin1 = th1d-fIndexMET;
+    UInt_t effbin2 = th1d-fIndexMET+fNMETPlots;
+    fDataMETEff[th1d-fIndexMET+fNMETPlots] = fOutDataTH1DHists[th1d]->Integral(minbin,maxbin);// events above 80 GeV
+    fDataMETEff[th1d-fIndexMET] = fOutDataTH1DHists[th1d]->Integral();// all events
+    if (fDataMETEff[th1d-fIndexMET] > 0) fDataMET[th1d-fIndexMET] = fDataMETEff[th1d-fIndexMET+fNMETPlots]/fDataMETEff[th1d-fIndexMET];
+    else fDataMET[th1d-fIndexMET]=0; 
+  }
+
+  std::vector<TString> SystMET;
+  SystMET.push_back("Original");
+  SystMET.push_back("JetEnUp");
+  SystMET.push_back("JetEnDown");
+  SystMET.push_back("JetResUp");
+  SystMET.push_back("JetResDown");
+  SystMET.push_back("MuonEnUp");
+  SystMET.push_back("MuonEnDown");
+  SystMET.push_back("EleEnUp");
+  SystMET.push_back("EleEnDown");
+  SystMET.push_back("TauEnUp");
+  SystMET.push_back("TauEnDown");
+  SystMET.push_back("PhoEnUp");
+  SystMET.push_back("PhoEnDown");
+  SystMET.push_back("JetUnclEnUp");
+  SystMET.push_back("JetUnclEnDown");
+
+  std::cout << " ---------------------------------------------------------------- " << std::endl;
+  std::cout << " ---------------------------------------------------------------- " << std::endl;
+  std::cout << "MET Efficiencies for Systematics " << std::endl; 
+  std::cout << " ---------------------------------------------------------------- " << std::endl;
+  std::cout << " ---------------------------------------------------------------- " << std::endl;
+  //for (UInt_t i=0; i < fNMETPlots; i++){
+  //  std::cout << " Data		: " << SystMET[i] << "		= " << fDataMETEff[i+fNMETPlots] << " / " << fDataMETEff[i] << "	= " << fDataMET[i] << std::endl;
+  //}
+  //std::cout << " ---------------------------------------------------------------- " << std::endl;
+  for (UInt_t mc=0; mc < fNSig; mc++){
+    for (UInt_t i=0; i < fNMETPlots; i++){
+      std::cout << fSigNames[mc] << " 	: " << SystMET[i] << "		= " << fSigMETEff[mc][i+fNMETPlots] << " / " << fSigMETEff[mc][i] << "	= " << fSigMET[mc][i] << std::endl;
+    }
+    std::cout << " ---------------------------------------------------------------- " << std::endl;
+  }
+  for (UInt_t mc=0; mc < fNBkg; mc++){
+    for (UInt_t i=0; i < fNMETPlots; i++){
+      std::cout << fBkgNames[mc] << " 	: " << SystMET[i] << "		= " << fBkgMETEff[mc][i+fNMETPlots] << " / " << fBkgMETEff[mc][i] << "	= " << fBkgMET[mc][i] << std::endl;
+    }
+    std::cout << " ---------------------------------------------------------------- " << std::endl;
+  }
+  std::cout << " ---------------------------------------------------------------- " << std::endl;
+
+  // write as a table for Latex
+  std::ofstream	fOutTableTxtFile;
+  fOutTableTxtFile.open(Form("%s/ResultsSystematicsForLatex.tex",fOutDir.Data()));
+
+  if (fOutTableTxtFile.is_open()){
+    //setup Latex doc
+    fOutTableTxtFile << "\\documentclass[a4paper,landscape]{article}" << std::endl;
+    fOutTableTxtFile << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
+    fOutTableTxtFile << "\\begin{document}" << std::endl;
+    // start table
+    fOutTableTxtFile << "\% Summary of MET Systematics" << std::endl; 
+    fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
+    fOutTableTxtFile << "\\begin{tabular}{cc}" <<std::endl;
+    fOutTableTxtFile << "\\hline \\hline" <<std::endl;
+    fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+    // data
+    fOutTableTxtFile << "\\hline" <<std::endl;
+    fOutTableTxtFile << "Data \\\\" << std::endl;
+    for (UInt_t i=0; i < fNMETPlots; i++){ 
+      fOutTableTxtFile << SystMET[i] << " & " << fDataMET[i]  <<  " \\\\" << std::endl;
+    }
+    fOutTableTxtFile << "\\hline" << std::endl;
+    // signal
+    for (UInt_t mc=0; mc < fNSig; mc++){
+      fOutTableTxtFile << fSigNames[mc] << "\\\\" << std::endl;
+      for (UInt_t i=0; i < fNMETPlots; i++){ 
+        fOutTableTxtFile << SystMET[i] << " & " << fSigMET[mc][i]  <<  " \\\\" << std::endl;
+      }
+      fOutTableTxtFile << "\\hline" << std::endl;
+    }
+    // background
+    for (UInt_t mc=0; mc < fNBkg; mc++){
+      fOutTableTxtFile << fBkgNames[mc] << "\\\\" << std::endl;
+      for (UInt_t i=0; i < fNMETPlots; i++){ 
+        fOutTableTxtFile << SystMET[i] << " & " << fBkgMET[mc][i]  <<  " \\\\" << std::endl;
+      }
+      fOutTableTxtFile << "\\hline" << std::endl;
+    }
+    // end table
+    fOutTableTxtFile << "\\hline \\hline" <<std::endl;
+    fOutTableTxtFile << "\\end{tabular}" <<std::endl;
+    fOutTableTxtFile << "\\end{table}" <<std::endl;
+    // end Latex doc
+    fOutTableTxtFile << "\\end{document}" <<std::endl;
+    std::cout << "Writing ResultsTable in " << Form("%s/ResultsTableForLatex.tex",fOutDir.Data()) << std::endl;
+  }
+  else std::cout << "File didn't Open" << std::endl;
+
+  // close output text files
+  fOutTableTxtFile.close();
+
+  Combiner::MakeMETEffPlots();
+}// end Combiner::FindMETEfficiencies
+
+
+void Combiner::MakeMETEffPlots(){
+
+  // Make comparison plots of MET shapes after the various corrections
+  // go into the output file
+  fOutFile->cd();
+  gStyle->SetOptStat(0);
+
+  for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
+    for (UInt_t mc = 0; mc < fNSig; mc++){
+      if (fInSigTH1DHists[th1d][mc]->Integral() > 0){
+        fInSigTH1DHists[th1d][mc]->Scale(1.0/fInSigTH1DHists[th1d][mc]->Integral());
+      }
+      fInSigTH1DHists[th1d][mc]->SetFillColor(0);
+    }
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (fInBkgTH1DHists[th1d][mc]->Integral() > 0 ){
+        fInBkgTH1DHists[th1d][mc]->Scale(1.0/fInBkgTH1DHists[th1d][mc]->Integral());
+      }
+      fInBkgTH1DHists[th1d][mc]->SetFillColor(0);
+      //fInBkgTH1DHists[th1d][mc]->SetLineColor(fColorMap[fBkgNames[mc]]);
+    }
+
+  Double_t maxOverlay = -100;
+  maxOverlay = Combiner::GetMaximum(th1d, false);
+  }
+
+
+  //// start by drawing the sig first
+  //if (isLogY) fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1E3);
+  //else fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1.1);
+
+  ////fInSigTH1DHists[th1d][0]->SetMinimum(0.0);
+  ////if (fNData > 0) fInSigTH1DHists[th1d][0]->SetMinimum(minOverlay*0.9);
+  ////if (th1d==fIndexMgg){ 
+  ////  //fInSigTH1DHists[th1d][0]->SetMinimum(0.001); 
+  ////  fInSigTH1DHists[th1d][0]->SetMaximum(10);
+  ////}
+
+  //fInSigTH1DHists[th1d][0]->SetTitle("");
+  //fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
+  //fInSigTH1DHists[th1d][0]->Draw("hist");
+
+  //for (UInt_t mc = 0; mc < fNBkg; mc++){
+  //  fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+  //}
+  //for (UInt_t mc = 0; mc < fNSig; mc++){
+  //  fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
+  //}
+  ////if (fNData > 0) fOutDataTH1DHists[th1d]->Draw("PE SAME");
+
+  //fTH1DLegends[th1d]->Draw("SAME"); 
+
+  //TString suffix = "";
+  //if (isLogY) suffix="_log";
+
+  //fOutTH1DStackPads[th1d]->SetLogy(isLogY);
+  //fOutTH1DCanvases[th1d]->cd();
+
+  //CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
+
+  //fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_comb%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
+  //fOutFile->cd();
+  //fOutTH1DCanvases[th1d]->Write(Form("%s%s_comb%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+
+}// end Combiner::MakeMETEffPlots
+
+
+
+
 
 
 void Combiner::MakeEffPlots(){
@@ -734,9 +965,25 @@ void Combiner::InitTH1DNames(){
     //fTH1DNames.push_back("eleveto2");
     //fTH1DNames.push_back("phi1_pho2pass");
     //fTH1DNames.push_back("phi2_pho1pass");
-    fTH1DNames.push_back("t1pfmet_zoom");
     fTH1DNames.push_back("t1pfmetCorr");
     fTH1DNames.push_back("t1pfmetphiCorr");
+    fTH1DNames.push_back("t1pfmet_zoom");
+    fIndexMET = fTH1DNames.size()-1;
+    fTH1DNames.push_back("JetEnUp");
+    fTH1DNames.push_back("JetEnDown");
+    fTH1DNames.push_back("JetResUp");
+    fTH1DNames.push_back("JetResDown");
+    fTH1DNames.push_back("MuonEnUp");
+    fTH1DNames.push_back("MuonEnDown");
+    fTH1DNames.push_back("EleEnUp");
+    fTH1DNames.push_back("EleEnDown");
+    fTH1DNames.push_back("TauEnUp");
+    fTH1DNames.push_back("TauEnDown");
+    fTH1DNames.push_back("PhoEnUp");
+    fTH1DNames.push_back("PhoEnDown");
+    fTH1DNames.push_back("UnclEnUp");
+    fTH1DNames.push_back("UnclEnDown");
+
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
     fTH1DNames.push_back("t1pfmet_selmgg");

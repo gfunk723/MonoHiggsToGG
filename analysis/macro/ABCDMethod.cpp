@@ -99,9 +99,10 @@ ABCDMethod::~ABCDMethod(){
   }
 
    
-  delete fOutFile;
+
   // close output text files
   fOutTableTxtFile.close();
+  delete fOutFile;
   
   std::cout << "Finished Deleting" << std::endl;
 }
@@ -131,7 +132,7 @@ void ABCDMethod::DoAnalysis(){
   fSampleTitleMap["VH"]			= "V + H";
   fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
   fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
-  fSampleTitleMap["ttHJetToGG"]		= "tt $\\rightarrow H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["ttHJetToGG"]		= "tt + $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
 
   // find indices for the different bkg samples

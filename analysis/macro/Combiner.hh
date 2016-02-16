@@ -39,6 +39,8 @@ public:
   void InitCanvAndHists();
   void InitTH1DNames();
   void DoComb();
+  void FindMETEfficiencies();
+  void MakeMETEffPlots();
   void MakeEffPlots();
   void StackPlots();
   void MakeOutputCanvas();
@@ -61,6 +63,8 @@ private:
   UInt_t	fNSig;
 
   UInt_t	fIndexEff;
+  UInt_t	fIndexMET;
+  UInt_t	fNMETPlots;
   UInt_t	fIndexMgg;
   UInt_t 	fIndexPtgg;
   UInt_t	fIndexNvtx;
@@ -88,9 +92,13 @@ private:
   TH1DVecVec	fInBkgTH1DHists;
   TH1DVecVec	fInSigTH1DHists;
 
+  TH1DVec	fOutBkgMETEffTH1DHists;
+  TH1DVec	fOutSigMETEffTH1DHists;
+
   TH1DVec	fOutBkgTH1DHists;
   TH1DVec	fOutSigTH1DHists;
   TH1DVec	fOutDataTH1DHists;
+
   TH1DVec	fOutRatioTH1DHists;
   TH1DVec	fOutRatioTH1DHistsCopy;
   TLineVec	fOutTH1DRatioLines;
