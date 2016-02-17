@@ -301,13 +301,88 @@ void Combiner::FindMETEfficiencies(){
   std::ofstream	fOutTableTxtFile;
   fOutTableTxtFile.open(Form("%s/ResultsSystematicsForLatex.tex",fOutDir.Data()));
 
+  TStrMap fSampleTitleMap;
+  fSampleTitleMap["QCD"] 		= "QCD";
+  fSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
+  fSampleTitleMap["VH"]			= "V + H";
+  fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
+  fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
+  fSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
+  fSampleTitleMap["ttHJetToGG"]		= "tt $\\rightarrow H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1000"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1200"]	= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1400"]	= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
+
+  // find the biggest & smallest efficiencies
+  // data
+  Double_t maxData = 0;
+  Double_t minData = 100; 
+  for (UInt_t i=0; i < fNMETPlots; i++){
+    if (maxData < fDataMET[i]) maxData = fDataMET[i];
+    if (minData > fDataMET[i]) minData = fDataMET[i];
+  }
+  // sig
+  DblVec   maxSig, minSig;
+  maxSig.resize(fNSig);
+  minSig.resize(fNSig);
+  for (UInt_t mc=0; mc < fNSig; mc++){
+    maxSig[mc]=0;
+    minSig[mc]=100;
+    for (UInt_t i=0; i < fNMETPlots; i++){
+      if (maxSig[mc] <= fSigMET[mc][i]) maxSig[mc] = fSigMET[mc][i];
+      if (minSig[mc] >= fSigMET[mc][i]) minSig[mc] = fSigMET[mc][i]; 
+    } 
+  } 
+  // bkg
+  DblVec   maxBkg, minBkg;
+  maxBkg.resize(fNBkg);
+  minBkg.resize(fNBkg); 
+  for (UInt_t mc=0; mc < fNBkg; mc++){
+    maxBkg[mc]=0;
+    minBkg[mc]=100;
+    for (UInt_t i=0; i < fNMETPlots; i++){
+      if (maxBkg[mc] <= fBkgMET[mc][i]) maxBkg[mc] = fBkgMET[mc][i];
+      if (minBkg[mc] >= fBkgMET[mc][i]) minBkg[mc] = fBkgMET[mc][i]; 
+    } 
+  } 
+
+
   if (fOutTableTxtFile.is_open()){
     //setup Latex doc
     fOutTableTxtFile << "\\documentclass[a4paper,landscape]{article}" << std::endl;
     fOutTableTxtFile << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
     fOutTableTxtFile << "\\begin{document}" << std::endl;
-    // start table
+
+    // ==========================================================
+    // start summary of results table
     fOutTableTxtFile << "\% Summary of MET Systematics" << std::endl; 
+    fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
+    fOutTableTxtFile << "\\begin{tabular}{cc}" <<std::endl;
+    fOutTableTxtFile << "\\hline \\hline" <<std::endl;
+    fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+    fOutTableTxtFile << "\\hline \\hline" << std::endl;
+    fOutTableTxtFile << "Data & " << minData << " " << maxData << " \\\\" << std::endl; 
+    for (UInt_t mc = 0; mc < fNSig; mc++){
+      fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << " & " << minSig[mc] << " " << maxSig[mc] << " \\\\" << std::endl; 
+    }
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << " & " << minBkg[mc] << " " << maxBkg[mc] << " \\\\" << std::endl; 
+    }
+    // end table
+    fOutTableTxtFile << "\\hline \\hline" <<std::endl;
+    fOutTableTxtFile << "\\end{tabular}" <<std::endl;
+    fOutTableTxtFile << "\\end{table}" <<std::endl;
+    // ==========================================================
+
+    // ==========================================================
+    // start list of full systematics table
+    fOutTableTxtFile << "\% Full MET Systematics" << std::endl; 
     fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
     fOutTableTxtFile << "\\begin{tabular}{cc}" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
@@ -321,7 +396,7 @@ void Combiner::FindMETEfficiencies(){
     fOutTableTxtFile << "\\hline" << std::endl;
     // signal
     for (UInt_t mc=0; mc < fNSig; mc++){
-      fOutTableTxtFile << fSigNames[mc] << "\\\\" << std::endl;
+      fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << "\\\\" << std::endl;
       for (UInt_t i=0; i < fNMETPlots; i++){ 
         fOutTableTxtFile << SystMET[i] << " & " << fSigMET[mc][i]  <<  " \\\\" << std::endl;
       }
@@ -329,7 +404,7 @@ void Combiner::FindMETEfficiencies(){
     }
     // background
     for (UInt_t mc=0; mc < fNBkg; mc++){
-      fOutTableTxtFile << fBkgNames[mc] << "\\\\" << std::endl;
+      fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << "\\\\" << std::endl;
       for (UInt_t i=0; i < fNMETPlots; i++){ 
         fOutTableTxtFile << SystMET[i] << " & " << fBkgMET[mc][i]  <<  " \\\\" << std::endl;
       }
@@ -339,6 +414,7 @@ void Combiner::FindMETEfficiencies(){
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
     fOutTableTxtFile << "\\end{tabular}" <<std::endl;
     fOutTableTxtFile << "\\end{table}" <<std::endl;
+    // ==========================================================
     // end Latex doc
     fOutTableTxtFile << "\\end{document}" <<std::endl;
     std::cout << "Writing ResultsTable in " << Form("%s/ResultsTableForLatex.tex",fOutDir.Data()) << std::endl;
