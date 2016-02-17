@@ -363,16 +363,17 @@ void Combiner::FindMETEfficiencies(){
     // start summary of results table
     fOutTableTxtFile << "\% Summary of MET Systematics" << std::endl; 
     fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
-    fOutTableTxtFile << "\\begin{tabular}{cc}" <<std::endl;
+    fOutTableTxtFile << "\\begin{tabular}{lcc}" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
     fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" << std::endl;
-    fOutTableTxtFile << "Data & " << minData << " " << maxData << " \\\\" << std::endl; 
+    fOutTableTxtFile << "Sample & Efficiency & Efficiency Range \\\\" << std::endl;
+    fOutTableTxtFile << "Data & " << Form("%1.4f",fDataMET[0]) << "& -" << Form("%1.4f",fDataMET[0]-minData) << ", +" << Form("%1.4f",maxData-fDataMET[0]) << " \\\\" << std::endl; 
     for (UInt_t mc = 0; mc < fNSig; mc++){
-      fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << " & " << minSig[mc] << " " << maxSig[mc] << " \\\\" << std::endl; 
+      fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << " & " << Form("%1.4f",fSigMET[mc][0]) << "& -" << Form("%1.4f",fSigMET[mc][0]-minSig[mc]) << ", +" << Form("%1.4f",maxSig[mc]-fSigMET[mc][0]) << " \\\\" << std::endl; 
     }
     for (UInt_t mc = 0; mc < fNBkg; mc++){
-      fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << " & " << minBkg[mc] << " " << maxBkg[mc] << " \\\\" << std::endl; 
+      fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << " & " << Form("%1.4f",fBkgMET[mc][0]) << "& -" << Form("%1.4f",fBkgMET[mc][0]-minBkg[mc]) << ", +" << Form("%1.4f",maxBkg[mc]-fBkgMET[mc][0]) << " \\\\" << std::endl; 
     }
     // end table
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
@@ -539,7 +540,7 @@ void Combiner::MakeMETEffPlots(){
       // find the maximum
       maxvaltest = fOutSigMETEffTH1DHists[th1d][mc]->GetMaximum();
       if (maxvaltest > maxval) maxval = maxvaltest;
-      fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*1.5);
+      fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
       if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
       else fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
     }
@@ -549,7 +550,7 @@ void Combiner::MakeMETEffPlots(){
     fMETEffLegend[mc]->Draw("SAME");
 
     // make right format for output plots & save them
-    fOutSigMETEffPad[mc]->SetLogy(0); 
+    fOutSigMETEffPad[mc]->SetLogy(1); 
     CMSLumi(fOutSigMETEffCanvas[mc],11,lumi);
     fOutSigMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
     fOutFile->cd();
@@ -587,7 +588,7 @@ void Combiner::MakeMETEffPlots(){
       // find the maximum
       maxvaltest = fOutBkgMETEffTH1DHists[th1d][mc]->GetMaximum();
       if (maxvaltest > maxval) maxval = maxvaltest;
-      fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*1.5);
+      fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
       if (th1d == 0) fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
       else fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
     }
@@ -597,7 +598,7 @@ void Combiner::MakeMETEffPlots(){
     fBkgMETEffLegend[mc]->Draw("SAME");
 
     // make right format for output plots & save them
-    fOutBkgMETEffPad[mc]->SetLogy(0); 
+    fOutBkgMETEffPad[mc]->SetLogy(1); 
     CMSLumi(fOutBkgMETEffCanvas[mc],11,lumi);
     fOutBkgMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
     fOutFile->cd();
