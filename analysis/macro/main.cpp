@@ -42,7 +42,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString inDir = "data/25ns_v1-1-0_ReReco_wMETsys/"; 		// input directory of the samples
-  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wMETsys/";	// output directory to send results
+  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wMETsys_wOptSel/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// determine the MET correction for MC and data

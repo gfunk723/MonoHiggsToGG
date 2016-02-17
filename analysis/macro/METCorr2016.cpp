@@ -18,11 +18,11 @@ DblVec METCorr2016::Loop()
   //if (fChain == 0) return;
   
   TFile *temp=new TFile("metstudy.root", "RECREATE");
-  TProfile metx("metx","",100,100,2500);
-  TProfile mety("mety","",100,100,2500);
+  TProfile metx("metx","",10,0,200);
+  TProfile mety("mety","",10,0,200);
   
-  TProfile metxnew("metxnew","",100,100,2500);
-  TProfile metynew("metynew","",100,100,2500);
+  TProfile metxnew("metxnew","",10,0,200);
+  TProfile metynew("metynew","",10,0,200);
   
   TH1D metphi("metphi","",100,-3.14,3.14);
   TH1D metphinew("metphinew","",100,-3.14,3.14);

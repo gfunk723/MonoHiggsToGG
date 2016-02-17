@@ -225,7 +225,7 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
-      if (/*pt1 > 0.65*mgg && pt2 > 0.25*mgg*/ true){
+      if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){
       //if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
@@ -333,6 +333,17 @@ void Plotter::DoPlots(int prompt){
 
           fTH1DMap["eff_sel"]->Fill(2.5,Weight);
           //Fill histograms
+          if (doBlind){
+           if (mgg < 115 || mgg > 135){
+             fTH1DMap["t1pfmet_partblind"]->Fill(t1pfmet,Weight);
+             fTH1DMap["t1pfmetCorr_partblind"]->Fill(t1pfmetCorr,Weight);
+           }
+          }
+          else{
+            fTH1DMap["t1pfmet_partblind"]->Fill(t1pfmet,Weight);
+            fTH1DMap["t1pfmetCorr_partblind"]->Fill(t1pfmetCorr,Weight);
+          }
+
           if (isData && doBlind){ // BLIND THE DATA mgg and met distributions
             if (mgg < 115 || mgg > 135){
               if (t1pfmet < 100) fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmet,Weight);
@@ -390,6 +401,7 @@ void Plotter::DoPlots(int prompt){
           fTH1DMap["nvtx"]->Fill(nvtx,Weight);
           fTH1DMap["pt1"]->Fill(pt1,Weight);
           fTH1DMap["pt2"]->Fill(pt2,Weight);
+	  fTH1DMap["t1pfmetSumEt"]->Fill(t1pfmetSumEt,Weight);
           fTH1DMap["t1pfmetphi"]->Fill(t1pfmetPhi,Weight);
           fTH1DMap["t1pfmetphiCorr"]->Fill(t1pfmetPhiCorr,Weight);
           fTH1DMap["pfmetphi"]->Fill(pfmetphi,Weight);
@@ -608,6 +620,9 @@ void Plotter::SetUpPlots(){
   fTH1DMap["eleveto1"]		= Plotter::MakeTH1DPlot("eleveto1","",2,0,2.0,"Electron Veto(#gamma1)","");
   fTH1DMap["eleveto2"]		= Plotter::MakeTH1DPlot("eleveto2","",2,0,2.0,"Electron Veto(#gamma2)","");
 
+  fTH1DMap["t1pfmet_partblind"]     = Plotter::MakeTH1DPlot("t1pfmet_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetCorr_partblind"] = Plotter::MakeTH1DPlot("t1pfmetCorr_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["t1pfmetSumEt"]	= Plotter::MakeTH1DPlot("t1pfmetSumEt","",75,0.,900.,"Sum E_{T} (GeV)","");
   fTH1DMap["t1pfmet"]		= Plotter::MakeTH1DPlot("t1pfmet","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetJetEnUp"]	= Plotter::MakeTH1DPlot("JetEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetJetEnDown"]	= Plotter::MakeTH1DPlot("JetEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");

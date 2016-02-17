@@ -463,6 +463,16 @@ void Combiner::MakeMETEffPlots(){
     fMETEffLegend[mc]->SetTextSize(0.03);//0.035
     fMETEffLegend[mc]->SetLineWidth(2);
   }
+  std::vector<TLegend* > fSigMETEffLegend;
+  fSigMETEffLegend.resize(fNSig);
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    fSigMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    fSigMETEffLegend[mc]->SetNColumns(2);
+    fSigMETEffLegend[mc]->SetBorderSize(4);
+    fSigMETEffLegend[mc]->SetLineColor(kBlack);
+    fSigMETEffLegend[mc]->SetTextSize(0.03);//0.035
+    fSigMETEffLegend[mc]->SetLineWidth(2);
+  }
   // setup plot legend for background 
   std::vector<TLegend* > fBkgMETEffLegend;
   fBkgMETEffLegend.resize(fNBkg);
@@ -474,6 +484,16 @@ void Combiner::MakeMETEffPlots(){
     fBkgMETEffLegend[mc]->SetTextSize(0.03);//0.035
     fBkgMETEffLegend[mc]->SetLineWidth(2);
   }
+  //std::vector<TLegend* > fMETEffLegend;
+  //fMETEffLegend.resize(fNBkg);
+  //for (UInt_t mc = 0; mc < fNBkg; mc++){
+  //  fMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+  //  fMETEffLegend[mc]->SetNColumns(2);
+  //  fMETEffLegend[mc]->SetBorderSize(4);
+  //  fMETEffLegend[mc]->SetLineColor(kBlack);
+  //  fMETEffLegend[mc]->SetTextSize(0.03);//0.035
+  //  fMETEffLegend[mc]->SetLineWidth(2);
+  //}
 
   // copy the plots and normalize them
   fOutSigMETEffTH1DHists.resize(fNMETPlots);
@@ -1157,6 +1177,9 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("t1pfmetCorr");
     fTH1DNames.push_back("t1pfmetphiCorr");
     fTH1DNames.push_back("t1pfmet_zoom");
+    fTH1DNames.push_back("t1pfmetSumEt");
+    fTH1DNames.push_back("t1pfmet_partblind");
+    fTH1DNames.push_back("t1pfmetCorr_partblind");
     fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
     fTH1DNames.push_back("JetEnUp");
