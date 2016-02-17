@@ -93,6 +93,7 @@ private:
   TH1DVecVec	fInSigTH1DHists;
 
   TStrVec	SystMET;
+  TStrMap	fSystMETTitleMap;
   ColorMap	fColorMapMETEff;
   TH1DVecVec	fOutBkgMETEffTH1DHists;
   TH1DVecVec	fOutSigMETEffTH1DHists;

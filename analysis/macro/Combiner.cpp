@@ -273,6 +273,23 @@ void Combiner::FindMETEfficiencies(){
   SystMET.push_back("PhoEnDown");
   SystMET.push_back("JetUnclEnUp");
   SystMET.push_back("JetUnclEnDown");
+ 
+  fSystMETTitleMap["Original"]		= "Original";  
+  fSystMETTitleMap["JetEnUp"] 		= "Jet Energy Up"; 
+  fSystMETTitleMap["JetEnDown"]		= "Jet Energy Down"; 
+  fSystMETTitleMap["JetResUp"] 		= "Jet Res. Up"; 
+  fSystMETTitleMap["JetResDown"]	= "Jet Res. Down"; 
+  fSystMETTitleMap["MuonEnUp"]		= "Muon Energy Up"; 
+  fSystMETTitleMap["MuonEnDown"]	= "Muon Energy Down"; 
+  fSystMETTitleMap["EleEnUp"]		= "Electron Energy Up"; 
+  fSystMETTitleMap["EleEnDown"]		= "Electron Energy Down"; 
+  fSystMETTitleMap["TauEnUp"]		= "Tau Energy Up"; 
+  fSystMETTitleMap["TauEnDown"]		= "Tau Energy Down"; 
+  fSystMETTitleMap["PhoEnUp"]		= "Photon Energy Up"; 
+  fSystMETTitleMap["PhoEnDown"] 	= "Photon Energy Down"; 
+  fSystMETTitleMap["JetUnclEnUp"]	= "Unclust. Jet Energy Up"; 
+  fSystMETTitleMap["JetUnclEnDown"] 	= "Unclust. Jet Energy Down"; 
+
 
   //std::cout << " ---------------------------------------------------------------- " << std::endl;
   //std::cout << " ---------------------------------------------------------------- " << std::endl;
@@ -308,7 +325,7 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
   fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
   fSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
-  fSampleTitleMap["ttHJetToGG"]		= "tt $\\rightarrow H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["ttHJetToGG"]		= "tt $+ H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
@@ -368,13 +385,15 @@ void Combiner::FindMETEfficiencies(){
     fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" << std::endl;
     fOutTableTxtFile << "Sample & Efficiency & Efficiency Range \\\\" << std::endl;
-    fOutTableTxtFile << "Data & " << Form("%1.4f",fDataMET[0]) << "& -" << Form("%1.4f",fDataMET[0]-minData) << ", +" << Form("%1.4f",maxData-fDataMET[0]) << " \\\\" << std::endl; 
+    fOutTableTxtFile << "\\hline" <<std::endl;
     for (UInt_t mc = 0; mc < fNSig; mc++){
       fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << " & " << Form("%1.4f",fSigMET[mc][0]) << "& -" << Form("%1.4f",fSigMET[mc][0]-minSig[mc]) << ", +" << Form("%1.4f",maxSig[mc]-fSigMET[mc][0]) << " \\\\" << std::endl; 
     }
+    fOutTableTxtFile << "\\hline" <<std::endl;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << " & " << Form("%1.4f",fBkgMET[mc][0]) << "& -" << Form("%1.4f",fBkgMET[mc][0]-minBkg[mc]) << ", +" << Form("%1.4f",maxBkg[mc]-fBkgMET[mc][0]) << " \\\\" << std::endl; 
     }
+    fOutTableTxtFile << "Data & " << Form("%1.4f",fDataMET[0]) << "& -" << Form("%1.4f",fDataMET[0]-minData) << ", +" << Form("%1.4f",maxData-fDataMET[0]) << " \\\\" << std::endl; 
     // end table
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
     fOutTableTxtFile << "\\end{tabular}" <<std::endl;
@@ -384,37 +403,59 @@ void Combiner::FindMETEfficiencies(){
     // ==========================================================
     // start list of full systematics table
     fOutTableTxtFile << "\% Full MET Systematics" << std::endl; 
-    fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
-    fOutTableTxtFile << "\\begin{tabular}{cc}" <<std::endl;
-    fOutTableTxtFile << "\\hline \\hline" <<std::endl;
-    fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
-    // data
-    fOutTableTxtFile << "\\hline" <<std::endl;
-    fOutTableTxtFile << "Data \\\\" << std::endl;
-    for (UInt_t i=0; i < fNMETPlots; i++){ 
-      fOutTableTxtFile << SystMET[i] << " & " << fDataMET[i]  <<  " \\\\" << std::endl;
-    }
-    fOutTableTxtFile << "\\hline" << std::endl;
+
     // signal
     for (UInt_t mc=0; mc < fNSig; mc++){
+      fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
+      fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
+      fOutTableTxtFile << "\\hline \\hline" <<std::endl;
       fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << "\\\\" << std::endl;
+      fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+      fOutTableTxtFile << "\\hline" <<std::endl;
+      fOutTableTxtFile << "Type1 PF MET Version & Efficiency \\\\" << std::endl;
       for (UInt_t i=0; i < fNMETPlots; i++){ 
-        fOutTableTxtFile << SystMET[i] << " & " << fSigMET[mc][i]  <<  " \\\\" << std::endl;
+        fOutTableTxtFile << fSystMETTitleMap[SystMET[i]] << " & " << Form("%1.4f",fSigMET[mc][i])  <<  " \\\\" << std::endl;
+        if (i==0) fOutTableTxtFile << "\\hline" <<std::endl;
       }
       fOutTableTxtFile << "\\hline" << std::endl;
+      fOutTableTxtFile << "\\end{tabular}" <<std::endl;
+      fOutTableTxtFile << "\\end{table}" <<std::endl;
     }
+
     // background
     for (UInt_t mc=0; mc < fNBkg; mc++){
+      fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
+      fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
+      fOutTableTxtFile << "\\hline \\hline" <<std::endl;
       fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << "\\\\" << std::endl;
+      fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+      fOutTableTxtFile << "\\hline" <<std::endl;
+      fOutTableTxtFile << "Type1 PF MET Version & Efficiency \\\\" << std::endl;
       for (UInt_t i=0; i < fNMETPlots; i++){ 
-        fOutTableTxtFile << SystMET[i] << " & " << fBkgMET[mc][i]  <<  " \\\\" << std::endl;
+        fOutTableTxtFile << fSystMETTitleMap[SystMET[i]] << " & " << Form("%1.4f",fBkgMET[mc][i])  <<  " \\\\" << std::endl;
+        if (i==0) fOutTableTxtFile << "\\hline" <<std::endl;
       }
       fOutTableTxtFile << "\\hline" << std::endl;
+      fOutTableTxtFile << "\\end{tabular}" <<std::endl;
+      fOutTableTxtFile << "\\end{table}" <<std::endl;
     }
-    // end table
+
+    // data
+    fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
+    fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
+    fOutTableTxtFile << "Data \\\\" << std::endl;
+    fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+    fOutTableTxtFile << "Type1 PF MET Version & Efficiency \\\\" << std::endl;
+    for (UInt_t i=0; i < fNMETPlots; i++){ 
+      fOutTableTxtFile << fSystMETTitleMap[SystMET[i]] << " & " << Form("%1.4f",fDataMET[i])  <<  " \\\\" << std::endl;
+      if (i==0) fOutTableTxtFile << "\\hline" <<std::endl;
+    }
+    fOutTableTxtFile << "\\hline" << std::endl;
     fOutTableTxtFile << "\\end{tabular}" <<std::endl;
     fOutTableTxtFile << "\\end{table}" <<std::endl;
+
+
     // ==========================================================
     // end Latex doc
     fOutTableTxtFile << "\\end{document}" <<std::endl;
