@@ -347,10 +347,13 @@ void Plotter::DoPlots(int prompt){
           if (isData && doBlind){ // BLIND THE DATA mgg and met distributions
             if (mgg < 115 || mgg > 135){
               if (t1pfmet < 100) fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmet,Weight);
+              fTH1DMap["t1pfmet_scaledipho"]->Fill(t1pfmet,Weight);
 	      if (t1pfmet >= 80) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight);  
               fTH1DMap["mgg"]->Fill(mgg,Weight);
               fTH2DMap["mgg_PU"]->Fill(nvtx,mgg,Weight);
               fTH2DMap["mgg_ptgg"]->Fill(ptgg,mgg,Weight);
+              fTH2DMap["t1pfmet_ptgg"]->Fill(ptgg,t1pfmet,Weight);
+              fTH2DMap["t1pfmet_dphi"]->Fill(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi),t1pfmet,Weight);
             }
             //fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
             //fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
@@ -358,9 +361,9 @@ void Plotter::DoPlots(int prompt){
               fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
               fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
               fTH2DMap["t1pfmet_PU"]->Fill(nvtx,t1pfmet,Weight);
-              fTH2DMap["t1pfmet_ptgg"]->Fill(ptgg,t1pfmet,Weight);
               fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorr,Weight);
             }
+
             if (pfmet < 100) fTH1DMap["pfmet"]->Fill(pfmet,Weight);
             if (calomet < 100) fTH1DMap["calomet"]->Fill(calomet,Weight);
             /*if (ptgg<0) */ fTH1DMap["ptgg"]->Fill(ptgg,Weight);
@@ -369,6 +372,7 @@ void Plotter::DoPlots(int prompt){
             fTH1DMap["mgg"]->Fill(mgg,Weight);
             fTH1DMap["ptgg"]->Fill(ptgg,Weight);
             fTH1DMap["t1pfmet"]->Fill(t1pfmet,Weight);
+            fTH1DMap["t1pfmet_scaledipho"]->Fill(t1pfmet,Weight*1.5);
             fTH1DMap["t1pfmetCorr"]->Fill(t1pfmetCorr,Weight);
             fTH1DMap["t1pfmetJetEnUp"]->Fill(t1pfmetJetEnUp,Weight);
             fTH1DMap["t1pfmetJetEnDown"]->Fill(t1pfmetJetEnDown,Weight);
@@ -623,6 +627,7 @@ void Plotter::SetUpPlots(){
   fTH1DMap["t1pfmet_partblind"]     = Plotter::MakeTH1DPlot("t1pfmet_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_partblind"] = Plotter::MakeTH1DPlot("t1pfmetCorr_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetSumEt"]	= Plotter::MakeTH1DPlot("t1pfmetSumEt","",75,0.,900.,"Sum E_{T} (GeV)","");
+  fTH1DMap["t1pfmet_scaledipho"]= Plotter::MakeTH1DPlot("t1pfmet_scaledipho","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmet"]		= Plotter::MakeTH1DPlot("t1pfmet","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetJetEnUp"]	= Plotter::MakeTH1DPlot("JetEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetJetEnDown"]	= Plotter::MakeTH1DPlot("JetEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
@@ -709,9 +714,10 @@ void Plotter::SetUpPlots(){
   // 2D plots
   fTH2DMap["mgg_PU"]		= Plotter::MakeTH2DPlot("mgg_PU","",60,0.,60.,40,100.,300.,"nvtx","m_{#gamma#gamma} (GeV)");
   fTH2DMap["mgg_ptgg"] 		= Plotter::MakeTH2DPlot("mgg_ptgg","",50,0.,500.,40,100.,300.,"p_{T,#gamma#gamma} (GeV)","m_{#gamma#gamma}");
-  fTH2DMap["t1pfmet_PU"]	= Plotter::MakeTH2DPlot("t1pfmet_PU","",60,50.,300.,100,0.,1000.,"nvtx","MET (GeV)");
-  fTH2DMap["t1pfmet_ptgg"]	= Plotter::MakeTH2DPlot("t1pfmet_ptgg","",60,0.,60.,100,0.,1000.,"p_{T,#gamma#gamma} (GeV)","MET (GeV)");
-  fTH2DMap["t1pfmet_mgg"]	= Plotter::MakeTH2DPlot("t1pfmet_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","MET (GeV)");
+  fTH2DMap["t1pfmet_PU"]	= Plotter::MakeTH2DPlot("t1pfmet_PU","",60,50.,300.,100,0.,1000.,"nvtx","E_{T}^{miss} (GeV)");
+  fTH2DMap["t1pfmet_ptgg"]	= Plotter::MakeTH2DPlot("t1pfmet_ptgg","",40,0.,400.,25,0.,250.,"p_{T,#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+  fTH2DMap["t1pfmet_mgg"]	= Plotter::MakeTH2DPlot("t1pfmet_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+  fTH2DMap["t1pfmet_dphi"]	= Plotter::MakeTH2DPlot("t1pfmet_dphi","",20,-4.,4.,25,0.,250.,"#Delta#phi(#gamma#gamma,E_{T}^{miss})","E_{T}^{miss} (GeV)");
 
 }// end Plotter::SetUpPlots
 
@@ -735,6 +741,7 @@ TH2D * Plotter::MakeTH2DPlot(const TString hname, const TString htitle, const In
   TH2D * hist = new TH2D(hname.Data(),htitle.Data(),xnbins,xlow,xhigh,ynbins,ylow,yhigh);
   hist->GetXaxis()->SetTitle(xtitle.Data());
   hist->GetYaxis()->SetTitle(ytitle.Data());
+  gStyle->SetOptStat(0);
   return hist;
 }// end Plotter::MakeTH2DPlot
 
@@ -790,8 +797,8 @@ void Plotter::SavePlots(){
 
     CMSLumi(canv2d,0,fLumi);
 
-    //canv2d->SetLogy(0);
-    //canv2d->SaveAs(Form("%s%s/%s.%s",fName.Data(),species.Data(),(*mapiter).first.Data(),fType.Data()));
+    canv2d->SetLogy(0);
+    canv2d->SaveAs(Form("%s%s/%s.%s",fName.Data(),species.Data(),(*mapiter).first.Data(),fType.Data()));
   }// end of loop over mapiter for 2d plots
   delete canv2d;
 

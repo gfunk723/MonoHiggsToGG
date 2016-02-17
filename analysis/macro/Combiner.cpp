@@ -380,9 +380,9 @@ void Combiner::FindMETEfficiencies(){
     // start summary of results table
     fOutTableTxtFile << "\% Summary of MET Systematics" << std::endl; 
     fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
-    fOutTableTxtFile << "\\begin{tabular}{lcc}" <<std::endl;
+    fOutTableTxtFile << "\\begin{tabular}{|l|c|c|}" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
-    fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+    fOutTableTxtFile << "\\multicolumn{3}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" << std::endl;
     fOutTableTxtFile << "Sample & Efficiency & Efficiency Range \\\\" << std::endl;
     fOutTableTxtFile << "\\hline" <<std::endl;
@@ -407,10 +407,10 @@ void Combiner::FindMETEfficiencies(){
     // signal
     for (UInt_t mc=0; mc < fNSig; mc++){
       fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
-      fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
+      fOutTableTxtFile << "\\begin{tabular}{|l|c|}" <<std::endl;
       fOutTableTxtFile << "\\hline \\hline" <<std::endl;
-      fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << "\\\\" << std::endl;
-      fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+      fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << fSampleTitleMap[fSigNames[mc]] << "} \\\\" << std::endl;
+      fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
       fOutTableTxtFile << "\\hline" <<std::endl;
       fOutTableTxtFile << "Type1 PF MET Version & Efficiency \\\\" << std::endl;
       for (UInt_t i=0; i < fNMETPlots; i++){ 
@@ -427,8 +427,8 @@ void Combiner::FindMETEfficiencies(){
       fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
       fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
       fOutTableTxtFile << "\\hline \\hline" <<std::endl;
-      fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << "\\\\" << std::endl;
-      fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+      fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << fSampleTitleMap[fBkgNames[mc]] << "} \\\\" << std::endl;
+      fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
       fOutTableTxtFile << "\\hline" <<std::endl;
       fOutTableTxtFile << "Type1 PF MET Version & Efficiency \\\\" << std::endl;
       for (UInt_t i=0; i < fNMETPlots; i++){ 
@@ -444,8 +444,8 @@ void Combiner::FindMETEfficiencies(){
     fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
     fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
-    fOutTableTxtFile << "Data \\\\" << std::endl;
-    fOutTableTxtFile << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<" \\\\" <<std::endl;
+    fOutTableTxtFile << "\\multicolumn{2}{|c|}{Data} \\\\" << std::endl;
+    fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
     fOutTableTxtFile << "Type1 PF MET Version & Efficiency \\\\" << std::endl;
     for (UInt_t i=0; i < fNMETPlots; i++){ 
       fOutTableTxtFile << fSystMETTitleMap[SystMET[i]] << " & " << Form("%1.4f",fDataMET[i])  <<  " \\\\" << std::endl;
@@ -524,6 +524,8 @@ void Combiner::MakeMETEffPlots(){
     fOutSigMETEffTH1DHists[th1d].resize(fNSig);
     for (UInt_t mc = 0; mc < fNSig; mc++){
       fOutSigMETEffTH1DHists[th1d][mc] = (TH1D*) fInSigTH1DHists[th1d+fIndexMET][mc]->Clone();
+      //if (mc==0 || mc==1) fOutSigMETEffTH1DHists[th1d][mc]->GetXaxis()->SetMaximum(500);
+      //else fOutSigMETEffTH1DHists[th1d][mc]->GetXaxis()->SetMaximum(900);
       if (fOutSigMETEffTH1DHists[th1d][mc]->Integral() > 0){
         fOutSigMETEffTH1DHists[th1d][mc]->Scale(1.0/fOutSigMETEffTH1DHists[th1d][mc]->Integral());
       } 
@@ -538,6 +540,8 @@ void Combiner::MakeMETEffPlots(){
     fOutBkgMETEffTH1DHists[th1d].resize(fNBkg);
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       fOutBkgMETEffTH1DHists[th1d][mc] = (TH1D*) fInBkgTH1DHists[th1d+fIndexMET][mc]->Clone();
+      //fOutBkgMETEffTH1DHists[th1d][mc]->GetXaxis()->SetMaximum(350);
+      fOutBkgMETEffTH1DHists[th1d][mc]->GetXaxis()->SetRangeUser(10,100);
       if (fOutBkgMETEffTH1DHists[th1d][mc]->Integral() > 0){
         fOutBkgMETEffTH1DHists[th1d][mc]->Scale(1.0/fOutBkgMETEffTH1DHists[th1d][mc]->Integral());
       } 
@@ -581,15 +585,19 @@ void Combiner::MakeMETEffPlots(){
     fOutSigMETEffPad[mc]->Draw(); 
     fOutSigMETEffPad[mc]->cd(); 
 
-    Double_t maxval; 
+    Double_t maxval = 1; 
     if (mc < fNSig) maxval = fOutSigMETEffTH1DHists[0][mc]->GetMaximum();
     else maxval = fOutSigMETEffTH1DHists[0][mc-fNSig]->GetMaximum();
-
     // plots with all met shapes
     if (mc < fNSig){
       for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
-        fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
-        if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+        if (th1d == 0){
+          fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*10);
+          fOutSigMETEffTH1DHists[th1d][mc]->SetMinimum(1E-3);
+          fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+          if (mc == 0) fOutSigMETEffTH1DHists[th1d][mc]->GetXaxis()->SetRangeUser(0,400); 
+          if (mc == 1) fOutSigMETEffTH1DHists[th1d][mc]->GetXaxis()->SetRangeUser(0,500); 
+        }
         else fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
       }
       fOutSigMETEffTH1DHists[0][mc]->SetLineWidth(2); 
@@ -598,8 +606,11 @@ void Combiner::MakeMETEffPlots(){
     // these have the reduced plots
     else {
       for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
-        fOutSigMETEffTH1DHists[th1d][mc-fNSig]->SetMaximum(maxval*100);
-        if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc-fNSig]->Draw("HIST"); 
+        if (th1d == 0){
+          fOutSigMETEffTH1DHists[th1d][mc-fNSig]->SetMaximum(maxval);
+          fOutSigMETEffTH1DHists[th1d][mc-fNSig]->SetMinimum(1E-3);
+          fOutSigMETEffTH1DHists[th1d][mc-fNSig]->Draw("HIST"); 
+        }
         else if (th1d == 1 || th1d == 2 || th1d == 11 || th1d == 12 ) fOutSigMETEffTH1DHists[th1d][mc-fNSig]->Draw("HIST SAME");
       }
       fOutSigMETEffTH1DHists[0][mc-fNSig]->SetLineWidth(2); 
@@ -647,16 +658,20 @@ void Combiner::MakeMETEffPlots(){
     fOutBkgMETEffPad[mc]->Draw(); 
     fOutBkgMETEffPad[mc]->cd(); 
 
-    Double_t maxval;
+    Double_t maxval = 1;
     if (mc < fNBkg) maxval = fOutBkgMETEffTH1DHists[0][mc]->GetMaximum();
     else maxval = fOutBkgMETEffTH1DHists[0][mc-fNBkg]->GetMaximum();
 
     // plots with all met shapes
     if (mc < fNBkg){
       for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
-        fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
-        if (th1d == 0) fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+        if (th1d == 0){
+          fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*10);
+          fOutBkgMETEffTH1DHists[th1d][mc]->SetMinimum(1E-3);
+          fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+        }
         else fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+        fOutBkgMETEffTH1DHists[th1d][mc]->GetXaxis()->SetRangeUser(0,350); 
       }
       fOutBkgMETEffTH1DHists[0][mc]->SetLineWidth(2); 
       fOutBkgMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
@@ -664,8 +679,11 @@ void Combiner::MakeMETEffPlots(){
     // these have the reduced plots
     else {
       for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
-        fOutBkgMETEffTH1DHists[th1d][mc-fNBkg]->SetMaximum(maxval*100);
-        if (th1d == 0) fOutBkgMETEffTH1DHists[th1d][mc-fNBkg]->Draw("HIST"); 
+        if (th1d == 0){ 
+          fOutBkgMETEffTH1DHists[th1d][mc-fNBkg]->SetMaximum(maxval);
+          fOutBkgMETEffTH1DHists[th1d][mc-fNBkg]->SetMinimum(1E-3);
+          fOutBkgMETEffTH1DHists[th1d][mc-fNBkg]->Draw("HIST"); 
+        }
         else if (th1d == 1 || th1d == 2 || th1d == 11 || th1d == 12 ) fOutBkgMETEffTH1DHists[th1d][mc-fNBkg]->Draw("HIST SAME");
       }
       fOutBkgMETEffTH1DHists[0][mc-fNBkg]->SetLineWidth(2); 
