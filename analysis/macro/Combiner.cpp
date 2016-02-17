@@ -437,35 +437,25 @@ void Combiner::MakeMETEffPlots(){
 
   // setup color map for different MET shapes
   fColorMapMETEff["Original"]		= kBlack;
-  fColorMapMETEff["JetEnUp"]		= kYellow;
-  fColorMapMETEff["JetEnDown"]		= kYellow;
+  fColorMapMETEff["JetEnUp"]		= kRed;
+  fColorMapMETEff["JetEnDown"]		= kMagenta;
   fColorMapMETEff["JetResUp"]		= kOrange-3;
   fColorMapMETEff["JetResDown"]		= kOrange-3;
   fColorMapMETEff["MuonEnUp"]		= kTeal-1;
   fColorMapMETEff["MuonEnDown"]		= kTeal-1;
-  fColorMapMETEff["EleEnUp"]		= kMagenta;
-  fColorMapMETEff["EleEnDown"]		= kMagenta;
+  fColorMapMETEff["EleEnUp"]		= kYellow;
+  fColorMapMETEff["EleEnDown"]		= kYellow;
   fColorMapMETEff["TauEnUp"]		= kRed;
   fColorMapMETEff["TauEnDown"]		= kRed;
-  fColorMapMETEff["PhoEnUp"]		= kBlue+2;
-  fColorMapMETEff["PhoEnDown"]		= kBlue+2;
-  fColorMapMETEff["JetUnclEnUp"]	= kGreen;
-  fColorMapMETEff["JetUnclEnDown"]	= kGreen;
+  fColorMapMETEff["PhoEnUp"]		= kGreen;
+  fColorMapMETEff["PhoEnDown"]		= kTeal;
+  fColorMapMETEff["JetUnclEnUp"]	= kBlue;
+  fColorMapMETEff["JetUnclEnDown"]	= kBlue;
 
   // setup plot legend for signal
-  std::vector<TLegend* > fMETEffLegend;
-  fMETEffLegend.resize(fNSig);
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    fMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
-    fMETEffLegend[mc]->SetNColumns(2);
-    fMETEffLegend[mc]->SetBorderSize(4);
-    fMETEffLegend[mc]->SetLineColor(kBlack);
-    fMETEffLegend[mc]->SetTextSize(0.03);//0.035
-    fMETEffLegend[mc]->SetLineWidth(2);
-  }
   std::vector<TLegend* > fSigMETEffLegend;
-  fSigMETEffLegend.resize(fNSig);
-  for (UInt_t mc = 0; mc < fNSig; mc++){
+  fSigMETEffLegend.resize(fNSig*2);
+  for (UInt_t mc = 0; mc < fNSig*2; mc++){
     fSigMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
     fSigMETEffLegend[mc]->SetNColumns(2);
     fSigMETEffLegend[mc]->SetBorderSize(4);
@@ -475,8 +465,8 @@ void Combiner::MakeMETEffPlots(){
   }
   // setup plot legend for background 
   std::vector<TLegend* > fBkgMETEffLegend;
-  fBkgMETEffLegend.resize(fNBkg);
-  for (UInt_t mc = 0; mc < fNBkg; mc++){
+  fBkgMETEffLegend.resize(fNBkg*2);
+  for (UInt_t mc = 0; mc < fNBkg*2; mc++){
     fBkgMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
     fBkgMETEffLegend[mc]->SetNColumns(2);
     fBkgMETEffLegend[mc]->SetBorderSize(4);
@@ -484,16 +474,6 @@ void Combiner::MakeMETEffPlots(){
     fBkgMETEffLegend[mc]->SetTextSize(0.03);//0.035
     fBkgMETEffLegend[mc]->SetLineWidth(2);
   }
-  //std::vector<TLegend* > fMETEffLegend;
-  //fMETEffLegend.resize(fNBkg);
-  //for (UInt_t mc = 0; mc < fNBkg; mc++){
-  //  fMETEffLegend[mc] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
-  //  fMETEffLegend[mc]->SetNColumns(2);
-  //  fMETEffLegend[mc]->SetBorderSize(4);
-  //  fMETEffLegend[mc]->SetLineColor(kBlack);
-  //  fMETEffLegend[mc]->SetTextSize(0.03);//0.035
-  //  fMETEffLegend[mc]->SetLineWidth(2);
-  //}
 
   // copy the plots and normalize them
   fOutSigMETEffTH1DHists.resize(fNMETPlots);
@@ -510,7 +490,8 @@ void Combiner::MakeMETEffPlots(){
       fOutSigMETEffTH1DHists[th1d][mc]->SetLineColor(fColorMapMETEff[SystMET[th1d]]);
       fOutSigMETEffTH1DHists[th1d][mc]->SetTitle(fSigNames[mc]);
       fOutSigMETEffTH1DHists[th1d][mc]->GetYaxis()->SetTitle("");
-      if (th1d!=0) fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
+      if (th1d!=0) fSigMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
+      if (th1d==1 || th1d==2 || th1d==11 || th1d==12) fSigMETEffLegend[mc+fNSig]->AddEntry(fOutSigMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
     }
     // bkg
     fOutBkgMETEffTH1DHists[th1d].resize(fNBkg);
@@ -524,25 +505,30 @@ void Combiner::MakeMETEffPlots(){
       fOutBkgMETEffTH1DHists[th1d][mc]->SetTitle(fBkgNames[mc]);
       fOutBkgMETEffTH1DHists[th1d][mc]->GetYaxis()->SetTitle("");
       if (th1d!=0) fBkgMETEffLegend[mc]->AddEntry(fOutBkgMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
+      if (th1d==1 || th1d==2 || th1d==11 || th1d==12) fBkgMETEffLegend[mc+fNBkg]->AddEntry(fOutBkgMETEffTH1DHists[th1d][mc],SystMET[th1d],"l");
     }
   }
   // add original MET distribution last in legend
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    fMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[0][mc],SystMET[0],"l"); 
+  for (UInt_t mc = 0; mc < fNSig*2; mc++){
+    if (mc < fNSig) fSigMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[0][mc],SystMET[0],"l"); 
+    else fSigMETEffLegend[mc]->AddEntry(fOutSigMETEffTH1DHists[0][mc-fNSig],SystMET[0],"l"); 
   }  
-  for (UInt_t mc = 0; mc < fNBkg; mc++){
-    fBkgMETEffLegend[mc]->AddEntry(fOutBkgMETEffTH1DHists[0][mc],SystMET[0],"l"); 
+  for (UInt_t mc = 0; mc < fNBkg*2; mc++){
+    if (mc < fNBkg) fBkgMETEffLegend[mc]->AddEntry(fOutBkgMETEffTH1DHists[0][mc],SystMET[0],"l"); 
+    else fBkgMETEffLegend[mc]->AddEntry(fOutBkgMETEffTH1DHists[0][mc-fNBkg],SystMET[0],"l"); 
   }  
 
+  // Make signal plots
   TCanvVec fOutSigMETEffCanvas;
-  fOutSigMETEffCanvas.resize(fNSig); 
+  fOutSigMETEffCanvas.resize(fNSig*2); 
   std::vector<TPad* > fOutSigMETEffPad;
-  fOutSigMETEffPad.resize(fNSig); 
+  fOutSigMETEffPad.resize(fNSig*2); 
 
-  for (UInt_t mc = 0; mc < fNSig; mc++){
+  for (UInt_t mc = 0; mc < fNSig*2; mc++){
     gStyle->SetOptStat(0);
     // setup canvases
-    fOutSigMETEffCanvas[mc] = new TCanvas(fSigNames[mc].Data(),"");
+    if (mc < fNSig) fOutSigMETEffCanvas[mc] = new TCanvas(fSigNames[mc].Data(),"");
+    else fOutSigMETEffCanvas[mc] = new TCanvas(Form("%s_v2",fSigNames[mc-fNSig].Data()),"");
     if (fOutSigMETEffCanvas[mc] == (TCanvas*)"NULL") std::cout << "CANVAS IS NULL" << std::endl;
     fOutSigMETEffCanvas[mc]->cd();
     fOutSigMETEffCanvas[mc]->Draw();
@@ -554,80 +540,99 @@ void Combiner::MakeMETEffPlots(){
     fOutSigMETEffPad[mc]->Draw(); 
     fOutSigMETEffPad[mc]->cd(); 
 
-    Double_t maxval, maxvaltest = 0.;
-    // draw the plots on top of each other
-    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
-      // find the maximum
-      maxvaltest = fOutSigMETEffTH1DHists[th1d][mc]->GetMaximum();
-      if (maxvaltest > maxval) maxval = maxvaltest;
-      fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
-      if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
-      else fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+    Double_t maxval; 
+    if (mc < fNSig) maxval = fOutSigMETEffTH1DHists[0][mc]->GetMaximum();
+    else maxval = fOutSigMETEffTH1DHists[0][mc-fNSig]->GetMaximum();
+
+    // plots with all met shapes
+    if (mc < fNSig){
+      for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+        fOutSigMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
+        if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+        else fOutSigMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+      }
+      fOutSigMETEffTH1DHists[0][mc]->SetLineWidth(2); 
+      fOutSigMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
     }
-    fOutSigMETEffTH1DHists[0][mc]->SetLineWidth(2); 
-    fOutSigMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
+    // these have the reduced plots
+    else {
+      for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+        fOutSigMETEffTH1DHists[th1d][mc-fNSig]->SetMaximum(maxval*100);
+        if (th1d == 0) fOutSigMETEffTH1DHists[th1d][mc-fNSig]->Draw("HIST"); 
+        else if (th1d == 1 || th1d == 2 || th1d == 11 || th1d == 12 ) fOutSigMETEffTH1DHists[th1d][mc-fNSig]->Draw("HIST SAME");
+      }
+      fOutSigMETEffTH1DHists[0][mc-fNSig]->SetLineWidth(2); 
+      fOutSigMETEffTH1DHists[0][mc-fNSig]->Draw("HIST SAME"); 
+    }
 
-    fMETEffLegend[mc]->Draw("SAME");
-
+    fSigMETEffLegend[mc]->Draw("SAME");
     // make right format for output plots & save them
     fOutSigMETEffPad[mc]->SetLogy(1); 
     CMSLumi(fOutSigMETEffCanvas[mc],11,lumi);
-    fOutSigMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+    if (mc < fNSig) fOutSigMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+    else fOutSigMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s_Reduced.%s",fOutDir.Data(),fSigNames[mc-fNSig].Data(),fType.Data()));
     fOutFile->cd();
-    fOutSigMETEffCanvas[mc]->Write(Form("METEff_%s",fSigNames[mc].Data()));
+    if (mc < fNSig) fOutSigMETEffCanvas[mc]->Write(Form("METEff_%s",fSigNames[mc].Data()));
+    else fOutSigMETEffCanvas[mc]->Write(Form("METEff_%s_Reduced",fSigNames[mc-fNSig].Data()));
 
-    delete fMETEffLegend[mc];
+    delete fSigMETEffLegend[mc];
     delete fOutSigMETEffPad[mc];
     delete fOutSigMETEffCanvas[mc];
-    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ delete fOutSigMETEffTH1DHists[th1d][mc]; }
   }
-
-  TCanvVec fOutBkgMETEffCanvas;
-  fOutBkgMETEffCanvas.resize(fNBkg); 
-  std::vector<TPad* > fOutBkgMETEffPad;
-  fOutBkgMETEffPad.resize(fNBkg); 
-
-  for (UInt_t mc = 0; mc < fNBkg; mc++){
-    gStyle->SetOptStat(0);
-    // setup canvases
-    fOutBkgMETEffCanvas[mc] = new TCanvas(fBkgNames[mc].Data(),"");
-    if (fOutBkgMETEffCanvas[mc] == (TCanvas*)"NULL") std::cout << "CANVAS IS NULL" << std::endl;
-    fOutBkgMETEffCanvas[mc]->cd();
-    fOutBkgMETEffCanvas[mc]->Draw();
-    // setup pads
-    fOutBkgMETEffPad[mc] = new TPad("","",0.01,0.2,0.99,1.);
-    fOutBkgMETEffPad[mc]->SetBottomMargin(0);
-    fOutBkgMETEffPad[mc]->SetRightMargin(0.06); 
-    fOutBkgMETEffPad[mc]->SetLeftMargin(0.12); 
-    fOutBkgMETEffPad[mc]->Draw(); 
-    fOutBkgMETEffPad[mc]->cd(); 
-
-    Double_t maxval, maxvaltest = 0.;
-    // draw the plots on top of each other
-    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
-      // find the maximum
-      maxvaltest = fOutBkgMETEffTH1DHists[th1d][mc]->GetMaximum();
-      if (maxvaltest > maxval) maxval = maxvaltest;
-      fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
-      if (th1d == 0) fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
-      else fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ 
+      delete fOutSigMETEffTH1DHists[th1d][mc]; 
     }
-    fOutBkgMETEffTH1DHists[0][mc]->SetLineWidth(2); 
-    fOutBkgMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
+  }
+  
+  TCanvVec fOutBkgMETEffCanvas;
+  fOutBkgMETEffCanvas.resize(fNBkg*2); 
+  std::vector<TPad* > fOutBkgMETEffPad;
+  fOutBkgMETEffPad.resize(fNBkg*2); 
 
-    fBkgMETEffLegend[mc]->Draw("SAME");
+  for (UInt_t mc = 0; mc < fNBkg*2; mc++){
+  //  gStyle->SetOptStat(0);
+  //  // setup canvases
+  //  fOutBkgMETEffCanvas[mc] = new TCanvas(fBkgNames[mc].Data(),"");
+  //  if (fOutBkgMETEffCanvas[mc] == (TCanvas*)"NULL") std::cout << "CANVAS IS NULL" << std::endl;
+  //  fOutBkgMETEffCanvas[mc]->cd();
+  //  fOutBkgMETEffCanvas[mc]->Draw();
+  //  // setup pads
+  //  fOutBkgMETEffPad[mc] = new TPad("","",0.01,0.2,0.99,1.);
+  //  fOutBkgMETEffPad[mc]->SetBottomMargin(0);
+  //  fOutBkgMETEffPad[mc]->SetRightMargin(0.06); 
+  //  fOutBkgMETEffPad[mc]->SetLeftMargin(0.12); 
+  //  fOutBkgMETEffPad[mc]->Draw(); 
+  //  fOutBkgMETEffPad[mc]->cd(); 
 
-    // make right format for output plots & save them
-    fOutBkgMETEffPad[mc]->SetLogy(1); 
-    CMSLumi(fOutBkgMETEffCanvas[mc],11,lumi);
-    fOutBkgMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
-    fOutFile->cd();
-    fOutBkgMETEffCanvas[mc]->Write(Form("METEff_%s",fBkgNames[mc].Data()));
+  //  Double_t maxval, maxvaltest = 0.;
+  //  // draw the plots on top of each other
+  //  for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){
+  //    // find the maximum
+  //    maxvaltest = fOutBkgMETEffTH1DHists[th1d][mc]->GetMaximum();
+  //    if (maxvaltest > maxval) maxval = maxvaltest;
+  //    fOutBkgMETEffTH1DHists[th1d][mc]->SetMaximum(maxval*100);
+  //    if (th1d == 0) fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST"); 
+  //    else fOutBkgMETEffTH1DHists[th1d][mc]->Draw("HIST SAME");
+  //  }
+  //  fOutBkgMETEffTH1DHists[0][mc]->SetLineWidth(2); 
+  //  fOutBkgMETEffTH1DHists[0][mc]->Draw("HIST SAME"); 
+
+  //  fBkgMETEffLegend[mc]->Draw("SAME");
+
+  //  // make right format for output plots & save them
+  //  fOutBkgMETEffPad[mc]->SetLogy(1); 
+  //  CMSLumi(fOutBkgMETEffCanvas[mc],11,lumi);
+  //  fOutBkgMETEffCanvas[mc]->SaveAs(Form("%scomb/METEff_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
+  //  fOutFile->cd();
+  //  fOutBkgMETEffCanvas[mc]->Write(Form("METEff_%s",fBkgNames[mc].Data()));
 
     delete fBkgMETEffLegend[mc];
     delete fOutBkgMETEffPad[mc];
     delete fOutBkgMETEffCanvas[mc];
-    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ delete fOutBkgMETEffTH1DHists[th1d][mc]; }
+    for (UInt_t th1d = 0; th1d < fNMETPlots; th1d++){ 
+      if (mc < fNBkg) delete fOutBkgMETEffTH1DHists[th1d][mc]; 
+    }
   }
 
 }// end Combiner::MakeMETEffPlots
