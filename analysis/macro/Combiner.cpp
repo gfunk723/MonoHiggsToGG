@@ -425,7 +425,7 @@ void Combiner::FindMETEfficiencies(){
     // background
     for (UInt_t mc=0; mc < fNBkg; mc++){
       fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
-      fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
+      fOutTableTxtFile << "\\begin{tabular}{|l|c|}" <<std::endl;
       fOutTableTxtFile << "\\hline \\hline" <<std::endl;
       fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << fSampleTitleMap[fBkgNames[mc]] << "} \\\\" << std::endl;
       fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
@@ -442,7 +442,7 @@ void Combiner::FindMETEfficiencies(){
 
     // data
     fOutTableTxtFile << "\\begin{table}[bthp]" <<std::endl;
-    fOutTableTxtFile << "\\begin{tabular}{lc}" <<std::endl;
+    fOutTableTxtFile << "\\begin{tabular}{|l|c|}" <<std::endl;
     fOutTableTxtFile << "\\hline \\hline" <<std::endl;
     fOutTableTxtFile << "\\multicolumn{2}{|c|}{Data} \\\\" << std::endl;
     fOutTableTxtFile << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
