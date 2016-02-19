@@ -14,8 +14,6 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
-//#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
-//#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -170,6 +168,16 @@ struct diphoTree_struc_ {
   int tightsel2;
   int loosesel1;
   int loosesel2;
+  float ptJetLead;
+  float etaJetLead;
+  float phiJetLead;
+  float massJetLead;
+  int indexJetLead;
+  float ptJetSubLead;
+  float etaJetSubLead;
+  float phiJetSubLead;
+  float massJetSubLead;
+  int indexJetSubLead;
   int vtxIndex;
   float vtxX; 
   float vtxY; 
@@ -226,6 +234,9 @@ struct diphoTree_struc_ {
   int metF_HBHENoiseIso;
   int metF_CSC;
   int metF_eeBadSC;
+  int metF_HadronTrackRes;
+  int metF_MuonBadTrack;
+
   float massCorrSmear; 
   float massCorrSmearUp; 
   float massCorrSmearDown; 
@@ -293,6 +304,9 @@ private:
   float applyEnergyScaling(int sampleID, float pt, float sceta,float r9, int run);
   bool geometrical_acceptance(float eta1, float eta2);
 
+
+  std::vector<edm::EDGetTokenT<View<flashgg::Jet> > > tokenJets_;
+  
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
   EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_; 
@@ -372,7 +386,7 @@ private:
   Int_t elvetoLivia = 0;
 
   // 74X only: met filters lists
-  EventList listCSC, listEEbadSC;
+  EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
 };
    
 
@@ -389,8 +403,8 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
   //METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag", InputTag( "slimmedMETs::FLASHggMicroAOD" ) ) ) ),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
-  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) )
-{ 
+  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) )  
+  { 
   numPassingCuts.resize(numCuts);
   for (int i=0; i<numCuts; i++) numPassingCuts[i]=0;
 
@@ -401,6 +415,11 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   kfac_         = iConfig.getUntrackedParameter<double>("kfac",1.); 
   sumDataset_   = iConfig.getUntrackedParameter<double>("sumDataset",-999.);
   genInfo_      = iConfig.getParameter<edm::InputTag>("generatorInfo"); 
+
+  for ( unsigned i = 0 ; i < inputTagJets_.size() ; i++) {
+    auto token = consumes<View<flashgg::Jet> >(inputTagJets_[i]);
+    tokenJets_.push_back(token);
+  }
 
   bTag_ = iConfig.getUntrackedParameter<string> ( "bTag", "combinedInclusiveSecondaryVertexV2BJetTags" );   
 };
@@ -479,10 +498,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   Handle<edm::TriggerResults> triggerFlags;
   iEvent.getByToken( triggerFlagsToken_, triggerFlags );
 
-  JetCollectionVector Jets( inputTagJets_.size() );         
-  for( size_t j = 0; j < inputTagJets_.size(); ++j ) 
-    iEvent.getByLabel( inputTagJets_[j], Jets[j] );
-
+  
+  JetCollectionVector Jets( inputTagJets_.size() );
+  for( size_t j = 0; j < inputTagJets_.size(); ++j ) {
+    iEvent.getByToken( tokenJets_[j], Jets[j] );
+  }
+ 
   Handle<View<flashgg::Muon> > theMuons;           
   iEvent.getByToken( muonToken_, theMuons );   
 
@@ -491,7 +512,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 
   // --------------------------------------------------
-  //std::cout<<"------------------------------"<<std::endl;
+  // std::cout<<"------------------------------ "<<diPhotons->size()<<" ------------------------------ "<<std::endl;
 
   //Trigger info
  
@@ -549,6 +570,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   int metF_HBHENoiseIso =1;
   int metF_CSC =1;
   int metF_eeBadSC =1;
+  int metF_HadronTrackRes =1;
+  int metF_MuonBadTrack =1;
 
   // 76X: everything from miniAOD
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
@@ -578,8 +601,23 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     eItrEEbadSC = eventSetEEbadSC.find(event);
     if (eItrEEbadSC != eventSetEEbadSC.end()) metF_eeBadSC = 0;     
   }
-
-  
+  //two new additional filters 74X
+  EventList::iterator rItrHadronTrackRes;         
+  rItrHadronTrackRes = listHadronTrackRes.find(run);
+  if (rItrHadronTrackRes != listHadronTrackRes.end()) {     
+    set<unsigned> eventSetHadronTrackRes = rItrHadronTrackRes->second;
+    set<unsigned>::iterator eItrHadronTrackRes;
+    eItrHadronTrackRes = eventSetHadronTrackRes.find(event);
+    if (eItrHadronTrackRes != eventSetHadronTrackRes.end()) metF_HadronTrackRes = 0;     
+  }
+  EventList::iterator rItrMuonBadTrack;        
+  rItrMuonBadTrack = listMuonBadTrack.find(run);
+  if (rItrMuonBadTrack != listMuonBadTrack.end()) {     
+    set<unsigned> eventSetMuonBadTrack = rItrMuonBadTrack->second;
+    set<unsigned>::iterator eItrMuonBadTrack;
+    eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
+    if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
+  }
   // # Vertices
   int nvtx = primaryVertices->size(); 
 
@@ -961,46 +999,20 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		float leadSmearing	= getSmearingValue( leadScEta, leadR9noZS,0);
 		float subleadSmearing	= getSmearingValue( subleadScEta,subleadR9noZS  ,0);
 
-		//float leadSmearingUp	= getSmearingValue(leadScEta, leadR9noZS,1);
-		//float subleadSmearingUp	= getSmearingValue( subleadScEta,subleadR9noZS ,1);
-
-		//float leadSmearingDown	= getSmearingValue( leadScEta, leadR9noZS ,-1);
-		//float subleadSmearingDown	= getSmearingValue( subleadScEta,subleadR9noZS,-1 );
-
 		float gaussMean		= 1.0;
               	
 		TRandom Rand1(event);
 		float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
-		//float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
-		//float Smear1Down	= Rand1.Gaus(gaussMean,leadSmearingDown);
-
 		TRandom Rand2(event+83941);
 		float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
-		//float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
-		//float Smear2Down	= Rand2.Gaus(gaussMean,subleadSmearingDown);
-
 		float massCorrSmear	= theMass*sqrt(Smear1*Smear2);
-		//float massCorrSmearUp	= theMass*sqrt(Smear1Up*Smear2Up);
-		//float massCorrSmearDown	= theMass*sqrt(Smear1Down*Smear2Down);
 		
 		// scaling of Data
 		float leadScaling	= getScalingValue( sampleID, leadScEta, leadR9noZS , run, 0);
 		float subleadScaling	= getScalingValue( sampleID, subleadScEta, subleadR9noZS, run, 0);
-
-		//float leadScalingUp	= getScalingValue(leadScEta, leadR9noZS,run,1);
-		//float subleadScalingUp	= getScalingValue(subleadScEta,subleadR9noZS ,run,1);
-
-		//float leadScalingDown	= getScalingValue(leadScEta, leadR9noZS ,run,-1);
-		//float subleadScalingDown= getScalingValue(subleadScEta,subleadR9noZS ,run,-1);
-
 		float Scaling		= leadScaling*subleadScaling;
-		//float ScalingUp		= leadScalingUp*subleadScalingUp;
-		//float ScalingDown	= leadScalingDown*subleadScalingDown;
-
 		float massCorrScale	= theMass*sqrt(Scaling);
-		//float massCorrScaleUp	= theMass*sqrt(ScalingUp);
-		//float massCorrScaleDown	= theMass*sqrt(ScalingDown);
-		
+
 		float theMassCorr = theMass;
 	
 		// final theMassCorr (has Smearing or Scaling applied)
@@ -1422,28 +1434,34 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		nJets  = 0;     
 		nLooseBjets  = 0;   
 		nMediumBjets = 0;  
-		/*	
+			
 		// Muons =>
 		// 0.25 suggested by muon pog for loose isolation
 		// 0.3  (distance from the photons) => seems reasonable to me. 0.5 was used in globe
 		// pT>20
 		vector<Ptr<flashgg::Muon> > goodMuons = 
-		  selectMuons( theMuons->ptrs(), candDiphoPtr, pirmaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
+		  selectMuons( theMuons->ptrs(), candDiphoPtr, primaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
 		nMuons = goodMuons.size();
-
+		
 		// Electrons =>
 		// pT>20 (maybe can be put higher?)
 		// 0.3 (distance from the photons) => seems reasonable to me
 		std::vector<edm::Ptr<Electron> > goodElectrons = 
 		  selectMediumElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
 		nEle = goodElectrons.size();
+		
+		// Jets  - looking for the leading jet
+  
+		float ptJetLead=-999.;
+		float etaJetLead=-999.;
+		float phiJetLead=-999.;
+		float massJetLead=-999.;
+		unsigned int indexJetLead=-999;
+ 
 
-		// Jets     
-		unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex();  
+		unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
 		for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
-		  
 		  edm::Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
-
 		  // jet selection: kinematics and id - hardcoded
 		  if( fabs( thejet->eta() ) > 2.4 ) continue;     // chiara: we only consider central jets 
 		  if( thejet->pt() < 30. ) continue;  
@@ -1477,9 +1495,64 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  float bDiscriminatorValue = thejet->bDiscriminator( bTag_ );    
 		  if( bDiscriminatorValue > 0.244 ) nLooseBjets++;        // hardcoded
 		  if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded
-		  
+		  if(thejet->pt()>ptJetLead){
+		    ptJetLead = thejet->pt();
+		    etaJetLead = thejet->eta();
+		    phiJetLead = thejet->phi();
+		    massJetLead = thejet->mass();
+		    indexJetLead = jetIndex;
+		  }
 		} // loop over jets
-		*/
+
+
+		float ptJetSubLead=-999.;
+		float etaJetSubLead=-999.;
+		float phiJetSubLead=-999.;
+		float massJetSubLead=-999.;
+		unsigned int indexJetSubLead=-999;
+ 
+		// search for the second jet
+		unsigned int jetCollectionIndex2 = candDiphoPtr->jetCollectionIndex();  
+		for(unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex2]->size() ; jetIndex++) {
+		  if(jetIndex==indexJetLead)continue;//jump the leadign jet index
+		  edm::Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex2]->ptrAt( jetIndex );
+		  // jet selection: kinematics and id - hardcoded
+		  if( fabs( thejet->eta() ) > 2.4 ) continue;     // chiara: we only consider central jets 
+		  if( thejet->pt() < 30. ) continue;  
+		  if( !thejet->passesPuJetId( candDiphoPtr ) ) continue;   
+		  
+		  // far from the photons => 0.3 seems reasonable to me   
+		  float dRPhoLeadJet    = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->leadingPhoton()->superCluster()->eta(), candDiphoPtr->leadingPhoton()->superCluster()->phi() ) ;
+		  float dRPhoSubLeadJet = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->subLeadingPhoton()->superCluster()->eta(), candDiphoPtr->subLeadingPhoton()->superCluster()->phi() );
+		  if( dRPhoLeadJet < 0.3 || dRPhoSubLeadJet < 0.3 ) continue;
+
+		  // close to muons?
+		  float matchMu = false;
+		  for( unsigned int muonIndex = 0; muonIndex < goodMuons.size(); muonIndex++ ) {  
+		    Ptr<flashgg::Muon> muon = goodMuons[muonIndex];   
+		    float dRJetMuon = deltaR( thejet->eta(), thejet->phi(), muon->eta(), muon->phi() ) ; 
+		    if (dRJetMuon < 0.3 ) matchMu = true;   
+		  }
+		  
+		  // close to electrons?
+		  float matchEle = false;
+		  for( unsigned int ElectronIndex = 0; ElectronIndex < goodElectrons.size(); ElectronIndex++ ) {   
+		    Ptr<Electron> Electron = goodElectrons[ElectronIndex];  
+		    float dRJetElectron = deltaR( thejet->eta(), thejet->phi(), Electron->eta(), Electron->phi() ) ;  
+		    if( dRJetElectron < 0.3 ) matchEle = true;  
+		  }
+		  
+		  // far from possible muons and electrons       
+		  if (matchMu || matchEle) continue;
+		  if(thejet->pt()>ptJetSubLead){
+		    ptJetSubLead = thejet->pt();
+		    etaJetSubLead = thejet->eta();
+		    phiJetSubLead = thejet->phi();
+		    massJetSubLead = thejet->mass();
+		    indexJetSubLead = jetIndex;
+		  }
+		} // loop over jets
+		
 		// Variables for the tree
 		treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
 		treeDipho_.hltPhoton36Photon22Mass15=hltPhoton36Photon22Mass15;
@@ -1566,6 +1639,20 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		treeDipho_.tightsel2 = tightsel2;
 		treeDipho_.loosesel1 = loosesel1;
 		treeDipho_.loosesel2 = loosesel2;
+
+
+		//jet infos
+		treeDipho_.ptJetLead = ptJetLead;
+		treeDipho_.etaJetLead = etaJetLead;
+		treeDipho_.phiJetLead = phiJetLead;
+		treeDipho_.massJetLead = massJetLead;
+		treeDipho_.indexJetLead = indexJetLead;
+		treeDipho_.ptJetSubLead = ptJetSubLead;
+		treeDipho_.etaJetSubLead = etaJetSubLead;
+		treeDipho_.phiJetSubLead = phiJetSubLead;
+		treeDipho_.massJetSubLead = massJetSubLead;
+		treeDipho_.indexJetSubLead = indexJetSubLead;
+
 		treeDipho_.vtxIndex = vtxIndex;
 		treeDipho_.vtxX = vtxX;
 		treeDipho_.vtxY = vtxY;
@@ -1622,6 +1709,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		treeDipho_.metF_HBHENoiseIso = metF_HBHENoiseIso;
 		treeDipho_.metF_CSC = metF_CSC;
 		treeDipho_.metF_eeBadSC = metF_eeBadSC;
+		treeDipho_.metF_HadronTrackRes = metF_HadronTrackRes;
+		treeDipho_.metF_MuonBadTrack = metF_MuonBadTrack;
 		treeDipho_.massCorrSmear = massCorrSmear;
 		treeDipho_.massCorrSmearUp = massCorrSmearUp;
 		treeDipho_.massCorrSmearDown = massCorrSmearDown;
@@ -1636,7 +1725,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	
 		// Filling the trees
 		DiPhotonTree->Fill();
-		
+	
 	      } // candIndex>-999
 	    } // mass dipho
 	  } // vtx dipho
@@ -1683,6 +1772,8 @@ void NewDiPhoAnalyzer::beginJob() {
   cout << "now reading met filters lists" << endl;
   listCSC     = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/csc2015_Dec01.txt");
   listEEbadSC = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/ecalscn1043093_Dec01.txt");
+  listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
+  listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
   cout << "met filters lists read" << endl;
 
   // Trees
@@ -1780,6 +1871,18 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("genmgg",&(treeDipho_.genmgg),"genmgg/F");
   DiPhotonTree->Branch("geniso1",&(treeDipho_.geniso1),"geniso1/F");
   DiPhotonTree->Branch("geniso2",&(treeDipho_.geniso2),"geniso2/F");
+
+  DiPhotonTree->Branch("ptJetLead",&(treeDipho_.ptJetLead),"ptJetLead/F");
+  DiPhotonTree->Branch("etaJetLead",&(treeDipho_.etaJetLead),"etaJetLead/F");
+  DiPhotonTree->Branch("phiJetLead",&(treeDipho_.phiJetLead),"phiJetLead/F");
+  DiPhotonTree->Branch("massJetLead",&(treeDipho_.massJetLead),"massJetLead/F");
+  DiPhotonTree->Branch("indexJetLead",&(treeDipho_.indexJetLead),"indexJetLead/I");
+  DiPhotonTree->Branch("ptJetSubLead",&(treeDipho_.ptJetSubLead),"ptJetSubLead/F");
+  DiPhotonTree->Branch("etaJetSubLead",&(treeDipho_.etaJetSubLead),"etaJetSubLead/F");
+  DiPhotonTree->Branch("phiJetSubLead",&(treeDipho_.phiJetSubLead),"phiJetSubLead/F");
+  DiPhotonTree->Branch("massJetSubLead",&(treeDipho_.massJetSubLead),"massJetSubLead/F");
+  DiPhotonTree->Branch("indexJetSubLead",&(treeDipho_.indexJetSubLead),"indexJetSubLead/I");
+
   DiPhotonTree->Branch("vtxIndex",&(treeDipho_.vtxIndex),"vtxIndex/I");
   DiPhotonTree->Branch("vtxX",&(treeDipho_.vtxX),"vtxX/F");
   DiPhotonTree->Branch("vtxY",&(treeDipho_.vtxY),"vtxY/F");
@@ -1831,6 +1934,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("metF_HBHENoiseIso",&(treeDipho_.metF_HBHENoiseIso),"metF_HBHENoiseIso/I");
   DiPhotonTree->Branch("metF_CSC",&(treeDipho_.metF_CSC),"metF_CSC/I");
   DiPhotonTree->Branch("metF_eeBadSC",&(treeDipho_.metF_eeBadSC),"metF_eeBadSC/I");
+  DiPhotonTree->Branch("metF_HadronTrackRes",&(treeDipho_.metF_HadronTrackRes),"metF_HadronTrackRes/I");
+  DiPhotonTree->Branch("metF_MuonBadTrack",&(treeDipho_.metF_MuonBadTrack),"metF_MuonBadTrack/I");
   DiPhotonTree->Branch("massCorrSmear",&(treeDipho_.massCorrSmear),"massCorrSmear/F");
   DiPhotonTree->Branch("massCorrSmearUp",&(treeDipho_.massCorrSmearUp),"massCorrSmearUp/F");
   DiPhotonTree->Branch("massCorrSmearDown",&(treeDipho_.massCorrSmearDown),"massCorrSmearDown/F");
@@ -1913,6 +2018,18 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.tightsel2 = -500;
   treeDipho_.loosesel1 = -500;
   treeDipho_.loosesel2 = -500;
+
+  treeDipho_.ptJetLead = -500;
+  treeDipho_.etaJetLead = -500;
+  treeDipho_.phiJetLead = -500;
+  treeDipho_.massJetLead = -500;
+  treeDipho_.indexJetLead = -500;
+  treeDipho_.ptJetSubLead =-500 ;
+  treeDipho_.etaJetSubLead =-500 ;
+  treeDipho_.phiJetSubLead =-500 ;
+  treeDipho_.massJetSubLead =-500 ;
+  treeDipho_.indexJetSubLead = -500;
+
   treeDipho_.vtxIndex = -500;
   treeDipho_.vtxX = -500.;
   treeDipho_.vtxY = -500.;
