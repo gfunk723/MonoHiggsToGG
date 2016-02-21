@@ -124,6 +124,16 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   Int_t           genmatch2;
   Float_t         geniso1;
   Float_t         geniso2;
+  Float_t         ptJetLead;
+  Float_t         etaJetLead;
+  Float_t         phiJetLead;
+  Float_t         massJetLead;
+  Int_t           indexJetLead;
+  Float_t         ptJetSubLead;
+  Float_t         etaJetSubLead;
+  Float_t         phiJetSubLead;
+  Float_t         massJetSubLead;
+  Int_t           indexJetSubLead;
   Int_t           vtxIndex;
   Float_t         higgsVtxX;
   Float_t         higgsVtxY;
@@ -269,6 +279,16 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   TBranch        *b_tightsel1;
   TBranch        *b_tightsel2;
   TBranch        *b_genmgg; 
+  TBranch        *b_ptJetLead;   //!
+  TBranch        *b_etaJetLead;   //!
+  TBranch        *b_phiJetLead;   //!
+  TBranch        *b_massJetLead;   //!
+  TBranch        *b_indexJetLead;   //!
+  TBranch        *b_ptJetSubLead;   //!
+  TBranch        *b_etaJetSubLead;   //!
+  TBranch        *b_phiJetSubLead;   //!
+  TBranch        *b_massJetSubLead;   //!
+  TBranch        *b_indexJetSubLead;   //!
   TBranch        *b_genmatch1; 
   TBranch        *b_genmatch2; 
   TBranch        *b_geniso1; 
@@ -422,6 +442,16 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   treeOrig->SetBranchAddress("genmatch2", &genmatch2, &b_genmatch2);
   treeOrig->SetBranchAddress("geniso1", &geniso1, &b_geniso1);
   treeOrig->SetBranchAddress("geniso2", &geniso2, &b_geniso2);
+  treeOrig->SetBranchAddress("ptJetLead", &ptJetLead, &b_ptJetLead);
+  treeOrig->SetBranchAddress("etaJetLead", &etaJetLead, &b_etaJetLead);
+  treeOrig->SetBranchAddress("phiJetLead", &phiJetLead, &b_phiJetLead);
+  treeOrig->SetBranchAddress("massJetLead", &massJetLead, &b_massJetLead);
+  treeOrig->SetBranchAddress("indexJetLead", &indexJetLead, &b_indexJetLead);
+  treeOrig->SetBranchAddress("ptJetSubLead", &ptJetSubLead, &b_ptJetSubLead);
+  treeOrig->SetBranchAddress("etaJetSubLead", &etaJetSubLead, &b_etaJetSubLead);
+  treeOrig->SetBranchAddress("phiJetSubLead", &phiJetSubLead, &b_phiJetSubLead);
+  treeOrig->SetBranchAddress("massJetSubLead", &massJetSubLead, &b_massJetSubLead);
+  treeOrig->SetBranchAddress("indexJetSubLead", &indexJetSubLead, &b_indexJetSubLead);
   treeOrig->SetBranchAddress("vtxIndex", &vtxIndex, &b_vtxIndex);
   treeOrig->SetBranchAddress("vtxX", &vtxX, &b_vtxX);
   treeOrig->SetBranchAddress("vtxY", &vtxY, &b_vtxY);
@@ -588,6 +618,16 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     theTreeNew->Branch("genmatch2", &genmatch2, "genmatch2/I");
     theTreeNew->Branch("geniso1", &geniso1, "geniso1/F");
     theTreeNew->Branch("geniso2", &geniso2, "geniso2/F");
+    theTreeNew->Branch("ptJetLead", &ptJetLead, "ptJetLead/F");
+    theTreeNew->Branch("etaJetLead", &etaJetLead, "etaJetLead/F");
+    theTreeNew->Branch("phiJetLead", &phiJetLead, "phiJetLead/F");
+    theTreeNew->Branch("massJetLead", &massJetLead, "massJetLead/F");
+    theTreeNew->Branch("indexJetLead", &indexJetLead, "indexJetLead/I");
+    theTreeNew->Branch("ptJetSubLead", &ptJetSubLead, "ptJetSubLead/F");
+    theTreeNew->Branch("etaJetSubLead", &etaJetSubLead, "etaJetSubLead/F");
+    theTreeNew->Branch("phiJetSubLead", &phiJetSubLead, "phiJetSubLead/F");
+    theTreeNew->Branch("massJetSubLead", &massJetSubLead, "massJetSubLead/F");
+    theTreeNew->Branch("indexJetSubLead", &indexJetSubLead, "indexJetSubLead/I");
     theTreeNew->Branch("vtxIndex", &vtxIndex, "vtxIndex/I");
     theTreeNew->Branch("vtxX", &vtxX, "vtxX/F");
     theTreeNew->Branch("vtxY", &vtxY, "vtxY/F");
@@ -644,22 +684,22 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     theTreeNew->Branch("metF_HBHENoiseIso",&metF_HBHENoiseIso,"metF_HBHENoiseIso/I");
     theTreeNew->Branch("metF_CSC",&metF_CSC,"metF_CSC/I");
     theTreeNew->Branch("metF_eeBadSC",&metF_eeBadSC,"metF_eeBadSC/I");
-    theTreeNew->Branch("higgsVtxX", &higgsVtxX, "b_higgsVtxX/F");
-    theTreeNew->Branch("higgsVtxY", &higgsVtxY, "b_higgsVtxY/F");
-    theTreeNew->Branch("higgsVtxZ", &higgsVtxZ, "b_higgsVtxZ/F");
-    theTreeNew->Branch("massCorrSmear", &massCorrSmear, "b_massCorrSmear/F");
-    theTreeNew->Branch("massCorrSmearUp", &massCorrSmearUp, "b_massCorrSmearUp/F");
-    theTreeNew->Branch("massCorrSmearDown", &massCorrSmearDown, "b_massCorrSmearDown/F");
-    theTreeNew->Branch("massCorrScale", &massCorrScale, "b_massCorrScale/F");
-    theTreeNew->Branch("massCorrScaleUp", &massCorrScaleUp, "b_massCorrScaleUp/F");
-    theTreeNew->Branch("massCorrScaleDown", &massCorrScaleDown, "b_massCorrScaleDown/F");
-    theTreeNew->Branch("massRaw", &massRaw, "b_massRaw/F");
-    theTreeNew->Branch("mva1", &mva1, "b_mva1/F");
-    theTreeNew->Branch("mva2", &mva2, "b_mva2/F");
-    theTreeNew->Branch("genZ", &genZ, "b_genZ/I");
-    theTreeNew->Branch("ptZ", &ptZ, "b_ptZ/F");
-    theTreeNew->Branch("etaZ", &etaZ, "b_etaZ/F");
-    theTreeNew->Branch("phiZ", &phiZ, "b_phiZ/F");
+    theTreeNew->Branch("higgsVtxX", &higgsVtxX, "higgsVtxX/F");
+    theTreeNew->Branch("higgsVtxY", &higgsVtxY, "higgsVtxY/F");
+    theTreeNew->Branch("higgsVtxZ", &higgsVtxZ, "higgsVtxZ/F");
+    theTreeNew->Branch("massCorrSmear", &massCorrSmear, "massCorrSmear/F");
+    theTreeNew->Branch("massCorrSmearUp", &massCorrSmearUp, "massCorrSmearUp/F");
+    theTreeNew->Branch("massCorrSmearDown", &massCorrSmearDown, "massCorrSmearDown/F");
+    theTreeNew->Branch("massCorrScale", &massCorrScale, "massCorrScale/F");
+    theTreeNew->Branch("massCorrScaleUp", &massCorrScaleUp, "massCorrScaleUp/F");
+    theTreeNew->Branch("massCorrScaleDown", &massCorrScaleDown, "massCorrScaleDown/F");
+    theTreeNew->Branch("massRaw", &massRaw, "massRaw/F");
+    theTreeNew->Branch("mva1", &mva1, "mva1/F");
+    theTreeNew->Branch("mva2", &mva2, "mva2/F");
+    theTreeNew->Branch("genZ", &genZ, "genZ/I");
+    theTreeNew->Branch("ptZ", &ptZ,   "ptZ/F");
+    theTreeNew->Branch("etaZ", &etaZ, "etaZ/F");
+    theTreeNew->Branch("phiZ", &phiZ, "phiZ/F");
   }
   
   for(int i=0; i<nentriesOrig; i++) {

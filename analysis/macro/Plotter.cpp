@@ -43,10 +43,11 @@ Plotter::Plotter( TString inName, TString outName, TString inSpecies, const DblV
   std::cout << "Finished getting the h_selection" << std::endl;  
 
   // Make TLorentzVector for the photons
-  TLorentzVector *fLorenzVec1  = new TLorentzVector();
-  TLorentzVector *fLorenzVec2  = new TLorentzVector();
-  TLorentzVector *fLorenzVecgg = new TLorentzVector();
-
+  TLorentzVector *fLorenzVec1		= new TLorentzVector();
+  TLorentzVector *fLorenzVec2		= new TLorentzVector();
+  TLorentzVector *fLorenzVecgg		= new TLorentzVector();
+  TLorentzVector *fLorenzVecJet1MET	= new TLorentzVector();
+  TLorentzVector *fLorenzVecJet2MET	= new TLorentzVector();
 
   // Make output directory
   fName = outName;
@@ -121,7 +122,9 @@ void Plotter::DoPlots(int prompt){
     fLorenzVec1.SetPtEtaPhiM(pt1,eta1,phi1,0.);
     fLorenzVec2.SetPtEtaPhiM(pt2,eta2,phi2,0.);
     fLorenzVecgg = fLorenzVec1 + fLorenzVec2;
-
+    fLorenzVecJet1MET.SetPtEtaPhiM(ptJetLead,etaJetLead,phiJetLead,0.);
+    fLorenzVecJet2MET.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,0.);
+ 
 
     // calculate the weight
     Double_t Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
@@ -428,7 +431,16 @@ void Plotter::DoPlots(int prompt){
           fTH1DMap["r92"]->Fill(r92,Weight);
           fTH1DMap["eleveto1"]->Fill(eleveto1,Weight);
           fTH1DMap["eleveto2"]->Fill(eleveto2,Weight);
-
+	  fTH1DMap["ptJet1"]->Fill(ptJetLead,Weight);  
+	  fTH1DMap["ptJet2"]->Fill(ptJetSubLead,Weight);   
+	  fTH1DMap["phiJet1"]->Fill(phiJetLead,Weight);  
+	  fTH1DMap["phiJet2"]->Fill(phiJetSubLead,Weight);  
+	  fTH1DMap["etaJet1"]->Fill(etaJetLead,Weight);       
+	  fTH1DMap["etaJet2"]->Fill(etaJetSubLead,Weight);    
+	  fTH1DMap["dphiJet1MET"]->Fill(deltaPhi(fLorenzVecJet1MET.Phi(),t1pfmetPhi),Weight);
+	  fTH1DMap["dphiJet2MET"]->Fill(deltaPhi(fLorenzVecJet2MET.Phi(),t1pfmetPhi),Weight);
+	  fTH1DMap["absdphiJet1MET"]->Fill(TMath::Abs(deltaPhi(fLorenzVecJet1MET.Phi(),t1pfmetPhi)),Weight);
+	  fTH1DMap["absdphiJet2MET"]->Fill(TMath::Abs(deltaPhi(fLorenzVecJet2MET.Phi(),t1pfmetPhi)),Weight);
           fTH1DMap["phigg"]->Fill(fLorenzVecgg.Phi(),Weight); 
           fTH1DMap["dphi_ggmet"]->Fill(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi),Weight);
           fTH1DMap["absdphi_ggmet"]->Fill(TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi)),Weight);
@@ -623,6 +635,16 @@ void Plotter::SetUpPlots(){
   fTH1DMap["r92"]		= Plotter::MakeTH1DPlot("r92","",50,0.,1.1,"R9(#gamma2)","");
   fTH1DMap["eleveto1"]		= Plotter::MakeTH1DPlot("eleveto1","",2,0,2.0,"Electron Veto(#gamma1)","");
   fTH1DMap["eleveto2"]		= Plotter::MakeTH1DPlot("eleveto2","",2,0,2.0,"Electron Veto(#gamma2)","");
+  fTH1DMap["ptJet1"]		= Plotter::MakeTH1DPlot("ptJet1","",60,0.,600.,"p_{T,Jet1} (GeV)","");		
+  fTH1DMap["ptJet2"]		= Plotter::MakeTH1DPlot("ptJet2","",60,0.,600.,"p_{T,Jet2} (GeV)","");		
+  fTH1DMap["phiJet1"]		= Plotter::MakeTH1DPlot("phiJet1","",20,-4.,4.,"#phi(Jet1)","");
+  fTH1DMap["phiJet2"]		= Plotter::MakeTH1DPlot("phiJet2","",20,-4.,4.,"#phi(Jet2)","");
+  fTH1DMap["etaJet1"]		= Plotter::MakeTH1DPlot("etaJet1","",20,-3.,3.,"#eta(Jet1)","");
+  fTH1DMap["etaJet2"]		= Plotter::MakeTH1DPlot("etaJet2","",20,-3.,3.,"#eta(Jet2)","");
+  fTH1DMap["dphiJet1MET"]	= Plotter::MakeTH1DPlot("dphiJet1MET","",20,-4.,4.,"#Delta#phi(Jet1,E_{T}^{miss})","");
+  fTH1DMap["dphiJet2MET"]	= Plotter::MakeTH1DPlot("dphiJet2MET","",20,-4.,4.,"#Delta#phi(Jet2,E_{T}^{miss})","");
+  fTH1DMap["absdphiJet1MET"]	= Plotter::MakeTH1DPlot("absdphiJet1MET","",20,-4.,4.,"|#Delta#phi(Jet1,E_{T}^{miss})|","");
+  fTH1DMap["absdphiJet2MET"]	= Plotter::MakeTH1DPlot("absdphiJet2MET","",20,-4.,4.,"|#Delta#phi(Jet2,E_{T}^{miss})|","");
 
   fTH1DMap["t1pfmet_partblind"]     = Plotter::MakeTH1DPlot("t1pfmet_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_partblind"] = Plotter::MakeTH1DPlot("t1pfmetCorr_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
@@ -915,6 +937,16 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("nJets", &nJets, &b_nJets);
   tpho->SetBranchAddress("nLooseBjets", &nLooseBjets, &b_nLooseBjets);
   tpho->SetBranchAddress("nMediumBjets", &nMediumBjets, &b_nMediumBjets);
+  tpho->SetBranchAddress("ptJetLead", &ptJetLead, &b_ptJetLead);
+  tpho->SetBranchAddress("etaJetLead", &etaJetLead, &b_etaJetLead);
+  tpho->SetBranchAddress("phiJetLead", &phiJetLead, &b_phiJetLead);
+  tpho->SetBranchAddress("massJetLead", &massJetLead, &b_massJetLead);
+  tpho->SetBranchAddress("indexJetLead", &indexJetLead, &b_indexJetLead);
+  tpho->SetBranchAddress("ptJetSubLead", &ptJetSubLead, &b_ptJetSubLead);
+  tpho->SetBranchAddress("etaJetSubLead", &etaJetSubLead, &b_etaJetSubLead);
+  tpho->SetBranchAddress("phiJetSubLead", &phiJetSubLead, &b_phiJetSubLead);
+  tpho->SetBranchAddress("massJetSubLead", &massJetSubLead, &b_massJetSubLead);
+  tpho->SetBranchAddress("indexJetSubLead", &indexJetSubLead, &b_indexJetSubLead);
   tpho->SetBranchAddress("vhtruth", &vhtruth, &b_vhtruth);
   tpho->SetBranchAddress("metF_GV", &metF_GV, &b_metF_GV);
   tpho->SetBranchAddress("metF_HBHENoise", &metF_HBHENoise, &b_metF_HBHENoise);
@@ -934,7 +966,7 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("mva1", &mva1, &b_mva1);
   tpho->SetBranchAddress("mva2", &mva2, &b_mva2);
   tpho->SetBranchAddress("genZ", &genZ, &b_b_genZ);
-  tpho->SetBranchAddress("ptZ", &ptZ, &b_b_ptZ);
+  tpho->SetBranchAddress("ptZ",  &ptZ,  &b_b_ptZ);
   tpho->SetBranchAddress("etaZ", &etaZ, &b_b_etaZ);
   tpho->SetBranchAddress("phiZ", &phiZ, &b_b_phiZ);
 

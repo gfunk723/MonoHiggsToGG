@@ -1261,6 +1261,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("t1pfmetSumEt");
     fTH1DNames.push_back("t1pfmet_partblind");
     fTH1DNames.push_back("t1pfmetCorr_partblind");
+    
     fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
     fTH1DNames.push_back("JetEnUp");
@@ -1277,6 +1278,17 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("PhoEnDown");
     fTH1DNames.push_back("UnclEnUp");
     fTH1DNames.push_back("UnclEnDown");
+
+    fTH1DNames.push_back("ptJet1");
+    fTH1DNames.push_back("ptJet2");
+    fTH1DNames.push_back("phiJet1");
+    fTH1DNames.push_back("phiJet2");
+    fTH1DNames.push_back("etaJet1");
+    fTH1DNames.push_back("etaJet2");
+    fTH1DNames.push_back("dphiJet1MET");
+    fTH1DNames.push_back("dphiJet2MET");
+    fTH1DNames.push_back("absdphiJet1MET");
+    fTH1DNames.push_back("absdphiJet2MET");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");

@@ -70,6 +70,8 @@ private:
   TLorentzVector	fLorenzVec1;
   TLorentzVector	fLorenzVec2;
   TLorentzVector	fLorenzVecgg;
+  TLorentzVector	fLorenzVecJet1MET;
+  TLorentzVector	fLorenzVecJet2MET;
 
   Bool_t		doMETcorr;
   DblVec		fMETCorr;
@@ -178,6 +180,16 @@ private:
   Int_t		hltDiphoton30Mass55;
   Int_t		hltDiphoton30Mass55PV;
   Int_t		hltDiphoton30Mass55EB;
+  Float_t       ptJetLead;
+  Float_t       etaJetLead;
+  Float_t       phiJetLead;
+  Float_t       massJetLead;
+  Int_t         indexJetLead;
+  Float_t       ptJetSubLead;
+  Float_t       etaJetSubLead;
+  Float_t       phiJetSubLead;
+  Float_t       massJetSubLead;
+  Int_t         indexJetSubLead;
   Int_t         nEle;
   Int_t         nMuons;
   Int_t         nJets;
@@ -305,6 +317,16 @@ private:
   TBranch       *b_nJets;   //!
   TBranch       *b_nLooseBjets;   //!
   TBranch       *b_nMediumBjets;   //!
+  TBranch       *b_ptJetLead;   //!
+  TBranch       *b_etaJetLead;   //!
+  TBranch       *b_phiJetLead;   //!
+  TBranch       *b_massJetLead;   //!
+  TBranch       *b_indexJetLead;   //!
+  TBranch       *b_ptJetSubLead;   //!
+  TBranch       *b_etaJetSubLead;   //!
+  TBranch       *b_phiJetSubLead;   //!
+  TBranch       *b_massJetSubLead;   //!
+  TBranch       *b_indexJetSubLead;   //!
   TBranch       *b_vhtruth;   //!
   TBranch       *b_metF_GV;   //!
   TBranch       *b_metF_HBHENoise;   //!
