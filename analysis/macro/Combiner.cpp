@@ -118,6 +118,7 @@ void Combiner::DoComb(){
     // and use it for QCD distribution instead.
     Double_t qcd_integral = 0;
     Double_t gjets_integral = 0;
+    Double_t qcd_integral_new = 0;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       if (fBkgNames[mc] == "QCD") qcd_integral = fInBkgTH1DHists[th1d][mc]->Integral();  
       if (fBkgNames[mc] == "GJets"){
@@ -127,7 +128,10 @@ void Combiner::DoComb(){
          if (gjets_integral > 0) GJetsClone[th1d]->Scale(qcd_integral/gjets_integral);
       }
     }
-
+    qcd_integral_new = GJetsClone[th1d]->Integral();
+    //if (qcd_integral_new != qcd_integral) std::cout << "New QCD is NOT the same: old = " << qcd_integral << " new = " << qcd_integral_new << " diff = " << qcd_integral_new-qcd_integral << std::endl;
+    //std::cout << "QCD_Integral     = " << qcd_integral << std::endl;
+    //std::cout << "QCD_Integral_New = " << qcd_integral_new << std::endl;
 
     // bkg : copy histos and add to stacks
     for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -145,6 +149,9 @@ void Combiner::DoComb(){
       //else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
       if (mc == 0){
         fOutBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+      }
+      else if (fBkgNames[mc]=="QCD"){
+        fOutBkgTH1DHists[th1d]->Add(GJetsClone[th1d]);
       }
       else{
         fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
