@@ -1289,6 +1289,10 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("dphiJet2MET");
     fTH1DNames.push_back("absdphiJet1MET");
     fTH1DNames.push_back("absdphiJet2MET");
+    fTH1DNames.push_back("nvtx_afterJetCut");
+    fTH1DNames.push_back("ptgg_afterJetCut");
+    fTH1DNames.push_back("mgg_afterJetCut");
+    fTH1DNames.push_back("met_afterJetCut");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");

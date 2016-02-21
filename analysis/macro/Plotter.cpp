@@ -441,6 +441,20 @@ void Plotter::DoPlots(int prompt){
 	  fTH1DMap["dphiJet2MET"]->Fill(deltaPhi(fLorenzVecJet2MET.Phi(),t1pfmetPhi),Weight);
 	  fTH1DMap["absdphiJet1MET"]->Fill(TMath::Abs(deltaPhi(fLorenzVecJet1MET.Phi(),t1pfmetPhi)),Weight);
 	  fTH1DMap["absdphiJet2MET"]->Fill(TMath::Abs(deltaPhi(fLorenzVecJet2MET.Phi(),t1pfmetPhi)),Weight);
+          
+          Double_t dphiJet1MET, dphiJet2MET;
+	  dphiJet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1MET.Phi(),t1pfmetPhi));
+	  dphiJet2MET = TMath::Abs(deltaPhi(fLorenzVecJet2MET.Phi(),t1pfmetPhi));
+          if (dphiJet1MET < 3 || dphiJet2MET < 3){ 
+            fTH1DMap["nvtx_afterJetCut"]->Fill(nvtx,Weight); 
+            fTH1DMap["ptgg_afterJetCut"]->Fill(ptgg,Weight); 
+            if (isData && doBlind){
+	       if (mgg < 115 || mgg > 135) fTH1DMap["mgg_afterJetCut"]->Fill(mgg,Weight);  
+	    } 
+            else fTH1DMap["mgg_afterJetCut"]->Fill(mgg,Weight); 
+            if ( (doBlind && (mgg < 115 || mgg > 135)) || !doBlind) fTH1DMap["met_afterJetCut"]->Fill(t1pfmet,Weight); 
+	  }
+
           fTH1DMap["phigg"]->Fill(fLorenzVecgg.Phi(),Weight); 
           fTH1DMap["dphi_ggmet"]->Fill(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi),Weight);
           fTH1DMap["absdphi_ggmet"]->Fill(TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi)),Weight);
@@ -645,6 +659,11 @@ void Plotter::SetUpPlots(){
   fTH1DMap["dphiJet2MET"]	= Plotter::MakeTH1DPlot("dphiJet2MET","",20,-4.,4.,"#Delta#phi(Jet2,E_{T}^{miss})","");
   fTH1DMap["absdphiJet1MET"]	= Plotter::MakeTH1DPlot("absdphiJet1MET","",20,-4.,4.,"|#Delta#phi(Jet1,E_{T}^{miss})|","");
   fTH1DMap["absdphiJet2MET"]	= Plotter::MakeTH1DPlot("absdphiJet2MET","",20,-4.,4.,"|#Delta#phi(Jet2,E_{T}^{miss})|","");
+
+  fTH1DMap["met_afterJetCut"]	= Plotter::MakeTH1DPlot("met_afterJetCut","",75,0.,900.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["nvtx_afterJetCut"]	= Plotter::MakeTH1DPlot("nvtx_afterJetCut","",40,0.,40.,"nvtx","");
+  fTH1DMap["mgg_afterJetCut"]	= Plotter::MakeTH1DPlot("mgg_afterJetCut","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
+  fTH1DMap["ptgg_afterJetCut"]	= Plotter::MakeTH1DPlot("ptgg_afterJetCut","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
 
   fTH1DMap["t1pfmet_partblind"]     = Plotter::MakeTH1DPlot("t1pfmet_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_partblind"] = Plotter::MakeTH1DPlot("t1pfmetCorr_partblind","",75,0.,900.,"E_{T}^{miss} (GeV)","");
