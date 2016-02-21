@@ -79,6 +79,7 @@ Combiner::~Combiner(){
       delete fOutTH1DRatioPads[th1d];
       delete fOutTH1DRatioLines[th1d];
     //}
+    delete GJetsClone[th1d];
     delete fOutBkgTH1DHists[th1d];
     delete fOutBkgTH1DStacks[th1d];
     delete fOutBkgTH1DStacksForUncer[th1d];
@@ -111,11 +112,34 @@ void Combiner::DoComb(){
       }
     //}// end if ndata>0
 
+    
+    // Because QCD has some events with very large weights
+    // Copy the GJets histo, weight it by the QCD integral 
+    // and use it for QCD distribution instead.
+    Double_t qcd_integral = 0;
+    Double_t gjets_integral = 0;
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (fBkgNames[mc] == "QCD") qcd_integral = fInBkgTH1DHists[th1d][mc]->Integral();  
+      if (fBkgNames[mc] == "GJets"){
+         GJetsClone[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+         GJetsClone[th1d]->SetFillColor(fColorMap["QCD"]);
+         gjets_integral = GJetsClone[th1d]->Integral();
+         if (gjets_integral > 0) GJetsClone[th1d]->Scale(qcd_integral/gjets_integral);
+      }
+    }
+
+
     // bkg : copy histos and add to stacks
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       //fInBkgTH1DHists[th1d][mc]->Scale(lumi);
-      fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
-      fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+      if (fBkgNames[mc] == "QCD"){
+        fOutBkgTH1DStacks[th1d]->Add(GJetsClone[th1d]);
+        fOutBkgTH1DStacksForUncer[th1d]->Add(GJetsClone[th1d]);
+      }
+      else{
+        fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+        fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+      }
       // draw bkg in legend as box for stack plots, and line for overlay plot
       //if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
       //else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
@@ -896,6 +920,10 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   fOutTH1DStackPads[th1d]->Draw();
   fOutTH1DStackPads[th1d]->cd();
 
+
+
+
+
  /* for (UInt_t mc = 0; mc < fNSig; mc++){
     fInSigTH1DHists[th1d][mc]->Scale(lumi);
   }
@@ -1179,6 +1207,8 @@ void Combiner::InitCanvAndHists(){
     fTH1DLegends[th1d]->SetLineWidth(2);
   }
 
+
+  GJetsClone.resize(fNTH1D);
   fOutTH1DCanvases.resize(fNTH1D);
   fOutTH1DStackPads.resize(fNTH1D);
   fOutBkgTH1DHists.resize(fNTH1D);
@@ -1293,6 +1323,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("ptgg_afterJetCut");
     fTH1DNames.push_back("mgg_afterJetCut");
     fTH1DNames.push_back("met_afterJetCut");
+    fTH1DNames.push_back("metCorr_afterJetCut");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");

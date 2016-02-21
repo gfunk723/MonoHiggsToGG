@@ -97,6 +97,8 @@ private:
   ColorMap	fColorMapMETEff;
   TH1DVecVec	fOutBkgMETEffTH1DHists;
   TH1DVecVec	fOutSigMETEffTH1DHists;
+  
+  TH1DVec	GJetsClone;
 
   TH1DVec	fOutBkgTH1DHists;
   TH1DVec	fOutSigTH1DHists;
