@@ -136,6 +136,8 @@ private:
   TH1DVecVec	fInBkgTH1DHists;
   TH1DVecVec	fInSigTH1DHists;
 
+  TH1DVec	GJetsClone;
+
   TH1DVec	fOutDataTH1DHists; 
   TH1DVec	fOutBkgTH1DHists;
   TH1DVec	fOutSelBkgTH1DHists;

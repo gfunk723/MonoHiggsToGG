@@ -1329,14 +1329,30 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("nvtx_afterJetCut");
     fTH1DNames.push_back("ptgg_afterJetCut");
     fTH1DNames.push_back("mgg_afterJetCut");
+
     fTH1DNames.push_back("met_afterJetCut");
     fTH1DNames.push_back("metCorr_afterJetCut");
+    fTH1DNames.push_back("met_afterggMETCut");
+    fTH1DNames.push_back("metCorr_afterggMETCut");
+    fTH1DNames.push_back("met_afterJetMETCut");
+    fTH1DNames.push_back("metCorr_afterJetMETCut");
+
+    fTH1DNames.push_back("met_IsolateMET");
+    fTH1DNames.push_back("metCorr_IsolateMET");
+    fTH1DNames.push_back("met_Isolategg");
+    fTH1DNames.push_back("metCorr_Isolategg");
+    fTH1DNames.push_back("met_IsolateJET1");
+    fTH1DNames.push_back("metCorr_IsolateJET1");
+
+    fTH1DNames.push_back("met_IsolateALL");
+    fTH1DNames.push_back("metCorr_IsolateALL");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
     fTH1DNames.push_back("t1pfmet_selmgg");
     fTH1DNames.push_back("phigg");
     fTH1DNames.push_back("dphi_ggmet");
+    fTH1DNames.push_back("absdphi_ggJet1");
     fTH1DNames.push_back("absdphi_ggmet");
     fIndexDphi = fTH1DNames.size()-1;
     fTH1DNames.push_back("deta_gg");

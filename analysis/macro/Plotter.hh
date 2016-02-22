@@ -70,8 +70,8 @@ private:
   TLorentzVector	fLorenzVec1;
   TLorentzVector	fLorenzVec2;
   TLorentzVector	fLorenzVecgg;
-  TLorentzVector	fLorenzVecJet1MET;
-  TLorentzVector	fLorenzVecJet2MET;
+  TLorentzVector	fLorenzVecJet1;
+  TLorentzVector	fLorenzVecJet2;
 
   Bool_t		doMETcorr;
   DblVec		fMETCorr;
