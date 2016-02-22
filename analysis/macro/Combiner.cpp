@@ -2,13 +2,15 @@
 #include <iostream>
 #include <fstream>
 
-Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type){
+Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale){
 
   if (doNmin1) addText = "_n-1";
   else addText="";
 
   doStack = false;
   if (do_stack) doStack = true;
+
+  doQCDscale = doQCDrescale;
 
   fType = type;
   lumi	= inLumi;
@@ -136,7 +138,7 @@ void Combiner::DoComb(){
     // bkg : copy histos and add to stacks
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       //fInBkgTH1DHists[th1d][mc]->Scale(lumi);
-      if (fBkgNames[mc] == "QCD"){
+      if (doQCDscale && fBkgNames[mc] == "QCD"){
         fOutBkgTH1DStacks[th1d]->Add(GJetsClone[th1d]);
         fOutBkgTH1DStacksForUncer[th1d]->Add(GJetsClone[th1d]);
       }
@@ -150,7 +152,7 @@ void Combiner::DoComb(){
       if (mc == 0){
         fOutBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
       }
-      else if (fBkgNames[mc]=="QCD"){
+      else if (doQCDscale && fBkgNames[mc]=="QCD"){
         fOutBkgTH1DHists[th1d]->Add(GJetsClone[th1d]);
       }
       else{

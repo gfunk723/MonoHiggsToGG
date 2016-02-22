@@ -45,10 +45,11 @@ int main(){
   TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wJETinfo_wOptSel_wQCDrescale/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = true;	// determine the MET correction for MC and data
-  bool doPlots = true;		// make plots for each sample individually
+  bool doMETCorr = false;	// determine the MET correction for MC and data
+  bool doPlots = false;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
@@ -499,6 +500,7 @@ int main(){
   // 5th : bool do N-1 plots
   // 6th : bool do Stack plots (false = do overlay)
   // 7th : type of plots out 
+  // 8th : bool do rescaling of GJets to replace QCD sample
   //
   ////////////////////////////////////////////////////
 
@@ -506,20 +508,20 @@ int main(){
     // Combiner( Samples, lumi, colorMap , outDir, doNmin1plots, doStack)
     
     // do overlay plots for normal plots
-    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type);
+    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale);
     combAll->DoComb();
     delete combAll;   
     // do stack plots for normal plots
-    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type);
+    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale);
     stackAll->DoComb();
     delete stackAll;   
  
     ////// do overlay plots for n-1 plots
-    //Combiner *combAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,false,type);
+    //Combiner *combAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,false,type,doQCDrescale);
     //combAlln1->DoComb();
     //delete combAlln1;   
     ////// do stack plots for n-1 plots 
-    //Combiner *stackAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,true,type);
+    //Combiner *stackAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,true,type,doQCDrescale);
     //stackAlln1->DoComb();
     //delete stackAlln1;   
   }// end doComb
@@ -532,11 +534,12 @@ int main(){
   // 1st : SamplePairVec (Samples) that has Name,VALUE
   // 2rd : lumi
   // 3th : output directory
+  // 4th : bool do rescaling of GJets to replace QCD sample
   //
   ////////////////////////////////////////////////////
 
   if (doABCD){
-    ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,doBlind);
+    ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,doBlind,doQCDrescale);
     abcd->DoAnalysis();
     delete abcd; 
   }// end doABCD
