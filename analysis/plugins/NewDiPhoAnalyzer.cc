@@ -248,6 +248,8 @@ struct diphoTree_struc_ {
   float ptZ;
   float etaZ;
   float phiZ;
+  float mva1;
+  float mva2;
 };
 
 
@@ -1080,6 +1082,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		float massCorrScaleUp, massCorrScaleDown;
 		int genZ;
 		float ptZ, etaZ, phiZ;
+		float mva1, mva2;
 
 		// fully selected event: tree re-initialization                                                                          
 		initTreeStructure();        
@@ -1260,6 +1263,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		tightsel2 = testPhotonIsolation( passTightSieie2, passTightCHiso2, passTightNHiso2, passTightPHiso2, passTightHoe2, eleveto2 );
 		loosesel1 = testPhotonIsolation( passLooseSieie1, passLooseCHiso1, passLooseNHiso1, passLoosePHiso1, passLooseHoe1, eleveto1 );
 		loosesel2 = testPhotonIsolation( passLooseSieie2, passLooseCHiso2, passLooseNHiso2, passLoosePHiso2, passLooseHoe2, eleveto2 );
+
+		//-------> store MVA info
+		mva1 = candDiphoPtr->leadingPhoton()->phoIdMvaDWrtVtx(candDiphoPtr->vtx());
+		mva2 = candDiphoPtr->subLeadingPhoton()->phoIdMvaDWrtVtx(candDiphoPtr->vtx());
 
 		//-------> event class
 		float maxEta = sceta1;
@@ -1722,6 +1729,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		treeDipho_.ptZ = ptZ;
 		treeDipho_.etaZ = etaZ;
 		treeDipho_.phiZ = phiZ;
+		treeDipho_.mva1 = mva1;
+		treeDipho_.mva2 = mva2;
 	
 		// Filling the trees
 		DiPhotonTree->Fill();
@@ -1947,6 +1956,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("ptZ",&(treeDipho_.ptZ),"ptZ/F");
   DiPhotonTree->Branch("etaZ",&(treeDipho_.etaZ),"etaZ/F");
   DiPhotonTree->Branch("phiZ",&(treeDipho_.phiZ),"phiZ/F");
+  DiPhotonTree->Branch("mva1",&(treeDipho_.mva1),"mva1/F");
+  DiPhotonTree->Branch("mva2",&(treeDipho_.mva2),"mva2/F");
 }
 
 void NewDiPhoAnalyzer::endJob() { }
@@ -2097,6 +2108,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.ptZ = -500;
   treeDipho_.etaZ = -500;
   treeDipho_.phiZ = -500;
+  treeDipho_.mva1 = -500;
+  treeDipho_.mva2 = -500;
 }
 
 void NewDiPhoAnalyzer::SetPuWeights(std::string puWeightFile) {
