@@ -1338,6 +1338,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("metCorr_afterggMETCut");
     fTH1DNames.push_back("met_afterJetMETCut");
     fTH1DNames.push_back("metCorr_afterJetMETCut");
+    fTH1DNames.push_back("met_afterJetMETPhiCut");
+    fTH1DNames.push_back("metCorr_afterJetMETPhiCut");
 
     fTH1DNames.push_back("met_IsolateMET");
     fTH1DNames.push_back("metCorr_IsolateMET");
