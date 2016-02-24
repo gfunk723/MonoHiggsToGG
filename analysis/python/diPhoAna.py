@@ -6,6 +6,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
 isMC = True; 
+is76X = True;
 isFLASHgg_1_1_0 = True;
 ######################
 
@@ -21,7 +22,10 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All'     # Phys14 samples
 #process.GlobalTag.globaltag = 'MCRUN2_74_V9A'         # 50ns
 
-if ((isMC==False)):
+if (isMC and is76X):
+    process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v2', '')
+    print "76X_mcRun2_asymptotic_v2"
+elif (isMC==False and is76X==False):
     process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
     print "74X_dataRun2_Prompt_v2"
 elif (isMC and isFLASHgg_1_1_0):
@@ -31,21 +35,26 @@ else:
     process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
     print "MCRUN2_74_V9"
 
-if (isMC==False and isFLASHgg_1_1_0):
-    flag = 'TriggerResults::RECO'
-    print "Using name RECO"
-else:
+if (isMC==True and isFLASHgg_1_1_0):
     flag = 'TriggerResults::PAT'
     print "Using name PAT"
+else: #if (isMC==False and isFLASHgg_1_1_0):
+    flag = 'TriggerResults::RECO'
+    print "Using name RECO"
+
 
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 1000 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
+	# GluGluH for 76X
+	"file:myMicroAODOutputFile_76X.root"
+	#"/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_1/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_1-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160130_032602/0000/myMicroAODOutputFile_1.root",
+
 	#"/store/user/soffi/MonoHgg_2HDM_MZP1000_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_173214/0000/myMicroAODOutputFile_1.root", 
 	#GluGluH
-	"/store/group/soffi/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162649/0000/myMicroAODOutputFile_1.root" 
+	#"/store/group/soffi/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162649/0000/myMicroAODOutputFile_1.root" 
 	#"/store/group/phys_higgs/cmshgg/sethzenz/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160105_223154/0000/myMicroAODOutputFile_5.root",
         #New MET syst livia
     #    '/store/group/soffi/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162649/0000/myMicroAODOutputFile_1.root'
@@ -82,9 +91,19 @@ process.load("flashgg/MicroAOD/flashggDiPhotons_cfi")
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string("diPhotons.root"))
 
-process.options = cms.untracked.PSet(
-    SkipEvent = cms.untracked.vstring('ProductNotFound')
-)
+#process.options = cms.untracked.PSet(
+#    SkipEvent = cms.untracked.vstring('ProductNotFound')
+#)
+
+process.MessageLogger.categories.extend(["GetManyWithoutRegistration","GetByLabelWithoutRegistration"])
+_messageSettings = cms.untracked.PSet(
+                reportEvery = cms.untracked.int32(1),
+                            optionalPSet = cms.untracked.bool(True),
+                            limit = cms.untracked.int32(10000000)
+                        )
+
+process.MessageLogger.cerr.GetManyWithoutRegistration = _messageSettings
+process.MessageLogger.cerr.GetByLabelWithoutRegistration = _messageSettings
 
 # to make jets
 from flashgg.MicroAOD.flashggJets_cfi import flashggBTag, maxJetCollections
@@ -98,11 +117,11 @@ for i in range(0,maxJetCollections):
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-				  METTag=cms.untracked.InputTag('slimmedMETs'),#::FLASHggMicroAOD
+				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
                                   inputTagJets= UnpackedJetCollectionVInputTag,            
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),    
                                   MuonTag=cms.InputTag('flashggSelectedMuons'),            
-                                  #bTag = cms.untracked.string(flashggBTag),                
+                                  bTag = cms.untracked.string(flashggBTag),                
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),    
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),

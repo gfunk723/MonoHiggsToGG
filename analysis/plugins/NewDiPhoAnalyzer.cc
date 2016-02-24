@@ -311,7 +311,7 @@ private:
   
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
-  EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_; 
+  EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_;
   edm::InputTag rhoFixedGrid_;
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
   edm::InputTag genInfo_;
@@ -388,7 +388,7 @@ private:
   Int_t elvetoLivia = 0;
 
   // 74X only: met filters lists
-  EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
+  //EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
 };
    
 
@@ -585,42 +585,43 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter" && !triggerFlags->accept( index )) metF_eeBadSC = 0;
   }
 
-  // 74X: partially to be read from external lists
-  EventList::iterator rItrCSC;
-  rItrCSC = listCSC.find(run);
-  if (rItrCSC != listCSC.end()) {     
-    set<unsigned> eventSetCSC = rItrCSC->second;
-    set<unsigned>::iterator eItrCSC;
-    eItrCSC = eventSetCSC.find(event);
-    if (eItrCSC != eventSetCSC.end()) metF_CSC = 0;     
-  }
-  //
-  EventList::iterator rItrEEbadSC;         // this is to kill the 4th bad SC which is not included in the flags in trigger results
-  rItrEEbadSC = listEEbadSC.find(run);
-  if (rItrEEbadSC != listEEbadSC.end()) {     
-    set<unsigned> eventSetEEbadSC = rItrEEbadSC->second;
-    set<unsigned>::iterator eItrEEbadSC;
-    eItrEEbadSC = eventSetEEbadSC.find(event);
-    if (eItrEEbadSC != eventSetEEbadSC.end()) metF_eeBadSC = 0;     
-  }
-  //two new additional filters 74X
-  EventList::iterator rItrHadronTrackRes;         
-  rItrHadronTrackRes = listHadronTrackRes.find(run);
-  if (rItrHadronTrackRes != listHadronTrackRes.end()) {     
-    set<unsigned> eventSetHadronTrackRes = rItrHadronTrackRes->second;
-    set<unsigned>::iterator eItrHadronTrackRes;
-    eItrHadronTrackRes = eventSetHadronTrackRes.find(event);
-    if (eItrHadronTrackRes != eventSetHadronTrackRes.end()) metF_HadronTrackRes = 0;     
-  }
-  EventList::iterator rItrMuonBadTrack;        
-  rItrMuonBadTrack = listMuonBadTrack.find(run);
-  if (rItrMuonBadTrack != listMuonBadTrack.end()) {     
-    set<unsigned> eventSetMuonBadTrack = rItrMuonBadTrack->second;
-    set<unsigned>::iterator eItrMuonBadTrack;
-    eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
-    if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
-  }
-  // # Vertices
+  //// 74X: partially to be read from external lists
+  //EventList::iterator rItrCSC;
+  //rItrCSC = listCSC.find(run);
+  //if (rItrCSC != listCSC.end()) {     
+  //  set<unsigned> eventSetCSC = rItrCSC->second;
+  //  set<unsigned>::iterator eItrCSC;
+  //  eItrCSC = eventSetCSC.find(event);
+  //  if (eItrCSC != eventSetCSC.end()) metF_CSC = 0;     
+  //}
+  ////
+  //EventList::iterator rItrEEbadSC;         // this is to kill the 4th bad SC which is not included in the flags in trigger results
+  //rItrEEbadSC = listEEbadSC.find(run);
+  //if (rItrEEbadSC != listEEbadSC.end()) {     
+  //  set<unsigned> eventSetEEbadSC = rItrEEbadSC->second;
+  //  set<unsigned>::iterator eItrEEbadSC;
+  //  eItrEEbadSC = eventSetEEbadSC.find(event);
+  //  if (eItrEEbadSC != eventSetEEbadSC.end()) metF_eeBadSC = 0;     
+  //}
+  ////two new additional filters 74X
+  //EventList::iterator rItrHadronTrackRes;         
+  //rItrHadronTrackRes = listHadronTrackRes.find(run);
+  //if (rItrHadronTrackRes != listHadronTrackRes.end()) {     
+  //  set<unsigned> eventSetHadronTrackRes = rItrHadronTrackRes->second;
+  //  set<unsigned>::iterator eItrHadronTrackRes;
+  //  eItrHadronTrackRes = eventSetHadronTrackRes.find(event);
+  //  if (eItrHadronTrackRes != eventSetHadronTrackRes.end()) metF_HadronTrackRes = 0;     
+  //}
+  //EventList::iterator rItrMuonBadTrack;        
+  //rItrMuonBadTrack = listMuonBadTrack.find(run);
+  //if (rItrMuonBadTrack != listMuonBadTrack.end()) {     
+  //  set<unsigned> eventSetMuonBadTrack = rItrMuonBadTrack->second;
+  //  set<unsigned>::iterator eItrMuonBadTrack;
+  //  eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
+  //  if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
+  //}
+
+  // Vertices
   int nvtx = primaryVertices->size(); 
 
   // Energy density
@@ -1778,12 +1779,12 @@ void NewDiPhoAnalyzer::beginJob() {
   h_selection->Sumw2();
 
   // For 74X only: met filters event lists 
-  cout << "now reading met filters lists" << endl;
-  listCSC     = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/csc2015_Dec01.txt");
-  listEEbadSC = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/ecalscn1043093_Dec01.txt");
-  listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
-  listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
-  cout << "met filters lists read" << endl;
+  //cout << "now reading met filters lists" << endl;
+  //listCSC     = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/csc2015_Dec01.txt");
+  //listEEbadSC = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/ecalscn1043093_Dec01.txt");
+  //listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
+  //listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
+  //cout << "met filters lists read" << endl;
 
   // Trees
   DiPhotonTree = fs_->make<TTree>("DiPhotonTree","di-photon tree");
@@ -1958,6 +1959,9 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("phiZ",&(treeDipho_.phiZ),"phiZ/F");
   DiPhotonTree->Branch("mva1",&(treeDipho_.mva1),"mva1/F");
   DiPhotonTree->Branch("mva2",&(treeDipho_.mva2),"mva2/F");
+
+  cout << " finished beginJob " << endl;
+
 }
 
 void NewDiPhoAnalyzer::endJob() { }
