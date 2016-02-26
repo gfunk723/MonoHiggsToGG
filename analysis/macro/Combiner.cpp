@@ -402,6 +402,12 @@ void Combiner::FindMETEfficiencies(){
     } 
   } 
 
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+     std::cout << fSampleTitleMap[fSigNames[mc]] << " === " << fSigMET[mc][0] << " - " << minSig[mc] << " + " << maxSig[mc] << std::endl; 
+  }
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+     std::cout << fSampleTitleMap[fBkgNames[mc]] << " === " << fBkgMET[mc][0] << " - " << minBkg[mc] << " + " << maxBkg[mc] << std::endl; 
+  }
 
   if (fOutTableTxtFile.is_open()){
     //setup Latex doc
@@ -1328,18 +1334,36 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("dphiJet2MET");
     fTH1DNames.push_back("absdphiJet1MET");
     fTH1DNames.push_back("absdphiJet2MET");
+    fTH1DNames.push_back("absdphi_maxJetMET");
+    fTH1DNames.push_back("absdphi_minJetMET");
+    fTH1DNames.push_back("absdphi_maxJetMET_met100");
+    fTH1DNames.push_back("absdphi_minJetMET_met100");
+    fTH1DNames.push_back("absdphi_maxgMET");
+    fTH1DNames.push_back("absdphi_g1MET");
+    fTH1DNames.push_back("absdphi_ggmet_met100");
+    fTH1DNames.push_back("absdphi_g1MET_met100");
     fTH1DNames.push_back("nvtx_afterJetCut");
     fTH1DNames.push_back("ptgg_afterJetCut");
     fTH1DNames.push_back("mgg_afterJetCut");
+    fTH1DNames.push_back("nvtx_afterggMETCut");
+    fTH1DNames.push_back("ptgg_afterggMETCut");
+    fTH1DNames.push_back("pt1_afterggMETCut");
+    fTH1DNames.push_back("pt2_afterggMETCut");
 
     fTH1DNames.push_back("met_afterJetCut");
     fTH1DNames.push_back("metCorr_afterJetCut");
     fTH1DNames.push_back("met_afterggMETCut");
     fTH1DNames.push_back("metCorr_afterggMETCut");
+    fTH1DNames.push_back("met_aftergMETCut");
+    fTH1DNames.push_back("metCorr_aftergMETCut");
     fTH1DNames.push_back("met_afterJetMETCut");
     fTH1DNames.push_back("metCorr_afterJetMETCut");
     fTH1DNames.push_back("met_afterJetMETPhiCut");
     fTH1DNames.push_back("metCorr_afterJetMETPhiCut");
+    fTH1DNames.push_back("met_maxJetMET");
+    fTH1DNames.push_back("metCorr_maxJetMET");
+    fTH1DNames.push_back("met_minJetMET");
+    fTH1DNames.push_back("metCorr_minJetMET");
 
     fTH1DNames.push_back("met_IsolateMET");
     fTH1DNames.push_back("metCorr_IsolateMET");

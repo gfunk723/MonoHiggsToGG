@@ -42,14 +42,14 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString inDir = "data/25ns_v1-1-0_ReReco_wJETinfo/"; 		// input directory of the samples
-  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wJETinfo_wOptSel_wQCDrescale/";	// output directory to send results
+  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wJETinfo_wOptSel/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = false;	// determine the MET correction for MC and data
-  bool doPlots = false;		// make plots for each sample individually
+  bool doMETCorr = true;	// determine the MET correction for MC and data
+  bool doPlots = true;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
-  bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
+  bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given

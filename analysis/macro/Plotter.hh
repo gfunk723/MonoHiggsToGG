@@ -88,7 +88,12 @@ private:
   TH2DMap		fTH2DMap;
 
   // variables for branches
+  Int_t         run;
+  Int_t         event;
+  Int_t         lumi;
+  Float_t       rho;
   Int_t 	nvtx;
+  Int_t         sampleID;
   Float_t	weight;
   Float_t	mgg;
   Float_t	ptgg;
@@ -220,6 +225,12 @@ private:
 
 
   // branches
+  TBranch       *b_run;   //!
+  TBranch       *b_event;   //!
+  TBranch       *b_lumi;   //!
+  TBranch       *b_rho;   //!
+  TBranch       *b_sampleID;   //!
+  TBranch       *b_totXsec;   //!
   TBranch 	*b_nvtx;
   TBranch	*b_weight;
   TBranch	*b_mgg;
