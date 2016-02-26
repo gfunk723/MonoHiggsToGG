@@ -178,6 +178,16 @@ struct diphoTree_struc_ {
   float phiJetSubLead;
   float massJetSubLead;
   int indexJetSubLead;
+  float ptJet3;
+  float etaJet3;
+  float phiJet3;
+  float massJet3;
+  int indexJet3;
+  float ptJet4;
+  float etaJet4;
+  float phiJet4;
+  float massJet4;
+  int indexJet4;
   int vtxIndex;
   float vtxX; 
   float vtxY; 
@@ -1457,20 +1467,40 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  selectMediumElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
 		nEle = goodElectrons.size();
 		
-		// Jets  - looking for the leading jet
-  
+		// Jets
+		// leading jet 
 		float ptJetLead=-999.;
 		float etaJetLead=-999.;
 		float phiJetLead=-999.;
 		float massJetLead=-999.;
 		unsigned int indexJetLead=-999;
+
+		// subleading jet 
+		float ptJetSubLead=-999.;
+		float etaJetSubLead=-999.;
+		float phiJetSubLead=-999.;
+		float massJetSubLead=-999.;
+		unsigned int indexJetSubLead=-999;
  
+		// 3rd jet 
+		float ptJet3=-999.;
+		float etaJet3=-999.;
+		float phiJet3=-999.;
+		float massJet3=-999.;
+		unsigned int indexJet3=-999;
+
+		// 4th jet 
+		float ptJet4=-999.;
+		float etaJet4=-999.;
+		float phiJet4=-999.;
+		float massJet4=-999.;
+		unsigned int indexJet4=-999;
 
 		unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
 		for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
 		  edm::Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 		  // jet selection: kinematics and id - hardcoded
-		  if( fabs( thejet->eta() ) > 2.4 ) continue;     // chiara: we only consider central jets 
+		  if( fabs( thejet->eta() ) > 4.7 ) continue;// Margaret changed to include all jets
 		  if( thejet->pt() < 30. ) continue;  
 		  if( !thejet->passesPuJetId( candDiphoPtr ) ) continue;   
 		  
@@ -1501,64 +1531,43 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  nJets++;     
 		  float bDiscriminatorValue = thejet->bDiscriminator( bTag_ );    
 		  if( bDiscriminatorValue > 0.244 ) nLooseBjets++;        // hardcoded
-		  if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded
-		  if(thejet->pt()>ptJetLead){
+		  if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded 
+
+		  if(thejet->pt()>ptJetLead){ // look at lead jet
 		    ptJetLead = thejet->pt();
 		    etaJetLead = thejet->eta();
 		    phiJetLead = thejet->phi();
 		    massJetLead = thejet->mass();
 		    indexJetLead = jetIndex;
 		  }
-		} // loop over jets
-
-
-		float ptJetSubLead=-999.;
-		float etaJetSubLead=-999.;
-		float phiJetSubLead=-999.;
-		float massJetSubLead=-999.;
-		unsigned int indexJetSubLead=-999;
- 
-		// search for the second jet
-		unsigned int jetCollectionIndex2 = candDiphoPtr->jetCollectionIndex();  
-		for(unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex2]->size() ; jetIndex++) {
-		  if(jetIndex==indexJetLead)continue;//jump the leadign jet index
-		  edm::Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex2]->ptrAt( jetIndex );
-		  // jet selection: kinematics and id - hardcoded
-		  if( fabs( thejet->eta() ) > 2.4 ) continue;     // chiara: we only consider central jets 
-		  if( thejet->pt() < 30. ) continue;  
-		  if( !thejet->passesPuJetId( candDiphoPtr ) ) continue;   
-		  
-		  // far from the photons => 0.3 seems reasonable to me   
-		  float dRPhoLeadJet    = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->leadingPhoton()->superCluster()->eta(), candDiphoPtr->leadingPhoton()->superCluster()->phi() ) ;
-		  float dRPhoSubLeadJet = deltaR( thejet->eta(), thejet->phi(), candDiphoPtr->subLeadingPhoton()->superCluster()->eta(), candDiphoPtr->subLeadingPhoton()->superCluster()->phi() );
-		  if( dRPhoLeadJet < 0.3 || dRPhoSubLeadJet < 0.3 ) continue;
-
-		  // close to muons?
-		  float matchMu = false;
-		  for( unsigned int muonIndex = 0; muonIndex < goodMuons.size(); muonIndex++ ) {  
-		    Ptr<flashgg::Muon> muon = goodMuons[muonIndex];   
-		    float dRJetMuon = deltaR( thejet->eta(), thejet->phi(), muon->eta(), muon->phi() ) ; 
-		    if (dRJetMuon < 0.3 ) matchMu = true;   
-		  }
-		  
-		  // close to electrons?
-		  float matchEle = false;
-		  for( unsigned int ElectronIndex = 0; ElectronIndex < goodElectrons.size(); ElectronIndex++ ) {   
-		    Ptr<Electron> Electron = goodElectrons[ElectronIndex];  
-		    float dRJetElectron = deltaR( thejet->eta(), thejet->phi(), Electron->eta(), Electron->phi() ) ;  
-		    if( dRJetElectron < 0.3 ) matchEle = true;  
-		  }
-		  
-		  // far from possible muons and electrons       
-		  if (matchMu || matchEle) continue;
-		  if(thejet->pt()>ptJetSubLead){
+		  if(jetIndex==indexJetLead) continue;// now look at sublead jet
+		  if(thejet->pt() > ptJetSubLead){
 		    ptJetSubLead = thejet->pt();
 		    etaJetSubLead = thejet->eta();
 		    phiJetSubLead = thejet->phi();
 		    massJetSubLead = thejet->mass();
 		    indexJetSubLead = jetIndex;
 		  }
+		  if(jetIndex==indexJetSubLead) continue;// now look at 3rd jet
+		  if(thejet->pt() > ptJet3){
+		    ptJet3 = thejet->pt();
+		    etaJet3 = thejet->eta();
+		    phiJet3 = thejet->phi();
+		    massJet3 = thejet->mass();
+		    indexJet3 = jetIndex;
+		  }
+		  if(jetIndex==indexJet3) continue;// now look at 4th jet
+		  if(thejet->pt() > ptJet4){
+		    ptJet4 = thejet->pt();
+		    etaJet4 = thejet->eta();
+		    phiJet4 = thejet->phi();
+		    massJet4 = thejet->mass();
+		    indexJet4 = jetIndex;
+		  }
+
 		} // loop over jets
+
+
 		
 		// Variables for the tree
 		treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
@@ -1659,6 +1668,16 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		treeDipho_.phiJetSubLead = phiJetSubLead;
 		treeDipho_.massJetSubLead = massJetSubLead;
 		treeDipho_.indexJetSubLead = indexJetSubLead;
+		treeDipho_.ptJet3 = ptJet3;
+		treeDipho_.etaJet3 = etaJet3;
+		treeDipho_.phiJet3 = phiJet3;
+		treeDipho_.massJet3 = massJet3;
+		treeDipho_.indexJet3 = indexJet3;
+		treeDipho_.ptJet4 = ptJet4;
+		treeDipho_.etaJet4 = etaJet4;
+		treeDipho_.phiJet4 = phiJet4;
+		treeDipho_.massJet4 = massJet4;
+		treeDipho_.indexJet4 = indexJet4;
 
 		treeDipho_.vtxIndex = vtxIndex;
 		treeDipho_.vtxX = vtxX;
@@ -1891,6 +1910,16 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("phiJetSubLead",&(treeDipho_.phiJetSubLead),"phiJetSubLead/F");
   DiPhotonTree->Branch("massJetSubLead",&(treeDipho_.massJetSubLead),"massJetSubLead/F");
   DiPhotonTree->Branch("indexJetSubLead",&(treeDipho_.indexJetSubLead),"indexJetSubLead/I");
+  DiPhotonTree->Branch("ptJet3",&(treeDipho_.ptJet3),"ptJet3/F");
+  DiPhotonTree->Branch("etaJet3",&(treeDipho_.etaJet3),"etaJet3/F");
+  DiPhotonTree->Branch("phiJet3",&(treeDipho_.phiJet3),"phiJet3/F");
+  DiPhotonTree->Branch("massJet3",&(treeDipho_.massJet3),"massJet3/F");
+  DiPhotonTree->Branch("indexJet3",&(treeDipho_.indexJet3),"indexJet3/I");
+  DiPhotonTree->Branch("ptJet4",&(treeDipho_.ptJet4),"ptJet4/F");
+  DiPhotonTree->Branch("etaJet4",&(treeDipho_.etaJet4),"etaJet4/F");
+  DiPhotonTree->Branch("phiJet4",&(treeDipho_.phiJet4),"phiJet4/F");
+  DiPhotonTree->Branch("massJet4",&(treeDipho_.massJet4),"massJet4/F");
+  DiPhotonTree->Branch("indexJet4",&(treeDipho_.indexJet4),"indexJet4/I");
 
   DiPhotonTree->Branch("vtxIndex",&(treeDipho_.vtxIndex),"vtxIndex/I");
   DiPhotonTree->Branch("vtxX",&(treeDipho_.vtxX),"vtxX/F");
@@ -2040,6 +2069,16 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.phiJetSubLead =-500 ;
   treeDipho_.massJetSubLead =-500 ;
   treeDipho_.indexJetSubLead = -500;
+  treeDipho_.ptJet3 = -500;
+  treeDipho_.etaJet3 = -500;
+  treeDipho_.phiJet3 = -500;
+  treeDipho_.massJet3 = -500;
+  treeDipho_.indexJet3 = -500;
+  treeDipho_.ptJet4 = -500;
+  treeDipho_.etaJet4 = -500;
+  treeDipho_.phiJet4 = -500;
+  treeDipho_.massJet4 = -500;
+  treeDipho_.indexJet4 = -500;
 
   treeDipho_.vtxIndex = -500;
   treeDipho_.vtxX = -500.;
