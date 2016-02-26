@@ -91,9 +91,9 @@ process.load("flashgg/MicroAOD/flashggDiPhotons_cfi")
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string("diPhotons.root"))
 
-#process.options = cms.untracked.PSet(
-#    SkipEvent = cms.untracked.vstring('ProductNotFound')
-#)
+process.options = cms.untracked.PSet(
+    SkipEvent = cms.untracked.vstring('ProductNotFound')
+)
 
 process.MessageLogger.categories.extend(["GetManyWithoutRegistration","GetByLabelWithoutRegistration"])
 _messageSettings = cms.untracked.PSet(
@@ -117,15 +117,17 @@ for i in range(0,maxJetCollections):
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
+				  METTag=cms.untracked.InputTag('slimmedMETs'),
+				  #METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
                                   inputTagJets= UnpackedJetCollectionVInputTag,            
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),    
                                   MuonTag=cms.InputTag('flashggSelectedMuons'),            
                                   bTag = cms.untracked.string(flashggBTag),                
+				  RhoTag = cms.InputTag('fixedGridRhoAll'),
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),    
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
-                                  generatorInfo = cms.InputTag("generator"),
+                                  generatorInfo = cms.InputTag('generator'),
                                   dopureweight = cms.untracked.int32(1),
                                   bits         = cms.InputTag('TriggerResults::HLT'),
                                   flags        = cms.InputTag(flag),

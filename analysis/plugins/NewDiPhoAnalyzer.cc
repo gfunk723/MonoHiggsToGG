@@ -312,9 +312,11 @@ private:
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
   EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_;
-  edm::InputTag rhoFixedGrid_;
+  EDGetTokenT<double> rhoToken_;
+  //edm::InputTag rhoFixedGrid_;
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
-  edm::InputTag genInfo_;
+  EDGetTokenT<GenEventInfoProduct> genInfoToken_;
+  //edm::InputTag genInfo_;
   EDGetTokenT<View<reco::GenParticle> > genPartToken_;
   std::vector<edm::InputTag> inputTagJets_;     
   EDGetTokenT<View<Electron> > electronToken_;   
@@ -397,7 +399,9 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   vertexToken_(consumes<View<reco::Vertex> >(iConfig.getUntrackedParameter<InputTag> ("VertexTag", InputTag("offlineSlimmedPrimaryVertices")))),
   diPhotonToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonTag", InputTag("flashggDiPhotons")))),
   PileUpToken_(consumes<View<PileupSummaryInfo> >(iConfig.getUntrackedParameter<InputTag> ("PileUpTag"))),
+  rhoToken_(consumes<double>(iConfig.getParameter<InputTag>("RhoTag"))),
   genPhotonExtraToken_(mayConsume<vector<flashgg::GenPhotonExtra> >(iConfig.getParameter<InputTag>("genPhotonExtraTag"))),
+  genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<InputTag>("generatorInfo"))),
   genPartToken_(consumes<View<reco::GenParticle> >(iConfig.getUntrackedParameter<InputTag> ("GenParticlesTag", InputTag("flashggPrunedGenParticles")))),
   inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" ) ),   
   electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ) ) ),
@@ -416,7 +420,7 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   xsec_         = iConfig.getUntrackedParameter<double>("xsec",1.); 
   kfac_         = iConfig.getUntrackedParameter<double>("kfac",1.); 
   sumDataset_   = iConfig.getUntrackedParameter<double>("sumDataset",-999.);
-  genInfo_      = iConfig.getParameter<edm::InputTag>("generatorInfo"); 
+  //genInfo       = iConfig.getParameter<edm::InputTag>("generatorInfo"); 
 
   for ( unsigned i = 0 ; i < inputTagJets_.size() ; i++) {
     auto token = consumes<View<flashgg::Jet> >(inputTagJets_[i]);
@@ -473,7 +477,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByToken(PileUpToken_,PileupInfos);
   
   Handle<double> objs_rho;
-  iEvent.getByLabel("fixedGridRhoAll",objs_rho);
+  iEvent.getByToken(rhoToken_, objs_rho);
+  //iEvent.getByLabel("fixedGridRhoAll",objs_rho);
 
   Handle<vector<flashgg::GenPhotonExtra> > genPhotonsHandle;
   edm::Handle<GenEventInfoProduct> genInfo;
@@ -481,7 +486,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
  
   if (sampleID>0 && sampleID<10000) {     // MC
     iEvent.getByToken(genPhotonExtraToken_,genPhotonsHandle);
-    iEvent.getByLabel(genInfo_,genInfo);   
+    iEvent.getByToken(genInfoToken_,genInfo);   
     iEvent.getByToken( genPartToken_, genParticles );
   }
 

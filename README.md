@@ -106,8 +106,11 @@ cd ${CMSSW_BASE}/src
 git clone https://github.com/cms-analysis/flashgg.git
 cd flashgg
 
-# get latest version of FLASHgg
-git checkout 1_1_0
+ADD LEPTON INFO from Chiara to FLASHgg:
+https://github.com/crovelli/flashgg/blob/dec2015/Taggers/interface/LeptonSelection.h
+
+https://github.com/crovelli/flashgg/blob/dec2015/Taggers/src/LeptonSelection.cc
+
 
 cd ${CMSSW_BASE}/src
 bash flashgg/setup.sh | tee setup.log
