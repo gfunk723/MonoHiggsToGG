@@ -899,20 +899,51 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
   //  //fInSigTH1DHists[th1d][0]->SetMinimum(0.001); 
   //  fInSigTH1DHists[th1d][0]->SetMaximum(10);
   //}
-
-  fInSigTH1DHists[th1d][0]->SetTitle("");
-  fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
-  fInSigTH1DHists[th1d][0]->Draw("hist");
-
+  int i_gg, i_gj, i_hgg, i_vbf;
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+    if (fBkgNames[mc] == "DiPhoton")	i_gg  = mc;
+    if (fBkgNames[mc] == "GJets")	i_gj  = mc;
+    if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
+    if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
   }
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
-  }
-  //if (fNData > 0) fOutDataTH1DHists[th1d]->Draw("PE SAME");
 
-  fTH1DLegends[th1d]->Draw("SAME"); 
+  if (fTH1DNames[th1d]=="metCorr_forShape"){
+    fInSigTH1DHists[th1d][0]->SetTitle("");
+    fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
+    fInSigTH1DHists[th1d][0]->SetLineColor(kWhite);
+    fInSigTH1DHists[th1d][0]->Draw("hist");
+
+    TLegend* ftempLegends = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (mc == i_gg || mc == i_gj || mc == i_hgg || mc == i_vbf ){
+        fInBkgTH1DHists[th1d][mc]->SetLineWidth(2);
+        fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+        ftempLegends->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+      }
+    }
+
+    ftempLegends->SetBorderSize(4);
+    ftempLegends->SetLineColor(kBlack);
+    ftempLegends->SetTextSize(0.03);//0.035
+    ftempLegends->SetLineWidth(2);
+    ftempLegends->Draw("SAME");
+  }
+  else{   
+    fInSigTH1DHists[th1d][0]->SetTitle("");
+    fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
+    fInSigTH1DHists[th1d][0]->Draw("hist");
+ 
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+    } 
+    for (UInt_t mc = 0; mc < fNSig; mc++){
+      fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
+    }
+    //if (fNData > 0) fOutDataTH1DHists[th1d]->Draw("PE SAME");
+    fTH1DLegends[th1d]->Draw("SAME"); 
+  }
+
 
   TString suffix = "";
   if (isLogY) suffix="_log";
@@ -1374,6 +1405,7 @@ void Combiner::InitTH1DNames(){
 
     fTH1DNames.push_back("met_IsolateALL");
     fTH1DNames.push_back("metCorr_IsolateALL");
+    fTH1DNames.push_back("metCorr_forShape");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");

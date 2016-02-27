@@ -226,7 +226,6 @@ void Plotter::DoPlots(int prompt){
       }
     }  
 
-
     // START full selection for plots
     if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
       if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){
@@ -464,6 +463,19 @@ void Plotter::DoPlots(int prompt){
           Double_t maxJetMETphi;
 	  Double_t minJetMETphi;
  
+	  //if(run==260538&& lumi==245 && event==413101759)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==260426&& lumi==49  && event==81336845) 	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==260424&& lumi==593 && event==1100585340)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==260424&& lumi==166 && event==308985087)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==260627&& lumi==756 && event==1386828994)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==259685&& lumi==160 && event==289342590)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==256843&& lumi==1033&& event==1427294382)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==258706&& lumi==18  && event==32214611)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==258703&& lumi==377 && event==653522584)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==258703&& lumi==302 && event==512333471)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==258656&& lumi==75  && event==125514897)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+	  //if(run==256843&& lumi==38  && event==55470023)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
+
 	  // look at dphi of jet and MET of events w/ jets
 	  if ( nJets == 1 ){
 	    if ( ptJetLead > 50 ){
@@ -506,6 +518,8 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["absdphi_minJetMET_met100"]->Fill(TMath::Abs(minJetMETphi),Weight);
 	    }
 	  }
+
+
 
 	  // DeltaPhi between Jet1 and gg 
 	  Double_t dphiJet1gg = 0;
@@ -582,9 +596,13 @@ void Plotter::DoPlots(int prompt){
 	      if ( dphiggMETpass /*&& dphigMETpass*/ ){
 	        fTH1DMap["met_IsolateALL"]->Fill(t1pfmet,Weight); 
 	        fTH1DMap["metCor_IsolateALL"]->Fill(t1pfmetCorr,Weight);
+		//if ( isData && t1pfmetCorr > 80 ) std::cout << run << ":" << lumi << ":" << event << std::endl;
 		if ( isData && t1pfmetCorr > 80 ) std::cout << "MET Tail: MET = " << t1pfmetCorr << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
 	      } 
 	    }
+	  }
+	  if ( !isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass  ){
+	    fTH1DMap["metCorr_forShape"]->Fill(t1pfmetCorr,Weight);
 	  }
 
 	  if ( dphiJet1ggpass ){ 
@@ -711,8 +729,9 @@ void Plotter::DoPlots(int prompt){
 
   std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
-  UInt_t binMETlo = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(80);
-  UInt_t binMEThi = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(298); 
+  UInt_t binMETze = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(0.);
+  UInt_t binMETlo = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(80.);
+  UInt_t binMEThi = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(299.); 
   std::cout << "Events in MET tail of CorrMET			= " << fTH1DMap["t1pfmetCorr_partblind"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "======================================================" << std::endl;
   //std::cout << "Events in MET tail of CorrMET + JetCut		= " << fTH1DMap["metCor_afterJetCut"]->Integral(binMETlo,binMEThi) << std::endl;
@@ -728,6 +747,8 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "Events in MET tail of CorrMET + gg Iso		= " << fTH1DMap["metCor_Isolategg"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "======================================================" << std::endl;
   std::cout << "Events in MET tail of CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
+  std::cout << "Events in all MET  of CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl;
+  std::cout << "Efficiency in         CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi)/fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl; 
   std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
 
@@ -937,6 +958,8 @@ void Plotter::SetUpPlots(){
   fTH1DMap["absdeta_gg"]	= Plotter::MakeTH1DPlot("absdeta_gg","",20,0.,3.,"|#Delta#eta(#gamma#gamma)|","");
   fTH1DMap["ptgg_selt1pfmet"]	= Plotter::MakeTH1DPlot("ptgg_selt1pfmet","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
   fTH1DMap["t1pfmet_selptgg"]	= Plotter::MakeTH1DPlot("t1pfmet_selptgg","",100,0.,1000.,"E_{T}^{miss} (GeV)","");
+
+  fTH1DMap["metCorr_forShape"]	= Plotter::MakeTH1DPlot("metCorr_forShape","",60,0.,300.,"E_{T}^{miss} (GeV)","");
 
   //// pho cat plots
   //fTH1DMap["EBHighR9_mgg"]	= Plotter::MakeTH1DPlot("EBHighR9_mgg","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
