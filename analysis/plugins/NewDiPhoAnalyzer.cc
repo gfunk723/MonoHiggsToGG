@@ -1533,6 +1533,45 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  if( bDiscriminatorValue > 0.244 ) nLooseBjets++;        // hardcoded
 		  if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded 
 
+
+		  double chf = thejet->chargedHadronEnergyFraction();
+		  double nhf = thejet->neutralHadronEnergyFraction();
+		  //double phf = thejet->photonEnergy()/(thejet->jecFactor(0)*thejet->energy());
+		  //double elf = thejet->electronEnergy()/(thejet->jecFactor(0)*thejet->energy());
+		  double muf = thejet->muonEnergyFraction();
+
+		  //double hf_hf = thejet->HFHadronEnergyFraction();
+		  //double hf_emf= thejet->HFEMEnergyFraction();
+		  //double hof   = thejet->hoEnergyFraction();
+		
+		  //int chm    = thejet->chargedHadronMultiplicity();
+		  int chMult = thejet->chargedMultiplicity();
+		  int neMult = thejet->neutralMultiplicity();
+		  int npr    = chMult + neMult;
+		
+		  //int chHadMult = chm; //ijet->chargedHadronMultiplicity();
+		  //int neHadMult = thejet->neutralHadronMultiplicity();
+		  //int phoMult   = thejet->photonMultiplicity();
+
+		  double nemf  = thejet->neutralEmEnergyFraction();
+		  double cemf  = thejet->chargedEmEnergyFraction();
+		  int NumConst = npr;
+		
+		  float eta  = thejet->eta(); 
+		  //float pt   = thejet->correctedJet(0).pt()*jecFactorsAK4.at(*i); // Is this OK? Correct corrected? -Juska
+
+		  // apply jet ID from:
+		  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID
+		  // idL = Loose
+		  int idL = (nhf<0.99 && nemf<0.99 && NumConst>1 && muf < 0.8) && ((fabs(eta) <= 2.4 && chf>0 && chMult>0 && cemf<0.99) || fabs(eta)>2.4);
+		  // idT = Tight
+		  //int idT = (nhf<0.90 && nemf<0.90 && NumConst>1 && muf<0.8) && ((fabs(eta)<=2.4 && chf>0 && chMult>0 && cemf<0.90) || fabs(eta)>2.4);
+
+		  if(idL==0) continue;// jet does not pass loose ID
+
+		  //int pileupID = thejet->pileupjetIdWP();
+		  //if (pileupID == 1) std::cout << "works" << std::endl;
+
 		  if(thejet->pt()>ptJetLead){ // look at lead jet
 		    ptJetLead = thejet->pt();
 		    etaJetLead = thejet->eta();
