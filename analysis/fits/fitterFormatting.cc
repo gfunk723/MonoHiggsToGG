@@ -1,7 +1,9 @@
 #include <TFile.h>
 #include <TTree.h>
+#include <TLorentzVector.h>
 #include <TBranch.h>
 #include <iostream>
+#include <../../../DataFormats/Math/interface/deltaPhi.h>
 
 using namespace std;
 
@@ -13,13 +15,26 @@ using namespace std;
 //   5th: input filename 
 //   6th: sample name
 //   7th: outFile name
+//   8th: category type
 
-void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample, TString outFile ) {
+////////////////////////////////////////////////////
+// 
+//   Category Types
+//   0 = Photon Categories, No additional Sel.
+//   1 = Photon Categories, MET > 50
+//   2 = Photon Categories, pT1 > 80, pT2 > 30
+//   3 = Photon Categories, pT1 > 80, pT2 > 30, MET > 50
+//   4 = MET Categories
+//   5 = MET Categories, pT1 > 80, pT2 > 30  
+//
+// Photon Categories = all,EE,EB,EEHighR9,EELowR9,EBHighR9,EBLowR9
+// MET Categories = met0 (inclusive), met0-50, met50 (50 & above)
+//
+////////////////////////////////////////////////////
+
+void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample, TString outFile , UInt_t catType) {
   cout << "Formatting " << inDir << filename << endl;
   cout << "Move to Pasquale's format for fit." << endl;
-
-  Bool_t doMETcat = false;
-  if (doMETcat) std::cout << "Do MET cat on top of PHO cat" << std::endl;
 
   TFile *fileOrig = 0;
   TTree *treeOrig = 0;
@@ -175,6 +190,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   Int_t	  metF_eeBadSC	= 0.;
   Int_t   genmatch1	= 0.; 
   Int_t   genmatch2	= 0.; 
+  Float_t ptJetLead	= 0.; 
+  Float_t ptJetSubLead	= 0.; 
+  Float_t etaJetLead	= 0.; 
+  Float_t etaJetSubLead	= 0.; 
+  Float_t phiJetLead	= 0.; 
+  Float_t phiJetSubLead	= 0.; 
+  Float_t massJetLead	= 0.; 
+  Float_t massJetSubLead= 0.; 
 
   // branches from original tree
   TBranch *b_run;
@@ -222,6 +245,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TBranch *b_metF_eeBadSC;   //!
   TBranch *b_genmatch1; 
   TBranch *b_genmatch2;
+  TBranch *b_ptJetLead; 
+  TBranch *b_ptJetSubLead; 
+  TBranch *b_etaJetLead; 
+  TBranch *b_etaJetSubLead; 
+  TBranch *b_phiJetLead; 
+  TBranch *b_phiJetSubLead; 
+  TBranch *b_massJetLead; 
+  TBranch *b_massJetSubLead; 
 
   // set branch addresses and branch pointers
   treeOrig->SetBranchAddress("run",		&run,		&b_run);
@@ -269,6 +300,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   treeOrig->SetBranchAddress("metF_eeBadSC", 	&metF_eeBadSC, 	&b_metF_eeBadSC);
   treeOrig->SetBranchAddress("genmatch1", 	&genmatch1, 	&b_genmatch1);  
   treeOrig->SetBranchAddress("genmatch2", 	&genmatch2, 	&b_genmatch2); 
+  treeOrig->SetBranchAddress("ptJetLead", 	&ptJetLead, 	&b_ptJetLead);
+  treeOrig->SetBranchAddress("etaJetLead", 	&etaJetLead, 	&b_etaJetLead);
+  treeOrig->SetBranchAddress("phiJetLead", 	&phiJetLead, 	&b_phiJetLead);
+  treeOrig->SetBranchAddress("massJetLead", 	&massJetLead, 	&b_massJetLead);
+  treeOrig->SetBranchAddress("ptJetSubLead", 	&ptJetSubLead, 	&b_ptJetSubLead);
+  treeOrig->SetBranchAddress("etaJetSubLead", 	&etaJetSubLead, &b_etaJetSubLead);
+  treeOrig->SetBranchAddress("phiJetSubLead", 	&phiJetSubLead,	&b_phiJetSubLead);
+  treeOrig->SetBranchAddress("massJetSubLead", 	&massJetSubLead,&b_massJetSubLead);
 
   // new variables (needed if variable has diff name in new tree) 
   float mass;
@@ -335,6 +374,12 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   bool inEB, inEE;
   bool hiR9, loR9;
 
+  TLorentzVector fLorenzVecPho1;
+  TLorentzVector fLorenzVecPho2;
+  TLorentzVector fLorenzVecGG;
+  TLorentzVector fLorenzVecJet1;
+  TLorentzVector fLorenzVecJet2;
+
   for (UInt_t i=0; i<nentriesOrig; i++){
     treeOrig->GetEntry(i);
 
@@ -342,17 +387,40 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     if (type=="data" && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; 
 
     // check that passes trigger
-    if (hltDiphoton30Mass95==0) continue;
-
-    // apply electron veto
-    if (eleveto1==0 || eleveto2==0) continue;
+    if (type=="data" && hltDiphoton30Mass95==0) continue;
 
     // remove duplicate events
     if (prompt==1 && (genmatch1==1 && genmatch2==1)) continue;   // only PF and FF for gjets  
     if (prompt==2 && (genmatch1==1 && genmatch2==1)) continue;   // only PF and FF for gjets  
 
-    if (mgg >= 100 && mgg <= 200 && pt1>80 && pt2>30 /*&& t1pfmet >= 50*/ ){
+    fLorenzVecPho1.SetPtEtaPhiM(pt1,eta1,phi1,0.);
+    fLorenzVecPho2.SetPtEtaPhiM(pt2,eta2,phi2,0.);
+    fLorenzVecGG = fLorenzVecPho1 + fLorenzVecPho2;
+    fLorenzVecJet1.SetPtEtaPhiM(ptJetLead,etaJetLead,phiJetLead,massJetLead);
+    fLorenzVecJet2.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,massJetSubLead);
 
+    // check if passing deltaPhi(gg,MET) cut
+    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhi));
+    if (dphi_ggMET < 2.1) continue;
+
+    // look at deltaPhi(jet,MET)
+    Double_t min_dphi_jetMET = 10.;
+    Double_t max_dphi_jetMET = 0.;
+    if (nJets == 1){
+      Double_t dphi_jet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+      min_dphi_jetMET = dphi_jet1MET;
+      max_dphi_jetMET = dphi_jet1MET;
+    }
+    if (nJets > 1){
+      Double_t dphi_jet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+      Double_t dphi_jet2MET = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+      min_dphi_jetMET = TMath::Min(dphi_jet1MET,dphi_jet2MET);
+      max_dphi_jetMET = TMath::Max(dphi_jet1MET,dphi_jet2MET);
+    }
+    // check that deltaPhi(jet,MET) is between [0.5, 2.7] 
+    if (min_dphi_jetMET < 0.5 || max_dphi_jetMET > 2.7) continue; 
+
+    if (pt1>(0.65*mgg) && pt2>(0.25*mgg) && t1pfmet >= 80){
       // split events by eta
       EB1 = false;
       EB2 = false;
@@ -373,6 +441,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       if (r91 > 0.94 && r92 > 0.94) hiR9 = true;
       else if (r91 <= 0.94 || r92 <= 0.94) loR9 = true;
 
+      // see if passing different MET cuts (not used right now)
       for (UInt_t met=0; met<numMetCat; met++){
 	passMet[met]=false;
         if (met==0 && t1pfmet>=MetCut[met]) passMet[met]=true;
@@ -381,6 +450,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
           if (t1pfmet>=MetCut[met-1] && t1pfmet<MetCut[met]) passMet[met]=true;
         }
       }// end met loop
+
 
       // set the new variables (i.e. renamed from old tree)
       mass = mgg;
