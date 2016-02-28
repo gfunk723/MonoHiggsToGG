@@ -588,19 +588,7 @@ void Plotter::DoPlots(int prompt){
 	        fTH1DMap["met_Isolategg"]->Fill(t1pfmet,Weight); 
 	        fTH1DMap["metCor_Isolategg"]->Fill(t1pfmetCorr,Weight); 
 	      } 
-	      //if ( dphiJet1METpass ){ 
-	      //  fTH1DMap["met_IsolateMET"]->Fill(t1pfmet,Weight); 
-	      //  fTH1DMap["metCor_IsolateMET"]->Fill(t1pfmetCorr,Weight); 
-	      //} 
 	    } 
-	    //if ( dphiJet1METpass ){ 
-	    //  fTH1DMap["met_afterJetMETCut"]->Fill(t1pfmet,Weight); 
-	    //  fTH1DMap["metCor_afterJetMETCut"]->Fill(t1pfmetCorr,Weight); 
-	    //  if ( dphiJet1ggpass ){ 
-	    //    fTH1DMap["met_IsolateJET1"]->Fill(t1pfmet,Weight); 
-	    //    fTH1DMap["metCor_IsolateJET1"]->Fill(t1pfmetCorr,Weight);
-	    //  }
-	    //}
 	    if ( max_dphiJETMETpass ){
 	      fTH1DMap["met_maxJetMET"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_maxJetMET"]->Fill(t1pfmetCorr,Weight); 
@@ -756,13 +744,10 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "Events in MET tail of CorrMET + JetCut		= " << fTH1DMap["metCor_afterJetCut"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + ggMETCut	= " << fTH1DMap["metCor_afterggMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + gMETCut		= " << fTH1DMap["metCor_aftergMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "Events in MET tail of CorrMET + JetMETCut	= " << fTH1DMap["metCor_afterJetMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + maxJetMETCut	= " << fTH1DMap["metCor_maxJetMET"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + minJetMETCut	= " << fTH1DMap["metCor_minJetMET"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + JetMETPhiCut	= " << fTH1DMap["metCor_afterJetMETPhiCut"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "======================================================" << std::endl;
-  //std::cout << "Events in MET tail of CorrMET + Jet1 Iso	= " << fTH1DMap["metCor_IsolateJET1"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "Events in MET tail of CorrMET + MET Iso		= " << fTH1DMap["metCor_IsolateMET"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "Events in MET tail of CorrMET + gg Iso		= " << fTH1DMap["metCor_Isolategg"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "======================================================" << std::endl;
   std::cout << "Events in MET tail of MET + ALL Iso		= " << fTH1DMap["met_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
@@ -884,8 +869,6 @@ void Plotter::SetUpPlots(){
   fTH1DMap["absdphi_ggmet_met100"]	= Plotter::MakeTH1DPlot("absdphi_ggmet_met100","",40,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
   fTH1DMap["dphi_ggmet"]	= Plotter::MakeTH1DPlot("dphi_ggmet","",20,-4.,4.,"#Delta#phi(#gamma#gamma,MET)","");
 
-  fTH1DMap["met_afterJetMETCut"]   = Plotter::MakeTH1DPlot("met_afterJetMETCut","",60,0.,300.,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["metCor_afterJetMETCut"]= Plotter::MakeTH1DPlot("metCorr_afterJetMETCut","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["met_afterJetMETPhiCut"]   = Plotter::MakeTH1DPlot("met_afterJetMETPhiCut","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["metCor_afterJetMETPhiCut"]= Plotter::MakeTH1DPlot("metCorr_afterJetMETPhiCut","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["met_afterggMETCut"]	   = Plotter::MakeTH1DPlot("met_afterggMETCut","",60,0.,300.,"E_{T}^{miss} (GeV)","");
@@ -900,10 +883,6 @@ void Plotter::SetUpPlots(){
   fTH1DMap["met_minJetMET"]	= Plotter::MakeTH1DPlot("met_minJetMET","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["metCor_minJetMET"]	= Plotter::MakeTH1DPlot("metCorr_minJetMET","",60,0.,300.,"E_{T}^{miss} (GeV)","");
 
-  fTH1DMap["met_IsolateMET"]	= Plotter::MakeTH1DPlot("met_IsolateMET","",60,0.,300.,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["metCor_IsolateMET"]	= Plotter::MakeTH1DPlot("metCorr_IsolateMET","",60,0.,300.,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["met_IsolateJET1"]	= Plotter::MakeTH1DPlot("met_IsolateJET1","",60,0.,300.,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["metCor_IsolateJET1"]= Plotter::MakeTH1DPlot("metCorr_IsolateJET1","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["met_Isolategg"]	= Plotter::MakeTH1DPlot("met_Isolategg","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["metCor_Isolategg"]	= Plotter::MakeTH1DPlot("metCorr_Isolategg","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["met_IsolateALL"]	= Plotter::MakeTH1DPlot("met_IsolateALL","",60,0.,300.,"E_{T}^{miss} (GeV)","");

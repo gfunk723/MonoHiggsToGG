@@ -49,7 +49,7 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["ttHJetToGG"]		= "tt + H #rightarrow #gamma#gamma";
   fSampleTitleMap["VBFHToGG"]		= "VBF H #rightarrow #gamma#gamma";
   fSampleTitleMap["WGToLNuG"]		= "#gamma + W #rightarrow l #nu";
-  fSampleTitleMap["ZGTo2LG"]		= "#gamma + Z #rightarrow ll #gamma#gamma";
+  fSampleTitleMap["ZGTo2LG"]		= "#gamma + Z #rightarrow ll";
   fSampleTitleMap["TTGJets"]		= "tt + #gamma + Jets";
   fSampleTitleMap["TGJets"]		= "t + #gamma + Jets";
   //fSampleTitleMap["DMHtoGG_M1"]		= "m_{#chi} = 1 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
@@ -163,23 +163,64 @@ void Combiner::DoComb(){
         fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
       }
     }
-    if (th1d==fIndexMgg){
-      for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
+
+
+    // print out efficiencies for fake MET systematic 
+    if (fTH1DNames[th1d]=="metCorr_IsolateALL"){
+      UInt_t binMETze = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(0.);
+      UInt_t binMETlo = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(80.);
+      UInt_t binMEThi = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(299.);
+
+      Float_t fTotalBkgInt_met80 = 0.;
+      Float_t fTotalBkgInt_metall = 0.;
+      Float_t fTotalBkgEfficiency = 0.;
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
         if (addText!="_n-1"){
-          std::cout << fBkgNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() 
-          << " %: " << fInBkgTH1DHists[th1d][mc]->Integral()/fOutBkgTH1DHists[th1d]->Integral() << std::endl;
-        }
+	  std::cout << " *** " << fBkgNames[mc] << " *** " << std::endl;
+	  std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
+	  std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+	  std::cout << "Efficiency 				= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+	  // sum all backgrounds to get overall efficiency 
+	  fTotalBkgInt_met80  += fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi); 
+	  fTotalBkgInt_metall += fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi); 
+	}
       }
-    } 
-    if (th1d==fIndexNvtx && addText!="_n-1"){
-      std::cout << "DoubleEG" << " in " << fTH1DNames[th1d] << " = " << fOutDataTH1DHists[th1d]->Integral()  << std::endl;
-      for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
-        std::cout << fBkgNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInBkgTH1DHists[th1d][mc]->Integral()  << std::endl;
-      }
-      for (UInt_t mc = 0; mc < fNSig; mc++){// print out values of integrals
-        std::cout << fSigNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInSigTH1DHists[th1d][mc]->Integral()  << std::endl;
-      }
-    } 
+
+      // efficiency for data
+      Float_t fDataEfficiency = fOutDataTH1DHists[th1d]->Integral(binMETlo,binMEThi)/fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi); 
+      std::cout << " *** Data *** " << std::endl; 
+      std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETlo,binMEThi) << std::endl;
+      std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi) << std::endl;
+      std::cout << "Efficiency 					= " << fDataEfficiency << std::endl; 
+      // efficiency for total bkg MC
+      fTotalBkgEfficiency = fTotalBkgInt_met80/fTotalBkgInt_metall;
+      std::cout << " *** Total Bkg *** " << std::endl;
+      std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fTotalBkgInt_met80  << std::endl;
+      std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fTotalBkgInt_metall << std::endl;
+      std::cout << "Efficiency 				= " << fTotalBkgEfficiency << std::endl; 
+      // ratio of eff data/ eff bkg MC 
+      std::cout << " ***** Scale Factor ******* " << fDataEfficiency/fTotalBkgEfficiency << std::endl; 
+
+    }
+
+    //if (th1d==fIndexMgg){
+    //  for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
+    //    if (addText!="_n-1"){
+    //      std::cout << fBkgNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() 
+    //      << " %: " << fInBkgTH1DHists[th1d][mc]->Integral()/fOutBkgTH1DHists[th1d]->Integral() << std::endl;
+    //    }
+    //  }
+    //} 
+    //if (th1d==fIndexNvtx && addText!="_n-1"){
+    //  std::cout << "DoubleEG" << " in " << fTH1DNames[th1d] << " = " << fOutDataTH1DHists[th1d]->Integral()  << std::endl;
+    //  for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
+    //    std::cout << fBkgNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInBkgTH1DHists[th1d][mc]->Integral()  << std::endl;
+    //  }
+    //  for (UInt_t mc = 0; mc < fNSig; mc++){// print out values of integrals
+    //    std::cout << fSigNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInSigTH1DHists[th1d][mc]->Integral()  << std::endl;
+    //  }
+    //} 
+
     //fOutBkgTH1DHists[th1d]->Sumw2();
     //std::cout << "histo# " << th1d << std::endl;
     //std::cout << "maxbin " << fOutBkgTH1DHists[th1d]->GetSize() << std::endl;
@@ -365,7 +406,7 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["ttHJetToGG"]		= "tt $+ H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
-  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll \\gamma\\gamma$";
+  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
   fSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
@@ -410,12 +451,12 @@ void Combiner::FindMETEfficiencies(){
     } 
   } 
 
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-     std::cout << fSampleTitleMap[fSigNames[mc]] << " === " << fSigMET[mc][0] << " - " << minSig[mc] << " + " << maxSig[mc] << std::endl; 
-  }
-  for (UInt_t mc = 0; mc < fNBkg; mc++){
-     std::cout << fSampleTitleMap[fBkgNames[mc]] << " === " << fBkgMET[mc][0] << " - " << minBkg[mc] << " + " << maxBkg[mc] << std::endl; 
-  }
+  //for (UInt_t mc = 0; mc < fNSig; mc++){
+  //   std::cout << fSampleTitleMap[fSigNames[mc]] << " === " << fSigMET[mc][0] << " - " << minSig[mc] << " + " << maxSig[mc] << std::endl; 
+  //}
+  //for (UInt_t mc = 0; mc < fNBkg; mc++){
+  //   std::cout << fSampleTitleMap[fBkgNames[mc]] << " === " << fBkgMET[mc][0] << " - " << minBkg[mc] << " + " << maxBkg[mc] << std::endl; 
+  //}
 
   if (fOutTableTxtFile.is_open()){
     //setup Latex doc
@@ -1395,8 +1436,6 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("metCorr_afterggMETCut");
     fTH1DNames.push_back("met_aftergMETCut");
     fTH1DNames.push_back("metCorr_aftergMETCut");
-    fTH1DNames.push_back("met_afterJetMETCut");
-    fTH1DNames.push_back("metCorr_afterJetMETCut");
     fTH1DNames.push_back("met_afterJetMETPhiCut");
     fTH1DNames.push_back("metCorr_afterJetMETPhiCut");
     fTH1DNames.push_back("met_maxJetMET");
@@ -1404,13 +1443,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("met_minJetMET");
     fTH1DNames.push_back("metCorr_minJetMET");
 
-    fTH1DNames.push_back("met_IsolateMET");
-    fTH1DNames.push_back("metCorr_IsolateMET");
     fTH1DNames.push_back("met_Isolategg");
     fTH1DNames.push_back("metCorr_Isolategg");
-    fTH1DNames.push_back("met_IsolateJET1");
-    fTH1DNames.push_back("metCorr_IsolateJET1");
-
     fTH1DNames.push_back("met_IsolateALL");
     fTH1DNames.push_back("metCorr_IsolateALL");
     fTH1DNames.push_back("metCorr_forShape");

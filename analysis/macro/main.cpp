@@ -393,9 +393,9 @@ int main(){
   colorMap["VBFHToGG"]			= kYellow-7;
   colorMap["DiPhoton"]			= kTeal-1;
   colorMap["DYJetsToLL"]		= kTeal-7;
-  colorMap["TGJets"]			= kGreen+2;
-  colorMap["TTGJets"]			= kTeal+1;
-  colorMap["ZGTo2LG"]			= kCyan+2;
+  colorMap["TGJets"]			= kAzure+3;
+  colorMap["TTGJets"]			= kAzure+2;
+  colorMap["ZGTo2LG"]			= kCyan;
   colorMap["WGToLNuG"]			= kAzure+8;
   colorMap["DMHtoGG_M1"]		= kPink-2;
   colorMap["DMHtoGG_M10"]		= kPink-6;
