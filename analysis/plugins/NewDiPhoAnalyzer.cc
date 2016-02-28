@@ -173,21 +173,57 @@ struct diphoTree_struc_ {
   float phiJetLead;
   float massJetLead;
   int indexJetLead;
+  float CHfracJet1;
+  float NHfracJet1;
+  float NEMfracJet1;
+  float CEMfracJet1;
+  float ELfracJet1;
+  float PHfracJet1;
+  float MUfracJet1;
+  int CHmultJet1;
+  int NEmultJet1;
   float ptJetSubLead;
   float etaJetSubLead;
   float phiJetSubLead;
   float massJetSubLead;
   int indexJetSubLead;
+  float CHfracJet2;
+  float NHfracJet2;
+  float NEMfracJet2;
+  float CEMfracJet2;
+  float ELfracJet2;
+  float PHfracJet2;
+  float MUfracJet2;
+  int CHmultJet2;
+  int NEmultJet2;
   float ptJet3;
   float etaJet3;
   float phiJet3;
   float massJet3;
   int indexJet3;
+  float CHfracJet3;
+  float NHfracJet3;
+  float NEMfracJet3;
+  float CEMfracJet3;
+  float ELfracJet3;
+  float PHfracJet3;
+  float MUfracJet3;
+  int CHmultJet3;
+  int NEmultJet3;
   float ptJet4;
   float etaJet4;
   float phiJet4;
   float massJet4;
   int indexJet4;
+  float CHfracJet4;
+  float NHfracJet4;
+  float NEMfracJet4;
+  float CEMfracJet4;
+  float ELfracJet4;
+  float PHfracJet4;
+  float MUfracJet4;
+  int CHmultJet4;
+  int NEmultJet4;
   int vtxIndex;
   float vtxX; 
   float vtxY; 
@@ -1479,6 +1515,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float phiJetLead=-999.;
 		      float massJetLead=-999.;
 		      unsigned int indexJetLead=-999;
+		      float CHfracJet1 = -999.;
+		      float NHfracJet1 = -999.;
+		      float NEMfracJet1 = -999.;
+		      float CEMfracJet1 = -999.;
+		      float ELfracJet1 = -999.;
+		      float PHfracJet1 = -999.;
+		      float MUfracJet1 = -999.;
+		      int CHmultJet1 = -999;
+		      int NEmultJet1 = -999;
 
 		      // subleading jet 
 		      float ptJetSubLead=-999.;
@@ -1486,6 +1531,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float phiJetSubLead=-999.;
 		      float massJetSubLead=-999.;
 		      unsigned int indexJetSubLead=-999;
+		      float CHfracJet2 = -999.;
+		      float NHfracJet2 = -999.;
+		      float NEMfracJet2 = -999.;
+		      float CEMfracJet2 = -999.;
+		      float ELfracJet2 = -999.;
+		      float PHfracJet2 = -999.;
+		      float MUfracJet2 = -999.;
+		      int CHmultJet2 = -999;
+		      int NEmultJet2 = -999;
  
 		      // 3rd jet 
 		      float ptJet3=-999.;
@@ -1493,6 +1547,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float phiJet3=-999.;
 		      float massJet3=-999.;
 		      unsigned int indexJet3=-999;
+		      float CHfracJet3 = -999.;
+		      float NHfracJet3 = -999.;
+		      float NEMfracJet3 = -999.;
+		      float CEMfracJet3 = -999.;
+		      float ELfracJet3 = -999.;
+		      float PHfracJet3 = -999.;
+		      float MUfracJet3 = -999.;
+		      int CHmultJet3 = -999;
+		      int NEmultJet3 = -999;
 
 		      // 4th jet 
 		      float ptJet4=-999.;
@@ -1500,7 +1563,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float phiJet4=-999.;
 		      float massJet4=-999.;
 		      unsigned int indexJet4=-999;
-
+		      float CHfracJet4 = -999.;
+		      float NHfracJet4 = -999.;
+		      float NEMfracJet4 = -999.;
+		      float CEMfracJet4 = -999.;
+		      float ELfracJet4 = -999.;
+		      float PHfracJet4 = -999.;
+		      float MUfracJet4 = -999.;
+		      int CHmultJet4 = -999;
+		      int NEmultJet4 = -999;
 
 		      unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
 		      std::vector<edm::Ptr<flashgg::Jet> > tempJets(Jets[jetCollectionIndex]->size());
@@ -1553,8 +1624,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 			double chf = thejet->chargedHadronEnergyFraction();
 			double nhf = thejet->neutralHadronEnergyFraction();
-			//double phf = thejet->photonEnergy()/(thejet->jecFactor(0)*thejet->energy());
-			//double elf = thejet->electronEnergy()/(thejet->jecFactor(0)*thejet->energy());
+			double phf = thejet->photonEnergy()/(thejet->jecFactor(0)*thejet->energy());
+			double elf = thejet->electronEnergy()/(thejet->jecFactor(0)*thejet->energy());
 			double muf = thejet->muonEnergyFraction();
 
 			//double hf_hf = thejet->HFHadronEnergyFraction();
@@ -1596,6 +1667,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			  phiJetLead = thejet->phi();
 			  massJetLead = thejet->mass();
 			  indexJetLead = jetIndex;
+			  CHfracJet1 = chf;
+			  NHfracJet1 = nhf;
+			  NEMfracJet1 = nemf;
+			  CEMfracJet1 = cemf;
+			  ELfracJet1 = elf;
+			  PHfracJet1 = phf;
+			  MUfracJet1 = muf;
+			  CHmultJet1 = chMult;
+			  NEmultJet1 = neMult;
 			}
 			if(jetIndex==indexJetLead) continue;// now look at sublead jet
 			if(thejet->pt() > ptJetSubLead){
@@ -1604,6 +1684,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			  phiJetSubLead = thejet->phi();
 			  massJetSubLead = thejet->mass();
 			  indexJetSubLead = jetIndex;
+			  CHfracJet2 = chf;
+			  NHfracJet2 = nhf;
+			  NEMfracJet2 = nemf;
+			  CEMfracJet2 = cemf;
+			  ELfracJet2 = elf;
+			  PHfracJet2 = phf;
+			  MUfracJet2 = muf;
+			  CHmultJet2 = chMult;
+			  NEmultJet2 = neMult;
 			}
 			if(jetIndex==indexJetSubLead) continue;// now look at 3rd jet
 			if(thejet->pt() > ptJet3){
@@ -1612,6 +1701,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			  phiJet3 = thejet->phi();
 			  massJet3 = thejet->mass();
 			  indexJet3 = jetIndex;
+			  CHfracJet3 = chf;
+			  NHfracJet3 = nhf;
+			  NEMfracJet3 = nemf;
+			  CEMfracJet3 = cemf;
+			  ELfracJet3 = elf;
+			  PHfracJet3 = phf;
+			  MUfracJet3 = muf;
+			  CHmultJet3 = chMult;
+			  NEmultJet3 = neMult;
 			}
 			if(jetIndex==indexJet3) continue;// now look at 4th jet
 			if(thejet->pt() > ptJet4){
@@ -1620,6 +1718,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			  phiJet4 = thejet->phi();
 			  massJet4 = thejet->mass();
 			  indexJet4 = jetIndex;
+			  CHfracJet4 = chf;
+			  NHfracJet4 = nhf;
+			  NEMfracJet4 = nemf;
+			  CEMfracJet4 = cemf;
+			  ELfracJet4 = elf;
+			  PHfracJet4 = phf;
+			  MUfracJet4 = muf;
+			  CHmultJet4 = chMult;
+			  NEmultJet4 = neMult;
 			}
 
 		      } // loop over jets
@@ -1721,20 +1828,59 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.massJetLead = massJetLead;
 		      treeDipho_.indexJetLead = indexJetLead;
 		      treeDipho_.ptJetSubLead = ptJetSubLead;
+		      treeDipho_.CHfracJet1 = CHfracJet1;
+		      treeDipho_.NHfracJet1 = NHfracJet1;
+		      treeDipho_.NEMfracJet1 = NEMfracJet1;
+		      treeDipho_.CEMfracJet1 = CEMfracJet1;
+		      treeDipho_.ELfracJet1 = ELfracJet1;
+		      treeDipho_.PHfracJet1 = PHfracJet1;
+		      treeDipho_.MUfracJet1 = MUfracJet1;
+		      treeDipho_.CHmultJet1 = CHmultJet1;
+		      treeDipho_.NEmultJet1 = NEmultJet1;
+
 		      treeDipho_.etaJetSubLead = etaJetSubLead;
 		      treeDipho_.phiJetSubLead = phiJetSubLead;
 		      treeDipho_.massJetSubLead = massJetSubLead;
 		      treeDipho_.indexJetSubLead = indexJetSubLead;
+		      treeDipho_.CHfracJet2 = CHfracJet2;
+		      treeDipho_.NHfracJet2 = NHfracJet2;
+		      treeDipho_.NEMfracJet2 = NEMfracJet2;
+		      treeDipho_.CEMfracJet2 = CEMfracJet2;
+		      treeDipho_.ELfracJet2 = ELfracJet2;
+		      treeDipho_.PHfracJet2 = PHfracJet2;
+		      treeDipho_.MUfracJet2 = MUfracJet2;
+		      treeDipho_.CHmultJet2 = CHmultJet2;
+		      treeDipho_.NEmultJet2 = NEmultJet2;
+
 		      treeDipho_.ptJet3 = ptJet3;
 		      treeDipho_.etaJet3 = etaJet3;
 		      treeDipho_.phiJet3 = phiJet3;
 		      treeDipho_.massJet3 = massJet3;
 		      treeDipho_.indexJet3 = indexJet3;
+		      treeDipho_.CHfracJet3 = CHfracJet3;
+		      treeDipho_.NHfracJet3 = NHfracJet3;
+		      treeDipho_.NEMfracJet3 = NEMfracJet3;
+		      treeDipho_.CEMfracJet3 = CEMfracJet3;
+		      treeDipho_.ELfracJet3 = ELfracJet3;
+		      treeDipho_.PHfracJet3 = PHfracJet3;
+		      treeDipho_.MUfracJet3 = MUfracJet3;
+		      treeDipho_.CHmultJet3 = CHmultJet3;
+		      treeDipho_.NEmultJet3 = NEmultJet3;
+
 		      treeDipho_.ptJet4 = ptJet4;
 		      treeDipho_.etaJet4 = etaJet4;
 		      treeDipho_.phiJet4 = phiJet4;
 		      treeDipho_.massJet4 = massJet4;
 		      treeDipho_.indexJet4 = indexJet4;
+		      treeDipho_.CHfracJet4 = CHfracJet4;
+		      treeDipho_.NHfracJet4 = NHfracJet4;
+		      treeDipho_.NEMfracJet4 = NEMfracJet4;
+		      treeDipho_.CEMfracJet4 = CEMfracJet4;
+		      treeDipho_.ELfracJet4 = ELfracJet4;
+		      treeDipho_.PHfracJet4 = PHfracJet4;
+		      treeDipho_.MUfracJet4 = MUfracJet4;
+		      treeDipho_.CHmultJet4 = CHmultJet4;
+		      treeDipho_.NEmultJet4 = NEmultJet4;
 
 		      treeDipho_.vtxIndex = vtxIndex;
 		      treeDipho_.vtxX = vtxX;
@@ -1962,21 +2108,60 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("phiJetLead",&(treeDipho_.phiJetLead),"phiJetLead/F");
   DiPhotonTree->Branch("massJetLead",&(treeDipho_.massJetLead),"massJetLead/F");
   DiPhotonTree->Branch("indexJetLead",&(treeDipho_.indexJetLead),"indexJetLead/I");
+  DiPhotonTree->Branch("NEMfracJet1",&(treeDipho_.NEMfracJet1),"NEMfracJet1/F");
+  DiPhotonTree->Branch("CEMfracJet1",&(treeDipho_.CEMfracJet1),"CEMfracJet1/F");
+  DiPhotonTree->Branch("ELfracJet1",&(treeDipho_.ELfracJet1),"ELfracJet1/F");
+  DiPhotonTree->Branch("CHfracJet1",&(treeDipho_.CHfracJet1),"CHfracJet1/F");
+  DiPhotonTree->Branch("NHfracJet1",&(treeDipho_.NHfracJet1),"NHfracJet1/F");
+  DiPhotonTree->Branch("PHfracJet1",&(treeDipho_.PHfracJet1),"PHfracJet1/F");
+  DiPhotonTree->Branch("MUfracJet1",&(treeDipho_.MUfracJet1),"MUfracJet1/F");
+  DiPhotonTree->Branch("CHmultJet1",&(treeDipho_.CHmultJet1),"CHmultJet1/I");
+  DiPhotonTree->Branch("NEmultJet1",&(treeDipho_.NEmultJet1),"NEmultJet1/I");
+
   DiPhotonTree->Branch("ptJetSubLead",&(treeDipho_.ptJetSubLead),"ptJetSubLead/F");
   DiPhotonTree->Branch("etaJetSubLead",&(treeDipho_.etaJetSubLead),"etaJetSubLead/F");
   DiPhotonTree->Branch("phiJetSubLead",&(treeDipho_.phiJetSubLead),"phiJetSubLead/F");
   DiPhotonTree->Branch("massJetSubLead",&(treeDipho_.massJetSubLead),"massJetSubLead/F");
   DiPhotonTree->Branch("indexJetSubLead",&(treeDipho_.indexJetSubLead),"indexJetSubLead/I");
+  DiPhotonTree->Branch("NEMfracJet2",&(treeDipho_.NEMfracJet2),"NEMfracJet2/F");
+  DiPhotonTree->Branch("CEMfracJet2",&(treeDipho_.CEMfracJet2),"CEMfracJet2/F");
+  DiPhotonTree->Branch("ELfracJet2",&(treeDipho_.ELfracJet2),"ELfracJet2/F");
+  DiPhotonTree->Branch("CHfracJet2",&(treeDipho_.CHfracJet2),"CHfracJet2/F");
+  DiPhotonTree->Branch("NHfracJet2",&(treeDipho_.NHfracJet2),"NHfracJet2/F");
+  DiPhotonTree->Branch("PHfracJet2",&(treeDipho_.PHfracJet2),"PHfracJet2/F");
+  DiPhotonTree->Branch("MUfracJet2",&(treeDipho_.MUfracJet2),"MUfracJet2/F");
+  DiPhotonTree->Branch("CHmultJet2",&(treeDipho_.CHmultJet2),"CHmultJet2/I");
+  DiPhotonTree->Branch("NEmultJet2",&(treeDipho_.NEmultJet2),"NEmultJet2/I");
+
   DiPhotonTree->Branch("ptJet3",&(treeDipho_.ptJet3),"ptJet3/F");
   DiPhotonTree->Branch("etaJet3",&(treeDipho_.etaJet3),"etaJet3/F");
   DiPhotonTree->Branch("phiJet3",&(treeDipho_.phiJet3),"phiJet3/F");
   DiPhotonTree->Branch("massJet3",&(treeDipho_.massJet3),"massJet3/F");
   DiPhotonTree->Branch("indexJet3",&(treeDipho_.indexJet3),"indexJet3/I");
+  DiPhotonTree->Branch("NEMfracJet3",&(treeDipho_.NEMfracJet3),"NEMfracJet3/F");
+  DiPhotonTree->Branch("CEMfracJet3",&(treeDipho_.CEMfracJet3),"CEMfracJet3/F");
+  DiPhotonTree->Branch("ELfracJet3",&(treeDipho_.ELfracJet3),"ELfracJet3/F");
+  DiPhotonTree->Branch("CHfracJet3",&(treeDipho_.CHfracJet3),"CHfracJet3/F");
+  DiPhotonTree->Branch("NHfracJet3",&(treeDipho_.NHfracJet3),"NHfracJet3/F");
+  DiPhotonTree->Branch("PHfracJet3",&(treeDipho_.PHfracJet3),"PHfracJet3/F");
+  DiPhotonTree->Branch("MUfracJet3",&(treeDipho_.MUfracJet3),"MUfracJet3/F");
+  DiPhotonTree->Branch("CHmultJet3",&(treeDipho_.CHmultJet3),"CHmultJet3/I");
+  DiPhotonTree->Branch("NEmultJet3",&(treeDipho_.NEmultJet3),"NEmultJet3/I");
+
   DiPhotonTree->Branch("ptJet4",&(treeDipho_.ptJet4),"ptJet4/F");
   DiPhotonTree->Branch("etaJet4",&(treeDipho_.etaJet4),"etaJet4/F");
   DiPhotonTree->Branch("phiJet4",&(treeDipho_.phiJet4),"phiJet4/F");
   DiPhotonTree->Branch("massJet4",&(treeDipho_.massJet4),"massJet4/F");
   DiPhotonTree->Branch("indexJet4",&(treeDipho_.indexJet4),"indexJet4/I");
+  DiPhotonTree->Branch("NEMfracJet4",&(treeDipho_.NEMfracJet4),"NEMfracJet4/F");
+  DiPhotonTree->Branch("CEMfracJet4",&(treeDipho_.CEMfracJet4),"CEMfracJet4/F");
+  DiPhotonTree->Branch("ELfracJet4",&(treeDipho_.ELfracJet4),"ELfracJet4/F");
+  DiPhotonTree->Branch("CHfracJet4",&(treeDipho_.CHfracJet4),"CHfracJet4/F");
+  DiPhotonTree->Branch("NHfracJet4",&(treeDipho_.NHfracJet4),"NHfracJet4/F");
+  DiPhotonTree->Branch("PHfracJet4",&(treeDipho_.PHfracJet4),"PHfracJet4/F");
+  DiPhotonTree->Branch("MUfracJet4",&(treeDipho_.MUfracJet4),"MUfracJet4/F");
+  DiPhotonTree->Branch("CHmultJet4",&(treeDipho_.CHmultJet4),"CHmultJet4/I");
+  DiPhotonTree->Branch("NEmultJet4",&(treeDipho_.NEmultJet4),"NEmultJet4/I");
 
   DiPhotonTree->Branch("vtxIndex",&(treeDipho_.vtxIndex),"vtxIndex/I");
   DiPhotonTree->Branch("vtxX",&(treeDipho_.vtxX),"vtxX/F");
@@ -2121,21 +2306,60 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.phiJetLead = -500;
   treeDipho_.massJetLead = -500;
   treeDipho_.indexJetLead = -500;
+  treeDipho_.NEMfracJet1 = -500.;
+  treeDipho_.CEMfracJet1 = -500.;
+  treeDipho_.CHfracJet1 = -500.;
+  treeDipho_.NHfracJet1 = -500.;
+  treeDipho_.ELfracJet1 = -500.;
+  treeDipho_.PHfracJet1 = -500.;
+  treeDipho_.MUfracJet1 = -500.;
+  treeDipho_.CHmultJet1 = -500;
+  treeDipho_.NEmultJet1 = -500;
+
   treeDipho_.ptJetSubLead =-500 ;
   treeDipho_.etaJetSubLead =-500 ;
   treeDipho_.phiJetSubLead =-500 ;
   treeDipho_.massJetSubLead =-500 ;
   treeDipho_.indexJetSubLead = -500;
+  treeDipho_.NEMfracJet2 = -500.;
+  treeDipho_.CEMfracJet2 = -500.;
+  treeDipho_.CHfracJet2 = -500.;
+  treeDipho_.NHfracJet2 = -500.;
+  treeDipho_.ELfracJet2 = -500.;
+  treeDipho_.PHfracJet2 = -500.;
+  treeDipho_.MUfracJet2 = -500.;
+  treeDipho_.CHmultJet2 = -500;
+  treeDipho_.NEmultJet2 = -500;
+
   treeDipho_.ptJet3 = -500;
   treeDipho_.etaJet3 = -500;
   treeDipho_.phiJet3 = -500;
   treeDipho_.massJet3 = -500;
   treeDipho_.indexJet3 = -500;
+  treeDipho_.NEMfracJet3 = -500.;
+  treeDipho_.CEMfracJet3 = -500.;
+  treeDipho_.CHfracJet3 = -500.;
+  treeDipho_.NHfracJet3 = -500.;
+  treeDipho_.ELfracJet3 = -500.;
+  treeDipho_.PHfracJet3 = -500.;
+  treeDipho_.MUfracJet3 = -500.;
+  treeDipho_.CHmultJet3 = -500;
+  treeDipho_.NEmultJet3 = -500;
+
   treeDipho_.ptJet4 = -500;
   treeDipho_.etaJet4 = -500;
   treeDipho_.phiJet4 = -500;
   treeDipho_.massJet4 = -500;
   treeDipho_.indexJet4 = -500;
+  treeDipho_.NEMfracJet4 = -500.;
+  treeDipho_.CEMfracJet4 = -500.;
+  treeDipho_.CHfracJet4 = -500.;
+  treeDipho_.NHfracJet4 = -500.;
+  treeDipho_.ELfracJet4 = -500.;
+  treeDipho_.PHfracJet4 = -500.;
+  treeDipho_.MUfracJet4 = -500.;
+  treeDipho_.CHmultJet4 = -500;
+  treeDipho_.NEmultJet4 = -500;
 
   treeDipho_.vtxIndex = -500;
   treeDipho_.vtxX = -500.;
