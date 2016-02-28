@@ -9,8 +9,8 @@
 ## 25ns samples from FLASHgg
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DoubleEG         		0 10001 pippo 1 1
 
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py TTGJets 			1 23  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.017     1 
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py TGJets			1 24  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 3.697     1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py TTGJets 			1 23  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 3.697     1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py TGJets			1 24  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 2.967     1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZGTo2LG			1 25  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 117.864   1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py WGToLNuG			1 26  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 405.271   1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhoton			1 15  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 84.0      1 
