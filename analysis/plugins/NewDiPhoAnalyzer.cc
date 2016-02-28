@@ -1616,11 +1616,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			// far from possible muons and electrons       
 			if (matchMu || matchEle) continue;
 
-			nJets++;     
 			float bDiscriminatorValue = thejet->bDiscriminator( bTag_ );    
 			if( bDiscriminatorValue > 0.244 ) nLooseBjets++;        // hardcoded
 			if( bDiscriminatorValue > 0.679 ) nMediumBjets++;       // hardcoded 
-
 
 			double chf = thejet->chargedHadronEnergyFraction();
 			double nhf = thejet->neutralHadronEnergyFraction();
@@ -1656,6 +1654,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			//int idT = (nhf<0.90 && nemf<0.90 && NumConst>1 && muf<0.8) && ((fabs(eta)<=2.4 && chf>0 && chMult>0 && cemf<0.90) || fabs(eta)>2.4);
 
 			if(idL==0) continue;// jet does not pass loose ID
+			nJets++;     
 
 			//int pileupID = thejet->pileupjetIdWP();
 			//if (pileupID == 1) std::cout << "works" << std::endl;
