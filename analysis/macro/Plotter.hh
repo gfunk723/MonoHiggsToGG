@@ -72,6 +72,8 @@ private:
   TLorentzVector	fLorenzVecgg;
   TLorentzVector	fLorenzVecJet1;
   TLorentzVector	fLorenzVecJet2;
+  TLorentzVector	fLorenzVecJet3;
+  TLorentzVector	fLorenzVecJet4;
 
   Bool_t		doMETcorr;
   DblVec		fMETCorr;

@@ -48,6 +48,8 @@ Plotter::Plotter( TString inName, TString outName, TString inSpecies, const DblV
   TLorentzVector *fLorenzVecgg		= new TLorentzVector();
   TLorentzVector *fLorenzVecJet1	= new TLorentzVector();
   TLorentzVector *fLorenzVecJet2	= new TLorentzVector();
+  TLorentzVector *fLorenzVecJet3	= new TLorentzVector();
+  TLorentzVector *fLorenzVecJet4	= new TLorentzVector();
 
   // Make output directory
   fName = outName;
@@ -126,7 +128,8 @@ void Plotter::DoPlots(int prompt){
     fLorenzVecgg = fLorenzVec1 + fLorenzVec2;
     fLorenzVecJet1.SetPtEtaPhiM(ptJetLead,etaJetLead,phiJetLead,massJetLead);
     fLorenzVecJet2.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,massJetSubLead);
- 
+    fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
+    fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
     // calculate the weight
     Double_t Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
@@ -455,13 +458,13 @@ void Plotter::DoPlots(int prompt){
 	  // DeltaPhi between each Jet and the MET
 
 	  // set these values to true for events w/o jets
-	  Bool_t dphiJet1METpass = true;	// dphi Jet1-MET < 2.7
-	  Bool_t dphiJet2METpass = true;	// dphi Jet2-MET < 2.7
+	  //Bool_t dphiJet1METpass = true;	// dphi Jet1-MET < 2.7
+	  //Bool_t dphiJet2METpass = true;	// dphi Jet2-MET < 2.7
 	  Bool_t max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
 	  Bool_t min_dphiJETMETpass = true;	// min dphi Jet-MET > 0.5 
 	
-          Double_t maxJetMETphi;
-	  Double_t minJetMETphi;
+          Double_t max_dphi_JetMET = 0;
+	  Double_t min_dphi_JetMET = 10;
  
 	  //if(run==260538&& lumi==245 && event==413101759)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
 	  //if(run==260426&& lumi==49  && event==81336845) 	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
@@ -477,48 +480,64 @@ void Plotter::DoPlots(int prompt){
 	  //if(run==256843&& lumi==38  && event==55470023)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
 
 	  // look at dphi of jet and MET of events w/ jets
+	  // if only one high pt jet, min & max dphi are dphi of single jet
 	  if ( nJets == 1 ){
 	    if ( ptJetLead > 50 ){
 	      Double_t dphi_JetMET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-	      if ( dphi_JetMET <= 0.5 )	min_dphiJETMETpass = false;
-	      if ( dphi_JetMET >= 2.7 )	max_dphiJETMETpass = false;
+	      min_dphi_JetMET = dphi_JetMET;
+	      max_dphi_JetMET = dphi_JetMET;
 	    }
 	  }
+	  // if more than one high pt jet, find min & max dphi of the top 4 jets
 	  if ( nJets > 1 ){
-	    Double_t dphiJet1MET;
-	    Double_t dphiJet2MET;
-	    if ( ptJetLead > 50 && ptJetSubLead > 50 ){
-	      dphiJet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-	      dphiJet2MET = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
-	      // Max DeltaPhi between Jet and MET
-              maxJetMETphi = TMath::Max(dphiJet1MET,dphiJet2MET); 
-	      if ( maxJetMETphi >= 2.7 ) max_dphiJETMETpass = false;
-	      // Min DeltaPhi between Jet and MET 
-	      minJetMETphi = TMath::Min(dphiJet1MET,dphiJet2MET);
-	      if ( minJetMETphi <= 0.5 ) min_dphiJETMETpass = false;  
+	    Double_t dphiJet1METmin = 10;
+	    Double_t dphiJet2METmin = 10;
+	    Double_t dphiJet3METmin = 10;
+	    Double_t dphiJet4METmin = 10;
+	    Double_t dphiJet1METmax = 0;
+	    Double_t dphiJet2METmax = 0;
+	    Double_t dphiJet3METmax = 0;
+	    Double_t dphiJet4METmax = 0;
+	    if ( ptJetLead > 50 ){
+	      dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+	      dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
 	    }
-	    else if ( ptJetLead > 50 ){
-	      dphiJet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-	      if ( dphiJet1MET >= 2.7 )	dphiJet1METpass = false; 
-	      if ( dphiJet1MET >= 2.7 ) max_dphiJETMETpass = false;
-	      if ( dphiJet1MET <= 0.5 ) min_dphiJETMETpass = false;  
+	    if ( ptJetSubLead > 50 ){
+	      dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+	      dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
 	    }
-	    else if ( ptJetSubLead > 50 ){
-	      dphiJet2MET = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
-	      if ( dphiJet2MET >= 2.7 )	dphiJet2METpass = false;
-	      if ( dphiJet2MET >= 2.7 ) max_dphiJETMETpass = false;
-	      if ( dphiJet2MET <= 0.5 ) min_dphiJETMETpass = false;  
+	    if ( ptJet3 > 50 ){
+	      dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
+	      dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
 	    }
-	  } 
+	    if ( ptJet4 > 50 ){
+ 	      dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+ 	      dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+	    }
+
+	    // find the min_dphi_JetMET 
+	    if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
+	    if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
+	    if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
+	    if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
+
+	    // find the max_dphi_JetMET 
+	    if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
+	    if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
+	    if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
+	    if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
+	  }
+	  if (max_dphi_JetMET > 2.7) max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
+	  if (min_dphi_JetMET < 0.5) min_dphiJETMETpass = false;// min dphi Jet-MET > 0.5 
+ 
 	  if (nJets > 0){
-	    fTH1DMap["absdphi_maxJetMET"]->Fill(TMath::Abs(maxJetMETphi),Weight);
-	    fTH1DMap["absdphi_minJetMET"]->Fill(TMath::Abs(minJetMETphi),Weight);
+	    fTH1DMap["absdphi_maxJetMET"]->Fill(TMath::Abs(max_dphi_JetMET),Weight);
+	    fTH1DMap["absdphi_minJetMET"]->Fill(TMath::Abs(min_dphi_JetMET),Weight);
 	    if (t1pfmet > 100){
-	      fTH1DMap["absdphi_maxJetMET_met100"]->Fill(TMath::Abs(maxJetMETphi),Weight);
-	      fTH1DMap["absdphi_minJetMET_met100"]->Fill(TMath::Abs(minJetMETphi),Weight);
+	      fTH1DMap["absdphi_maxJetMET_met100"]->Fill(TMath::Abs(max_dphi_JetMET),Weight);
+	      fTH1DMap["absdphi_minJetMET_met100"]->Fill(TMath::Abs(min_dphi_JetMET),Weight);
 	    }
 	  }
-
 
 
 	  // DeltaPhi between Jet1 and gg 
@@ -569,19 +588,19 @@ void Plotter::DoPlots(int prompt){
 	        fTH1DMap["met_Isolategg"]->Fill(t1pfmet,Weight); 
 	        fTH1DMap["metCor_Isolategg"]->Fill(t1pfmetCorr,Weight); 
 	      } 
-	      if ( dphiJet1METpass ){ 
-	        fTH1DMap["met_IsolateMET"]->Fill(t1pfmet,Weight); 
-	        fTH1DMap["metCor_IsolateMET"]->Fill(t1pfmetCorr,Weight); 
-	      } 
+	      //if ( dphiJet1METpass ){ 
+	      //  fTH1DMap["met_IsolateMET"]->Fill(t1pfmet,Weight); 
+	      //  fTH1DMap["metCor_IsolateMET"]->Fill(t1pfmetCorr,Weight); 
+	      //} 
 	    } 
-	    if ( dphiJet1METpass ){ 
-	      fTH1DMap["met_afterJetMETCut"]->Fill(t1pfmet,Weight); 
-	      fTH1DMap["metCor_afterJetMETCut"]->Fill(t1pfmetCorr,Weight); 
-	      if ( dphiJet1ggpass ){ 
-	        fTH1DMap["met_IsolateJET1"]->Fill(t1pfmet,Weight); 
-	        fTH1DMap["metCor_IsolateJET1"]->Fill(t1pfmetCorr,Weight);
-	      }
-	    }
+	    //if ( dphiJet1METpass ){ 
+	    //  fTH1DMap["met_afterJetMETCut"]->Fill(t1pfmet,Weight); 
+	    //  fTH1DMap["metCor_afterJetMETCut"]->Fill(t1pfmetCorr,Weight); 
+	    //  if ( dphiJet1ggpass ){ 
+	    //    fTH1DMap["met_IsolateJET1"]->Fill(t1pfmet,Weight); 
+	    //    fTH1DMap["metCor_IsolateJET1"]->Fill(t1pfmetCorr,Weight);
+	    //  }
+	    //}
 	    if ( max_dphiJETMETpass ){
 	      fTH1DMap["met_maxJetMET"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_maxJetMET"]->Fill(t1pfmetCorr,Weight); 
@@ -746,6 +765,7 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "Events in MET tail of CorrMET + MET Iso		= " << fTH1DMap["metCor_IsolateMET"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "Events in MET tail of CorrMET + gg Iso		= " << fTH1DMap["metCor_Isolategg"]->Integral(binMETlo,binMEThi) << std::endl;
   //std::cout << "======================================================" << std::endl;
+  std::cout << "Events in MET tail of MET + ALL Iso		= " << fTH1DMap["met_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in all MET  of CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl;
   std::cout << "Efficiency in         CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi)/fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl; 
