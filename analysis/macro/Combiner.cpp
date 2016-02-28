@@ -48,6 +48,10 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["DiPhoton"]		= "#gamma + #gamma";
   fSampleTitleMap["ttHJetToGG"]		= "tt + H #rightarrow #gamma#gamma";
   fSampleTitleMap["VBFHToGG"]		= "VBF H #rightarrow #gamma#gamma";
+  fSampleTitleMap["WGToLNuG"]		= "#gamma + W #rightarrow l #nu";
+  fSampleTitleMap["ZGTo2LG"]		= "#gamma + Z #rightarrow ll #gamma#gamma";
+  fSampleTitleMap["TTGJets"]		= "tt + #gamma + Jets";
+  fSampleTitleMap["TGJets"]		= "t + #gamma + Jets";
   //fSampleTitleMap["DMHtoGG_M1"]		= "m_{#chi} = 1 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
   //fSampleTitleMap["DMHtoGG_M10"]	= "m_{#chi} = 10 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 10 GeV";
   //fSampleTitleMap["DMHtoGG_M100"]	= "m_{#chi} = 100 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 100 GeV";
@@ -360,6 +364,10 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
   fSampleTitleMap["ttHJetToGG"]		= "tt $+ H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
+  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll \\gamma\\gamma$";
+  fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
+  fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
   fSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP1000"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
