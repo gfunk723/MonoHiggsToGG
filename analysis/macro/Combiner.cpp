@@ -269,10 +269,52 @@ void Combiner::DoComb(){
   }// end loop over th1d histos
 
   //if (addText!="_n-1") Combiner::MakeEffPlots();
+
+   
+  cut_pho_pt.resize(fNSig);
+  mva_pho_pt.resize(fNSig);
+  cut_pho_eta.resize(fNSig);
+  mva_pho_eta.resize(fNSig);
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc);
+  }
   if (addText!="_n-1") Combiner::FindMETEfficiencies();
+
   Combiner::MakeOutputCanvas();
 
 }// end Combiner::DoComb
+
+void Combiner::PhotonIDEfficiencies(const UInt_t mc){
+  // Find the efficiency for photons passing loose selection that have passed the MVA selection
+ 
+  for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
+    if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+    if (fTH1DNames[th1d]=="pt1"){		mva_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();} 
+    if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+    if (fTH1DNames[th1d]=="eta1"){		mva_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+  }
+  cut_pho_pt[mc]->Divide(mva_pho_pt[mc]);
+  cut_pho_eta[mc]->Divide(mva_pho_eta[mc]);
+
+  TCanvas * c1 = new TCanvas(); 
+  c1->cd();
+  cut_pho_pt[mc]->Draw();
+  CMSLumi(c1,11,lumi);
+  c1->SaveAs(Form("%scomb/phoIDeff_pt_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+  delete cut_pho_pt[mc];
+  delete mva_pho_pt[mc];
+  delete c1;
+
+  TCanvas * c2 = new TCanvas(); 
+  c2->cd();
+  cut_pho_eta[mc]->Draw();
+  CMSLumi(c2,11,lumi);
+  c2->SaveAs(Form("%scomb/phoIDeff_eta_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+  delete cut_pho_eta[mc];
+  delete mva_pho_eta[mc];
+  delete c2;
+}// end Combiner::PhotonIDEfficiencies
+
 
 void Combiner::FindMETEfficiencies(){
   // Finds the efficiency for each sample (integral of events passing 80 GeV cut over all selected events)
@@ -1355,6 +1397,8 @@ void Combiner::InitTH1DNames(){
   //fTH1DNames.push_back("calomet");
 
   //// photon variables
+  fTH1DNames.push_back("pt1_afterIDloose");
+  fTH1DNames.push_back("eta1_afterIDloose");
   fTH1DNames.push_back("pt1");
   fTH1DNames.push_back("pt2");     
   fTH1DNames.push_back("eta1");

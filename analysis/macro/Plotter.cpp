@@ -415,6 +415,10 @@ void Plotter::DoPlots(int prompt){
 
           fTH1DMap["nvtx"]->Fill(nvtx,Weight);
           fTH1DMap["pt1"]->Fill(pt1,Weight);
+	  if (passBoth){// check that diphoton passes the loose ID
+            fTH1DMap["pt1_afterIDloose"]->Fill(pt1,Weight);
+            fTH1DMap["eta1_afterIDloose"]->Fill(eta1,Weight);
+	  }
           fTH1DMap["pt2"]->Fill(pt2,Weight);
 	  fTH1DMap["t1pfmetSumEt"]->Fill(t1pfmetSumEt,Weight);
           fTH1DMap["t1pfmetphi"]->Fill(t1pfmetPhi,Weight);
@@ -842,8 +846,10 @@ void Plotter::SetUpPlots(){
   fTH1DMap["phi1"]		= Plotter::MakeTH1DPlot("phi1","",20,-4.,4.,"#phi(#gamma1)","");
   fTH1DMap["phi2"]		= Plotter::MakeTH1DPlot("phi2","",20,-4.,4.,"#phi(#gamma2)","");
   fTH1DMap["eta1"]		= Plotter::MakeTH1DPlot("eta1","",20,-3.,3.,"#eta(#gamma1)","");
+  fTH1DMap["eta1_afterIDloose"]	= Plotter::MakeTH1DPlot("eta1_afterIDloose","",20,-3.,3.,"#eta(#gamma1)","");
   fTH1DMap["eta2"]		= Plotter::MakeTH1DPlot("eta2","",20,-3.,3.,"#eta(#gamma2)","");
   fTH1DMap["pt1"]		= Plotter::MakeTH1DPlot("pt1","",60,0.,600.,"p_{T,#gamma1} (GeV)","");
+  fTH1DMap["pt1_afterIDloose"]	= Plotter::MakeTH1DPlot("pt1_afterIDloose","",60,0.,600.,"p_{T,#gamma1} (GeV)","");
   fTH1DMap["pt2"]		= Plotter::MakeTH1DPlot("pt2","",40,0.,400.,"p_{T,#gamma2} (GeV)","");
   fTH1DMap["chiso1"]		= Plotter::MakeTH1DPlot("chiso1","",75,-5.,15.,"CHiso(#gamma1)","");
   fTH1DMap["chiso2"]		= Plotter::MakeTH1DPlot("chiso2","",75,-5.,15.,"CHiso(#gamma2)","");
