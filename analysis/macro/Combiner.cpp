@@ -203,14 +203,15 @@ void Combiner::DoComb(){
 
     }
 
-    //if (th1d==fIndexMgg){
-    //  for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
-    //    if (addText!="_n-1"){
-    //      std::cout << fBkgNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() 
-    //      << " %: " << fInBkgTH1DHists[th1d][mc]->Integral()/fOutBkgTH1DHists[th1d]->Integral() << std::endl;
-    //    }
-    //  }
-    //} 
+    if (th1d==fIndexMgg){
+      for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
+        if (addText!="_n-1"){
+          std::cout << fBkgNames[mc] << " in " << fTH1DNames[th1d] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() 
+          << " %: " << fInBkgTH1DHists[th1d][mc]->Integral()/fOutBkgTH1DHists[th1d]->Integral() << std::endl;
+        }
+      }
+    }
+ 
     //if (th1d==fIndexNvtx && addText!="_n-1"){
     //  std::cout << "DoubleEG" << " in " << fTH1DNames[th1d] << " = " << fOutDataTH1DHists[th1d]->Integral()  << std::endl;
     //  for (UInt_t mc = 0; mc < fNBkg; mc++){// print out values of integrals
@@ -1404,12 +1405,12 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("UnclEnUp");
     fTH1DNames.push_back("UnclEnDown");
 
-    fTH1DNames.push_back("ptJet1");
-    fTH1DNames.push_back("ptJet2");
-    fTH1DNames.push_back("phiJet1");
-    fTH1DNames.push_back("phiJet2");
-    fTH1DNames.push_back("etaJet1");
-    fTH1DNames.push_back("etaJet2");
+    //fTH1DNames.push_back("ptJet1");
+    //fTH1DNames.push_back("ptJet2");
+    //fTH1DNames.push_back("phiJet1");
+    //fTH1DNames.push_back("phiJet2");
+    //fTH1DNames.push_back("etaJet1");
+    //fTH1DNames.push_back("etaJet2");
     fTH1DNames.push_back("dphiJet1MET");
     fTH1DNames.push_back("dphiJet2MET");
     fTH1DNames.push_back("absdphiJet1MET");
@@ -1452,6 +1453,10 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("jetInfo_MUfrac1");	
     fTH1DNames.push_back("jetInfo_CHmult1");
     fTH1DNames.push_back("jetInfo_NEmult1");
+    fTH1DNames.push_back("jetInfo_pt1");
+    fTH1DNames.push_back("jetInfo_eta1");
+    fTH1DNames.push_back("jetInfo_phi1");
+    fTH1DNames.push_back("jetInfo_mass1");
 
     fTH1DNames.push_back("met_Isolategg");
     fTH1DNames.push_back("metCorr_Isolategg");

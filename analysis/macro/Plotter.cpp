@@ -546,6 +546,10 @@ void Plotter::DoPlots(int prompt){
 	    fTH1DMap["jetInfo_MUfrac1"]->Fill(MUfracJet1,Weight);
 	    fTH1DMap["jetInfo_CHmult1"]->Fill(CHmultJet1,Weight);
 	    fTH1DMap["jetInfo_NEmult1"]->Fill(NEmultJet1,Weight);
+	    fTH1DMap["jetInfo_pt1"]->Fill(ptJetLead,Weight);
+	    fTH1DMap["jetInfo_eta1"]->Fill(etaJetLead,Weight);
+	    fTH1DMap["jetInfo_phi1"]->Fill(phiJetLead,Weight);
+	    fTH1DMap["jetInfo_mass1"]->Fill(massJetLead,Weight);
 	  }
 
 
@@ -914,6 +918,10 @@ void Plotter::SetUpPlots(){
   fTH1DMap["jetInfo_MUfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_MUfrac1","",20,0,1.,"Mu frac","");
   fTH1DMap["jetInfo_CHmult1"]	= Plotter::MakeTH1DPlot("jetInfo_CHmult1","",2,0,2.,"CH mult","");
   fTH1DMap["jetInfo_NEmult1"]	= Plotter::MakeTH1DPlot("jetInfo_NEmult1","",2,0,2.,"NE mult","");
+  fTH1DMap["jetInfo_pt1"]	= Plotter::MakeTH1DPlot("jetInfo_pt1","",40,0,200,"p_{T}","");
+  fTH1DMap["jetInfo_eta1"]	= Plotter::MakeTH1DPlot("jetInfo_eta1","",20,-3.,3.,"#eta","");
+  fTH1DMap["jetInfo_phi1"]	= Plotter::MakeTH1DPlot("jetInfo_phi1","",20,-4.,4.,"#phi","");
+  fTH1DMap["jetInfo_mass1"]	= Plotter::MakeTH1DPlot("jetInfo_mass1","",50,0,100,"mass (GeV)","");
 
   fTH1DMap["t1pfmet_partblind"]     = Plotter::MakeTH1DPlot("t1pfmet_partblind","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_partblind"] = Plotter::MakeTH1DPlot("t1pfmetCorr_partblind","",60,0.,300.,"E_{T}^{miss} (GeV)","");
