@@ -1443,6 +1443,16 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("met_minJetMET");
     fTH1DNames.push_back("metCorr_minJetMET");
 
+    fTH1DNames.push_back("jetInfo_CHfrac1");	
+    fTH1DNames.push_back("jetInfo_NHfrac1");	
+    fTH1DNames.push_back("jetInfo_NEMfrac1");
+    fTH1DNames.push_back("jetInfo_CEMfrac1");
+    fTH1DNames.push_back("jetInfo_PHfrac1");	
+    fTH1DNames.push_back("jetInfo_ELfrac1");
+    fTH1DNames.push_back("jetInfo_MUfrac1");	
+    fTH1DNames.push_back("jetInfo_CHmult1");
+    fTH1DNames.push_back("jetInfo_NEmult1");
+
     fTH1DNames.push_back("met_Isolategg");
     fTH1DNames.push_back("metCorr_Isolategg");
     fTH1DNames.push_back("met_IsolateALL");

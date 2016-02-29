@@ -537,6 +537,15 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["absdphi_maxJetMET_met100"]->Fill(TMath::Abs(max_dphi_JetMET),Weight);
 	      fTH1DMap["absdphi_minJetMET_met100"]->Fill(TMath::Abs(min_dphi_JetMET),Weight);
 	    }
+	    fTH1DMap["jetInfo_NEMfrac1"]->Fill(NEMfracJet1,Weight);
+	    fTH1DMap["jetInfo_CEMfrac1"]->Fill(CEMfracJet1,Weight);
+	    fTH1DMap["jetInfo_CHfrac1"]->Fill(CHfracJet1,Weight);
+	    fTH1DMap["jetInfo_NHfrac1"]->Fill(NHfracJet1,Weight);
+	    fTH1DMap["jetInfo_PHfrac1"]->Fill(PHfracJet1,Weight);
+	    fTH1DMap["jetInfo_ELfrac1"]->Fill(ELfracJet1,Weight);
+	    fTH1DMap["jetInfo_MUfrac1"]->Fill(MUfracJet1,Weight);
+	    fTH1DMap["jetInfo_CHmult1"]->Fill(CHmultJet1,Weight);
+	    fTH1DMap["jetInfo_NEmult1"]->Fill(NEmultJet1,Weight);
 	  }
 
 
@@ -895,6 +904,16 @@ void Plotter::SetUpPlots(){
   fTH1DMap["ptgg_afterggMETCut"]= Plotter::MakeTH1DPlot("ptgg_afterggMETCut","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
   fTH1DMap["pt1_afterggMETCut"]	= Plotter::MakeTH1DPlot("pt1_afterggMETCut","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
   fTH1DMap["pt2_afterggMETCut"]	= Plotter::MakeTH1DPlot("pt2_afterggMETCut","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");
+
+  fTH1DMap["jetInfo_CHfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_CHfrac1","",20,0,1.,"CH frac","");
+  fTH1DMap["jetInfo_NHfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_NHfrac1","",20,0,1.,"NH frac","");
+  fTH1DMap["jetInfo_NEMfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_NEMfrac1","",20,0,1.,"NEM frac","");
+  fTH1DMap["jetInfo_CEMfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_CEMfrac1","",20,0,1.,"CEM frac","");
+  fTH1DMap["jetInfo_PHfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_PHfrac1","",20,0,1.,"Pho frac","");
+  fTH1DMap["jetInfo_ELfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_ELfrac1","",20,0,1.,"El frac","");
+  fTH1DMap["jetInfo_MUfrac1"]	= Plotter::MakeTH1DPlot("jetInfo_MUfrac1","",20,0,1.,"Mu frac","");
+  fTH1DMap["jetInfo_CHmult1"]	= Plotter::MakeTH1DPlot("jetInfo_CHmult1","",2,0,2.,"CH mult","");
+  fTH1DMap["jetInfo_NEmult1"]	= Plotter::MakeTH1DPlot("jetInfo_NEmult1","",2,0,2.,"NE mult","");
 
   fTH1DMap["t1pfmet_partblind"]     = Plotter::MakeTH1DPlot("t1pfmet_partblind","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_partblind"] = Plotter::MakeTH1DPlot("t1pfmetCorr_partblind","",60,0.,300.,"E_{T}^{miss} (GeV)","");

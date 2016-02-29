@@ -46,7 +46,7 @@ int main(){
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = true;	// determine the MET correction for MC and data
-  bool doPlots = false;		// make plots for each sample individually
+  bool doPlots = true;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
@@ -418,14 +418,14 @@ int main(){
   Samples.push_back(SamplePair("VH",1));
   Samples.push_back(SamplePair("VBFHToGG",1)); 
   Samples.push_back(SamplePair("GluGluHToGG",1)); 
-  Samples.push_back(SamplePair("DYJetsToLL",1));
-  Samples.push_back(SamplePair("QCD",1)); 
-  Samples.push_back(SamplePair("GJets",1)); 
-  Samples.push_back(SamplePair("DiPhoton",1));
   Samples.push_back(SamplePair("TGJets",1));
   Samples.push_back(SamplePair("TTGJets",1));
   Samples.push_back(SamplePair("WGToLNuG",1));
   Samples.push_back(SamplePair("ZGTo2LG",1));
+  Samples.push_back(SamplePair("DYJetsToLL",1));
+  Samples.push_back(SamplePair("QCD",1)); 
+  Samples.push_back(SamplePair("GJets",1)); 
+  Samples.push_back(SamplePair("DiPhoton",1));
   //Samples.push_back(SamplePair("DMHtoGG_M1",0)); 
   //Samples.push_back(SamplePair("DMHtoGG_M10",0)); 
   //Samples.push_back(SamplePair("DMHtoGG_M100",0)); 
