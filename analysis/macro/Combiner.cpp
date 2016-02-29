@@ -138,10 +138,23 @@ void Combiner::DoComb(){
     //if (qcd_integral_new != qcd_integral) std::cout << "New QCD is NOT the same: old = " << qcd_integral << " new = " << qcd_integral_new << " diff = " << qcd_integral_new-qcd_integral << std::endl;
     //std::cout << "QCD_Integral     = " << qcd_integral << std::endl;
     //std::cout << "QCD_Integral_New = " << qcd_integral_new << std::endl;
+    int i_hgg, i_vbf, i_vh, i_tth;
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
+      if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
+      if (fBkgNames[mc] == "ttHJetToGG")  i_tth = mc;
+      if (fBkgNames[mc] == "VH")	  i_vh  = mc;
+    }
 
     // bkg : copy histos and add to stacks
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       //fInBkgTH1DHists[th1d][mc]->Scale(lumi);
+      if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_met80_forShape"){
+        if (mc==i_vh || mc==i_tth || mc==i_hgg || mc==i_vbf){
+          fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+          fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+        }
+      }
       if (doQCDscale && fBkgNames[mc] == "QCD"){
         fOutBkgTH1DStacks[th1d]->Add(GJetsClone[th1d]);
         fOutBkgTH1DStacksForUncer[th1d]->Add(GJetsClone[th1d]);
@@ -1063,6 +1076,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     ftempLegends->SetLineWidth(2);
     ftempLegends->Draw("SAME");
   }
+
   else{   
     fInSigTH1DHists[th1d][0]->SetTitle("");
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
@@ -1121,42 +1135,87 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   //Double_t minval = 1E20;
   //minval = Combiner::GetMinimum(th1d, true);
 
-  // start by drawing the sig first
-  fInSigTH1DHists[th1d][0]->SetTitle("");
-  fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
-  fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
-  if (isLogY){
-    fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E3);
-    fInSigTH1DHists[th1d][0]->SetMinimum(1E-3);
+  int i_hgg, i_vbf, i_vh, i_tth;
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
+    if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
+    if (fBkgNames[mc] == "ttHJetToGG")	i_tth = mc;
+    if (fBkgNames[mc] == "VH")		i_vh  = mc;
+  }
+  Double_t dataInt = 0;
+
+  if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_met80_forShape"){
+
+    THStack* mgg_Shape = new THStack();
+    TLegend* ftempLegend = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+
+    fInSigTH1DHists[th1d][0]->SetTitle("");
+    fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
+    fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
+    fInSigTH1DHists[th1d][0]->SetLineColor(kWhite);
+    if (isLogY){
+      fInSigTH1DHists[th1d][0]->SetMaximum(maxval);
+      fInSigTH1DHists[th1d][0]->SetMinimum(1E-3);
+    }
+    else {
+      fInSigTH1DHists[th1d][0]->SetMaximum(2);
+      fInSigTH1DHists[th1d][0]->SetMinimum(0);
+    }
+    fInSigTH1DHists[th1d][0]->Draw("HIST");
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (mc == i_vbf || mc == i_hgg || mc == i_tth || mc == i_vh){
+	 mgg_Shape->Add(fInBkgTH1DHists[th1d][mc]);
+         ftempLegend->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
+      }
+    } 
+    mgg_Shape->Draw("HIST SAME");
+
+    ftempLegend->SetBorderSize(4);
+    ftempLegend->SetLineColor(kBlack);
+    ftempLegend->SetTextSize(0.03);//0.035
+    ftempLegend->SetLineWidth(2);
+    ftempLegend->Draw("SAME");
+
+    dataInt = fOutDataTH1DHists[th1d]->Integral();
   }
   else {
-    fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1.5);
-    fInSigTH1DHists[th1d][0]->SetMinimum(0);
-  }
-  fInSigTH1DHists[th1d][0]->Draw("HIST");
-
-  fOutBkgTH1DStacks[th1d]->Draw("HIST SAME");
-  //fOutBkgTH1DHists[th1d]->Draw("E2 SAME");//E2 draws error as rectangle
-  //fOutBkgTH1DStacksForUncer[th1d]->Draw("nostack E2 SAME");
-
-  // check that the blinding does not completely cover the plot
-  // this could be problematic in the future
-  Double_t dataInt = fOutDataTH1DHists[th1d]->Integral();
-  if (fNData > 0 && dataInt > 0){
-    fOutDataTH1DHists[th1d]->Draw("PE SAME");
-  }
-
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
-    if ( mc == fNSig-1 ){ // on last draw redraw axis because they are overwritten by stack
-      fInSigTH1DHists[th1d][mc]->Draw("AXIS SAME");
+    // start by drawing the sig first
+    fInSigTH1DHists[th1d][0]->SetTitle("");
+    fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
+    fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
+    if (isLogY){
+      fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E3);
+      fInSigTH1DHists[th1d][0]->SetMinimum(1E-3);
     }
+    else {
+      fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1.5);
+      fInSigTH1DHists[th1d][0]->SetMinimum(0);
+    }
+    fInSigTH1DHists[th1d][0]->Draw("HIST");
+
+    fOutBkgTH1DStacks[th1d]->Draw("HIST SAME");
+    //fOutBkgTH1DHists[th1d]->Draw("E2 SAME");//E2 draws error as rectangle
+    //fOutBkgTH1DStacksForUncer[th1d]->Draw("nostack E2 SAME");
+
+    // check that the blinding does not completely cover the plot
+    // this could be problematic in the future
+    dataInt = fOutDataTH1DHists[th1d]->Integral();
+    if (fNData > 0 && dataInt > 0){
+      fOutDataTH1DHists[th1d]->Draw("PE SAME");
+    }
+
+    for (UInt_t mc = 0; mc < fNSig; mc++){
+      fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
+      if ( mc == fNSig-1 ){ // on last draw redraw axis because they are overwritten by stack
+        fInSigTH1DHists[th1d][mc]->Draw("AXIS SAME");
+      }
+    }
+
+    //fInSigTH1DHists[th1d][0]->Draw("AXIS SAME");
+
+    fOutBkgTH1DHists[th1d]->Draw("E2 SAME");//E2 draws error as rectangle
+    fTH1DLegends[th1d]->Draw("SAME"); 
   }
-
-  //fInSigTH1DHists[th1d][0]->Draw("AXIS SAME");
-
-  fOutBkgTH1DHists[th1d]->Draw("E2 SAME");//E2 draws error as rectangle
-  fTH1DLegends[th1d]->Draw("SAME"); 
 
   TString suffix = "";
   if (isLogY) suffix="_log";
@@ -1551,6 +1610,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("met_IsolateALL");
     fTH1DNames.push_back("metCorr_IsolateALL");
     fTH1DNames.push_back("metCorr_forShape");
+    fTH1DNames.push_back("mgg_forShape");
+    fTH1DNames.push_back("mgg_met80_forShape");
     fTH1DNames.push_back("mgg_IsolateALL");
     fTH1DNames.push_back("mgg_IsolateALLmet80");
 

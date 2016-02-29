@@ -118,7 +118,19 @@ void Plotter::DoPlots(int prompt){
   Int_t nRel3entries = 0;
 
   Int_t numPassingLeptonReject = 0;
+
+  Int_t nData = 0;
+  Int_t nDataMETfil1 = 0;
+  Int_t nDataMETfil2 = 0;
+  Int_t nDataMETfil3 = 0;
+  Int_t nDataMETfil4 = 0;
+  Int_t nDataMETfil5 = 0;
   
+  Int_t nDataOrig = 0;
+  Int_t nDatadphi1 = 0;
+  Int_t nDatadphi2 = 0;
+  Int_t nDatadphi3 = 0;
+
   for (UInt_t entry = 0; entry < nentries; entry++){
     tpho->GetEntry(entry);
 
@@ -202,7 +214,26 @@ void Plotter::DoPlots(int prompt){
       if (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1 ) passMETfil = false; 
     }
     if (!passMETfil) numFailingMETfil++;
-    if (!isData && !passMETfil) std::cout << "SOMETHING WRONG W/ MET FILTERS" << std::endl;
+
+    // Count number of events failing MET filters
+    if (isData && hltDiphoton30Mass95==1){
+      nData++;
+      if (metF_GV==1){
+	nDataMETfil1++;
+	if (metF_eeBadSC==1){
+	  nDataMETfil2++;
+	  if (metF_HBHENoiseIso==1){
+	    nDataMETfil3++;
+	    if (metF_HBHENoise==1){
+	      nDataMETfil4++;
+	      if (metF_CSC==1){
+		nDataMETfil5++;
+	      }
+	    }
+	  }	
+	}
+      }
+    } 
 
     // Check that the weight is not less than 0
     Bool_t weightNegative = false;
@@ -589,6 +620,7 @@ void Plotter::DoPlots(int prompt){
 	  // plots
 	  if ( !isData && dphigMETpass ) fTH1DMap["metCor_Sig"]->Fill(t1pfmetCorr,Weight);
 	  if ( (doBlind && outsideMgg) || !doBlind){
+	    if ( t1pfmetCorr > 80 ) nDataOrig++;
 	    if ( dphigMETpass ){
 	      fTH1DMap["met_aftergMETCut"]->Fill(t1pfmet,Weight);
 	      fTH1DMap["metCor_aftergMETCut"]->Fill(t1pfmetCorr,Weight);
@@ -598,6 +630,13 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["metCor_afterJetCut"]->Fill(t1pfmetCorr,Weight); 
 	    }
 	    if ( dphiggMETpass ){
+	      if ( t1pfmetCorr > 80){
+	        nDatadphi1++;
+	        if ( max_dphiJETMETpass ){
+	          nDatadphi2++;
+	          if ( min_dphiJETMETpass ) nDatadphi3++;
+	        }
+	      }
 	      fTH1DMap["met_afterggMETCut"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_afterggMETCut"]->Fill(t1pfmetCorr,Weight); 
 	      fTH1DMap["nvtx_afterggMETCut"]->Fill(nvtx,Weight);
@@ -616,7 +655,7 @@ void Plotter::DoPlots(int prompt){
 	    if ( min_dphiJETMETpass ){
 	      fTH1DMap["met_minJetMET"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_minJetMET"]->Fill(t1pfmetCorr,Weight); 
-	    } 
+	    }
 	    if ( max_dphiJETMETpass && min_dphiJETMETpass ){ 
 	      fTH1DMap["met_afterJetMETPhiCut"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_afterJetMETPhiCut"]->Fill(t1pfmetCorr,Weight); 
@@ -630,8 +669,12 @@ void Plotter::DoPlots(int prompt){
 	  }
 	  if ( !isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass  ){
 	    fTH1DMap["metCorr_forShape"]->Fill(t1pfmetCorr,Weight);
+	    fTH1DMap["mgg_forShape"]->Fill(mgg,Weight);
 	    fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
-	    if (t1pfmetCorr > 80) fTH1DMap["mgg_IsolateALLmet80"]->Fill(mgg,Weight);
+	    if (t1pfmetCorr > 80){
+		fTH1DMap["mgg_IsolateALLmet80"]->Fill(mgg,Weight);
+	    	fTH1DMap["mgg_met80_forShape"]->Fill(mgg,Weight);
+	    }
 	  }
           if ( isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass ){
 	    if (doBlind){
@@ -762,6 +805,49 @@ void Plotter::DoPlots(int prompt){
     }// end if passes MET filter
    
   }// end loop over entries in tree
+
+
+  if ( isData ){
+    TH1D * nDataPassingFilters = Plotter::MakeTH1DPlot("nDataPassingFilters","",6,0.,6.,"","Events");
+    nDataPassingFilters->Fill(0.5,nData); 
+    nDataPassingFilters->Fill(1.5,nDataMETfil1); 
+    nDataPassingFilters->Fill(2.5,nDataMETfil2); 
+    nDataPassingFilters->Fill(3.5,nDataMETfil3); 
+    nDataPassingFilters->Fill(4.5,nDataMETfil4); 
+    nDataPassingFilters->Fill(5.5,nDataMETfil5); 
+   
+    nDataPassingFilters->GetXaxis()->SetBinLabel(1,"Orig");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(2,"GV");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(3,"eeBadSC");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(4,"HBHENoiseIso");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(5,"HBHENoise");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(6,"CSC");
+ 
+    gStyle->SetOptStat(0);
+    TCanvas *c1 = new TCanvas();
+    c1->cd();
+    CMSLumi(c1,11,fLumi);
+    nDataPassingFilters->Draw("HIST");
+    c1->SaveAs(Form("%s%s/data_metFilters.%s",fName.Data(),species.Data(),fType.Data()));
+
+    TH1D * nDataPassingdphi = Plotter::MakeTH1DPlot("nDataPassingdphi","",4,0.,4.,"","Events");
+    nDataPassingdphi->Fill(0.5,nDataOrig); 
+    nDataPassingdphi->Fill(1.5,nDatadphi1); 
+    nDataPassingdphi->Fill(2.5,nDatadphi2); 
+    nDataPassingdphi->Fill(3.5,nDatadphi3); 
+
+    nDataPassingdphi->GetXaxis()->SetBinLabel(1,"Orig");
+    nDataPassingdphi->GetXaxis()->SetBinLabel(2,"#Delta#phi(gg,MET)"); 
+    nDataPassingdphi->GetXaxis()->SetBinLabel(3,"max #Delta#phi(j,MET)"); 
+    nDataPassingdphi->GetXaxis()->SetBinLabel(4,"min #Delta#phi(j,MET)"); 
+ 
+    gStyle->SetOptStat(0);
+    TCanvas *c2 = new TCanvas();
+    c2->cd();
+    CMSLumi(c2,11,fLumi);
+    nDataPassingdphi->Draw("HIST");
+    c2->SaveAs(Form("%s%s/data_dphicuts_met80.%s",fName.Data(),species.Data(),fType.Data()));
+  }
 
   std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
   std::cout << "Number Events rejected by MET filters:   " << numFailingMETfil    << " out of " << nentries << " events. " << std::endl;
@@ -1014,6 +1100,8 @@ void Plotter::SetUpPlots(){
   fTH1DMap["t1pfmet_selptgg"]	= Plotter::MakeTH1DPlot("t1pfmet_selptgg","",100,0.,1000.,"E_{T}^{miss} (GeV)","");
 
   fTH1DMap["metCorr_forShape"]	= Plotter::MakeTH1DPlot("metCorr_forShape","",60,0.,300.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["mgg_forShape"]	= Plotter::MakeTH1DPlot("mgg_forShape","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
+  fTH1DMap["mgg_met80_forShape"]= Plotter::MakeTH1DPlot("mgg_met80_forShape","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
 
   //// pho cat plots
   //fTH1DMap["EBHighR9_mgg"]	= Plotter::MakeTH1DPlot("EBHighR9_mgg","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
