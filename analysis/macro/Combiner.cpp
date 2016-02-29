@@ -270,48 +270,90 @@ void Combiner::DoComb(){
 
   //if (addText!="_n-1") Combiner::MakeEffPlots();
 
-   
+  // look at photon ID efficienes (only relevant for MVA samples)   
   cut_pho_pt.resize(fNSig);
   mva_pho_pt.resize(fNSig);
   cut_pho_eta.resize(fNSig);
   mva_pho_eta.resize(fNSig);
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc);
-  }
-  if (addText!="_n-1") Combiner::FindMETEfficiencies();
 
+  phoIDeff_pt.resize(fNSig);
+  phoIDeff_eta.resize(fNSig);
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,0);
+  }
+  
+  //phoIDeff_pt.resize(fNBkg);
+  //phoIDeff_eta.resize(fNBkg);
+  //for (UInt_t mc = 0; mc < fNBkg; mc++){
+  //  if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,1);
+  //}
+
+  //phoIDeff_pt.resize(1);
+  //phoIDeff_eta.resize(1);
+  //if (addText!="_n-1") Combiner::PhotonIDEfficiencies(0,5);
+
+  // look at the MET efficiencies after different corrections
+  if (addText!="_n-1") Combiner::FindMETEfficiencies();
+  
   Combiner::MakeOutputCanvas();
 
 }// end Combiner::DoComb
 
-void Combiner::PhotonIDEfficiencies(const UInt_t mc){
+void Combiner::PhotonIDEfficiencies(const UInt_t mc, const UInt_t isType){
   // Find the efficiency for photons passing loose selection that have passed the MVA selection
  
   for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
-    if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
-    if (fTH1DNames[th1d]=="pt1"){		mva_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();} 
-    if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
-    if (fTH1DNames[th1d]=="eta1"){		mva_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+    if (isType==0){//signal
+      if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+      if (fTH1DNames[th1d]=="pt1_beforeIDloose"){	mva_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();} 
+      if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+      if (fTH1DNames[th1d]=="eta1_beforeIDloose"){	mva_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
+    }
+    else if (isType==1){//bkg
+      if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();}
+      if (fTH1DNames[th1d]=="pt1_beforeIDloose"){	mva_pho_pt[mc]  = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();} 
+      if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();}
+      if (fTH1DNames[th1d]=="eta1_beforeIDloose"){	mva_pho_eta[mc] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();}
+    }
+    else{//data
+      if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fOutDataTH1DHists[th1d]->Clone();}
+      if (fTH1DNames[th1d]=="pt1_beforeIDloose"){	mva_pho_pt[mc]  = (TH1D*)fOutDataTH1DHists[th1d]->Clone();} 
+      if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fOutDataTH1DHists[th1d]->Clone();}
+      if (fTH1DNames[th1d]=="eta1_beforeIDloose"){	mva_pho_eta[mc] = (TH1D*)fOutDataTH1DHists[th1d]->Clone();}
+    }
   }
-  cut_pho_pt[mc]->Divide(mva_pho_pt[mc]);
-  cut_pho_eta[mc]->Divide(mva_pho_eta[mc]);
+  if (TEfficiency::CheckConsistency(*cut_pho_pt[mc],*mva_pho_pt[mc])){
+    phoIDeff_pt[mc] = new TEfficiency(*cut_pho_pt[mc],*mva_pho_pt[mc]);
+  }
 
   TCanvas * c1 = new TCanvas(); 
   c1->cd();
-  cut_pho_pt[mc]->Draw();
+  phoIDeff_pt[mc]->Draw("AP");
   CMSLumi(c1,11,lumi);
-  c1->SaveAs(Form("%scomb/phoIDeff_pt_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+  if (isType==0) c1->SaveAs(Form("%scomb/phoIDeff_pt_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+  else if (isType==1) c1->SaveAs(Form("%scomb/phoIDeff_pt_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
+  else c1->SaveAs(Form("%scomb/phoIDeff_pt_Data.%s",fOutDir.Data(),fType.Data()));
+
   delete cut_pho_pt[mc];
   delete mva_pho_pt[mc];
+  delete phoIDeff_pt[mc];
   delete c1;
+
+  if (TEfficiency::CheckConsistency(*cut_pho_eta[mc],*mva_pho_eta[mc])){
+    phoIDeff_eta[mc] = new TEfficiency(*cut_pho_eta[mc],*mva_pho_eta[mc]);
+  }
 
   TCanvas * c2 = new TCanvas(); 
   c2->cd();
-  cut_pho_eta[mc]->Draw();
+  phoIDeff_eta[mc]->Draw("AP");
   CMSLumi(c2,11,lumi);
-  c2->SaveAs(Form("%scomb/phoIDeff_eta_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+  if (isType==0) c2->SaveAs(Form("%scomb/phoIDeff_eta_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+  else if (isType==1) c2->SaveAs(Form("%scomb/phoIDeff_eta_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
+  else c2->SaveAs(Form("%scomb/phoIDeff_eta_Data.%s",fOutDir.Data(),fType.Data()));
+  
   delete cut_pho_eta[mc];
   delete mva_pho_eta[mc];
+  delete phoIDeff_eta[mc];
   delete c2;
 }// end Combiner::PhotonIDEfficiencies
 
@@ -1399,6 +1441,8 @@ void Combiner::InitTH1DNames(){
   //// photon variables
   fTH1DNames.push_back("pt1_afterIDloose");
   fTH1DNames.push_back("eta1_afterIDloose");
+  fTH1DNames.push_back("pt1_beforeIDloose");
+  fTH1DNames.push_back("eta1_beforeIDloose");
   fTH1DNames.push_back("pt1");
   fTH1DNames.push_back("pt2");     
   fTH1DNames.push_back("eta1");
@@ -1507,6 +1551,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("met_IsolateALL");
     fTH1DNames.push_back("metCorr_IsolateALL");
     fTH1DNames.push_back("metCorr_forShape");
+    fTH1DNames.push_back("mgg_IsolateALL");
+    fTH1DNames.push_back("mgg_IsolateALLmet80");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
