@@ -671,6 +671,13 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
     if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
   }
+
+  //if ( metF_CSC == 0) std::cout << "FAILS MET FILTER : CSC " << std::endl;
+  //if ( metF_eeBadSC == 0) std::cout << "FAILS MET FILTER : eeBadSC " << std::endl;
+  //if ( metF_HadronTrackRes == 0) std::cout << "FAILS MET FILTER : Hadron Track Res " << std::endl;
+  //if ( metF_MuonBadTrack == 0) std::cout << "FAILS MET FILTER : Muon Bad Track " << std::endl;
+  //if ( metF_GV == 0) std::cout << "FAILS MET FILTER : GV " << std::endl;
+
   // # Vertices
   int nvtx = primaryVertices->size(); 
 
@@ -2416,6 +2423,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.metF_HBHENoiseIso = -500;
   treeDipho_.metF_CSC = -500;
   treeDipho_.metF_eeBadSC = -500;
+  treeDipho_.metF_MuonBadTrack = -500;
+  treeDipho_.metF_HadronTrackRes = -500;
   treeDipho_.massCorrSmear = -500;
   treeDipho_.massCorrSmearUp = -500;
   treeDipho_.massCorrSmearDown = -500;
