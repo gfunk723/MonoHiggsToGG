@@ -34,7 +34,7 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l + \\nu$";
-  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll";
+  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
   //fSampleTitleMap["DMHtoGG_M1"]	= "$\\bar{\\chi}\\chi HH, m_{\\chi}$ = 1 GeV (10 fb)";
   //fSampleTitleMap["DMHtoGG_M10"]	= "$\\bar{\\chi}\\chi HH, m_{\\chi}$ = 10 GeV (10 fb)";
   //fSampleTitleMap["DMHtoGG_M100"]	= "$\\bar{\\chi}\\chi HH, m_{\\chi}$ = 100 GeV (10 fb)";
@@ -144,7 +144,7 @@ void ABCDMethod::DoAnalysis(){
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l + \\nu$";
-  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll";
+  fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
 
   // find indices for the different bkg samples
   for (UInt_t mc = 0; mc < fNBkg; mc++){

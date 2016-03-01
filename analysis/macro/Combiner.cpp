@@ -1150,8 +1150,6 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     TLegend* ftempLegend = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
 
     fInSigTH1DHists[th1d][0]->SetTitle("");
-    fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
-    fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
     fInSigTH1DHists[th1d][0]->SetLineColor(kWhite);
     if (isLogY){
       fInSigTH1DHists[th1d][0]->SetMaximum(maxval);

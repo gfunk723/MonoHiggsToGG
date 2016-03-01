@@ -519,15 +519,15 @@ void Plotter::DoPlots(int prompt){
 
 	  // look at dphi of jet and MET of events w/ jets
 	  // if only one high pt jet, min & max dphi are dphi of single jet
-	  if ( nJets == 1 ){
-	    if ( ptJetLead > 50 ){
-	      Double_t dphi_JetMET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-	      min_dphi_JetMET = dphi_JetMET;
-	      max_dphi_JetMET = dphi_JetMET;
-	    }
-	  }
+	  //if ( nJets == 1 ){
+	  //  if ( ptJetLead > 50 ){
+	  //    Double_t dphi_JetMET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+	  //    min_dphi_JetMET = dphi_JetMET;
+	  //    max_dphi_JetMET = dphi_JetMET;
+	  //  }
+	  //}
 	  // if more than one high pt jet, find min & max dphi of the top 4 jets
-	  if ( nJets > 1 ){
+	  if ( nJets > 0 ){
 	    Double_t dphiJet1METmin = 10;
 	    Double_t dphiJet2METmin = 10;
 	    Double_t dphiJet3METmin = 10;
@@ -565,7 +565,11 @@ void Plotter::DoPlots(int prompt){
 	    if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
 	    if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
 	  }
-	  if (max_dphi_JetMET > 2.7) max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
+
+	  //if (isData) std::cout << entry << " max_dphi_JetMET = " << max_dphi_JetMET << std::endl;
+	  //if (isData) std::cout << entry << " min_dphi_JetMET = " << min_dphi_JetMET << std::endl;
+
+	  if (max_dphi_JetMET > 2.7) max_dphiJETMETpass = false;// max dphi Jet-MET < 2.7 
 	  if (min_dphi_JetMET < 0.5) min_dphiJETMETpass = false;// min dphi Jet-MET > 0.5 
  
 	  if (nJets > 0){
@@ -629,12 +633,12 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["met_afterJetCut"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_afterJetCut"]->Fill(t1pfmetCorr,Weight); 
 	    }
-	    if ( dphiggMETpass ){
-	      if ( t1pfmetCorr > 80){
+	    if ( t1pfmetCorr > 80 ){
+	      if ( max_dphiJETMETpass ){
 	        nDatadphi1++;
-	        if ( max_dphiJETMETpass ){
+	        if ( min_dphiJETMETpass ){
 	          nDatadphi2++;
-	          if ( min_dphiJETMETpass ) nDatadphi3++;
+	          if ( dphiggMETpass ) nDatadphi3++;
 	        }
 	      }
 	      fTH1DMap["met_afterggMETCut"]->Fill(t1pfmet,Weight); 
@@ -837,9 +841,9 @@ void Plotter::DoPlots(int prompt){
     nDataPassingdphi->Fill(3.5,nDatadphi3); 
 
     nDataPassingdphi->GetXaxis()->SetBinLabel(1,"Orig");
-    nDataPassingdphi->GetXaxis()->SetBinLabel(2,"#Delta#phi(gg,MET)"); 
-    nDataPassingdphi->GetXaxis()->SetBinLabel(3,"max #Delta#phi(j,MET)"); 
-    nDataPassingdphi->GetXaxis()->SetBinLabel(4,"min #Delta#phi(j,MET)"); 
+    nDataPassingdphi->GetXaxis()->SetBinLabel(2,"max #Delta#phi(j,MET)"); 
+    nDataPassingdphi->GetXaxis()->SetBinLabel(3,"min #Delta#phi(j,MET)"); 
+    nDataPassingdphi->GetXaxis()->SetBinLabel(4,"#Delta#phi(gg,MET)"); 
  
     gStyle->SetOptStat(0);
     TCanvas *c2 = new TCanvas();
