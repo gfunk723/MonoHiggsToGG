@@ -580,9 +580,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
   for( unsigned index = 0; index < flagsNames.size(); ++index ) {
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_goodVertices" && !triggerFlags->accept( index )) metF_GV = 0;
-    //Flag_HBHENoiseFilter 
-    //Flag_HBHENoiseIsoFilter
-    //Flag_CSCTightHalo2015Filter 
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilter" && !triggerFlags->accept( index )) metF_HBHENoise = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilterIso" && !triggerFlags->accept( index )) metF_HBHENoiseIso = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter" && !triggerFlags->accept( index )) metF_eeBadSC = 0;
   }
 
@@ -2102,6 +2102,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.metF_HBHENoiseIso = -500;
   treeDipho_.metF_CSC = -500;
   treeDipho_.metF_eeBadSC = -500;
+  treeDipho_.metF_MuonBadTrack = -500;
+  treeDipho_.metF_HadronTrackRes = -500;
   treeDipho_.massCorrSmear = -500;
   treeDipho_.massCorrSmearUp = -500;
   treeDipho_.massCorrSmearDown = -500;

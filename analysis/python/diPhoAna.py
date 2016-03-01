@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 # SET THESE BOOLS BEFORE RUNNING:
 isMC = True; 
 is76X = True;
-isFLASHgg_1_1_0 = True;
+isFLASHgg_1_1_0 = False;
 ######################
 
 process = cms.Process("diPhoAna")
@@ -22,23 +22,28 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All'     # Phys14 samples
 #process.GlobalTag.globaltag = 'MCRUN2_74_V9A'         # 50ns
 
-if (isMC and is76X):
-    process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v2', '')
-    print "76X_mcRun2_asymptotic_v2"
-elif (isMC==False and is76X==False):
-    process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
-    print "74X_dataRun2_Prompt_v2"
-elif (isMC and isFLASHgg_1_1_0):
-    process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '')
-    print "74X_mcRun2_asymptotic_v2"
+# Pick up GlobalTag
+if (isMC):
+    if (is76X):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v2', '')
+        print "76X_mcRun2_asymptotic_v2"
+    else:
+        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '')
+        print "74X_mcRun2_asymptotic_v2"
+     
 else:
-    process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
-    print "MCRUN2_74_V9"
+    if (is76X):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_asymptotic_v2', '')
+        print "76X_mcRun2_asymptotic_v2"
+    else:
+        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
+        print "74X_dataRun2_Prompt_v2"
 
-if (isMC==True and isFLASHgg_1_1_0):
+
+if (isMC and isFLASHgg_1_1_0):
     flag = 'TriggerResults::PAT'
     print "Using name PAT"
-else: #if (isMC==False and isFLASHgg_1_1_0):
+else: 
     flag = 'TriggerResults::RECO'
     print "Using name RECO"
 
@@ -49,7 +54,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 1000 ) )
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	# GluGluH for 76X
-	"file:myMicroAODOutputFile_76X.root"
+	"file:myMicroAODOutputFile_sig76X.root"
 	#"/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_1/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_1-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160130_032602/0000/myMicroAODOutputFile_1.root",
 
 	#"/store/user/soffi/MonoHgg_2HDM_MZP1000_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_173214/0000/myMicroAODOutputFile_1.root", 
