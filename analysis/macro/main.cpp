@@ -41,15 +41,15 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString inDir = "data/25ns_v1-1-0_ReReco_wJETinfo/"; 		// input directory of the samples
-  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wJETinfo_wOptSel_wQCDrescale/";	// output directory to send results
+  TString inDir = "data/25ns_v1-1-0_ReReco_wAllJetInfo/"; 			// input directory of the samples
+  TString outDir = "./diPhoPlots/25ns_v1-1-0_ReReco_wAllJetInfo_wOptSel/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = false;	// determine the MET correction for MC and data
-  bool doPlots = false;		// make plots for each sample individually
+  bool doMETCorr = true;	// determine the MET correction for MC and data
+  bool doPlots = true;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
-  bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
+  bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
@@ -254,6 +254,30 @@ int main(){
     delete WZH;
     std::cout << "Finished WZH sample" << std::endl;
 
+    std::cout << "Working on WGToLNuG sample" << std::endl;
+    Plotter * WGToLNuG = new Plotter(inDir,outDir,"WGToLNuG",puweights_MC,lumi,false,doBlind,type,doMETCorr,metCorrMC);
+    WGToLNuG->DoPlots(0);
+    delete WGToLNuG;
+    std::cout << "Finished WGToLNuG sample" << std::endl;
+
+    std::cout << "Working on ZGTo2LG sample" << std::endl;
+    Plotter * ZGTo2LG = new Plotter(inDir,outDir,"ZGTo2LG",puweights_MC,lumi,false,doBlind,type,doMETCorr,metCorrMC);
+    ZGTo2LG->DoPlots(0);
+    delete ZGTo2LG;
+    std::cout << "Finished ZGTo2LG sample" << std::endl;
+
+    std::cout << "Working on TGJets sample" << std::endl;
+    Plotter * TGJets = new Plotter(inDir,outDir,"TGJets",puweights_MC,lumi,false,doBlind,type,doMETCorr,metCorrMC);
+    TGJets->DoPlots(0);
+    delete TGJets;
+    std::cout << "Finished TGJets sample" << std::endl;
+
+    std::cout << "Working on TTGJets sample" << std::endl;
+    Plotter * TTGJets = new Plotter(inDir,outDir,"TTGJets",puweights_MC,lumi,false,doBlind,type,doMETCorr,metCorrMC);
+    TTGJets->DoPlots(0);
+    delete TTGJets;
+    std::cout << "Finished TTGJets sample" << std::endl;
+
     std::cout << "Working on GluGluH sample" << std::endl;
     Plotter * GGHGG = new Plotter(inDir,outDir,"GluGluHToGG",puweights_MC,lumi,false,doBlind,type,doMETCorr,metCorrMC);
     GGHGG->DoPlots(0);
@@ -369,6 +393,10 @@ int main(){
   colorMap["VBFHToGG"]			= kYellow-7;
   colorMap["DiPhoton"]			= kTeal-1;
   colorMap["DYJetsToLL"]		= kTeal-7;
+  colorMap["TGJets"]			= kAzure+3;
+  colorMap["TTGJets"]			= kAzure+2;
+  colorMap["ZGTo2LG"]			= kCyan;
+  colorMap["WGToLNuG"]			= kAzure+8;
   colorMap["DMHtoGG_M1"]		= kPink-2;
   colorMap["DMHtoGG_M10"]		= kPink-6;
   colorMap["DMHtoGG_M100"]		= kPink+6;
@@ -390,6 +418,10 @@ int main(){
   Samples.push_back(SamplePair("VH",1));
   Samples.push_back(SamplePair("VBFHToGG",1)); 
   Samples.push_back(SamplePair("GluGluHToGG",1)); 
+  Samples.push_back(SamplePair("TGJets",1));
+  Samples.push_back(SamplePair("TTGJets",1));
+  Samples.push_back(SamplePair("WGToLNuG",1));
+  Samples.push_back(SamplePair("ZGTo2LG",1));
   Samples.push_back(SamplePair("DYJetsToLL",1));
   Samples.push_back(SamplePair("QCD",1)); 
   Samples.push_back(SamplePair("GJets",1)); 
