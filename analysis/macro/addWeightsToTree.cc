@@ -239,6 +239,8 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   Int_t           metF_HBHENoiseIso;    
   Int_t           metF_CSC;    
   Int_t           metF_eeBadSC;    
+  Int_t		  metF_MuonBadTrack;
+  Int_t		  metF_HadronTrackRes;
   Float_t         massCorrSmear;
   Float_t         massCorrSmearUp;
   Float_t         massCorrSmearDown;
@@ -441,6 +443,8 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   TBranch        *b_metF_HBHENoiseIso;    
   TBranch        *b_metF_CSC;    
   TBranch        *b_metF_eeBadSC;    
+  TBranch        *b_metF_MuonBadTrack;    
+  TBranch        *b_metF_HadronTrackRes;    
   TBranch        *b_higgsVtxX;   //!
   TBranch        *b_higgsVtxY;   //!
   TBranch        *b_higgsVtxZ;   //!
@@ -646,6 +650,8 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   treeOrig->SetBranchAddress("metF_HBHENoiseIso",&metF_HBHENoiseIso,&b_metF_HBHENoiseIso);
   treeOrig->SetBranchAddress("metF_CSC",&metF_CSC,&b_metF_CSC);
   treeOrig->SetBranchAddress("metF_eeBadSC",&metF_eeBadSC,&b_metF_eeBadSC);
+  treeOrig->SetBranchAddress("metF_MuonBadTrack",&metF_MuonBadTrack,&b_metF_MuonBadTrack);
+  treeOrig->SetBranchAddress("metF_HadronTrackRes",&metF_HadronTrackRes,&b_metF_HadronTrackRes);
   treeOrig->SetBranchAddress("higgsVtxX", &higgsVtxX, &b_higgsVtxX);
   treeOrig->SetBranchAddress("higgsVtxY", &higgsVtxY, &b_higgsVtxY);
   treeOrig->SetBranchAddress("higgsVtxZ", &higgsVtxZ, &b_higgsVtxZ);
@@ -868,6 +874,8 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     theTreeNew->Branch("metF_HBHENoiseIso",&metF_HBHENoiseIso,"metF_HBHENoiseIso/I");
     theTreeNew->Branch("metF_CSC",&metF_CSC,"metF_CSC/I");
     theTreeNew->Branch("metF_eeBadSC",&metF_eeBadSC,"metF_eeBadSC/I");
+    theTreeNew->Branch("metF_MuonBadTrack",&metF_MuonBadTrack,"metF_MuonBadTrack/I");
+    theTreeNew->Branch("metF_HadronTrackRes",&metF_HadronTrackRes,"metF_HadronTrackRes/I");
     theTreeNew->Branch("higgsVtxX", &higgsVtxX, "higgsVtxX/F");
     theTreeNew->Branch("higgsVtxY", &higgsVtxY, "higgsVtxY/F");
     theTreeNew->Branch("higgsVtxZ", &higgsVtxZ, "higgsVtxZ/F");

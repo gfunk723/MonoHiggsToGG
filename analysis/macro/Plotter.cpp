@@ -125,6 +125,8 @@ void Plotter::DoPlots(int prompt){
   Int_t nDataMETfil3 = 0;
   Int_t nDataMETfil4 = 0;
   Int_t nDataMETfil5 = 0;
+  Int_t nDataMETfil6 = 0;
+  Int_t nDataMETfil7 = 0;
   
   Int_t nDataOrig = 0;
   Int_t nDatadphi1 = 0;
@@ -211,7 +213,9 @@ void Plotter::DoPlots(int prompt){
     // Check if the Data passes MET filters
     Bool_t passMETfil = true;
     if (isData){
-      if (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1 ) passMETfil = false; 
+      if (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1 || metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1){
+	passMETfil = false; 
+      }
     }
     if (!passMETfil) numFailingMETfil++;
 
@@ -226,8 +230,14 @@ void Plotter::DoPlots(int prompt){
 	    nDataMETfil3++;
 	    if (metF_HBHENoise==1){
 	      nDataMETfil4++;
-	      if (metF_CSC==1){
+	      if (metF_MuonBadTrack==1){
 		nDataMETfil5++;
+		if (metF_HadronTrackRes==1){
+		  nDataMETfil6++;
+		  if (metF_CSC==1){
+		    nDataMETfil7++;
+		  }
+		}
 	      }
 	    }
 	  }	
@@ -269,7 +279,7 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
-      if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){
+      if (true /*pt1 > 0.65*mgg && pt2 > 0.25*mgg*/){
       //if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
@@ -812,20 +822,24 @@ void Plotter::DoPlots(int prompt){
 
 
   if ( isData ){
-    TH1D * nDataPassingFilters = Plotter::MakeTH1DPlot("nDataPassingFilters","",6,0.,6.,"","Events");
+    TH1D * nDataPassingFilters = Plotter::MakeTH1DPlot("nDataPassingFilters","",8,0.,8.,"","Events");
     nDataPassingFilters->Fill(0.5,nData); 
     nDataPassingFilters->Fill(1.5,nDataMETfil1); 
     nDataPassingFilters->Fill(2.5,nDataMETfil2); 
     nDataPassingFilters->Fill(3.5,nDataMETfil3); 
     nDataPassingFilters->Fill(4.5,nDataMETfil4); 
     nDataPassingFilters->Fill(5.5,nDataMETfil5); 
+    nDataPassingFilters->Fill(6.5,nDataMETfil6); 
+    nDataPassingFilters->Fill(7.5,nDataMETfil7); 
    
     nDataPassingFilters->GetXaxis()->SetBinLabel(1,"Orig");
     nDataPassingFilters->GetXaxis()->SetBinLabel(2,"GV");
     nDataPassingFilters->GetXaxis()->SetBinLabel(3,"eeBadSC");
     nDataPassingFilters->GetXaxis()->SetBinLabel(4,"HBHENoiseIso");
     nDataPassingFilters->GetXaxis()->SetBinLabel(5,"HBHENoise");
-    nDataPassingFilters->GetXaxis()->SetBinLabel(6,"CSC");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(6,"MuonBadTrack");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(7,"HadronTrackRes");
+    nDataPassingFilters->GetXaxis()->SetBinLabel(8,"CSC");
  
     gStyle->SetOptStat(0);
     TCanvas *c1 = new TCanvas();
@@ -1402,6 +1416,8 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("metF_HBHENoiseIso", &metF_HBHENoiseIso, &b_metF_HBHENoiseIso);
   tpho->SetBranchAddress("metF_CSC", &metF_CSC, &b_metF_CSC);
   tpho->SetBranchAddress("metF_eeBadSC", &metF_eeBadSC, &b_metF_eeBadSC);
+  tpho->SetBranchAddress("metF_MuonBadTrack", &metF_MuonBadTrack, &b_metF_MuonBadTrack);
+  tpho->SetBranchAddress("metF_HadronTrackRes", &metF_HadronTrackRes, &b_metF_HadronTrackRes);
   tpho->SetBranchAddress("higgsVtxX", &higgsVtxX, &b_higgsVtxX);
   tpho->SetBranchAddress("higgsVtxY", &higgsVtxY, &b_higgsVtxY);
   tpho->SetBranchAddress("higgsVtxZ", &higgsVtxZ, &b_higgsVtxZ);

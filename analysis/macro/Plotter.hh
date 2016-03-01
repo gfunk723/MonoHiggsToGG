@@ -254,6 +254,8 @@ private:
   Int_t         metF_HBHENoiseIso;
   Int_t         metF_CSC;
   Int_t         metF_eeBadSC;
+  Int_t         metF_MuonBadTrack;
+  Int_t         metF_HadronTrackRes;
   Float_t       higgsVtxX;
   Float_t       higgsVtxY;
   Float_t       higgsVtxZ;
@@ -438,6 +440,8 @@ private:
   TBranch       *b_metF_HBHENoiseIso;   //!
   TBranch       *b_metF_CSC;   //!
   TBranch       *b_metF_eeBadSC;   //!
+  TBranch       *b_metF_MuonBadTrack;   //!
+  TBranch       *b_metF_HadronTrackRes;   //!
   TBranch       *b_higgsVtxX;   //!
   TBranch       *b_higgsVtxY;   //!
   TBranch       *b_higgsVtxZ;   //!
