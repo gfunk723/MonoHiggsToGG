@@ -1584,11 +1584,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
 		      std::vector<edm::Ptr<flashgg::Jet> > tempJets(Jets[jetCollectionIndex]->size());
 
-		      //// make sure jets are sorted by pT
-		      //for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
-		      //  tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
-		      //}
-		      //std::sort(tempJets.begin(),tempJets.end(),SortByJetPT);
+		      // make sure jets are sorted by pT
+		      for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
+		        tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
+		      }
+		      std::sort(tempJets.begin(),tempJets.end(),SortByJetPT);
 
 		      // loop over sorted jets
 		      unsigned int jetIndex = 0;
