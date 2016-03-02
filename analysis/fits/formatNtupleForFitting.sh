@@ -20,7 +20,7 @@
 # Sidenote: Safely ignore warning message "tab completion not implemented for this context" 
 # This comes from the tabs included for making the inputs to fitterFormatting easier to read below 
 
-indir="../macro/data/25ns_v1-1-0_ReReco_wJETinfo/"
+indir="../macro/data/25ns_v1-1-0_ReReco_wAllJetInfo/"
 outdir="ntuples4fit_boostchiara_met80"
 
 

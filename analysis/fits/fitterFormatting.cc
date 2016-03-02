@@ -188,6 +188,8 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   Int_t	  metF_HBHENoiseIso = 0.;
   Int_t	  metF_CSC	= 0.;
   Int_t	  metF_eeBadSC	= 0.;
+  Int_t	  metF_MuonBadTrack = 0.;
+  Int_t	  metF_HadronTrackRes = 0.;
   Int_t   genmatch1	= 0.; 
   Int_t   genmatch2	= 0.; 
   Float_t ptJetLead	= 0.; 
@@ -198,6 +200,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   Float_t phiJetSubLead	= 0.; 
   Float_t massJetLead	= 0.; 
   Float_t massJetSubLead= 0.; 
+  Float_t ptJet3	= 0.;
+  Float_t etaJet3	= 0.;
+  Float_t phiJet3	= 0.;
+  Float_t massJet3	= 0.;
+  Float_t ptJet4	= 0.;
+  Float_t etaJet4	= 0.;
+  Float_t phiJet4	= 0.;
+  Float_t massJet4	= 0.;
 
   // branches from original tree
   TBranch *b_run;
@@ -243,6 +253,8 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TBranch *b_metF_HBHENoiseIso;   //!
   TBranch *b_metF_CSC;   //!
   TBranch *b_metF_eeBadSC;   //!
+  TBranch *b_metF_MuonBadTrack;   //!
+  TBranch *b_metF_HadronTrackRes;   //!
   TBranch *b_genmatch1; 
   TBranch *b_genmatch2;
   TBranch *b_ptJetLead; 
@@ -253,6 +265,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TBranch *b_phiJetSubLead; 
   TBranch *b_massJetLead; 
   TBranch *b_massJetSubLead; 
+  TBranch *b_ptJet3;
+  TBranch *b_etaJet3;
+  TBranch *b_phiJet3;
+  TBranch *b_massJet3; 
+  TBranch *b_ptJet4;
+  TBranch *b_etaJet4;
+  TBranch *b_phiJet4;
+  TBranch *b_massJet4; 
 
   // set branch addresses and branch pointers
   treeOrig->SetBranchAddress("run",		&run,		&b_run);
@@ -294,10 +314,12 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   treeOrig->SetBranchAddress("nMediumBjets", 	&nMediumBjets, 	&b_nMediumBjets);
   treeOrig->SetBranchAddress("vhtruth", 	&vhtruth, 	&b_vhtruth);
   treeOrig->SetBranchAddress("metF_GV", 	&metF_GV, 	&b_metF_GV);
-  treeOrig->SetBranchAddress("metF_HBHENoise", 	&metF_HBHENoise,&b_metF_HBHENoise);
-  treeOrig->SetBranchAddress("metF_HBHENoiseIso",	&metF_HBHENoiseIso, 	&b_metF_HBHENoiseIso);
   treeOrig->SetBranchAddress("metF_CSC", 	&metF_CSC, 	&b_metF_CSC);
   treeOrig->SetBranchAddress("metF_eeBadSC", 	&metF_eeBadSC, 	&b_metF_eeBadSC);
+  treeOrig->SetBranchAddress("metF_HBHENoise", 	&metF_HBHENoise,&b_metF_HBHENoise);
+  treeOrig->SetBranchAddress("metF_HBHENoiseIso",	&metF_HBHENoiseIso, 	&b_metF_HBHENoiseIso);
+  treeOrig->SetBranchAddress("metF_MuonBadTrack", 	&metF_MuonBadTrack, 	&b_metF_MuonBadTrack);
+  treeOrig->SetBranchAddress("metF_HadronTrackRes", 	&metF_HadronTrackRes, 	&b_metF_HadronTrackRes);
   treeOrig->SetBranchAddress("genmatch1", 	&genmatch1, 	&b_genmatch1);  
   treeOrig->SetBranchAddress("genmatch2", 	&genmatch2, 	&b_genmatch2); 
   treeOrig->SetBranchAddress("ptJetLead", 	&ptJetLead, 	&b_ptJetLead);
@@ -308,6 +330,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   treeOrig->SetBranchAddress("etaJetSubLead", 	&etaJetSubLead, &b_etaJetSubLead);
   treeOrig->SetBranchAddress("phiJetSubLead", 	&phiJetSubLead,	&b_phiJetSubLead);
   treeOrig->SetBranchAddress("massJetSubLead", 	&massJetSubLead,&b_massJetSubLead);
+  treeOrig->SetBranchAddress("ptJet3", 		&ptJet3,	&b_ptJet3);
+  treeOrig->SetBranchAddress("etaJet3", 	&etaJet3,	&b_etaJet3);
+  treeOrig->SetBranchAddress("phiJet3", 	&phiJet3, 	&b_phiJet3);
+  treeOrig->SetBranchAddress("massJet3",	&massJet3,	&b_massJet3);
+  treeOrig->SetBranchAddress("ptJet4", 		&ptJet4,	&b_ptJet4);
+  treeOrig->SetBranchAddress("etaJet4", 	&etaJet4,	&b_etaJet4);
+  treeOrig->SetBranchAddress("phiJet4", 	&phiJet4, 	&b_phiJet4);
+  treeOrig->SetBranchAddress("massJet4",	&massJet4,	&b_massJet4);
 
   // new variables (needed if variable has diff name in new tree) 
   float mass;
@@ -379,12 +409,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TLorentzVector fLorenzVecGG;
   TLorentzVector fLorenzVecJet1;
   TLorentzVector fLorenzVecJet2;
+  TLorentzVector fLorenzVecJet3;
+  TLorentzVector fLorenzVecJet4;
 
   for (UInt_t i=0; i<nentriesOrig; i++){
     treeOrig->GetEntry(i);
 
     // check that data passes METfilters
-    if (type=="data" && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; 
+    if (type=="data" && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1 || metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
 
     // check that passes trigger
     if (type=="data" && hltDiphoton30Mass95==0) continue;
@@ -398,27 +430,58 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     fLorenzVecGG = fLorenzVecPho1 + fLorenzVecPho2;
     fLorenzVecJet1.SetPtEtaPhiM(ptJetLead,etaJetLead,phiJetLead,massJetLead);
     fLorenzVecJet2.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,massJetSubLead);
+    fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
+    fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
     // check if passing deltaPhi(gg,MET) cut
     Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhi));
     if (dphi_ggMET < 2.1) continue;
 
     // look at deltaPhi(jet,MET)
-    Double_t min_dphi_jetMET = 10.;
-    Double_t max_dphi_jetMET = 0.;
-    if (nJets == 1){
-      Double_t dphi_jet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-      min_dphi_jetMET = dphi_jet1MET;
-      max_dphi_jetMET = dphi_jet1MET;
+    Double_t min_dphi_JetMET = 10.;
+    Double_t max_dphi_JetMET = 0.;
+
+    if (nJets > 0){
+      Double_t min_dphi_JetMET = 10.;
+      Double_t max_dphi_JetMET = 0.;
+      Double_t dphiJet1METmin = 10;
+      Double_t dphiJet2METmin = 10;
+      Double_t dphiJet3METmin = 10;
+      Double_t dphiJet4METmin = 10;
+      Double_t dphiJet1METmax = 0;
+      Double_t dphiJet2METmax = 0;
+      Double_t dphiJet3METmax = 0;
+      Double_t dphiJet4METmax = 0;
+      if ( ptJetLead > 50 ){
+        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+      }
+      if ( ptJetSubLead > 50 ){
+        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+      }
+      if ( ptJet3 > 50 ){
+        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
+        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
+      }
+      if ( ptJet4 > 50 ){
+        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+      }
+
+      // find the min_dphi_JetMET 
+      if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
+      if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
+      if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
+      if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
+
+      // find the max_dphi_JetMET 
+      if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
+      if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
+      if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
+      if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
-    if (nJets > 1){
-      Double_t dphi_jet1MET = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-      Double_t dphi_jet2MET = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
-      min_dphi_jetMET = TMath::Min(dphi_jet1MET,dphi_jet2MET);
-      max_dphi_jetMET = TMath::Max(dphi_jet1MET,dphi_jet2MET);
-    }
-    // check that deltaPhi(jet,MET) is between [0.5, 2.7] 
-    if (min_dphi_jetMET < 0.5 || max_dphi_jetMET > 2.7) continue; 
+    if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
 
     if (pt1>(0.65*mgg) && pt2>(0.25*mgg) && t1pfmet >= 80){
       // split events by eta
