@@ -32,7 +32,7 @@ using namespace std;
 //
 ////////////////////////////////////////////////////
 
-void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample, TString outFile , UInt_t catType) {
+void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample, TString outFile,  UInt_t catType) {
   cout << "Formatting " << inDir << filename << endl;
   cout << "Move to Pasquale's format for fit." << endl;
 
@@ -156,6 +156,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   Float_t r91		= 0.;
   Float_t r92		= 0.;
   Float_t t1pfmet	= 0.;
+  Float_t t1pfmetSumEt	= 0.;
   Float_t t1pfmetPhi	= 0.;
   Float_t pt1		= 0.;
   Float_t pt2		= 0.;
@@ -224,6 +225,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TBranch *b_pt1;
   TBranch *b_pt2;
   TBranch *b_t1pfmet;
+  TBranch *b_t1pfmetSumEt;
   TBranch *b_t1pfmetPhi;
   TBranch *b_chiso1; 
   TBranch *b_chiso2;  
@@ -289,6 +291,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   treeOrig->SetBranchAddress("pt2",		&pt2,		&b_pt2);
   treeOrig->SetBranchAddress("ptgg",		&ptgg,		&b_ptgg);
   treeOrig->SetBranchAddress("t1pfmet",		&t1pfmet,	&b_t1pfmet);
+  treeOrig->SetBranchAddress("t1pfmetSumEt",	&t1pfmetSumEt,	&b_t1pfmetSumEt);
   treeOrig->SetBranchAddress("t1pfmetPhi",	&t1pfmetPhi,	&b_t1pfmetPhi);
   treeOrig->SetBranchAddress("chiso1",  	&chiso1,  	&b_chiso1); 
   treeOrig->SetBranchAddress("chiso2",  	&chiso2,  	&b_chiso2);  
@@ -373,6 +376,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       theTreeNew[j]->Branch("subleadPt",	&subleadPt,		"subleadPt/F");
       theTreeNew[j]->Branch("ptgg",		&ptgg,			"ptgg/F");
       theTreeNew[j]->Branch("t1pfmet",		&t1pfmet,		"t1pfmet/F");     
+      theTreeNew[j]->Branch("t1pfmetSumEt",	&t1pfmetSumEt,		"t1pfmetSumEt/F");     
       theTreeNew[j]->Branch("t1pfmetPhi",	&t1pfmetPhi,		"t1pfmetPhi/F");
       theTreeNew[j]->Branch("leadChIso",  	&leadChIso,  		"leadChIso/F"); 
       theTreeNew[j]->Branch("subleadChIso",  	&subleadChIso, 		"subleadChIso/F");  
@@ -411,6 +415,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TLorentzVector fLorenzVecJet2;
   TLorentzVector fLorenzVecJet3;
   TLorentzVector fLorenzVecJet4;
+  TLorentzVector correctedMet;
 
   for (UInt_t i=0; i<nentriesOrig; i++){
     treeOrig->GetEntry(i);
@@ -433,8 +438,36 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
+    // met-phi correction
+    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE;
+
+    std::vector< Double_t > fMETCorrData;
+    fMETCorrData.push_back(-3.49829);
+    fMETCorrData.push_back(-0.0250039);
+    fMETCorrData.push_back(3.22072);
+    fMETCorrData.push_back(-0.0193479);
+    
+    std::vector< Double_t > fMETCorrMC;
+    fMETCorrMC.push_back(-1.33055);
+    fMETCorrMC.push_back(-0.00700742);
+    fMETCorrMC.push_back(0.267872);
+    fMETCorrMC.push_back(-0.00486139);
+
+    if (type=="data"){ 
+      t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
+      t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrData[2] + fMETCorrData[3]*t1pfmetSumEt);
+    }
+    else{
+      t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrMC[0] + fMETCorrMC[1]*t1pfmetSumEt);
+      t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrMC[2] + fMETCorrMC[3]*t1pfmetSumEt);
+    }
+    t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+    correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+    Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
+    Double_t t1pfmetCorr = correctedMet.Pt();
+
     // check if passing deltaPhi(gg,MET) cut
-    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhi));
+    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhiCorr));
     if (dphi_ggMET < 2.1) continue;
 
     // look at deltaPhi(jet,MET)
@@ -453,20 +486,20 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       Double_t dphiJet3METmax = 0;
       Double_t dphiJet4METmax = 0;
       if ( ptJetLead > 50 ){
-        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
+        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
       }
       if ( ptJetSubLead > 50 ){
-        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
-        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
+        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
       }
       if ( ptJet3 > 50 ){
-        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
-        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
+        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
+        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
       }
       if ( ptJet4 > 50 ){
-        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
-        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
+        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
       }
 
       // find the min_dphi_JetMET 
@@ -483,7 +516,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     }
     if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
 
-    if (pt1>(0.65*mgg) && pt2>(0.25*mgg) && t1pfmet >= 80){
+    if (pt1>(0.65*mgg) && pt2>(0.25*mgg) && t1pfmetCorr >= 80){
       // split events by eta
       EB1 = false;
       EB2 = false;
@@ -507,10 +540,10 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       // see if passing different MET cuts (not used right now)
       for (UInt_t met=0; met<numMetCat; met++){
 	passMet[met]=false;
-        if (met==0 && t1pfmet>=MetCut[met]) passMet[met]=true;
-        else if (met==numMetCat-1 && t1pfmet>=MetCut[met-1]) passMet[met]=true;
+        if (met==0 && t1pfmetCorr>=MetCut[met]) passMet[met]=true;
+        else if (met==numMetCat-1 && t1pfmetCorr>=MetCut[met-1]) passMet[met]=true;
         else{
-          if (t1pfmet>=MetCut[met-1] && t1pfmet<MetCut[met]) passMet[met]=true;
+          if (t1pfmetCorr>=MetCut[met-1] && t1pfmetCorr<MetCut[met]) passMet[met]=true;
         }
       }// end met loop
 
@@ -528,6 +561,8 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       leadPassEleVeto = eleveto1;	subleadPassEleVeto = eleveto2;
       leadScEta = sceta1;		subleadScEta = sceta2;
       passHlt = hltDiphoton30Mass95;
+      t1pfmet = t1pfmetCorr;
+      t1pfmetPhi = t1pfmetPhiCorr;
       
       // fill the trees for events in the different categories
       //for (UInt_t met=0; met<numMetCat; met++){

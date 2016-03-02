@@ -643,6 +643,8 @@ void Plotter::DoPlots(int prompt){
 	          if ( dphiggMETpass ) nDatadphi3++;
 	        }
 	      }
+	    }
+	    if ( dphiggMETpass){
 	      fTH1DMap["met_afterggMETCut"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_afterggMETCut"]->Fill(t1pfmetCorr,Weight); 
 	      fTH1DMap["nvtx_afterggMETCut"]->Fill(nvtx,Weight);
