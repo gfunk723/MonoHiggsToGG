@@ -279,7 +279,7 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
-      if (true /*pt1 > 0.65*mgg && pt2 > 0.25*mgg*/){
+      if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){
       //if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
@@ -511,8 +511,8 @@ void Plotter::DoPlots(int prompt){
 	  Bool_t max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
 	  Bool_t min_dphiJETMETpass = true;	// min dphi Jet-MET > 0.5 
 	
-          Double_t max_dphi_JetMET = 0;
-	  Double_t min_dphi_JetMET = 10;
+          Double_t max_dphi_JetMET = 0.;
+	  Double_t min_dphi_JetMET = 10.;
  
 	  //if(run==260538&& lumi==245 && event==413101759)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
 	  //if(run==260426&& lumi==49  && event==81336845) 	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;

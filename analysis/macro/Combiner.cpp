@@ -177,6 +177,21 @@ void Combiner::DoComb(){
       }
     }
 
+    if (fTH1DNames[th1d]=="mgg_IsolateALLmet80"){
+      UInt_t bin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
+      UInt_t bin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(115.);
+      UInt_t bin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
+      UInt_t bin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
+
+      Float_t fTotalInt = 0.;
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+      }
+	std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
+      for (UInt_t mc = 0; mc < fNSig; mc++){
+	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+      }
+    }
 
     // print out efficiencies for fake MET systematic 
     if (fTH1DNames[th1d]=="metCorr_IsolateALL"){
@@ -212,7 +227,7 @@ void Combiner::DoComb(){
       std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fTotalBkgInt_metall << std::endl;
       std::cout << "Efficiency 				= " << fTotalBkgEfficiency << std::endl; 
       // ratio of eff data/ eff bkg MC 
-      std::cout << " ***** Scale Factor ******* " << fDataEfficiency/fTotalBkgEfficiency << std::endl; 
+      std::cout << " *** Scale Factor = " << fDataEfficiency/fTotalBkgEfficiency << " *** " << std::endl; 
 
     }
 
