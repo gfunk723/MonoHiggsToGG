@@ -255,6 +255,12 @@ private:
   Int_t         metF_eeBadSC;
   Int_t         metF_MuonBadTrack;
   Int_t         metF_HadronTrackRes;
+  Float_t       vtxX;
+  Float_t       vtxY;
+  Float_t       vtxZ;
+  Float_t       genVtxX;
+  Float_t       genVtxY;
+  Float_t       genVtxZ;
   Float_t       higgsVtxX;
   Float_t       higgsVtxY;
   Float_t       higgsVtxZ;
@@ -453,10 +459,16 @@ private:
   TBranch       *b_massRaw;   //!
   TBranch       *b_mva1;   //!
   TBranch       *b_mva2;   //!
-  TBranch       *b_b_genZ;   //!
-  TBranch       *b_b_ptZ;   //!
-  TBranch       *b_b_etaZ;   //!
-  TBranch       *b_b_phiZ;   //!
+  TBranch       *b_genZ;   //!
+  TBranch       *b_ptZ;   //!
+  TBranch       *b_etaZ;   //!
+  TBranch       *b_phiZ;   //!
+  TBranch       *b_vtxX;
+  TBranch       *b_vtxY;
+  TBranch       *b_vtxZ;
+  TBranch       *b_genVtxX;
+  TBranch       *b_genVtxY;
+  TBranch       *b_genVtxZ;
 
 };
 

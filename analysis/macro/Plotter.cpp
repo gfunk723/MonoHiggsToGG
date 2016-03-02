@@ -1415,6 +1415,12 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("higgsVtxX", &higgsVtxX, &b_higgsVtxX);
   tpho->SetBranchAddress("higgsVtxY", &higgsVtxY, &b_higgsVtxY);
   tpho->SetBranchAddress("higgsVtxZ", &higgsVtxZ, &b_higgsVtxZ);
+  tpho->SetBranchAddress("vtxX", &vtxX, &b_vtxX);
+  tpho->SetBranchAddress("vtxY", &vtxY, &b_vtxY);
+  tpho->SetBranchAddress("vtxZ", &vtxZ, &b_vtxZ);
+  tpho->SetBranchAddress("genVtxX", &genVtxX, &b_genVtxX);
+  tpho->SetBranchAddress("genVtxY", &genVtxY, &b_genVtxY);
+  tpho->SetBranchAddress("genVtxZ", &genVtxZ, &b_genVtxZ);
   tpho->SetBranchAddress("massCorrSmear", &massCorrSmear, &b_massCorrSmear);
   tpho->SetBranchAddress("massCorrSmearUp", &massCorrSmearUp, &b_massCorrSmearUp);
   tpho->SetBranchAddress("massCorrSmearDown", &massCorrSmearDown, &b_massCorrSmearDown);
@@ -1424,10 +1430,10 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("massRaw", &massRaw, &b_massRaw);
   tpho->SetBranchAddress("mva1", &mva1, &b_mva1);
   tpho->SetBranchAddress("mva2", &mva2, &b_mva2);
-  tpho->SetBranchAddress("genZ", &genZ, &b_b_genZ);
-  tpho->SetBranchAddress("ptZ",  &ptZ,  &b_b_ptZ);
-  tpho->SetBranchAddress("etaZ", &etaZ, &b_b_etaZ);
-  tpho->SetBranchAddress("phiZ", &phiZ, &b_b_phiZ);
+  tpho->SetBranchAddress("genZ", &genZ, &b_genZ);
+  tpho->SetBranchAddress("ptZ",  &ptZ,  &b_ptZ);
+  tpho->SetBranchAddress("etaZ", &etaZ, &b_etaZ);
+  tpho->SetBranchAddress("phiZ", &phiZ, &b_phiZ);
 
   //tpho->SetBranchAddress("", &, &b_);
   
