@@ -46,9 +46,9 @@ int main(){
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
-  bool doPlots = true;		// make plots for each sample individually
+  bool doPlots = false;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
-  bool doABCD = true;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
@@ -239,7 +239,7 @@ int main(){
   // 6th : bool isData
   // 7th : bool doBlinding
   // 8th : type of plots
-  // 9th: metCorr vector
+  // 9th : metCorr vector
   //
   /////////////////////////////////////////////////////
 

@@ -41,6 +41,7 @@ public:
   void InitCanvAndHists();
   void InitTH1DNames();
   void DoComb();
+  void VtxEfficiencies();
   void PhotonIDEfficiencies(const UInt_t mc, const UInt_t isType);
   void FindMETEfficiencies();
   void MakeMETEffPlots();
@@ -101,6 +102,11 @@ private:
   ColorMap	fColorMapMETEff;
   TH1DVecVec	fOutBkgMETEffTH1DHists;
   TH1DVecVec	fOutSigMETEffTH1DHists;
+
+  TEffVec	SigVtxEffnvtx;
+  TEffVec	SigVtxEffmet;
+  TEffVec	BkgVtxEffnvtx;
+  TEffVec	BkgVtxEffmet;
 
   TEffVec	phoIDeff_pt;
   TEffVec	phoIDeff_eta;

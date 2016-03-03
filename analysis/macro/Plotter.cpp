@@ -93,11 +93,6 @@ void Plotter::DoPlots(int prompt){
   Double_t effptn[60]={0};
   Double_t effptd[60]={0};
 
-  Double_t vtxEffmet_n[60]={0};
-  Double_t vtxEffmet_d[60]={0};
-  Double_t vtxEffnvtx_n[60]={0};
-  Double_t vtxEffnvtx_d[60]={0};
-
   fTH1DMap["hlt"]->Fill(0.5,nentries);
   // fSelection[i]-> 1=trigger, 2=presel, 3=selection, 4=pt1>30,pt2>20, 5=pt1>mgg/3,pt2>mgg/4, 6=goodVtx, 7=mgg, 8=met
   for (UInt_t i=0; i<8; i++){
@@ -771,8 +766,6 @@ void Plotter::DoPlots(int prompt){
           //    fTH1DMap["calomet_n-1"]->Fill(calomet,Weight);
           //    fTH1DMap["ptgg_n-1"]->Fill(ptgg,Weight);  
 	  
-
-
           if (passCH1 && passCH2){
             fTH1DMap["eff_sel"]->Fill(3.5,Weight);
             if (passNH1 && passNH2){
@@ -797,22 +790,27 @@ void Plotter::DoPlots(int prompt){
             }
           }
 
+	  if (!isData){
+	    fTH1DMap["vtx_eff_nvtx_d"]->Fill(nvtx);
+	    fTH1DMap["vtx_eff_met_d"]->Fill(t1pfmetCorr);
+	    Double_t vtxZdiff = TMath::Abs(genVtxZ-vtxZ); 
+	    Bool_t goodVtx = true;
+	    if ( vtxZdiff > 1.0 ) goodVtx = false;
+	    if ( goodVtx ){
+	      fTH1DMap["vtx_eff_nvtx_n"]->Fill(nvtx);
+	      fTH1DMap["vtx_eff_met_n"]->Fill(t1pfmetCorr);
+	    }
+	  }
 
 	  // compute the numerator and denomerator for efficiency plots
           for (UInt_t i = 0; i < 60; i++){
             if (nvtx == i){
               effPUd[i]++;
               if (passBoth) effPUn[i]++;
-	      vtxEffnvtx_d[i]++;
-	      vtxEffnvtx_n[i]++;
             }
             if (ptgg >= 10*i && ptgg < 10*(i+1)){
               effptd[i]++;
               if (passBoth) effptn[i]++;
-            }
-            if (t1pfmetCorr >= 10*i && t1pfmetCorr < 10*(i+1)){
-              vtxEffmet_d[i]++;
-              vtxEffmet_n[i]++;
             }
           }
  
@@ -953,17 +951,6 @@ void Plotter::DoPlots(int prompt){
   fTH1DMap["hlt"]->GetXaxis()->SetBinLabel(8,"Dipho30M55PV");
   fTH1DMap["hlt"]->GetXaxis()->SetBinLabel(9,"Dipho30M55EB");
 
-  Double_t vtxEffmet = 0;
-  Double_t vtxEffnvtx = 0;
-  for (UInt_t i=0; i<60; i++){ 
-    bin = (Double_t) i;
-    if (vtxEffmet_d[i] > 0)  vtxEffmet  = (Double_t)vtxEffmet_n[i]/(Double_t)vtxEffmet_d[i];
-    if (vtxEffnvtx_d[i] > 0) vtxEffnvtx = (Double_t)vtxEffnvtx_n[i]/(Double_t)vtxEffnvtx_d[i];
-    fTH1DMap["vtx_eff_met"]->Fill(bin,vtxEffmet);
-    fTH1DMap["vtx_eff_nvtx"]->Fill(bin,vtxEffnvtx);
-  }
-  //std::cout << "phi1 " << fTH1DMap["phi1_n-1"]->Integral() <<  " phi2 " << fTH1DMap["phi2_n-1"]->Integral() << std::endl;
-
   Plotter::SavePlots();
 
 }// end Plotter::DoPlots
@@ -1091,8 +1078,10 @@ void Plotter::SetUpPlots(){
   fTH1DMap["t1pfmetUnclEnUp"]	= Plotter::MakeTH1DPlot("UnclEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetUnclEnDown"]	= Plotter::MakeTH1DPlot("UnclEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
 
-  fTH1DMap["vtx_eff_met"]	= Plotter::MakeTH1DPlot("vtx_eff_met","",60,0.,300.,"E_{T}^{miss} (GeV)","Vtx Efficiency");	
-  fTH1DMap["vtx_eff_nvtx"]	= Plotter::MakeTH1DPlot("vtx_eff_nvtx","",40,0.,40.,"nvtx","Vtx Efficinecy");	
+  fTH1DMap["vtx_eff_met_n"]	= Plotter::MakeTH1DPlot("vtx_eff_met_n","",60,0.,300.,"E_{T}^{miss} (GeV)","Vtx Efficiency");	
+  fTH1DMap["vtx_eff_met_d"]	= Plotter::MakeTH1DPlot("vtx_eff_met_d","",60,0.,300.,"E_{T}^{miss} (GeV)","Vtx Efficiency");	
+  fTH1DMap["vtx_eff_nvtx_n"]	= Plotter::MakeTH1DPlot("vtx_eff_nvtx_n","",40,0.,40.,"nvtx","Vtx Efficinecy");	
+  fTH1DMap["vtx_eff_nvtx_d"]	= Plotter::MakeTH1DPlot("vtx_eff_nvtx_d","",40,0.,40.,"nvtx","Vtx Efficinecy");	
 
   // n minus 1 plots
   //fTH1DMap["nvtx_n-1"]		= Plotter::MakeTH1DPlot("nvtx_n-1","",40,0.,40.,"nvtx","");

@@ -309,7 +309,13 @@ void Combiner::DoComb(){
   for (UInt_t mc = 0; mc < fNSig; mc++){
     if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,0);
   }
-  
+
+  SigVtxEffnvtx.resize(fNSig);
+  SigVtxEffmet.resize(fNSig);
+  BkgVtxEffnvtx.resize(fNBkg);
+  BkgVtxEffmet.resize(fNBkg);
+  if (addText!="_n-1") Combiner::VtxEfficiencies();
+ 
   //phoIDeff_pt.resize(fNBkg);
   //phoIDeff_eta.resize(fNBkg);
   //for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -326,6 +332,67 @@ void Combiner::DoComb(){
   Combiner::MakeOutputCanvas();
 
 }// end Combiner::DoComb
+
+void Combiner::VtxEfficiencies(){
+  // pickup the vtx efficiency histograms
+  UInt_t th1d_nvtx_n, th1d_nvtx_d, th1d_met_n, th1d_met_d;
+  for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
+    if (fTH1DNames[th1d]=="vtx_eff_nvtx_n") th1d_nvtx_n = th1d;
+    if (fTH1DNames[th1d]=="vtx_eff_nvtx_d") th1d_nvtx_d = th1d;
+    if (fTH1DNames[th1d]=="vtx_eff_met_n")  th1d_met_n	= th1d; 
+    if (fTH1DNames[th1d]=="vtx_eff_met_d")  th1d_met_d	= th1d;
+  }
+
+  // vtx efficiency plots for signal
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    if (TEfficiency::CheckConsistency(*fInSigTH1DHists[th1d_nvtx_n][mc],*fInSigTH1DHists[th1d_nvtx_d][mc])){
+      SigVtxEffnvtx[mc] = new TEfficiency(*fInSigTH1DHists[th1d_nvtx_n][mc],*fInSigTH1DHists[th1d_nvtx_d][mc]);
+      TCanvas * c1 = new TCanvas(); 
+      c1->cd();
+      SigVtxEffnvtx[mc]->Draw("AP");
+      CMSLumi(c1,11,lumi);
+      c1->SaveAs(Form("%scomb/VtxEff_nvtx_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+      delete SigVtxEffnvtx[mc];
+      delete c1;
+    }
+    if (TEfficiency::CheckConsistency(*fInSigTH1DHists[th1d_met_n][mc],*fInSigTH1DHists[th1d_met_d][mc])){
+      SigVtxEffmet[mc] = new TEfficiency(*fInSigTH1DHists[th1d_met_n][mc],*fInSigTH1DHists[th1d_met_d][mc]);
+      TCanvas * c1 = new TCanvas(); 
+      c1->cd();
+      SigVtxEffmet[mc]->Draw("AP");
+      CMSLumi(c1,11,lumi);
+      c1->SaveAs(Form("%scomb/VtxEff_met_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
+      delete SigVtxEffmet[mc];
+      delete c1;
+    }
+  }
+
+  // vtx efficiency plots for background
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    if (TEfficiency::CheckConsistency(*fInBkgTH1DHists[th1d_nvtx_n][mc],*fInBkgTH1DHists[th1d_nvtx_d][mc])){
+      BkgVtxEffnvtx[mc] = new TEfficiency(*fInBkgTH1DHists[th1d_nvtx_n][mc],*fInBkgTH1DHists[th1d_nvtx_d][mc]);
+      TCanvas * c1 = new TCanvas(); 
+      c1->cd();
+      BkgVtxEffnvtx[mc]->Draw("AP");
+      CMSLumi(c1,11,lumi);
+      c1->SaveAs(Form("%scomb/VtxEff_nvtx_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
+      delete BkgVtxEffnvtx[mc];
+      delete c1;
+    }
+    if (TEfficiency::CheckConsistency(*fInBkgTH1DHists[th1d_met_n][mc],*fInBkgTH1DHists[th1d_met_d][mc])){
+      BkgVtxEffmet[mc] = new TEfficiency(*fInBkgTH1DHists[th1d_met_n][mc],*fInBkgTH1DHists[th1d_met_d][mc]);
+      TCanvas * c1 = new TCanvas(); 
+      c1->cd();
+      BkgVtxEffmet[mc]->Draw("AP");
+      CMSLumi(c1,11,lumi);
+      c1->SaveAs(Form("%scomb/VtxEff_met_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
+      delete BkgVtxEffmet[mc];
+      delete c1;
+    }
+  }
+
+}// end Combiner::VtxEfficiencies
+
 
 void Combiner::PhotonIDEfficiencies(const UInt_t mc, const UInt_t isType){
   // Find the efficiency for photons passing loose selection that have passed the MVA selection
@@ -1638,6 +1705,11 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("selection_unwgt");
     fIndexEff = fTH1DNames.size()-1;
     fTH1DNames.push_back("eff_sel");
+ 
+    fTH1DNames.push_back("vtx_eff_nvtx_n");
+    fTH1DNames.push_back("vtx_eff_nvtx_d");
+    fTH1DNames.push_back("vtx_eff_met_n");
+    fTH1DNames.push_back("vtx_eff_met_d");
 
     //fTH1DNames.push_back("EBHighR9_mgg");
     //fTH1DNames.push_back("EBHighR9_ptgg");
