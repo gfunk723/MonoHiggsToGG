@@ -296,7 +296,7 @@ void Combiner::DoComb(){
 
   }// end loop over th1d histos
 
-  //if (addText!="_n-1") Combiner::MakeEffPlots();
+  if (addText!="_n-1") Combiner::MakeEffPlots();
 
   // look at photon ID efficienes (only relevant for MVA samples)   
   cut_pho_pt.resize(fNSig);
@@ -922,7 +922,7 @@ void Combiner::MakeEffPlots(){
   TCanvas *c = new TCanvas();
   c->cd();
 
-  TH1D *eff_mDM = new TH1D("eff_mDM","",1000,500,1500);
+  TH1D *eff_mDM = new TH1D("eff_mDM","",2500,500,3000);
 
   Double_t eff_val = 0.;
   Double_t eff_num = 0.;
@@ -930,36 +930,31 @@ void Combiner::MakeEffPlots(){
   Double_t num_err = 0.;
   Double_t den_err = 0.;
   Double_t eff_err = 0.;
-  std::vector<Double_t> numer = {15634, 37582, 41561, 21185, 22538};
-  std::vector<Double_t> denom = {33854, 70376, 72970, 36018, 37448};
-  //std::vector<Double_t> numer = {4864,6780,10451,18428};
-  //std::vector<Double_t> denom = {40918,57500,55092,56656};
-  std::vector<Double_t> value = {0,0,0,0};
-  std::vector<Double_t> error = {0,0,0,0};
-  std::vector<Double_t> mass =  {600,800,1000,1200,1400};//{1,10,100,1000}; 
+  std::vector<Double_t> mass =  {600,800,1000,1200,1400,1700,2500};//{1,10,100,1000}; 
   Int_t binForMass = 0;
 
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    //eff_num = fInSigTH1DHists[fIndexEff][mc]->GetBinContent(8); // events passing sel,mgg,met
-    //eff_den = fInSigTH1DHists[fIndexEff][mc]->GetBinContent(1);  // events only require pass presel
-    //num_err = TMath::Sqrt(eff_num);
-    //den_err = TMath::Sqrt(eff_den);
-    //if (eff_den > 0) eff_val = eff_num/eff_den;
-    //eff_err = TMath::Sqrt(eff_val*(1.0-eff_val)/eff_den); 
-    binForMass = eff_mDM->FindBin(mass[mc]);
-    eff_mDM->SetBinContent(binForMass,eff_val);
-    eff_mDM->SetBinError(binForMass,eff_err);
-    value[mc]  = numer[mc]/denom[mc];
-    error[mc]  = TMath::Sqrt(value[mc]*(1.0-value[mc])/denom[mc]);
-    eff_mDM->SetBinContent(binForMass,value[mc]);
-    eff_mDM->SetBinError(binForMass,error[mc]);
+  for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
+    if (fTH1DNames[th1d] == "selection_unwgt"){
+      for (UInt_t mc = 0; mc < fNSig; mc++){
+        eff_num = fInSigTH1DHists[th1d][mc]->GetBinContent(8); // events passing sel,mgg,met
+        eff_den = fInSigTH1DHists[th1d][mc]->GetBinContent(2); // events only require pass presel 
+        num_err = TMath::Sqrt(eff_num);
+        den_err = TMath::Sqrt(eff_den);
+        if (eff_den > 0) eff_val = eff_num/eff_den;
+        eff_err = TMath::Sqrt(eff_val*(1.0-eff_val)/eff_den); 
+	//std::cout << fSigNames[mc]<< " mass = " << mass[mc] <<" -> eff_val = " << eff_val << "\\pm " << eff_err << std::endl;
+        binForMass = eff_mDM->FindBin(mass[mc]);
+        eff_mDM->SetBinContent(binForMass,eff_val);
+        eff_mDM->SetBinError(binForMass,eff_err);
+      }
+    }
   }
 
   eff_mDM->SetMaximum(1.0);
   eff_mDM->SetMinimum(0.0);
   eff_mDM->GetXaxis()->SetTitle("m_{Z'} [GeV]");
   eff_mDM->GetYaxis()->SetTitle("Efficiency");
-  eff_mDM->Draw("PE");
+  eff_mDM->Draw("PE1");
   eff_mDM->Write();
   
   CMSLumi(c,11,lumi);
@@ -1640,6 +1635,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("absdeta_gg");
     fIndexDeta = fTH1DNames.size()-1;
     fTH1DNames.push_back("selection");
+    fTH1DNames.push_back("selection_unwgt");
     fIndexEff = fTH1DNames.size()-1;
     fTH1DNames.push_back("eff_sel");
 

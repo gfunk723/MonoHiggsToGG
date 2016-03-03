@@ -23,23 +23,22 @@ Plotter::Plotter( TString inName, TString outName, TString inSpecies, const DblV
   fPUWeights = puweights;
 
   fSelection.resize(8);
+  fSelection_unwgt.resize(8);
   TH1D *fSel = (TH1D*)inFile->Get("h_selection");
+  TH1D *fSel_unwgt = (TH1D*)inFile->Get("h_selection_unwgt");
   CheckValidTH1D(fSel,"h_selection",Form("%s%s.root",name.Data(),species.Data()));
-  //if (isData && doBlind){
-  //  for (UInt_t i=0; i<6; i++){
-  //    fSelection[i]=fSel->GetBinContent(i+1);
-  //  }
-  //  fSelection[6]=0;
-  //  fSelection[7]=0;
-  //}
+  CheckValidTH1D(fSel_unwgt,"h_selection_unwgt",Form("%s%s.root",name.Data(),species.Data()));
+
   if (!(isData && doBlind)){
     for (UInt_t i=0; i<8; i++){ 
       // values of bin i correspond to passing (all cuts previous + one listed below):  
       // 1=trigger, 2=presel, 3=selection, 4=pt1>30,pt2>20, 5=pt1>mgg/3,pt2>mgg/4, 6=goodVtx, 7=mgg, 8=met
       fSelection[i]=fSel->GetBinContent(i+1);
+      fSelection_unwgt[i]=fSel_unwgt->GetBinContent(i+1);
     }
+    //fTH1DMap["selection_unwgt"] = (TH1D*)fSel_unwgt->Clone();
   }
-  std::cout << "Finished getting the h_selection" << std::endl;  
+  std::cout << "Finished getting the h_selection & h_selection_unwgt" << std::endl;  
 
   // Make TLorentzVector for the photons
   TLorentzVector *fLorenzVec1		= new TLorentzVector();
@@ -94,10 +93,16 @@ void Plotter::DoPlots(int prompt){
   Double_t effptn[60]={0};
   Double_t effptd[60]={0};
 
+  Double_t vtxEffmet_n[60]={0};
+  Double_t vtxEffmet_d[60]={0};
+  Double_t vtxEffnvtx_n[60]={0};
+  Double_t vtxEffnvtx_d[60]={0};
+
   fTH1DMap["hlt"]->Fill(0.5,nentries);
   // fSelection[i]-> 1=trigger, 2=presel, 3=selection, 4=pt1>30,pt2>20, 5=pt1>mgg/3,pt2>mgg/4, 6=goodVtx, 7=mgg, 8=met
-  for (UInt_t i=0; i<7; i++){
+  for (UInt_t i=0; i<8; i++){
     fTH1DMap["selection"]->Fill(i+0.5,fSelection[i]);
+    fTH1DMap["selection_unwgt"]->Fill(i+0.5,fSelection_unwgt[i]);
   }
 
   Int_t numFailingMETfil = 0;
@@ -792,14 +797,22 @@ void Plotter::DoPlots(int prompt){
             }
           }
 
+
+	  // compute the numerator and denomerator for efficiency plots
           for (UInt_t i = 0; i < 60; i++){
             if (nvtx == i){
               effPUd[i]++;
               if (passBoth) effPUn[i]++;
+	      vtxEffnvtx_d[i]++;
+	      vtxEffnvtx_n[i]++;
             }
             if (ptgg >= 10*i && ptgg < 10*(i+1)){
               effptd[i]++;
               if (passBoth) effptn[i]++;
+            }
+            if (t1pfmetCorr >= 10*i && t1pfmetCorr < 10*(i+1)){
+              vtxEffmet_d[i]++;
+              vtxEffmet_n[i]++;
             }
           }
  
@@ -890,10 +903,10 @@ void Plotter::DoPlots(int prompt){
   std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
 
-  if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["t1pfmetCorr_zoom"]->Integral(binMETlo,binMEThi) << std::endl;
-  if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["metCor_Sig"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
-  std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
+  //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["t1pfmetCorr_zoom"]->Integral(binMETlo,binMEThi) << std::endl;
+  //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["metCor_Sig"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
+  //std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
 
   //std::cout << "Number Events rejected by Mgg range:     " << numOutOfMggRange    << " out of " << nentries << " events. " << std::endl; 
   //std::cout << "Number Events rejected by Neg Weight:    " << numNegativeWeight   << " out of " << nentries << " events. " << std::endl; 
@@ -940,6 +953,15 @@ void Plotter::DoPlots(int prompt){
   fTH1DMap["hlt"]->GetXaxis()->SetBinLabel(8,"Dipho30M55PV");
   fTH1DMap["hlt"]->GetXaxis()->SetBinLabel(9,"Dipho30M55EB");
 
+  Double_t vtxEffmet = 0;
+  Double_t vtxEffnvtx = 0;
+  for (UInt_t i=0; i<60; i++){ 
+    bin = (Double_t) i;
+    if (vtxEffmet_d[i] > 0)  vtxEffmet  = (Double_t)vtxEffmet_n[i]/(Double_t)vtxEffmet_d[i];
+    if (vtxEffnvtx_d[i] > 0) vtxEffnvtx = (Double_t)vtxEffnvtx_n[i]/(Double_t)vtxEffnvtx_d[i];
+    fTH1DMap["vtx_eff_met"]->Fill(bin,vtxEffmet);
+    fTH1DMap["vtx_eff_nvtx"]->Fill(bin,vtxEffnvtx);
+  }
   //std::cout << "phi1 " << fTH1DMap["phi1_n-1"]->Integral() <<  " phi2 " << fTH1DMap["phi2_n-1"]->Integral() << std::endl;
 
   Plotter::SavePlots();
@@ -1069,6 +1091,9 @@ void Plotter::SetUpPlots(){
   fTH1DMap["t1pfmetUnclEnUp"]	= Plotter::MakeTH1DPlot("UnclEnUp","",75,0.,900.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetUnclEnDown"]	= Plotter::MakeTH1DPlot("UnclEnDown","",75,0.,900.,"E_{T}^{miss} (GeV)","");
 
+  fTH1DMap["vtx_eff_met"]	= Plotter::MakeTH1DPlot("vtx_eff_met","",60,0.,300.,"E_{T}^{miss} (GeV)","Vtx Efficiency");	
+  fTH1DMap["vtx_eff_nvtx"]	= Plotter::MakeTH1DPlot("vtx_eff_nvtx","",40,0.,40.,"nvtx","Vtx Efficinecy");	
+
   // n minus 1 plots
   //fTH1DMap["nvtx_n-1"]		= Plotter::MakeTH1DPlot("nvtx_n-1","",40,0.,40.,"nvtx","");
   //fTH1DMap["mgg_n-1"]		= Plotter::MakeTH1DPlot("mgg_n-1","",26,99.,151.,"m_{#gamma#gamma} (GeV)","");  
@@ -1131,7 +1156,8 @@ void Plotter::SetUpPlots(){
 
   // efficiency plots
   fTH1DMap["eff_sel"]		= Plotter::MakeTH1DPlot("eff_sel","",10,0.,10.,"","");
-  fTH1DMap["selection"]		= Plotter::MakeTH1DPlot("selection","",6,0.,6.,"","");
+  fTH1DMap["selection"]		= Plotter::MakeTH1DPlot("selection","",6,-0.5,5.5,"","");
+  fTH1DMap["selection_unwgt"]	= Plotter::MakeTH1DPlot("selection_unwgt","",8,-0.5,7.5,"","");
   fTH1DMap["eff_PU"]		= Plotter::MakeTH1DPlot("eff_PU","",60,0.,60.,"","");
   fTH1DMap["eff_pt"]		= Plotter::MakeTH1DPlot("eff_pt","",60,0.,600.,"","");
   fTH1DMap["hlt"]		= Plotter::MakeTH1DPlot("hlt","",10,0.,10,"","");

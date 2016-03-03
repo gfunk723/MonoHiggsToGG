@@ -18,6 +18,7 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   TH1F  *h_entries = 0;
   TH1F  *h_sumW = 0;
   TH1F  *h_selection = 0;
+  TH1F  *h_selection_unwgt = 0;
 
   fileOrig = TFile::Open(filename);
   if( fileOrig ) {
@@ -928,6 +929,9 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     treeNew->Fill();
   }
 
+  // take the h_selection unscaled for h_selection_unwgt 
+  h_selection_unwgt = (TH1F*)h_selection->Clone();
+  h_selection_unwgt->SetName("h_selection_unwgt");
   // histo scaling to get the correct normalization
   h_selection->Scale( xsecToWeight / sampleSumWeight );  
 
@@ -936,6 +940,7 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   h_entries->Write();
   h_sumW->Write();
   h_selection->Write();
+  h_selection_unwgt->Write();
   treeNew->Write();
   fileNew->Close();
 

@@ -80,6 +80,7 @@ private:
   DblVec		fPUWeights;
   Double_t 		fLumi;
   DblVec		fSelection;
+  DblVec		fSelection_unwgt;
 
   TTree * 		tpho;
   Int_t			nentries;
