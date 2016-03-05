@@ -10,7 +10,7 @@
 #   5th: input filename 
 #   6th: sample name
 #   7th: outfile name
-#   8th: category type
+#   8th: category type (NOT YET USED)
 #
 # final files used for the fit are:
 #   outdir/Output_MC.root
@@ -20,9 +20,8 @@
 # Sidenote: Safely ignore warning message "tab completion not implemented for this context" 
 # This comes from the tabs included for making the inputs to fitterFormatting easier to read below 
 
-indir="../macro/data/25ns_v1-1-0_ReReco_wJETinfo/"
+indir="../macro/data/25ns_v1-1-0_ReReco_wAllJetInfo/"
 outdir="ntuples4fit_boostchiara_met80"
-
 
 ## Categories not implemented yet
 ## just an idea for making these tools easier
@@ -57,6 +56,10 @@ fitterFormatting("$indir","$outdir","sig",0,	"2HDM_mZP2500.root",	"sig_2HDM_mZP2
 
 fitterFormatting("$indir","$outdir","bkg",0,	"GluGluHToGG.root",	"GluGluHToGG",		"GluGluHToGG_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",0,	"VH.root",		"VH",			"VH_new.root",$categType)
+fitterFormatting("$indir","$outdir","bkg",0,	"TTGJets.root",		"TTGJets",		"TTGJets_new.root",$categType)
+fitterFormatting("$indir","$outdir","bkg",0,	"TGJets.root",		"TGJets",		"TGJets_new.root",$categType)
+fitterFormatting("$indir","$outdir","bkg",0,	"WGToLNuG.root",	"WGToLNuG",		"WGToLNuG_new.root",$categType)
+fitterFormatting("$indir","$outdir","bkg",0,	"ZGTo2LG.root",		"ZGTo2LG",		"ZGTo2LG_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",0,	"ttHJetToGG.root",	"ttHJetToGG",		"ttHJetToGG_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",0,	"VBFHToGG.root",	"VBFHToGG",		"VBFHToGG_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",2,	"QCD.root",		"QCD",			"QCD_new.root",$categType)
@@ -73,6 +76,5 @@ echo "Done"
 
 echo "Adding MC Files Together"
 
-hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/VH_new.root $outdir/QCD_new.root $outdir/GJets_new.root $outdir/DiPhoton_new.root $outdir/DYJetsToLL_new.root $outdir/VBFHToGG_new.root $outdir/ttHJetToGG_new.root 
-
+hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/VH_new.root $outdir/QCD_new.root $outdir/GJets_new.root $outdir/DiPhoton_new.root $outdir/DYJetsToLL_new.root $outdir/VBFHToGG_new.root $outdir/ttHJetToGG_new.root $outdir/TGJets_new.root $outdir/TTGJets_new.root $outdir/WGToLNuG_new.root $outdir/ZGTo2LG_new.root 
 

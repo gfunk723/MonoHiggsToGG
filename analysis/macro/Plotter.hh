@@ -40,7 +40,7 @@ typedef TH2DMap::iterator		TH2DMapIter;
 
 class Plotter{
 public:
-  Plotter(const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, const TString type, Bool_t doMETCorr, const DblVec metcorr);
+  Plotter(const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, const TString type, const DblVec metcorr);
   ~Plotter();
 
   void DoPlots(int prompt);  
@@ -75,12 +75,12 @@ private:
   TLorentzVector	fLorenzVecJet3;
   TLorentzVector	fLorenzVecJet4;
 
-  Bool_t		doMETcorr;
   DblVec		fMETCorr;
 
   DblVec		fPUWeights;
   Double_t 		fLumi;
   DblVec		fSelection;
+  DblVec		fSelection_unwgt;
 
   TTree * 		tpho;
   Int_t			nentries;
@@ -256,6 +256,12 @@ private:
   Int_t         metF_eeBadSC;
   Int_t         metF_MuonBadTrack;
   Int_t         metF_HadronTrackRes;
+  Float_t       vtxX;
+  Float_t       vtxY;
+  Float_t       vtxZ;
+  Float_t       genVtxX;
+  Float_t       genVtxY;
+  Float_t       genVtxZ;
   Float_t       higgsVtxX;
   Float_t       higgsVtxY;
   Float_t       higgsVtxZ;
@@ -454,10 +460,16 @@ private:
   TBranch       *b_massRaw;   //!
   TBranch       *b_mva1;   //!
   TBranch       *b_mva2;   //!
-  TBranch       *b_b_genZ;   //!
-  TBranch       *b_b_ptZ;   //!
-  TBranch       *b_b_etaZ;   //!
-  TBranch       *b_b_phiZ;   //!
+  TBranch       *b_genZ;   //!
+  TBranch       *b_ptZ;   //!
+  TBranch       *b_etaZ;   //!
+  TBranch       *b_phiZ;   //!
+  TBranch       *b_vtxX;
+  TBranch       *b_vtxY;
+  TBranch       *b_vtxZ;
+  TBranch       *b_genVtxX;
+  TBranch       *b_genVtxY;
+  TBranch       *b_genVtxZ;
 
 };
 
