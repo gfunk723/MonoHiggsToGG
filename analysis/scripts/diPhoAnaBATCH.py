@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = True;
+isMC = False;
 is76X = True;
 isFLASHgg_1_1_0 = False;
 ######################
@@ -57,7 +57,7 @@ process.source = cms.Source("PoolSource",
 if (isMC==False):
     print "applying 2015D json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/goldenAndProcessed.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/goldenAndProcessed_76X.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)  
 
