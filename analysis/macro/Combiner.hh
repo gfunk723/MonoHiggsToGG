@@ -46,6 +46,7 @@ public:
   void FindMETEfficiencies();
   void MakeMETEffPlots();
   void MakeEffPlots();
+  void GetEfficiency(TH1D *h_num, TH1D *h_den, const TString name, const TString sample);
   void StackPlots();
   void MakeOutputCanvas();
   void DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY);
@@ -103,18 +104,6 @@ private:
   TH1DVecVec	fOutBkgMETEffTH1DHists;
   TH1DVecVec	fOutSigMETEffTH1DHists;
 
-  TEffVec	SigVtxEffnvtx;
-  TEffVec	SigVtxEffmet;
-  TEffVec	BkgVtxEffnvtx;
-  TEffVec	BkgVtxEffmet;
-
-  TEffVec	phoIDeff_pt;
-  TEffVec	phoIDeff_eta;
-  TH1DVec	cut_pho_pt;
-  TH1DVec	cut_pho_eta;
-  TH1DVec	mva_pho_pt;
-  TH1DVec	mva_pho_eta;
- 
   TH1DVec	GJetsClone;
 
   TH1DVec	fOutBkgTH1DHists;
