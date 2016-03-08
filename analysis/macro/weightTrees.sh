@@ -22,6 +22,7 @@ addWeights("data/25ns_v76X_v0/TGJets.root", $lumi);
 addWeights("data/25ns_v76X_v0/TTGG_0Jets.root", $lumi);
 addWeights("data/25ns_v76X_v0/WGToLNuG.root", $lumi);
 addWeights("data/25ns_v76X_v0/ZGTo2LG.root", $lumi);
+addWeights("data/25ns_v76X_v0/ZZTo2L2Nu.root", $lumi);
 
 addWeights("data/25ns_v76X_v0/2HDM_mZP600.root", $lumi);
 addWeights("data/25ns_v76X_v0/2HDM_mZP800.root", $lumi);

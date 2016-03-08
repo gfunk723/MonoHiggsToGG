@@ -277,7 +277,7 @@ void Plotter::DoPlots(int prompt){
     }
 
     // START full selection for plots
-    if (passMETfil && !weightNegative){ //Data passes MET filters && not a negativeWeight
+    if (passMETfil /*&& !weightNegative*/){ //Data passes MET filters && not a negativeWeight
       if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){
       //if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
@@ -872,33 +872,33 @@ void Plotter::DoPlots(int prompt){
     c2->SaveAs(Form("%s%s/data_dphicuts_met80.%s",fName.Data(),species.Data(),fType.Data()));
   }
 
-  std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
-  std::cout << "Number Events rejected by MET filters:   " << numFailingMETfil    << " out of " << nentries << " events. " << std::endl;
+  //std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
+  //std::cout << "Number Events rejected by MET filters:   " << numFailingMETfil    << " out of " << nentries << " events. " << std::endl;
   
-  std::cout << "nvtx   Int " << fTH1DMap["nvtx"]->Integral() << std::endl;
-  std::cout << "ptJet1 Int " << fTH1DMap["ptJet1"]->Integral() << std::endl;
+  //std::cout << "nvtx   Int " << fTH1DMap["nvtx"]->Integral() << std::endl;
+  //std::cout << "ptJet1 Int " << fTH1DMap["ptJet1"]->Integral() << std::endl;
 
   std::cout << "======================================================" << std::endl;
-  std::cout << "======================================================" << std::endl;
+  //std::cout << "======================================================" << std::endl;
   UInt_t binMETze = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(0.);
   UInt_t binMETlo = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(80.);
   UInt_t binMEThi = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(299.); 
-  std::cout << "Events in MET tail of CorrMET			= " << fTH1DMap["t1pfmetCorr_partblind"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "======================================================" << std::endl;
-  //std::cout << "Events in MET tail of CorrMET + JetCut		= " << fTH1DMap["metCor_afterJetCut"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Events in MET tail of CorrMET + ggMETCut	= " << fTH1DMap["metCor_afterggMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Events in MET tail of CorrMET + gMETCut		= " << fTH1DMap["metCor_aftergMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Events in MET tail of CorrMET + maxJetMETCut	= " << fTH1DMap["metCor_maxJetMET"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Events in MET tail of CorrMET + minJetMETCut	= " << fTH1DMap["metCor_minJetMET"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Events in MET tail of CorrMET + JetMETPhiCut	= " << fTH1DMap["metCor_afterJetMETPhiCut"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "======================================================" << std::endl;
-  //std::cout << "Events in MET tail of CorrMET + gg Iso		= " << fTH1DMap["metCor_Isolategg"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "======================================================" << std::endl;
-  std::cout << "Events in MET tail of MET + ALL Iso		= " << fTH1DMap["met_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Events in MET tail of CorrMET			= " << fTH1DMap["t1pfmetCorr_partblind"]->Integral(binMETlo,binMEThi) << std::endl;
+  ////std::cout << "======================================================" << std::endl;
+  ////std::cout << "Events in MET tail of CorrMET + JetCut		= " << fTH1DMap["metCor_afterJetCut"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Events in MET tail of CorrMET + ggMETCut	= " << fTH1DMap["metCor_afterggMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Events in MET tail of CorrMET + gMETCut		= " << fTH1DMap["metCor_aftergMETCut"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Events in MET tail of CorrMET + maxJetMETCut	= " << fTH1DMap["metCor_maxJetMET"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Events in MET tail of CorrMET + minJetMETCut	= " << fTH1DMap["metCor_minJetMET"]->Integral(binMETlo,binMEThi) << std::endl;
+  //std::cout << "Events in MET tail of CorrMET + JetMETPhiCut	= " << fTH1DMap["metCor_afterJetMETPhiCut"]->Integral(binMETlo,binMEThi) << std::endl;
+  ////std::cout << "======================================================" << std::endl;
+  ////std::cout << "Events in MET tail of CorrMET + gg Iso		= " << fTH1DMap["metCor_Isolategg"]->Integral(binMETlo,binMEThi) << std::endl;
+  ////std::cout << "======================================================" << std::endl;
+  //std::cout << "Events in MET tail of MET + ALL Iso		= " << fTH1DMap["met_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in MET tail of CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi) << std::endl;
   std::cout << "Events in all MET  of CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl;
-  std::cout << "Efficiency in         CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi)/fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl; 
-  std::cout << "======================================================" << std::endl;
+  //std::cout << "Efficiency in         CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi)/fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl; 
+  //std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
 
   //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["t1pfmetCorr_zoom"]->Integral(binMETlo,binMEThi) << std::endl;
