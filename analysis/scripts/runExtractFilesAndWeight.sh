@@ -20,6 +20,7 @@ python extractFilesAndWeight.py -i lists_25ns_v76X/MC/GluGluHToGG.json		-o GluGl
 python extractFilesAndWeight.py -i lists_25ns_v76X/MC/DYJetsToLL.json		-o DYJetsToLL		-d lists_25ns_v76X
 python extractFilesAndWeight.py -i lists_25ns_v76X/MC/ttHJetToGG_M125.json	-o ttHJetToGG		-d lists_25ns_v76X
 python extractFilesAndWeight.py -i lists_25ns_v76X/MC/VBFHToGG.json		-o VBFHToGG		-d lists_25ns_v76X
+python extractFilesAndWeight.py -i lists_25ns_v76X/MC/ZZTo2L2Nu.json		-o ZZTo2L2Nu		-d lists_25ns_v76X
 
 #python extractFilesAndWeight.py -i lists_25ns_v76X/MC/2HDM_MZP600.json		-o 2HDM_MZP600		-d lists_25ns_v76X
 #python extractFilesAndWeight.py -i lists_25ns_v76X/MC/2HDM_MZP800.json		-o 2HDM_MZP800		-d lists_25ns_v76X

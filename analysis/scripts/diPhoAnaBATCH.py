@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = False;
+isMC = True;
 is76X = True;
 isFLASHgg_1_1_0 = False;
 ######################

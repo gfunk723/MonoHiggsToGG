@@ -20,6 +20,7 @@ python extractJSONS.py -i datasets/datasets_76X_fromLivia.json	-o GJet_Pt-20to40
 python extractJSONS.py -i datasets/datasets_76X_fromLivia.json	-o GJet_Pt-40toInf	-d lists_25ns_v76X/MC
 python extractJSONS.py -i datasets/datasets_76X_fromLivia.json	-o GluGluHToGG		-d lists_25ns_v76X/MC
 python extractJSONS.py -i datasets/datasets_76X_fromLivia.json	-o VHToGG_M125		-d lists_25ns_v76X/MC
+python extractJSONS.py -i datasets/datasets_76X_ZZTo2L2Nu.json	-o ZZTo2L2Nu		-d lists_25ns_v76X/MC
 
 #python extractJSONS.py -i datasets/datasets_76X_fromLivia.json	-o 2HDM_MZP600		-d lists_25ns_v1_1_0_wMETsys/MC
 #python extractJSONS.py -i datasets/datasets_76X_fromLivia.json	-o 2HDM_MZP800		-d lists_25ns_v1_1_0_wMETsys/MC
