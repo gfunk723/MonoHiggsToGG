@@ -188,6 +188,7 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   Float_t         vtxX;
   Float_t         vtxY;
   Float_t         vtxZ;
+  Float_t         vtx0Z;
   Float_t         genVtxX;
   Float_t         genVtxY;
   Float_t         genVtxZ;
@@ -392,6 +393,7 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   TBranch        *b_vtxX;
   TBranch        *b_vtxY;
   TBranch        *b_vtxZ;
+  TBranch        *b_vtx0Z;
   TBranch        *b_genVtxX; 
   TBranch        *b_genVtxY; 
   TBranch        *b_genVtxZ; 
@@ -599,6 +601,7 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   treeOrig->SetBranchAddress("vtxX", &vtxX, &b_vtxX);
   treeOrig->SetBranchAddress("vtxY", &vtxY, &b_vtxY);
   treeOrig->SetBranchAddress("vtxZ", &vtxZ, &b_vtxZ);
+  treeOrig->SetBranchAddress("vtx0Z", &vtx0Z, &b_vtx0Z);
   treeOrig->SetBranchAddress("genVtxX", &genVtxX, &b_genVtxX);
   treeOrig->SetBranchAddress("genVtxY", &genVtxY, &b_genVtxY);
   treeOrig->SetBranchAddress("genVtxZ", &genVtxZ, &b_genVtxZ);
@@ -823,6 +826,7 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     theTreeNew->Branch("vtxX", &vtxX, "vtxX/F");
     theTreeNew->Branch("vtxY", &vtxY, "vtxY/F");
     theTreeNew->Branch("vtxZ", &vtxZ, "vtxZ/F");
+    theTreeNew->Branch("vtx0Z", &vtx0Z, "vtx0Z/F");
     theTreeNew->Branch("genVtxX", &genVtxX, "genVtxX/F");
     theTreeNew->Branch("genVtxY", &genVtxY, "genVtxY/F");
     theTreeNew->Branch("genVtxZ", &genVtxZ, "genVtxZ/F");

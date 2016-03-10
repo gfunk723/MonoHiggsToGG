@@ -43,6 +43,9 @@
 
 #define MAX_PU_REWEIGHT 60
 
+// To be modified
+static const Bool_t wantVtxStudies = 0;
+
 using namespace std;
 using namespace edm;
 using namespace flashgg;
@@ -228,6 +231,7 @@ struct diphoTree_struc_ {
   float vtxX; 
   float vtxY; 
   float vtxZ;
+  float vtx0Z;
   int genmatch1;   
   int genmatch2;
   float genmgg;
@@ -352,6 +356,7 @@ private:
   float applyEnergyScaling(int sampleID, float pt, float sceta,float r9, int run);
   bool geometrical_acceptance(float eta1, float eta2);
 
+  int sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr );
 
   std::vector<edm::EDGetTokenT<View<flashgg::Jet> > > tokenJets_;
   
@@ -435,6 +440,12 @@ private:
 
   // 74X only: met filters lists
   EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
+
+  // vtx studies
+  TH1F *H_goodVtx;
+  TH1F *H_minDz;
+  TH1F *Hbad_logSumPt2, *Hbad_ptbal, *Hbad_ptasym;
+  TH1F *Hgood_logSumPt2, *Hgood_ptbal, *Hgood_ptasym;
 };
    
 
@@ -1121,6 +1132,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int presel1, presel2, sel1, sel2, tightsel1, tightsel2, loosesel1, loosesel2;
 		      int vtxIndex;
 		      float vtxX, vtxY, vtxZ;
+		      float vtx0Z;
 		      int genmatch1, genmatch2;
 		      float genmgg;
 		      float geniso1, geniso2;
@@ -1344,6 +1356,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      vtxX= candDiphoPtr->vtx()->x();
 		      vtxY= candDiphoPtr->vtx()->y();
 		      vtxZ= candDiphoPtr->vtx()->z();
+		      //-------> first vtx info        
+		      vtx0Z = (primaryVertices->ptrAt(0))->position().z();
 		
 		      //-------> generated vtx info
 		      genVtxX = -999.;
@@ -1411,8 +1425,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      }
 		
 	
-
-		      // chiaraaaaa
 		      // --> only for VH: check the mc truth for Higgs studies
 		      vhtruth = -1;
 		      if (sampleID==11) { //this is VH
@@ -1740,7 +1752,47 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      } // loop over jets
 
 
-		
+		      // vertex studies
+		      if (wantVtxStudies) {
+
+			float vtxOk = -1;
+			float minDz = 9999.;
+			for (int ivtx=0; ivtx<(int)primaryVertices->size(); ivtx++) {
+			  float thisVtxZ = (primaryVertices->ptrAt(ivtx))->position().z();
+			  float theDz = fabs(thisVtxZ-higgsVtxZ);
+			  if (theDz<minDz) {
+			    minDz = theDz;
+			    vtxOk = ivtx;
+			  }
+			}
+			
+			H_goodVtx->Fill(vtxOk);
+			H_minDz->Fill(minDz);
+
+			for (int ivtx=0; ivtx<(int)primaryVertices->size(); ivtx++) {
+			  
+			  if (ivtx!=vtxOk) {  // background 
+			    unsigned int badVtxI = (unsigned int)ivtx;
+			    int badVtxSortedIndexI = sortedIndex( badVtxI, primaryVertices->size(), candDiphoPtr );  
+			    if (badVtxSortedIndexI < (int)candDiphoPtr->nVtxInfoSize() ) {    
+			      Hbad_logSumPt2 -> Fill( candDiphoPtr->logSumPt2(badVtxSortedIndexI) );
+			      Hbad_ptbal     -> Fill( candDiphoPtr->ptBal(badVtxSortedIndexI) );
+			      Hbad_ptasym    -> Fill( candDiphoPtr->ptAsym(badVtxSortedIndexI) );
+			    }
+			  } else {  // signal
+			    unsigned int goodVtxI = (unsigned int)ivtx;
+			    int goodVtxSortedIndexI = sortedIndex( goodVtxI, primaryVertices->size(), candDiphoPtr );
+			    if (goodVtxSortedIndexI < (int)candDiphoPtr->nVtxInfoSize() ) {
+			      Hgood_logSumPt2 -> Fill( candDiphoPtr->logSumPt2(goodVtxSortedIndexI) );
+			      Hgood_ptbal     -> Fill( candDiphoPtr->ptBal(goodVtxSortedIndexI) );
+			      Hgood_ptasym    -> Fill( candDiphoPtr->ptAsym(goodVtxSortedIndexI) );
+			    }
+			  }
+			}
+		      }  // additional vertex studies
+
+
+
 		      // Variables for the tree
 		      treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
 		      treeDipho_.hltPhoton36Photon22Mass15=hltPhoton36Photon22Mass15;
@@ -1894,6 +1946,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.vtxX = vtxX;
 		      treeDipho_.vtxY = vtxY;
 		      treeDipho_.vtxZ = vtxZ;
+		      treeDipho_.vtx0Z = vtx0Z;
 		      treeDipho_.genmatch1 = genmatch1; 
 		      treeDipho_.genmatch2 = genmatch2; 
 		      treeDipho_.genmgg  = genmgg;        // -999: not enough gen level gamma; -1999: strange association with reco
@@ -1979,6 +2032,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   //delete lazyToolnoZS;
 }
 
+int NewDiPhoAnalyzer::sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr ) {
+
+  for( unsigned int j = 0; j < sizemax; j++ ) {
+    int index = diphoPtr->mvaSortedIndex( j ); 
+    if( index < 0 ) { continue; } 
+    if( ( unsigned int ) index == vtxIndex ) { return j; } 
+  }
+  return -1;   
+}   
 
 bool NewDiPhoAnalyzer::geometrical_acceptance(float eta1, float eta2)
 {
@@ -2014,6 +2076,18 @@ void NewDiPhoAnalyzer::beginJob() {
   listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
   listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
   cout << "met filters lists read" << endl;
+
+  // For vtx studies
+  if (wantVtxStudies) {
+    H_goodVtx = new TH1F("H_goodVtx","H_goodVtx",10,0,10);
+    H_minDz = new TH1F("H_minDz","H_minDz",100,-20,20);
+    Hbad_logSumPt2 = new TH1F("Hbad_logSumPt2","Hbad_logSumPt2",100,-4.,14.);
+    Hbad_ptbal = new TH1F("Hbad_ptbal","Hbad_ptbal",100,-40,140);
+    Hbad_ptasym = new TH1F("Hbad_ptasym","Hbad_ptasym",100,-1,1);
+    Hgood_logSumPt2 = new TH1F("Hgood_logSumPt2","Hgood_logSumPt2",100,-4.,14.);
+    Hgood_ptbal = new TH1F("Hgood_ptbal","Hgood_ptbal",100,-40,140);
+    Hgood_ptasym = new TH1F("Hgood_ptasym","Hgood_ptasym",100,-1,1);
+  }
 
   // Trees
   DiPhotonTree = fs_->make<TTree>("DiPhotonTree","di-photon tree");
@@ -2175,6 +2249,7 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("vtxX",&(treeDipho_.vtxX),"vtxX/F");
   DiPhotonTree->Branch("vtxY",&(treeDipho_.vtxY),"vtxY/F");
   DiPhotonTree->Branch("vtxZ",&(treeDipho_.vtxZ),"vtxZ/F");
+  DiPhotonTree->Branch("vtx0Z",&(treeDipho_.vtx0Z),"vtx0Z/F");
   DiPhotonTree->Branch("higgsVtxX",&(treeDipho_.higgsVtxX),"higgsVtxX/F");
   DiPhotonTree->Branch("higgsVtxY",&(treeDipho_.higgsVtxY),"higgsVtxY/F");
   DiPhotonTree->Branch("higgsVtxZ",&(treeDipho_.higgsVtxZ),"higgsVtxZ/F");
@@ -2239,7 +2314,21 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("mva2",&(treeDipho_.mva2),"mva2/F");
 }
 
-void NewDiPhoAnalyzer::endJob() { }
+void NewDiPhoAnalyzer::endJob() { 
+
+  if (wantVtxStudies) {
+    TFile fileVtx("outputVtx.root","RECREATE");
+    fileVtx.cd();
+    H_goodVtx ->Write();
+    H_minDz ->Write();
+    Hbad_logSumPt2 ->Write(); 
+    Hbad_ptbal     ->Write();
+    Hbad_ptasym    ->Write();
+    Hgood_logSumPt2 ->Write(); 
+    Hgood_ptbal     ->Write();
+    Hgood_ptasym    ->Write();
+  }
+}
 
 void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.hltPhoton26Photon16Mass60=-500;
@@ -2373,6 +2462,7 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.vtxX = -500.;
   treeDipho_.vtxY = -500.;
   treeDipho_.vtxZ = -500.;
+  treeDipho_.vtx0Z = -500.;
   treeDipho_.genmatch1 = -500;
   treeDipho_.genmatch2 = -500;
   treeDipho_.genmgg  = -500.;
