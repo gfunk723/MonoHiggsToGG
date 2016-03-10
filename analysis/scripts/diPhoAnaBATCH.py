@@ -63,15 +63,78 @@ process.options = cms.untracked.PSet(
 )
 
 # to make jets   
-from flashgg.MicroAOD.flashggJets_cfi import flashggBTag, maxJetCollections
-process.flashggUnpackedJets = cms.EDProducer("FlashggVectorVectorJetUnpacker",
-                                             JetsTag = cms.InputTag("flashggFinalJets"),
-                                             NCollections = cms.uint32(maxJetCollections)
-                                             )
+#================================ Get the most recent JEC ==================================================================#
+    # Setup the private SQLite -- Ripped from PhysicsTools/PatAlgos/test/corMETFromMiniAOD.py
+usePrivateSQlite=True
+applyL2L3Residuals = True
 
-UnpackedJetCollectionVInputTag = cms.VInputTag()
-for i in range(0,maxJetCollections):
-    UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJets',str(i)))                            
+if usePrivateSQlite:
+    from CondCore.DBCommon.CondDBSetup_cfi import *
+    import os
+
+    era = "Summer15_25nsV7"
+    if isMC : 
+        era += "_MC"
+    else :
+        era += "_DATA"
+    dBFile = os.path.expandvars("/afs/cern.ch/user/m/mzientek/public/"+era+".db")
+
+    if usePrivateSQlite:
+        process.jec = cms.ESSource("PoolDBESSource",
+                                   CondDBSetup,
+                                   connect = cms.string("sqlite_file:"+dBFile),
+                                   toGet =  cms.VPSet(
+                cms.PSet(
+                    record = cms.string("JetCorrectionsRecord"),
+                    tag = cms.string("JetCorrectorParametersCollection_"+era+"_AK4PF"),
+                    label= cms.untracked.string("AK4PF")
+                    ),
+                cms.PSet(
+                        record = cms.string("JetCorrectionsRecord"),
+                        tag = cms.string("JetCorrectorParametersCollection_"+era+"_AK4PFchs"),
+                        label= cms.untracked.string("AK4PFchs")
+                        ),
+                )
+                                   )
+        process.es_prefer_jec = cms.ESPrefer("PoolDBESSource",'jec')
+#===========================================================================================================================#
+
+#============================================Re do jets + JEC===================================================================#
+
+from flashgg.MicroAOD.flashggJets_cfi import flashggBTag, maxJetCollections
+process.flashggUnpackedJets = cms.EDProducer("FlashggVectorVectorJetUnpacker",  
+                                             JetsTag = cms.InputTag("flashggFinalJets"),          
+                                             NCollections = cms.uint32(maxJetCollections) 
+                                             )               
+
+
+process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
+if isMC:
+    JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
+else :
+    if not applyL2L3Residuals : 
+        JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
+    else : 
+        JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
+
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
+    src = cms.InputTag("flashggUnpackedJets"),
+    levels = JECLevels,
+    payload = 'AK4PFchs' 
+)
+
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+process.flashggUnpackedJetsRecorrected = patJetsUpdated.clone(
+    jetSource = cms.InputTag("flashggUnpackedJets"),
+    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+)
+
+
+UnpackedJetCollectionVInputTag = cms.VInputTag()       
+for i in range(0,maxJetCollections):    
+    UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJetsRecorrected',str(i)))  
+#===========================================================================================================================#
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
