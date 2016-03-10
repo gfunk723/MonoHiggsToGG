@@ -185,12 +185,14 @@ void Combiner::DoComb(){
 
       Float_t fTotalInt = 0.;
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
 	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
       }
+	std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
 	std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
       for (UInt_t mc = 0; mc < fNSig; mc++){
-	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
 	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
       }
     }

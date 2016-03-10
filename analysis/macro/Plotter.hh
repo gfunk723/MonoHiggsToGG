@@ -259,6 +259,7 @@ private:
   Float_t       vtxX;
   Float_t       vtxY;
   Float_t       vtxZ;
+  Float_t       vtx0Z;
   Float_t       genVtxX;
   Float_t       genVtxY;
   Float_t       genVtxZ;
@@ -467,6 +468,7 @@ private:
   TBranch       *b_vtxX;
   TBranch       *b_vtxY;
   TBranch       *b_vtxZ;
+  TBranch       *b_vtx0Z;
   TBranch       *b_genVtxX;
   TBranch       *b_genVtxY;
   TBranch       *b_genVtxZ;

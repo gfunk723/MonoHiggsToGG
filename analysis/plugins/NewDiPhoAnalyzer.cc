@@ -1081,7 +1081,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		    }
 		    else theMassCorr = massCorrScale; // scale mass for Data
 		
-		    if (theMassCorr <= 100 || theMassCorr >= 180) continue;
+		    if (theMassCorr <= 100 || theMassCorr >= 300) continue;
 		    massDipho.push_back(theDiphoton);
 		  }
 
@@ -1659,7 +1659,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			//int idT = (nhf<0.90 && nemf<0.90 && NumConst>1 && muf<0.8) && ((fabs(eta)<=2.4 && chf>0 && chMult>0 && cemf<0.90) || fabs(eta)>2.4);
 			// idL = Loose
 			int idL;
-			if (fabs(eta) <= 3.0) idL = (nhf<0.99 && nemf<0.99 && NumConst>1 && muf < 0.8) && ((fabs(eta) <= 2.4 && chf>0 && chMult>0 && cemf<0.99) || fabs(eta)>2.4 && fabs(eta)<=3.0);
+			if (fabs(eta) <= 3.0) idL = (nhf<0.99 && nemf<0.99 && NumConst>1 && muf < 0.8) && ((fabs(eta) <= 2.4 && chf>0 && chMult>0 && cemf<0.99) || (fabs(eta)>2.4 && fabs(eta)<=3.0));
 			else idL = (nemf<0.90 && neMult>10 && fabs(eta)>3.0);
 
 			if(idL==0) continue;// jet does not pass loose ID

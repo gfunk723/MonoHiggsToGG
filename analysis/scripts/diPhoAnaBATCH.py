@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = True;
+isMC = False;
 isFLASHgg_1_1_0 = True;
 ######################
 
@@ -75,7 +75,7 @@ for i in range(0,maxJetCollections):
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-				  METTag=cms.untracked.InputTag('slimmedMETs'),#::FLASHggMicroAOD'),
+				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
                                   inputTagJets= UnpackedJetCollectionVInputTag,  
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),
                                   MuonTag=cms.InputTag('flashggSelectedMuons'), 

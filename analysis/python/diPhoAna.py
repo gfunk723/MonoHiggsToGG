@@ -119,7 +119,7 @@ for i in range(0,maxJetCollections):
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-				  METTag=cms.untracked.InputTag('slimmedMETs'),#::FLASHggMicroAOD
+				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
                                   inputTagJets= UnpackedJetCollectionVInputTag,            
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),    
                                   MuonTag=cms.InputTag('flashggSelectedMuons'),            
