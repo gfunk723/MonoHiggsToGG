@@ -20,6 +20,9 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   met_minB   = 0.;
   met_minD   = 80.;
   met_maxD   = 999.;
+  // save MET cut as a string
+  if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
+  else fMetCut = Form("%2.0f",met_minD);
 
   // titles for output Latex table
   fSampleTitleMap["Data"]		= "Data";
@@ -731,15 +734,22 @@ void ABCDMethod::SetRooVariables(){
 }// end SetRooVariables
 
 void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate){
+  // get rates for each sample
   TString sig = *sigrate->format(2,"");
+  // for resonant bkg get the rate from the integral of D region 
   TString vh  = *bkgrate[2][i_vh]->format(2,"");
+  TString vbf = *bkgrate[2][i_vbf]->format(2,"");
+  TString tth = *bkgrate[2][i_tth]->format(2,"");
   TString hgg = *bkgrate[2][i_hgg]->format(2,"");
+  // for non-res bkg get the rate from the ABCD method
   TString dy  = *bkgrate[7][i_dy]->format(2,"");
   TString gg  = *bkgrate[7][i_gg]->format(2,"");
   TString qcd = *bkgrate[7][i_qcd]->format(2,""); 
   TString gj  = *bkgrate[7][i_gj]->format(2,"");
-  TString vbf = *bkgrate[7][i_vbf]->format(2,"");
-  TString tth = *bkgrate[7][i_tth]->format(2,"");
+  TString ttgj= *bkgrate[7][i_ttgj]->format(2,"");
+  TString tgj = *bkgrate[7][i_tgj]->format(2,"");
+  TString wg  = *bkgrate[7][i_wg]->format(2,"");
+  TString zg  = *bkgrate[7][i_zg]->format(2,"");
   //std::cout << "sig = " << sig << " vh " << vh << " hgg " << hgg << " dy " << dy << " gg " << gg << " qcd " << qcd << " gj " << gj << std::endl; 
 
   TStrVec N_C;
@@ -757,6 +767,10 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   TString fac_gj  = *bkgrate[6][i_gj]->format(2,"");
   TString fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
   TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
+  TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
+  TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
+  TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
+  TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
  
   DblVec N_A,N_B,mult; // N_C,mult;
   N_A.resize(fNBkg);
@@ -769,12 +783,14 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
     mult[mc]= N_A[mc]/N_B[mc];
     //std::cout << fBkgNames[mc].Data() << " nA = " << N_A[mc] << " nB = " << N_B[mc] << " nA/nB = " << mult[mc] << std::endl;
   }
+
+  TString DataCardName = Form("%s/DataCard_%s_met%s.txt",fOutDir.Data(),fSigName.Data(),fMetCut.Data());
  
-  std::cout << "Writing data card in: " << fOutDir.Data() << "/DataCard_" << fSigName.Data() <<".txt" << std::endl;
-  fOutTxtFile.open(Form("%s/DataCard_%s.txt",fOutDir.Data(),fSigName.Data())); 
+  std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
+  fOutTxtFile.open(DataCardName); 
   // print out the Data Card file
   if (fOutTxtFile.is_open()){
-    fOutTxtFile << Form("#MonoHgg DataCard for C&C Limit Setting, %f fb-1 ",lumi) << std::endl;
+    fOutTxtFile << Form("#MonoHgg Datacard for MET > %s C&C Limit Setting, %f fb-1 ",fMetCut.Data(),lumi) << std::endl;
     fOutTxtFile << "#Run with:combine -M Asymptotic cardname.txt --run blind " << std::endl;
     fOutTxtFile << Form("# Lumi =  %f fb-1",lumi) << std::endl;
     fOutTxtFile << "imax 1" << std::endl;
@@ -785,22 +801,36 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
     fOutTxtFile << "bin 1"<< std::endl;
     fOutTxtFile << "observation 0 "  << std::endl;
     fOutTxtFile << "------------------------------" << std::endl;
-    fOutTxtFile << "bin		1		1		1		1		1		1		1"<< std::endl;
-    fOutTxtFile << "process		DM		gg		dy		qcd		gj		hgg		vh" << std::endl;
-    fOutTxtFile << "process		0		1		2		3		4		5 		6" << std::endl;
-    fOutTxtFile << Form("rate	       %s	       %s	       %s	       %s	       %s	       %s	       %s",sig.Data(),gg.Data(),dy.Data(),qcd.Data(),gj.Data(),hgg.Data(),vh.Data()) << std::endl; 
+    fOutTxtFile << "bin		1		1	1	1	1	1		1		1		1		1	1	1	1"<< std::endl;
+    fOutTxtFile << "process		DM		gg	dy	qcd	gj	hgg		vh		vbf		tth		ttgj	tgj	wg	zg" << std::endl;
+    fOutTxtFile << "process		0		1	2	3	4	5 		6 		7		8		9	10	11	12" << std::endl;
+    fOutTxtFile << Form("rate		%s	       %s       %s      %s	%s	%s		%s		%s		%s		%s	%s	%s	%s",
+         sig.Data(),gg.Data(),dy.Data(),qcd.Data(),gj.Data(),hgg.Data(),vh.Data(),vbf.Data(),tth.Data(),ttgj.Data(),tgj.Data(),wg.Data(),zg.Data()) << std::endl; 
     fOutTxtFile << "--------------------------------" << std::endl;
-    fOutTxtFile << "#signal related" << std::endl; //just took these numbers from Livia's example (all estimates from 8TeV)
-    fOutTxtFile << "lumi_13TeV lnN	1.1000		-		-		-		-		1.1000     	1.1000" << std::endl;
-    fOutTxtFile << "eff_trig   lnN	1.010000	-		-		-		-		1.01000    	1.01000" << std::endl;
-    fOutTxtFile << "id_eff_eb  lnN	1.02000		-		-		-		-		1.02000    	1.02000   " << std::endl;    
-    fOutTxtFile << "vtxEff     lnN	0.996/1.008	-		-		-		-		0.996/1.008	0.996/1.008" << std::endl; 
+    fOutTxtFile << "#signal related" << std::endl;
+    fOutTxtFile << "lumi        lnN	1.023		-	-	-	-	1.023   	1.023		1.023		1.023		-	-	-	- " << std::endl;
+    fOutTxtFile << "eff         lnN	1.030000 	-	-	-	-	1.030		1.030		1.030		1.030		-	-	-	- " << std::endl;
+    fOutTxtFile << "higg_BR     lnN	0.953/1.050	-	-	-	-	0.953/1.05	0.953/1.05	0.953/1.05	0.953/1.05	-	-	-	- " << std::endl;
+    fOutTxtFile << "higg_alphas lnN	0.940/0.965	-	-	-	-	0.940/0.965	0.940/0.965	0.940/0.964	0.940/0.964	-	-	-	- " << std::endl;
+    fOutTxtFile << "PDFs        lnN	1.05		-	-	-	-	1.05		1.05		1.05		1.05		-	-	-	- " << std::endl;
+    fOutTxtFile << "JetEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "JetEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "PhoEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "PhoEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "UnclEnUp    lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "UnclEnDown  lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "FakeMet     lnN	-		-	-	-	-	0.6/1.4		-		0.6/1.4		0.6/1.4		-	-	-	- " << std::endl;
+   
     fOutTxtFile << "#background related" << std::endl;
     //fOutTxtFile << "abcd_estimate lnN	-	1.27000		1.27000	   1.27000	1.27000		-	-	-  " << std::endl;
-    fOutTxtFile << Form("gg_norm  gmN 	%s	-	%s	   -		-		-	-	-  ",N_C[i_gg].Data(),fac_gg.Data()) << std::endl;
-    fOutTxtFile << Form("dy_norm  gmN 	%s	-	-	   %s		-		-	-	-  ",N_C[i_dy].Data(),fac_dy.Data()) << std::endl;
-    fOutTxtFile << Form("qcd_norm gmN 	%s	-	- 	   -		%s		-	-	-  ",N_C[i_qcd].Data(),fac_qcd.Data()) << std::endl;
-    fOutTxtFile << Form("gj_norm  gmN 	%s	-	-	   -		-		%s	-	-  ",N_C[i_gj].Data(),fac_gj.Data()) << std::endl;
+    fOutTxtFile << Form("gg_norm   gmN 	%s	-	%s	-	-	-	-		-  		-		-		-	-	-	- ",N_C[i_gg].Data(),fac_gg.Data()) << std::endl;
+    fOutTxtFile << Form("dy_norm   gmN 	%s	-	- 	%s	-	-	-		-  		-		-		-	-	-	- ",N_C[i_dy].Data(),fac_dy.Data()) << std::endl;
+    fOutTxtFile << Form("qcd_norm  gmN 	%s	-	- 	-	%s	-	-		-  		-		-		-	-	-	- ",N_C[i_qcd].Data(),fac_qcd.Data()) << std::endl;
+    fOutTxtFile << Form("gj_norm   gmN 	%s	-	- 	-	-	%s	-		-  		-		-		-	-	-	- ",N_C[i_gj].Data(),fac_gj.Data()) << std::endl;
+    fOutTxtFile << Form("ttgj_norm gmN 	%s	-	- 	-	-	-	-		-  		-		-		%s	-	-	- ",N_C[i_ttgj].Data(),fac_ttgj.Data()) << std::endl;
+    fOutTxtFile << Form("tgj_norm  gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	%s	-	- ",N_C[i_tgj].Data(),fac_tgj.Data()) << std::endl;
+    fOutTxtFile << Form("wg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	%s	- ",N_C[i_wg].Data(),fac_wg.Data()) << std::endl;
+    fOutTxtFile << Form("zg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	-	%s",N_C[i_zg].Data(),fac_zg.Data()) << std::endl;
 
   }
   else std::cout << "Unable to open DataCard Output File" << std::endl;
@@ -911,7 +941,7 @@ void ABCDMethod::InitHists(){
 
 void ABCDMethod::InitVariables(){
   // 1D histograms of interest
-  fTH1DNames.push_back("nvtx");
+  fTH1DNames.push_back("nvtx_IsolateALL");
 
   // 2D histograms of interest
   fTH2DNames.push_back("t1pfmet_mgg");

@@ -78,6 +78,8 @@ private:
   Double_t	met_minD;
   Double_t	met_maxD;
 
+  TString	fMetCut;
+
   TStrMap	fSampleTitleMap;
 
   RooVecVec	fRooData;

@@ -114,24 +114,26 @@ int main(){
   }
 
   else{
-    std::cout << "Pickup MET Phi Correction" << std::endl; 
-    // pick up MC metCorr
-    TString metStudyMC = Form("%s/metCorr_MC.root",inDir.Data());
-    TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
-    CheckValidFile(fmetCorrMC,metStudyMC);
-    TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
-    CheckValidTH1D(MCmet,"",metStudyMC);
+    if (doPlots){
+      std::cout << "Pickup MET Phi Correction" << std::endl; 
+      // pick up MC metCorr
+      TString metStudyMC = Form("%s/metCorr_MC.root",inDir.Data());
+      TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
+      CheckValidFile(fmetCorrMC,metStudyMC);
+      TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
+      CheckValidTH1D(MCmet,"",metStudyMC);
 
-    // pick up Data metCorr
-    TString metStudyData = Form("%s/metCorr_Data.root",inDir.Data());
-    TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
-    CheckValidFile(fmetCorrDATA,metStudyData);
-    TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
-    CheckValidTH1D(DATAmet,"",metStudyData);
-     
-    for (UInt_t i=0; i<4; i++){
-      metCorrMC.push_back(MCmet->GetBinContent(i+1));
-      metCorrData.push_back(DATAmet->GetBinContent(i+1));
+      // pick up Data metCorr
+      TString metStudyData = Form("%s/metCorr_Data.root",inDir.Data());
+      TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
+      CheckValidFile(fmetCorrDATA,metStudyData);
+      TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
+      CheckValidTH1D(DATAmet,"",metStudyData);
+       
+      for (UInt_t i=0; i<4; i++){
+        metCorrMC.push_back(MCmet->GetBinContent(i+1));
+        metCorrData.push_back(DATAmet->GetBinContent(i+1));
+      }
     }
   }
  

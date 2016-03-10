@@ -183,17 +183,36 @@ void Combiner::DoComb(){
       UInt_t bin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
       UInt_t bin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
 
+      Float_t fSignalRegInt = 0.;
+      Float_t fSignalRegIntErr = 0.;
       Float_t fTotalInt = 0.;
+      std::vector<Double_t> fBkgInt;
+      std::vector<Double_t> fSigInt;
+      std::vector<Double_t> fBkgIntErr;
+      std::vector<Double_t> fSigIntErr;
+      fBkgInt.resize(fNBkg);
+      fBkgIntErr.resize(fNBkg);
+      fSigInt.resize(fNSig);
+      fSigIntErr.resize(fNSig);
+
       for (UInt_t mc = 0; mc < fNBkg; mc++){
+	fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin1,bin2,fBkgIntErr[mc]);
 	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg SignalReg  = " << fBkgInt[mc] << " +/- " << fBkgIntErr[mc] << std::endl; 
 	if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
+	if (fBkgInt[mc] > 0){
+	  fSignalRegInt += fBkgInt[mc];
+	  fSignalRegIntErr += fBkgIntErr[mc];
+	}
       }
-	std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
-	std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
+	//std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
+	std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg SignalReg = " << fSignalRegInt << " +/- " << fSignalRegIntErr  << std::endl; 
+	//std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
       for (UInt_t mc = 0; mc < fNSig; mc++){
 	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	std::cout << " ----- " << fSigNames[mc] << "----- 	Integral in Mgg SignalReg  = " << fSigInt[mc] << " +/- " << fSigIntErr[mc] << std::endl; 
+	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
       }
     }
 
@@ -1552,12 +1571,17 @@ void Combiner::InitTH1DNames(){
     //fTH1DNames.push_back("eleveto2");
     //fTH1DNames.push_back("phi1_pho2pass");
     //fTH1DNames.push_back("phi2_pho1pass");
+    fTH1DNames.push_back("nJets");
+    fTH1DNames.push_back("nElec");
+    fTH1DNames.push_back("nMuon");
+
     fTH1DNames.push_back("t1pfmetCorr");
     fTH1DNames.push_back("t1pfmetphiCorr");
     fTH1DNames.push_back("t1pfmet_zoom");
     fTH1DNames.push_back("t1pfmetSumEt");
     fTH1DNames.push_back("t1pfmet_partblind");
     fTH1DNames.push_back("t1pfmetCorr_partblind");
+    fTH1DNames.push_back("ptggOverMET");
     
     fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
@@ -1642,6 +1666,11 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("mgg_met80_forShape");
     fTH1DNames.push_back("mgg_IsolateALL");
     fTH1DNames.push_back("mgg_IsolateALLmet80");
+    fTH1DNames.push_back("ptgg_IsolateALL");
+    fTH1DNames.push_back("ptgg_IsolateALLmet80");
+    fTH1DNames.push_back("nvtx_IsolateALL");
+    fTH1DNames.push_back("nvtx_IsolateALLmet80");
+
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
