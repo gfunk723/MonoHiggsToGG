@@ -156,6 +156,10 @@ void ABCDMethod::DoAnalysis(){
     if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
     if (fBkgNames[mc] == "ttHJetToGG")  i_tth = mc;
     if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
+    if (fBkgNames[mc] == "TGJets")	i_tgj = mc;
+    if (fBkgNames[mc] == "TTGJets")	i_ttgj= mc;
+    if (fBkgNames[mc] == "WGToLNuG")	i_wg  = mc;
+    if (fBkgNames[mc] == "ZGTo2LG")	i_zg  = mc;
   }
 
   // Because QCD has some events with very large weights
@@ -177,6 +181,10 @@ void ABCDMethod::DoAnalysis(){
   fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_gj]); 
   if (doQCDscale) fOutSelBkgTH2DHists[0]->Add(GJetsCloneTH2D[0]);
   else fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_qcd]);    
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_tgj]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_ttgj]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_wg]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_zg]); 
 
   // sum over nonresonant bkgs only
   fOutSelBkgTH1DHists[0] = (TH1D*)fInBkgTH1DHists[0][i_dy]->Clone();
@@ -184,6 +192,10 @@ void ABCDMethod::DoAnalysis(){
   fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_gj]); 
   if (doQCDscale) fOutSelBkgTH1DHists[0]->Add(GJetsClone[0]);
   else fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_qcd]);    
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_tgj]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_ttgj]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_wg]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_zg]); 
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
     //fInBkgTH2DHists[0][mc]->Scale(3000./1260.);// in order to scale to 3fb-1
@@ -267,13 +279,12 @@ void ABCDMethod::DoAnalysis(){
   min_y[7]=0;   
   max_y[7]=0;   
 
-
-  for (UInt_t cat = 0; cat < fNCat; cat++){
+  //for (UInt_t cat = 0; cat < fNCat; cat++){
   //  std::cout << "bin Xmin = " << min_x[cat] << std::endl;
   //  std::cout << "bin Xmax = " << max_x[cat] << std::endl;
   //  std::cout << "bin Ymin = " << min_y[cat] << std::endl;
   //  std::cout << "bin Ymax = " << max_y[cat] << std::endl;
-  }
+  //}
  
   for (UInt_t cat = 0; cat < fNCat; cat++){ // loop over each category 
     Data_Int[cat].resize(1); 		// only one group for data since it is lumped together

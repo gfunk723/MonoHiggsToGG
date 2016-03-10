@@ -65,6 +65,10 @@ private:
   UInt_t	i_dy;
   UInt_t	i_tth;
   UInt_t	i_vbf;
+  UInt_t	i_tgj; 
+  UInt_t	i_ttgj;
+  UInt_t	i_wg; 
+  UInt_t	i_zg;  
 
   Double_t	mgg_minAB1;
   Double_t	mgg_minCD;
