@@ -1113,9 +1113,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			candIndex = theDiphoton;
 		      }
 		    }
-	    
-		    if (candIndex<999) {
-	      
+	
+		    std::cout << "candIndex = " << candIndex << std::endl; 	   
+ 
+		    if (candIndex<9999) {
 		      Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( candIndex );
 		 
 		      // to be kept in the tree
@@ -1190,7 +1191,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      calometPhi = theMET->caloMETPhi();
 		      calometSumEt = theMET->caloMETSumEt();
 
-		
 		      //-------> diphoton system properties 
 		      ptgg = candDiphoPtr->pt();
 		      massRaw  = candDiphoPtr->mass();
@@ -1592,14 +1592,19 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int CHmultJet4 = -999;
 		      int NEmultJet4 = -999;
 
+                      std::cout << "made it " << std::endl;
 		      unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
+                      std::cout << "jetCollIndex " << jetCollectionIndex << std::endl;
 		      std::vector<edm::Ptr<flashgg::Jet> > tempJets(Jets[jetCollectionIndex]->size());
 
+                      std::cout << "made it " << std::endl;
 		      // make sure jets are sorted by pT
 		      for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
 			tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 		      }
 		      std::sort(tempJets.begin(),tempJets.end(),SortByJetPT);
+
+		      std::cout << " num Jets = " << Jets[jetCollectionIndex]->size() << std::endl;
 
 		      // loop over sorted jets
 		      unsigned int jetIndex = 0;
