@@ -94,7 +94,7 @@ void Plotter::DoPlots(int prompt){
   Double_t effptd[60]={0};
 
   fTH1DMap["hlt"]->Fill(0.5,nentries);
-  // fSelection[i]-> 1=trigger, 2=presel, 3=selection, 4=pt1>30,pt2>20, 5=pt1>mgg/3,pt2>mgg/4, 6=goodVtx, 7=mgg, 8=met
+  // fSelection[i]-> i: 0=trigger, 1=presel, 2=selection, 3=pt1>30,pt2>20, 4=pt1>mgg/3,pt2>mgg/4, 5=goodVtx, 6=mgg, 7=met
   for (UInt_t i=0; i<8; i++){
     fTH1DMap["selection"]->Fill(i+0.5,fSelection[i]);
     fTH1DMap["selection_unwgt"]->Fill(i+0.5,fSelection_unwgt[i]);
@@ -282,8 +282,9 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil){ //Data passes MET filter
-      if (true /*pt1 > 0.65*mgg && pt2 > 0.25*mgg*/){
-      //if (mgg >= 100 && mgg < 180 && passEV1 && passEV2 /*&&  pt1 > 0.65*mgg && pt2 > 0.25*mgg */ /*&& t1pfmet > 80*/ ){
+      //if (true){ // Orignal Selection
+      if (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90){  // OptSel1
+      //if (pt1 > 0.65*mgg && pt2 > 0.25*mgg && ptgg > 50){ // OptSel2
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
 
@@ -300,7 +301,7 @@ void Plotter::DoPlots(int prompt){
 
 	  numPassingAll++;
 	  if (nEle < 1 && nMuons < 1) numPassingLeptonReject++;
-	  //if (nEle >= 1 || nMuons >= 1) continue; //reject events with leptons
+	  if (nEle >= 2 || nMuons >= 1) continue; //reject events with leptons
 
 	  // t1pfmet phi Correction
 	  Double_t t1pfmetCorrX;
@@ -626,6 +627,7 @@ void Plotter::DoPlots(int prompt){
 	  Bool_t dphigMETpass = false; // dphi g1-JET && g2-JET < 2.7
 	  if ( dphig1MET < 2.7) dphigMETpass = true;
 	  fTH1DMap["absdphi_maxgMET"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
+	  if (t1pfmetCorr > 80) fTH1DMap["absdphi_maxgMET_met80"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
 
 	  // DeltaPhi between gg and MET
 	  Double_t dphiggMET = 0;
@@ -1069,6 +1071,7 @@ void Plotter::SetUpPlots(){
   fTH1DMap["absdphi_g1MET"]		= Plotter::MakeTH1DPlot("absdphi_g1MET","",10,0.,4.,"|#Delta#phi(Pho1,E_{T}^{miss})|","");
   fTH1DMap["absdphi_g1MET_met100"]	= Plotter::MakeTH1DPlot("absdphi_g1MET_met100","",40,0.,4.,"|#Delta#phi(Pho1,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxgMET"]		= Plotter::MakeTH1DPlot("absdphi_maxgMET","",10,0.,4.,"Max|#Delta#phi(Pho,E_{T}^{miss})|","");
+  fTH1DMap["absdphi_maxgMET_met80"]	= Plotter::MakeTH1DPlot("absdphi_maxgMET_met80","",10,0.,4.,"Max|#Delta#phi(Pho,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxJetMET"]		= Plotter::MakeTH1DPlot("absdphi_maxJetMET","",10,0.,4.,"Max|#Delta#phi(Jet,E_{T}^{miss})|","");
   fTH1DMap["absdphi_minJetMET"]		= Plotter::MakeTH1DPlot("absdphi_minJetMET","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxJetMET_met100"]	= Plotter::MakeTH1DPlot("absdphi_maxJetMET_met100","",40,0.,4.,"Max|#Delta#phi(Jet,E_{T}^{miss})|","");

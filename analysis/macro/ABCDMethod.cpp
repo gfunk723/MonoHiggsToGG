@@ -14,8 +14,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
 
   // values for the different bin edges
   mgg_minAB1 = 100.;
-  mgg_minCD  = 115.;
-  mgg_maxCD  = 135.;
+  mgg_minCD  = 120.;
+  mgg_maxCD  = 130.;
   mgg_maxAB2 = 150.; 
   met_minB   = 0.;
   met_minD   = 105.;
@@ -1015,6 +1015,7 @@ void ABCDMethod::InitHists(){
 
 void ABCDMethod::InitVariables(){
   // 1D histograms of interest
+  //fTH1DNames.push_back("nvtx");
   fTH1DNames.push_back("nvtx_IsolateALL");
 
   // 2D histograms of interest
