@@ -61,6 +61,7 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
 
     cout << " Working on " << sigNames[mc] << endl; 
 
+    // 1=trigger, 2=presel, 3=selection, 4=pt1>30,pt2>20, 5=pt1>mgg/3,pt2>mgg/4, 6=goodVtx, 7=mgg, 8=met
     TH1D * fSel_unwgt = (TH1D*)inFile[mc]->Get("h_selection_unwgt");
     original[mc] = fSel_unwgt->GetBinContent(1);
     //cout << "orig = " << original[mc] << endl;
@@ -323,6 +324,9 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     eff2err[mc][2] = TMath::Sqrt(eff2[mc][2]*(1.0-eff2[mc][2])/(Double_t)original[mc]);
     eff2err[mc][3] = TMath::Sqrt(eff2[mc][3]*(1.0-eff2[mc][3])/(Double_t)original[mc]);
    
+    //cout << "Eff1 = " << eff1[mc][0] << endl;
+    //cout << "Eff2 = " << eff2[mc][0] << endl;
+
   }// end loop over sig files
 
   vector<Double_t> mass =  {600,800,1000,1200,1400,1700,2500};//{1,10,100,1000}; 

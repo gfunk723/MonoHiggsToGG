@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 # SET THESE BOOLS BEFORE RUNNING:
 isMC = False;
 is76X = False; #CANNOT RUN ON 76X in 74X
-isFLASHgg_1_1_0 = False;
+isFLASHgg_1_1_0 = True;
 ######################
 
 process = cms.Process("diPhoAna")
