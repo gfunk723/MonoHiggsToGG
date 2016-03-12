@@ -3,12 +3,14 @@
 #include <TBranch.h>
 #include <TH1.h>
 #include <TLorentzVector.h>
+#include "../../../DataFormats/Math/interface/deltaPhi.h"
+#include <TMath.h>
 #include <iostream>
 
 
 using namespace std;
 
-void doEff( TString inDir, TString outDir, Double_t lumi){
+void doEff( TString inDir, TString outDir, Double_t lumi, vector<Double_t> fMETCorr ){
 
   cout << " Computing Efficiency for Samples in " << inDir << endl;
 
@@ -20,11 +22,15 @@ void doEff( TString inDir, TString outDir, Double_t lumi){
   sigNames.push_back("2HDM_mZP1400");
   sigNames.push_back("2HDM_mZP1700");
   sigNames.push_back("2HDM_mZP2500");
-  UInt_t nSig = sigNames.size();
+  UInt_t fNSig = sigNames.size();
 
   vector< TFile *> inFile;
-  inFile.resize(nSig);
-  for (UInt_t mc=0; mc<nSig; mc++){
+  inFile.resize(fNSig);
+
+  vector< Int_t > original;
+  original.resize(fNSig);
+
+  for (UInt_t mc=0; mc<fNSig; mc++){
    inFile[mc] = TFile::Open(inDir+sigNames[mc]+".root");
    if ( inFile[mc] ) inFile[mc]->cd();
    else{
@@ -35,6 +41,9 @@ void doEff( TString inDir, TString outDir, Double_t lumi){
    cout << " Working on " << sigNames[mc] << endl; 
 
    TH1D * fSel_unwgt = (TH1D*)inFile[mc]->Get("h_selection_unwgt");
+   original[mc] = fSel_unwgt->GetBinContent(1);
+   //cout << "orig = " << original[mc] << endl;
+
    TTree * tpho = (TTree*)inFile[mc]->Get("DiPhotonTree");
 
    // variables from tree
@@ -134,22 +143,148 @@ void doEff( TString inDir, TString outDir, Double_t lumi){
    tpho->SetBranchAddress("massJet4", &massJet4, &b_massJet4);
 
    // Make TLorentzVector for objects
-   TLorentzVector *fLorenzVecg1		= new TLorentzVector();
-   TLorentzVector *fLorenzVecg2		= new TLorentzVector();
-   TLorentzVector *fLorenzVecgg		= new TLorentzVector();
-   TLorentzVector *fLorenzVecJet1	= new TLorentzVector();
-   TLorentzVector *fLorenzVecJet2	= new TLorentzVector();
-   TLorentzVector *fLorenzVecJet3	= new TLorentzVector();
-   TLorentzVector *fLorenzVecJet4	= new TLorentzVector();
+   TLorentzVector fLorenzVecg1;
+   TLorentzVector fLorenzVecg2;
+   TLorentzVector fLorenzVecgg;
+   TLorentzVector fLorenzVecCorrMET; 
+   TLorentzVector fLorenzVecJet1;
+   TLorentzVector fLorenzVecJet2;
+   TLorentzVector fLorenzVecJet3;
+   TLorentzVector fLorenzVecJet4;
 
+   // counters for efficiency
+   vector< Int_t > count1a;
+   vector< Int_t > count1b;
+   vector< Int_t > count1c;
+   vector< Int_t > count1d;
+   vector< Int_t > count2a;
+   vector< Int_t > count2b;
+   vector< Int_t > count2c;
+   vector< Int_t > count2d;
+   count1a.resize(fNSig);
+   count1b.resize(fNSig);
+   count1c.resize(fNSig);
+   count1d.resize(fNSig);
+   count2a.resize(fNSig);
+   count2b.resize(fNSig);
+   count2c.resize(fNSig);
+   count2d.resize(fNSig);
+
+
+   // START loop over entries in tree
    UInt_t nentries = tpho->GetEntries();
    for (UInt_t entry = 0; entry < nentries; entry++){
      tpho->GetEntry(entry);
 
+     fLorenzVecg1.SetPtEtaPhiM(pt1,eta1,phi1,0.);
+     fLorenzVecg2.SetPtEtaPhiM(pt2,eta2,phi2,0.);
+     fLorenzVecgg = fLorenzVecg1 + fLorenzVecg2;
+     fLorenzVecJet1.SetPtEtaPhiM(ptJetLead,etaJetLead,phiJetLead,massJetLead);
+     fLorenzVecJet2.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,massJetSubLead);
+     fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
+     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
+
+     // t1pfmet phi Correction
+     Double_t t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
+     Double_t t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+     Double_t t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+     //std::cout << "px = t1pfmet*cos(t1pfmetPhi) - (" << fMETCorr[0] << " + " << fMETCorr[1] << "*t1pfmetSumEt)" << std::endl;
+     //std::cout << "py = t1pfmet*sin(t1pfmetPhi) - (" << fMETCorr[2] << " + " << fMETCorr[3] << "*t1pfmetSumEt)" << std::endl;
+     fLorenzVecCorrMET.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+     Double_t t1pfmetPhiCorr = fLorenzVecCorrMET.Phi(); 
+     Double_t t1pfmetCorr = fLorenzVecCorrMET.Pt();
+
+     
+     // DeltaPhi between each Jet and the MET
+     // set these values to true for events w/o jets
+     Bool_t max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
+     Bool_t min_dphiJETMETpass = true;	// min dphi Jet-MET > 0.5 
+     
+     Double_t max_dphi_JetMET = 0.;
+     Double_t min_dphi_JetMET = 10.;
+     
+     if ( nJets > 0 ){
+       Double_t dphiJet1METmin = 10;
+       Double_t dphiJet2METmin = 10;
+       Double_t dphiJet3METmin = 10;
+       Double_t dphiJet4METmin = 10;
+       Double_t dphiJet1METmax = 0;
+       Double_t dphiJet2METmax = 0;
+       Double_t dphiJet3METmax = 0;
+       Double_t dphiJet4METmax = 0;
+       if ( ptJetLead > 50 ){
+         dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
+         dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
+       }
+       if ( ptJetSubLead > 50 ){
+         dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
+         dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
+       }
+       if ( ptJet3 > 50 ){
+         dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
+         dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
+       }
+       if ( ptJet4 > 50 ){
+         dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
+         dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
+       }
+     
+       // find the min_dphi_JetMET 
+       if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
+       if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
+       if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
+       if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
+       // find the max_dphi_JetMET 
+       if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
+       if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
+       if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
+       if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
+     }
+     
+     if (max_dphi_JetMET > 2.7) max_dphiJETMETpass = false;// max dphi Jet-MET < 2.7 
+     if (min_dphi_JetMET < 0.5) min_dphiJETMETpass = false;// min dphi Jet-MET > 0.5 
+     
+     // DeltaPhi between gg and MET
+     Double_t dphiggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhiCorr));
+     Bool_t dphiggMETpass = false; // dphi gg-MET > 2.1
+     if ( dphiggMET > 2.1 ) dphiggMETpass = true;
+
+
+     // START applying cuts
+     if ( !dphiggMETpass || !max_dphiJETMETpass || !min_dphiJETMETpass) continue;
+
+     // for selection option 1 
+     if ( pt1 > 0.5*mgg && pt2 > 0.25*mgg && t1pfmetCorr > 105){
+       count1a[mc]++;
+       if ( nEle < 2){
+         count1b[mc]++;
+         if ( nMuons == 0){
+           count1c[mc]++;
+           if ( ptgg > 90) count1d[mc]++;
+         }
+       }
+     }  
+
+     // for selection option 2 
+     if ( pt1 > 0.65*mgg && pt2 > 0.25*mgg && t1pfmetCorr > 80){
+       count2a[mc]++;
+       if ( nEle < 2){
+         count2b[mc]++;
+         if ( nMuons == 0){
+           count2c[mc]++;
+           if ( ptgg > 50) count2d[mc]++;
+         }
+       }
+     }  
+
    }// end loop over tree entries  
 
-
+   //cout << count1a[mc] << " " << count1b[mc] << " " << count1c[mc] << " " << count1d[mc] << endl;
+   //cout << count2a[mc] << " " << count2b[mc] << " " << count2c[mc] << " " << count2d[mc] << endl;
 
   }// end loop over sig files
+
+
+
  
 }//end doEff
