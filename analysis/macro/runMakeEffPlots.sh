@@ -2,6 +2,7 @@
 
 inputDir="data/25ns_v1-1-0_ReReco_wAllJetInfo/"
 outputDir="diPhoPlots/25ns_v1-1-0_ReReco_wAllJetInfo/Eff/"
+ftype="png"
 
 # pick up MC metCorr
 #px = t1pfmet*cos(t1pfmetPhi) -(-1.33055 + -0.00700742 * t1pfmetSumEt)
@@ -13,7 +14,7 @@ mkdir -p $outputDir
 root -l -b <<EOF
 .L makeEffPlots.cc++
 
-doEff("$inputDir","$outputDir",2.2,$MetCorr);
+doEff("$inputDir","$outputDir","$ftype",2.2,$MetCorr);
 
 .q
 
