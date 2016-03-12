@@ -18,7 +18,7 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   mgg_maxCD  = 135.;
   mgg_maxAB2 = 150.; 
   met_minB   = 0.;
-  met_minD   = 80.;
+  met_minD   = 105.;
   met_maxD   = 999.;
   // save MET cut as a string
   if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
@@ -755,22 +755,96 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   TStrVec N_C;
   N_C.resize(fNBkg);
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    N_C[mc] = *bkgrate[3][mc]->format(2,"");
+    if (bkgrates[3][mc] >= 1) N_C[mc] = *bkgrate[3][mc]->format(2,"");
+    else N_C[mc] = "1";
     //std::cout << fBkgNames[mc] << ": C = " << N_C[mc] <<std::endl;
   }
 
-  TString fac_vh  = *bkgrate[6][i_vh]->format(2,"");
-  TString fac_hgg = *bkgrate[6][i_hgg]->format(2,"");
-  TString fac_dy  = *bkgrate[6][i_dy]->format(2,"");
-  TString fac_gg  = *bkgrate[6][i_gg]->format(2,"");
-  TString fac_qcd = *bkgrate[6][i_qcd]->format(2,""); 
-  TString fac_gj  = *bkgrate[6][i_gj]->format(2,"");
-  TString fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
-  TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
-  TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
-  TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
-  TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
-  TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
+  //TString fac_vh  = *bkgrate[6][i_vh]->format(2,"");
+  //TString fac_hgg = *bkgrate[6][i_hgg]->format(2,"");
+  //TString fac_dy  = *bkgrate[6][i_dy]->format(2,"");
+  //TString fac_gg  = *bkgrate[6][i_gg]->format(2,"");
+  //TString fac_qcd = *bkgrate[6][i_qcd]->format(2,""); 
+  //TString fac_gj  = *bkgrate[6][i_gj]->format(2,"");
+  //TString fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
+  //TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
+  //TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
+  //TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
+  //TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
+  //TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
+
+  TString fac_vh  = "";
+  TString fac_hgg = "";
+  TString fac_dy  = "";
+  TString fac_gg  = "";
+  TString fac_qcd = "";
+  TString fac_gj  = "";
+  TString fac_vbf = "";
+  TString fac_tth = "";
+  TString fac_tgj = "";
+  TString fac_ttgj= "";
+  TString fac_wg  = "";
+  TString fac_zg  = "";
+
+  if (bkgrates[3][i_vh] >= 1)   fac_vh  = *bkgrate[6][i_vh]->format(2,"");
+  else fac_vh = *bkgrate[7][i_vh]->format(2,"");
+
+  if (bkgrates[3][i_hgg] >= 1)  fac_hgg = *bkgrate[6][i_hgg]->format(2,"");
+  else fac_hgg = *bkgrate[7][i_hgg]->format(2,"");
+
+  if (bkgrates[3][i_dy] >= 1)   fac_dy  = *bkgrate[6][i_dy]->format(2,"");
+  else fac_dy = *bkgrate[7][i_dy]->format(2,"");
+
+  if (bkgrates[3][i_gg] >= 1)   fac_gg  = *bkgrate[6][i_gg]->format(2,"");
+  else fac_gg = *bkgrate[7][i_gg]->format(2,"");
+
+  if (bkgrates[3][i_qcd] >= 1)  fac_qcd = *bkgrate[6][i_qcd]->format(2,""); 
+  else fac_qcd = *bkgrate[7][i_qcd]->format(2,"");
+
+  if (bkgrates[3][i_gj] >= 1)   fac_gj  = *bkgrate[6][i_gj]->format(2,"");
+  else fac_gj = *bkgrate[7][i_gj]->format(2,"");
+
+  if (bkgrates[3][i_vbf] >= 1)  fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
+  else fac_vbf = *bkgrate[7][i_vbf]->format(2,"");
+
+  if (bkgrates[3][i_tth] >= 1)  fac_tth = *bkgrate[6][i_tth]->format(2,"");
+  else fac_tth = *bkgrate[7][i_tth]->format(2,"");
+
+  if (bkgrates[3][i_tgj] >= 1)  fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
+  else fac_tgj = *bkgrate[7][i_tgj]->format(2,"");
+
+  if (bkgrates[3][i_ttgj] >= 1) fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
+  else fac_ttgj = *bkgrate[7][i_ttgj]->format(2,"");
+
+  if (bkgrates[3][i_wg] >= 1)   fac_wg  = *bkgrate[6][i_wg]->format(2,"");
+  else fac_wg = *bkgrate[7][i_wg]->format(2,"");
+
+  if (bkgrates[3][i_zg] >= 1)   fac_zg  = *bkgrate[6][i_zg]->format(2,"");
+  else fac_zg = *bkgrate[7][i_zg]->format(2,"");
+
+
+  //TString fraction = ""; 
+  //for (UInt_t mc; mc < fNBkg; mc++){
+  //  if (bkgrates[3][mc] >= 1 ) fraction = *bkgrate[6][mc]->format(2,"");
+  //  else fraction = *bkgrate[7][mc]->format(2,"");
+
+  //  if (mc == i_vh )  fac_vh  = fraction; 
+  //  if (mc == i_hgg ) fac_hgg = fraction; 
+  //  if (mc == i_dy )  fac_dy  = fraction; 
+  //  if (mc == i_gg )  fac_gg  = fraction; 
+  //  if (mc == i_qcd ) fac_qcd = fraction; 
+  //  if (mc == i_gj )  fac_gj  = fraction; 
+  //  if (mc == i_vbf ) fac_vbf = fraction; 
+  //  if (mc == i_tth ) fac_tth = fraction; 
+  //  if (mc == i_tgj ) fac_tgj = fraction; 
+  //  if (mc == i_ttgj) fac_ttgj= fraction; 
+  //  if (mc == i_wg )  fac_wg  = fraction; 
+  //  if (mc == i_zg )  fac_zg  = fraction; 
+  //
+  //  std::cout << "fraction = " << fraction.Data() << std::endl;
+  //}
+
+  //  std::cout << "fraction2 = " << fraction.Data() << std::endl;
  
   DblVec N_A,N_B,mult; // N_C,mult;
   N_A.resize(fNBkg);
