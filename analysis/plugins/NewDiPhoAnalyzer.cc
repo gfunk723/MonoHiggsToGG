@@ -24,7 +24,7 @@
 #include "flashgg/DataFormats/interface/Electron.h"
 #include "flashgg/DataFormats/interface/Muon.h"
 #include "flashgg/DataFormats/interface/Jet.h"
-
+#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 #include "flashgg/Taggers/interface/LeptonSelection.h"
 
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -355,11 +355,11 @@ private:
   float applyEnergySmearing(float pt, float sceta,float r9, int run);
   float applyEnergyScaling(int sampleID, float pt, float sceta,float r9, int run);
   bool geometrical_acceptance(float eta1, float eta2);
-
+  double applyJetCorrection(const flashgg::Jet &y);
   int sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr );
 
   std::vector<edm::EDGetTokenT<View<flashgg::Jet> > > tokenJets_;
-  
+
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
   EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_; 
@@ -375,7 +375,8 @@ private:
 
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlagsToken_;
-
+  const reco::JetCorrector* jec_cor_;
+  EDGetTokenT<reco::JetCorrector> mJetCorrector;
   string bTag_;    
 
   typedef std::vector<edm::Handle<edm::View<flashgg::Jet> > > JetCollectionVector;
@@ -462,7 +463,8 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
   //METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag", InputTag( "slimmedMETs::FLASHggMicroAOD" ) ) ) ),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
-  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) )  
+  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) ),
+  mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
 { 
   numPassingCuts.resize(numCuts);
   for (int i=0; i<numCuts; i++) numPassingCuts[i]=0;
@@ -574,7 +576,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   Handle<View<flashgg::Electron> > theElectrons;  
   iEvent.getByToken( electronToken_, theElectrons );    
 
-
+  edm::Handle<reco::JetCorrector> corrector;
+  iEvent.getByToken(mJetCorrector, corrector);
+  jec_cor_ = corrector.product();
+       
   // --------------------------------------------------
   // std::cout<<"------------------------------ "<<diPhotons->size()<<" ------------------------------ "<<std::endl;
 
@@ -1114,8 +1119,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      }
 		    }
 	
-		    std::cout << "candIndex = " << candIndex << std::endl; 	   
- 
 		    if (candIndex<9999) {
 		      Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( candIndex );
 		 
@@ -1592,25 +1595,25 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int CHmultJet4 = -999;
 		      int NEmultJet4 = -999;
 
-                      std::cout << "made it " << std::endl;
 		      unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
-                      std::cout << "jetCollIndex " << jetCollectionIndex << std::endl;
 		      std::vector<edm::Ptr<flashgg::Jet> > tempJets(Jets[jetCollectionIndex]->size());
 
-                      std::cout << "made it " << std::endl;
-		      // make sure jets are sorted by pT
+		      // make sure jets are sorted by pT after applying JEC
 		      for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
+			//apply JEC
+			Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
+			double scale = applyJetCorrection(*thejet);
+			thejet->correctedJet("Uncorrected").setP4( scale * thejet->correctedJet("Uncorrected").p4() );
 			tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 		      }
-		      std::sort(tempJets.begin(),tempJets.end(),SortByJetPT);
 
-		      std::cout << " num Jets = " << Jets[jetCollectionIndex]->size() << std::endl;
+		      std::sort(tempJets.begin(),tempJets.end(),SortByJetPT);
 
 		      // loop over sorted jets
 		      unsigned int jetIndex = 0;
 		      for (auto&& thejet : tempJets){
 			jetIndex++;
-			//std::cout << "jet pt =  " << thejet->pt() << std::endl;
+		
 			// jet selection: kinematics and id - hardcoded
 			if( fabs( thejet->eta() ) > 4.7 ) continue;// Margaret changed to include all jets
 			if( thejet->pt() < 30. ) continue;  
@@ -2036,6 +2039,25 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   // delete
   //delete lazyToolnoZS;
 }
+
+double NewDiPhoAnalyzer::applyJetCorrection(const flashgg::Jet &y)
+    {
+      double jec_adjust = 1.;
+      double jec = jec_cor_->correction( y.correctedJet("Uncorrected") );
+      double oldjec = (y.energy()/y.correctedJet("Uncorrected").energy());
+     
+      //	std::cout << " DOING JEC! We get this jec from the corrector: " << jec << std::endl;
+      //	std::cout << "    ... previous jec was: " << oldjec << std::endl;
+      
+      jec_adjust = jec/oldjec;
+            
+      //float scale = jec_adjust;
+      //   std::cout << ": Jet has pt= " << y.pt() << " eta=" << y.eta()
+      //		<< " and we apply a multiplicative correction of " << scale << std::endl;
+       return jec_adjust;
+    }
+
+
 
 int NewDiPhoAnalyzer::sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr ) {
 
@@ -2811,7 +2833,7 @@ bool NewDiPhoAnalyzer::testPhotonIsolation(int passSieie, int passCHiso, int pas
 
 
 bool NewDiPhoAnalyzer::isGammaSelected( float rho, float pt, float sceta, float r9, float chiso, float nhiso, float phoiso, float hoe, float sieie, bool passElectronVeto) {
-  std::cout<<rho<<" "<<pt<<" "<<sceta<<" "<<r9<<" "<<chiso<<" "<<nhiso<<" "<<phoiso<<" "<<hoe<<" "<<sieie<<" "<<passElectronVeto<<std::endl;
+  //std::cout<<rho<<" "<<pt<<" "<<sceta<<" "<<r9<<" "<<chiso<<" "<<nhiso<<" "<<phoiso<<" "<<hoe<<" "<<sieie<<" "<<passElectronVeto<<std::endl;
   // classes: 0 = EB highR9, 1 = EB low R9, 2 = EE high R9, 3 = EE lowR9
   int etaclass = fabs(sceta)>1.5;
   int r9class  = r9<0.94;                   

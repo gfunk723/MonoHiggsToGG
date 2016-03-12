@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = True; 
+isMC = False; 
 is76X = False; #CANNOT RUN ON 76X in 74X
 isFLASHgg_1_1_0 = False;
 ######################
@@ -48,14 +48,14 @@ else:
     print "Using name RECO"
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 2000 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 5000 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
-	"/store/group/soffi/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162339/0000/myMicroAODOutputFile_1.root",
+	#"/store/group/soffi/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162339/0000/myMicroAODOutputFile_1.root",
 	#"/store/group/soffi/QCD_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_163000/0000/myMicroAODOutputFile_1.root", 
 	#"/store/group/soffi/GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162546/0000/myMicroAODOutputFile_1.root", 
-	#"/store/group/soffi/DoubleEG/RunIISpring15-ReReco74X-1_1_0-25ns-1_1_0-v0-Run2015D-04Dec2015-v2/160211_153452/0000/myMicroAODOutputFile_1.root", 
+	"/store/group/soffi/DoubleEG/RunIISpring15-ReReco74X-1_1_0-25ns-1_1_0-v0-Run2015D-04Dec2015-v2/160211_153452/0000/myMicroAODOutputFile_1.root", 
 	#"/store/group/soffi/DoubleEG/RunIISpring15-ReReco74X-1_1_0-25ns-1_1_0-v0-Run2015D-04Dec2015-v2/160211_153452/0000/myMicroAODOutputFile_10.root",
 	#"/store/group/soffi/DoubleEG/RunIISpring15-ReReco74X-1_1_0-25ns-1_1_0-v0-Run2015D-04Dec2015-v2/160211_153452/0000/myMicroAODOutputFile_100.root",
 	#"/store/group/soffi/DoubleEG/RunIISpring15-ReReco74X-1_1_0-25ns-1_1_0-v0-Run2015D-04Dec2015-v2/160211_153452/0000/myMicroAODOutputFile_101.root", 
@@ -122,7 +122,8 @@ if usePrivateSQlite:
         era += "_MC"
     else :
         era += "_DATA"
-    dBFile = os.path.expandvars("/afs/cern.ch/user/m/mzientek/public/"+era+".db")
+    #dBFile = os.path.expandvars(era+".db")
+    dBFile = os.path.expandvars("/afs/cern.ch/user/m/mzientek/public/"+era+".db") 
 
     if usePrivateSQlite:
         process.jec = cms.ESSource("PoolDBESSource",
@@ -152,39 +153,48 @@ process.flashggUnpackedJets = cms.EDProducer("FlashggVectorVectorJetUnpacker",
                                              NCollections = cms.uint32(maxJetCollections) 
                                              )               
 
-
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-if isMC:
-    JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
-else :
-    if not applyL2L3Residuals : 
-        JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
-    else : 
-        JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
 
-from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
-    src = cms.InputTag("flashggUnpackedJets"),
-    levels = JECLevels,
-    payload = 'AK4PFchs' 
-)
+process.ak4PFCHSL1FastjetCorrector = cms.EDProducer(
+    'L1FastjetCorrectorProducer',
+    level       = cms.string('L1FastJet'),
+    algorithm   = cms.string('AK4PFchs'),
+    srcRho      = cms.InputTag( 'fixedGridRhoFastjetAll' )
+    )
+process.ak4PFCHSL2RelativeCorrector = cms.EDProducer(
+    'LXXXCorrectorProducer',
+    level     = cms.string('L2Relative'),
+    algorithm = cms.string('AK4PFchs')
+    )
+process.ak4PFCHSL3AbsoluteCorrector = cms.EDProducer(
+    'LXXXCorrectorProducer',
+    level     = cms.string('L3Absolute'),
+    algorithm = cms.string('AK4PFchs')
+    )
+process.ak4PFCHSL1FastL2L3Corrector = cms.EDProducer(
+    'ChainedJetCorrectorProducer',
+    correctors = cms.VInputTag('ak4PFCHSL1FastjetCorrector','ak4PFCHSL2RelativeCorrector','ak4PFCHSL3AbsoluteCorrector')
+    )
 
-from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-process.flashggUnpackedJetsRecorrected = patJetsUpdated.clone(
-    jetSource = cms.InputTag("flashggUnpackedJets"),
-    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-)
-
-
+process.ak4PFCHSResidualCorrector = cms.EDProducer(
+    'LXXXCorrectorProducer',
+    level     = cms.string('L2L3Residual'),
+    algorithm = cms.string('AK4PFchs')
+    )
+process.ak4PFCHSL1FastL2L3ResidualCorrector = cms.EDProducer(
+    'ChainedJetCorrectorProducer',
+    correctors = cms.VInputTag('ak4PFCHSL1FastjetCorrector','ak4PFCHSL2RelativeCorrector','ak4PFCHSL3AbsoluteCorrector','ak4PFCHSResidualCorrector')
+    )
 UnpackedJetCollectionVInputTag = cms.VInputTag()       
 for i in range(0,maxJetCollections):    
-    UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJetsRecorrected',str(i)))  
+    UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJets',str(i)))  
 #===========================================================================================================================#
 
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
+				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),#
+                                  JetCorrectorTag = cms.InputTag("ak4PFCHSL1FastjetCorrector"),
                                   inputTagJets= UnpackedJetCollectionVInputTag,            
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),    
                                   MuonTag=cms.InputTag('flashggSelectedMuons'),            
@@ -193,10 +203,10 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo = cms.InputTag("generator"),
-                                  dopureweight = cms.untracked.int32(1),
+                                  dopureweight = cms.untracked.int32(0),
                                   bits         = cms.InputTag('TriggerResults::HLT'),
                                   flags        = cms.InputTag(flag),
-				  sampleIndex  = cms.untracked.int32(100),
+				  sampleIndex  = cms.untracked.int32(10001),
                                   puWFileName  = cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root'),  
                                   xsec         = cms.untracked.double(1), #pb
                                   kfac         = cms.untracked.double(1.),
@@ -204,4 +214,8 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   )
 
 #process.p = cms.Path( process.diPhoAna )     
-process.p = cms.Path(process.flashggUnpackedJets*process.diPhoAna )     
+if (isMC==True):
+    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSL1FastL2L3Corrector*process.diPhoAna )     
+if (isMC==False):
+    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSResidualCorrector*process.ak4PFCHSL1FastL2L3ResidualCorrector*process.diPhoAna )     
+

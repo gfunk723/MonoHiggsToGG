@@ -6,7 +6,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
 isMC = False;
-isFLASHgg_1_1_0 = True;
+is76X = False; #CANNOT RUN ON 76X in 74X
+isFLASHgg_1_1_0 = False;
 ######################
 
 process = cms.Process("diPhoAna")
@@ -16,26 +17,35 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag.globaltag = 'MCRUN2_74_V9A' 		#50ns
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All' 	#Phys14
 
-if ((isMC==False)):
-    process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
-    print "74X_dataRun2_Prompt_v2"
-elif (isMC and isFLASHgg_1_1_0):
-    process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '')
-    print "74X_mcRun2_asymptotic_v2"
+# Pick up GlobalTag
+if (isMC):
+    if (is76X):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '') 
+        print "76X_mcRun2_asymptotic_v12"
+    else:
+        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '') 
+        print "74X_mcRun2_asymptotic_v2"
+         
 else:
-    process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
-    print "MCRUN2_74_V9"
+    if (is76X):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '') 
+        print "76X_dataRun2_v15"
+    else:
+        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '') 
+        print "74X_dataRun2_Prompt_v2"
 
-if (isMC==False and isFLASHgg_1_1_0):
-    flag = 'TriggerResults::RECO'
-    print "Using name RECO"
-else:
+
+if (isMC and isFLASHgg_1_1_0):
     flag = 'TriggerResults::PAT'
     print "Using name PAT"
+else: 
+    flag = 'TriggerResults::RECO'
+    print "Using name RECO"
 
 
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 1000 )
@@ -77,7 +87,8 @@ if usePrivateSQlite:
         era += "_MC"
     else :
         era += "_DATA"
-    dBFile = os.path.expandvars("/afs/cern.ch/user/m/mzientek/public/"+era+".db")
+    #dBFile = os.path.expandvars(era+".db")
+    dBFile = os.path.expandvars("/afs/cern.ch/user/m/mzientek/public/"+era+".db") 
 
     if usePrivateSQlite:
         process.jec = cms.ESSource("PoolDBESSource",
@@ -107,42 +118,52 @@ process.flashggUnpackedJets = cms.EDProducer("FlashggVectorVectorJetUnpacker",
                                              NCollections = cms.uint32(maxJetCollections) 
                                              )               
 
-
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-if isMC:
-    JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
-else :
-    if not applyL2L3Residuals : 
-        JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute']
-    else : 
-        JECLevels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
 
-from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
-    src = cms.InputTag("flashggUnpackedJets"),
-    levels = JECLevels,
-    payload = 'AK4PFchs' 
-)
+process.ak4PFCHSL1FastjetCorrector = cms.EDProducer(
+    'L1FastjetCorrectorProducer',
+    level       = cms.string('L1FastJet'),
+    algorithm   = cms.string('AK4PFchs'),
+    srcRho      = cms.InputTag( 'fixedGridRhoFastjetAll' )
+    )
+process.ak4PFCHSL2RelativeCorrector = cms.EDProducer(
+    'LXXXCorrectorProducer',
+    level     = cms.string('L2Relative'),
+    algorithm = cms.string('AK4PFchs')
+    )
+process.ak4PFCHSL3AbsoluteCorrector = cms.EDProducer(
+    'LXXXCorrectorProducer',
+    level     = cms.string('L3Absolute'),
+    algorithm = cms.string('AK4PFchs')
+    )
+process.ak4PFCHSL1FastL2L3Corrector = cms.EDProducer(
+    'ChainedJetCorrectorProducer',
+    correctors = cms.VInputTag('ak4PFCHSL1FastjetCorrector','ak4PFCHSL2RelativeCorrector','ak4PFCHSL3AbsoluteCorrector')
+    )
 
-from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-process.flashggUnpackedJetsRecorrected = patJetsUpdated.clone(
-    jetSource = cms.InputTag("flashggUnpackedJets"),
-    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-)
-
-
+process.ak4PFCHSResidualCorrector = cms.EDProducer(
+    'LXXXCorrectorProducer',
+    level     = cms.string('L2L3Residual'),
+    algorithm = cms.string('AK4PFchs')
+    )
+process.ak4PFCHSL1FastL2L3ResidualCorrector = cms.EDProducer(
+    'ChainedJetCorrectorProducer',
+    correctors = cms.VInputTag('ak4PFCHSL1FastjetCorrector','ak4PFCHSL2RelativeCorrector','ak4PFCHSL3AbsoluteCorrector','ak4PFCHSResidualCorrector')
+    )
 UnpackedJetCollectionVInputTag = cms.VInputTag()       
 for i in range(0,maxJetCollections):    
-    UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJetsRecorrected',str(i)))  
+    UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJets',str(i)))  
 #===========================================================================================================================#
+
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
+                                  JetCorrectorTag = cms.InputTag("ak4PFCHSL1FastjetCorrector"),
                                   inputTagJets= UnpackedJetCollectionVInputTag,  
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),
                                   MuonTag=cms.InputTag('flashggSelectedMuons'), 
-                                  #bTag = cms.untracked.string(flashggBTag),      
+                                  bTag = cms.untracked.string(flashggBTag),      
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),   
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
@@ -157,5 +178,11 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   sumDataset   = SDS,
                                   )
 
-process.p = cms.Path(process.flashggUnpackedJets*process.diPhoAna)
+#process.p = cms.Path(process.diPhoAna)
+#process.p = cms.Path(process.flashggUnpackedJets*process.diPhoAna)
+
+if (isMC==True):
+    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSL1FastL2L3Corrector*process.diPhoAna )     
+if (isMC==False):
+    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSResidualCorrector*process.ak4PFCHSL1FastL2L3ResidualCorrector*process.diPhoAna )     
 
