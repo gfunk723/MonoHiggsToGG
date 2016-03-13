@@ -101,7 +101,6 @@ ABCDMethod::~ABCDMethod(){
     delete fOutBkgTH2DHists[th2d];
     delete fOutSelBkgTH2DHists[th2d];
   }
-
   for (UInt_t cat = 0; cat < 7; cat++){
     delete fRooData[cat][0];
     for (UInt_t mc = 0; mc < fNBkg+2; mc++){ delete fRooBkg[cat][mc]; }
@@ -288,6 +287,28 @@ void ABCDMethod::DoAnalysis(){
   //  std::cout << "bin Ymin = " << min_y[cat] << std::endl;
   //  std::cout << "bin Ymax = " << max_y[cat] << std::endl;
   //}
+
+  // Get the number of entries in the C region
+  BkgInC.resize(fNBkg);
+  BkgInCErr.resize(fNBkg);
+  BkgInCWgt.resize(fNBkg);
+  BkgInCWgtErr.resize(fNBkg);
+ 
+  DblVec BkgInCWgt1;
+  DblVec BkgInCWgtErr1; 
+  BkgInCWgt1.resize(fNBkg);
+  BkgInCWgtErr1.resize(fNBkg);
+
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    BkgInC[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[1][mc], BkgInCErr[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
+    BkgInCWgt1[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[0][mc], BkgInCWgtErr1[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
+    if (BkgInC[mc] > 0) BkgInCWgt[mc] = BkgInCWgt1[mc]/BkgInC[mc];
+    else BkgInCWgt[mc] = 0;
+    //std::cout << "#inCent = " << BkgInC[mc] << std::endl;
+    //std::cout << "#inCtot = " << BkgInCWgt1[mc] << std::endl;
+    //std::cout << "#inCwgt = " << BkgInCWgt[mc] << std::endl;
+  }
+
  
   for (UInt_t cat = 0; cat < fNCat; cat++){ // loop over each category 
     Data_Int[cat].resize(1); 		// only one group for data since it is lumped together
@@ -694,7 +715,7 @@ void ABCDMethod::SetRooVariables(){
         fRooBkg[cat][mc] = new RooRealVar(name,name,fCorrBkg[mc]);
       } 
       if (cat == 6){
-        multBkg = fBkg_Int[0][mc]/fBkg_Int[1][mc];
+        multBkg = BkgInCWgt[mc]*fBkg_Int[0][mc]/fBkg_Int[1][mc];
         fRooBkg[cat][mc] = new RooRealVar(name,name,multBkg);
       } 
       if (cat == 7){
@@ -755,97 +776,24 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   TStrVec N_C;
   N_C.resize(fNBkg);
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    if (bkgrates[3][mc] >= 1) N_C[mc] = *bkgrate[3][mc]->format(2,"");
-    else N_C[mc] = "1";
+    N_C[mc] = Form("%i",(Int_t)BkgInC[mc]);
+    //N_C[mc] = *bkgrate[3][mc]->format(2,"");
     //std::cout << fBkgNames[mc] << ": C = " << N_C[mc] <<std::endl;
   }
 
-  //TString fac_vh  = *bkgrate[6][i_vh]->format(2,"");
-  //TString fac_hgg = *bkgrate[6][i_hgg]->format(2,"");
-  //TString fac_dy  = *bkgrate[6][i_dy]->format(2,"");
-  //TString fac_gg  = *bkgrate[6][i_gg]->format(2,"");
-  //TString fac_qcd = *bkgrate[6][i_qcd]->format(2,""); 
-  //TString fac_gj  = *bkgrate[6][i_gj]->format(2,"");
-  //TString fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
-  //TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
-  //TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
-  //TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
-  //TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
-  //TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
+  TString fac_vh  = *bkgrate[6][i_vh]->format(2,"");
+  TString fac_hgg = *bkgrate[6][i_hgg]->format(2,"");
+  TString fac_dy  = *bkgrate[6][i_dy]->format(2,"");
+  TString fac_gg  = *bkgrate[6][i_gg]->format(2,"");
+  TString fac_qcd = *bkgrate[6][i_qcd]->format(2,""); 
+  TString fac_gj  = *bkgrate[6][i_gj]->format(2,"");
+  TString fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
+  TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
+  TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
+  TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
+  TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
+  TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
 
-  TString fac_vh  = "";
-  TString fac_hgg = "";
-  TString fac_dy  = "";
-  TString fac_gg  = "";
-  TString fac_qcd = "";
-  TString fac_gj  = "";
-  TString fac_vbf = "";
-  TString fac_tth = "";
-  TString fac_tgj = "";
-  TString fac_ttgj= "";
-  TString fac_wg  = "";
-  TString fac_zg  = "";
-
-  if (bkgrates[3][i_vh] >= 1)   fac_vh  = *bkgrate[6][i_vh]->format(2,"");
-  else fac_vh = *bkgrate[7][i_vh]->format(2,"");
-
-  if (bkgrates[3][i_hgg] >= 1)  fac_hgg = *bkgrate[6][i_hgg]->format(2,"");
-  else fac_hgg = *bkgrate[7][i_hgg]->format(2,"");
-
-  if (bkgrates[3][i_dy] >= 1)   fac_dy  = *bkgrate[6][i_dy]->format(2,"");
-  else fac_dy = *bkgrate[7][i_dy]->format(2,"");
-
-  if (bkgrates[3][i_gg] >= 1)   fac_gg  = *bkgrate[6][i_gg]->format(2,"");
-  else fac_gg = *bkgrate[7][i_gg]->format(2,"");
-
-  if (bkgrates[3][i_qcd] >= 1)  fac_qcd = *bkgrate[6][i_qcd]->format(2,""); 
-  else fac_qcd = *bkgrate[7][i_qcd]->format(2,"");
-
-  if (bkgrates[3][i_gj] >= 1)   fac_gj  = *bkgrate[6][i_gj]->format(2,"");
-  else fac_gj = *bkgrate[7][i_gj]->format(2,"");
-
-  if (bkgrates[3][i_vbf] >= 1)  fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
-  else fac_vbf = *bkgrate[7][i_vbf]->format(2,"");
-
-  if (bkgrates[3][i_tth] >= 1)  fac_tth = *bkgrate[6][i_tth]->format(2,"");
-  else fac_tth = *bkgrate[7][i_tth]->format(2,"");
-
-  if (bkgrates[3][i_tgj] >= 1)  fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
-  else fac_tgj = *bkgrate[7][i_tgj]->format(2,"");
-
-  if (bkgrates[3][i_ttgj] >= 1) fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
-  else fac_ttgj = *bkgrate[7][i_ttgj]->format(2,"");
-
-  if (bkgrates[3][i_wg] >= 1)   fac_wg  = *bkgrate[6][i_wg]->format(2,"");
-  else fac_wg = *bkgrate[7][i_wg]->format(2,"");
-
-  if (bkgrates[3][i_zg] >= 1)   fac_zg  = *bkgrate[6][i_zg]->format(2,"");
-  else fac_zg = *bkgrate[7][i_zg]->format(2,"");
-
-
-  //TString fraction = ""; 
-  //for (UInt_t mc; mc < fNBkg; mc++){
-  //  if (bkgrates[3][mc] >= 1 ) fraction = *bkgrate[6][mc]->format(2,"");
-  //  else fraction = *bkgrate[7][mc]->format(2,"");
-
-  //  if (mc == i_vh )  fac_vh  = fraction; 
-  //  if (mc == i_hgg ) fac_hgg = fraction; 
-  //  if (mc == i_dy )  fac_dy  = fraction; 
-  //  if (mc == i_gg )  fac_gg  = fraction; 
-  //  if (mc == i_qcd ) fac_qcd = fraction; 
-  //  if (mc == i_gj )  fac_gj  = fraction; 
-  //  if (mc == i_vbf ) fac_vbf = fraction; 
-  //  if (mc == i_tth ) fac_tth = fraction; 
-  //  if (mc == i_tgj ) fac_tgj = fraction; 
-  //  if (mc == i_ttgj) fac_ttgj= fraction; 
-  //  if (mc == i_wg )  fac_wg  = fraction; 
-  //  if (mc == i_zg )  fac_zg  = fraction; 
-  //
-  //  std::cout << "fraction = " << fraction.Data() << std::endl;
-  //}
-
-  //  std::cout << "fraction2 = " << fraction.Data() << std::endl;
- 
   DblVec N_A,N_B,mult; // N_C,mult;
   N_A.resize(fNBkg);
   N_B.resize(fNBkg);
@@ -854,7 +802,10 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   for (UInt_t mc=0; mc < fNBkg; mc++){
     N_A[mc] = bkgrates[0][mc];
     N_B[mc] = bkgrates[1][mc];
-    mult[mc]= N_A[mc]/N_B[mc];
+    mult[mc]= BkgInCWgt[mc]*N_A[mc]/N_B[mc];
+    //std::cout << fBkgNames[mc].Data() <<" mult = " << mult[mc] << std::endl;
+    //std::cout << fBkgNames[mc].Data() <<" fac  = " << *bkgrate[6][mc]->format(2,"") << std::endl;
+    //std::cout << fBkgNames[mc].Data() <<" wgt  = " << BkgInCWgt[mc] << std::endl;
     //std::cout << fBkgNames[mc].Data() << " nA = " << N_A[mc] << " nB = " << N_B[mc] << " nA/nB = " << mult[mc] << std::endl;
   }
 
@@ -1020,6 +971,7 @@ void ABCDMethod::InitVariables(){
 
   // 2D histograms of interest
   fTH2DNames.push_back("t1pfmet_mgg");
+  fTH2DNames.push_back("t1pfmet_mgg_unwgt");
 
   // UNBLINDED PLOT TO GET INCLUSIVE NUMBERS:
   //fTH2DNames.push_back("met_mgg");

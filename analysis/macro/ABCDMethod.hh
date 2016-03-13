@@ -93,6 +93,11 @@ private:
   DblVecVec 	Data_Int;
   DblVecVec 	Data_IntErr; 
 
+  DblVec	BkgInC;
+  DblVec	BkgInCErr;
+  DblVec	BkgInCWgt;
+  DblVec	BkgInCWgtErr;
+
   DblVecVec 	fSig_Int;
   DblVecVec 	fSig_IntErr;
   DblVecVec 	fBkg_Int;

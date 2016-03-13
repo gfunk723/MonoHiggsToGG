@@ -1,7 +1,8 @@
 #! /bin/sh
 
-inputDir="data/25ns_v1-1-0_ReReco_wAllJetInfo/"
-outputDir="diPhoPlots/25ns_v1-1-0_ReReco_wAllJetInfo/Eff/"
+#inputDir="data/25ns_v1-1-0_ReReco_wAllJetInfo/"
+inputDir="data/25ns_v74X_v0/"
+outputDir="diPhoPlots/25ns_v74X_v0/Eff/"
 ftype="png"
 
 # pick up MC metCorr

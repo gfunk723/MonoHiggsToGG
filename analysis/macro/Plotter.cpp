@@ -285,6 +285,7 @@ void Plotter::DoPlots(int prompt){
       //if (true){ // Orignal Selection
       if (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90){  // OptSel1
       //if (pt1 > 0.65*mgg && pt2 > 0.25*mgg && ptgg > 50){ // OptSel2
+      //if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){ // OptSel2_woPtgg
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
 
@@ -693,6 +694,7 @@ void Plotter::DoPlots(int prompt){
 	  }
 	  if ( !isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass  ){
 	    fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
+	    fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
 	    fTH1DMap["metCorr_forShape"]->Fill(t1pfmetCorr,Weight);
 	    fTH1DMap["mgg_forShape"]->Fill(mgg,Weight);
 	    fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
@@ -709,6 +711,7 @@ void Plotter::DoPlots(int prompt){
 	    if (doBlind){
 	      if (outsideMgg){
 	        fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
+	        fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
 		fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
 		if (t1pfmetCorr > 80) fTH1DMap["mgg_IsolateALLmet80"]->Fill(mgg,Weight);
 	      }
@@ -721,6 +724,7 @@ void Plotter::DoPlots(int prompt){
 	    }
 	    else{
 	      fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
+	      fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
 	      fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
 	      fTH1DMap["ptgg_IsolateALL"]->Fill(ptgg,Weight);
 	      fTH1DMap["nvtx_IsolateALL"]->Fill(nvtx,Weight);
@@ -1241,8 +1245,11 @@ void Plotter::SetUpPlots(){
   fTH2DMap["t1pfmet_PU"]	= Plotter::MakeTH2DPlot("t1pfmet_PU","",60,50.,300.,100,0.,1000.,"nvtx","E_{T}^{miss} (GeV)");
   fTH2DMap["t1pfmet_ptgg"]	= Plotter::MakeTH2DPlot("t1pfmet_ptgg","",90,0.,900.,90,0.,900.,"p_{T,#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   fTH2DMap["t1pfmet_mgg"]	= Plotter::MakeTH2DPlot("t1pfmet_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+  fTH2DMap["t1pfmet_mgg_unwgt"]	= Plotter::MakeTH2DPlot("t1pfmet_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   fTH2DMap["t1pfmet_dphi"]	= Plotter::MakeTH2DPlot("t1pfmet_dphi","",20,-4.,4.,25,0.,250.,"#Delta#phi(#gamma#gamma,E_{T}^{miss})","E_{T}^{miss} (GeV)");
   fTH2DMap["ptzp_njets"]	= Plotter::MakeTH2DPlot("ptzp_njets","",10,0.,10.,100,0.,500.,"Num Jets","Z' p_{T} (GeV)");
+
+  
 
 }// end Plotter::SetUpPlots
 
