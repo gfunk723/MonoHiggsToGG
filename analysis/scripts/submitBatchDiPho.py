@@ -43,8 +43,8 @@ def main():
     xsection = args[4]
     kfactor = args[5]
 
-    inputlist="lists_25ns_v1_1_0_wMETsys/"+dataset+".list"
-    inputweights="lists_25ns_v1_1_0_wMETsys/"+dataset+".weight"
+    inputlist="lists_25ns_v1_1_0_wVtx0/"+dataset+".list"
+    inputweights="lists_25ns_v1_1_0_wVtx0/"+dataset+".weight"
     output = dataset
 
     print "the outputs will be in the directory: "+opt.prefix
