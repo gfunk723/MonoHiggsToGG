@@ -13,6 +13,21 @@ python extractJSONS.py -i datasets/datasets_74X_sig_data_vtx0.json	-o 2HDM_MZP14
 python extractJSONS.py -i datasets/datasets_74X_sig_data_vtx0.json	-o 2HDM_MZP1700		-d lists_25ns_v1_1_0_wVtx0/MC
 python extractJSONS.py -i datasets/datasets_74X_sig_data_vtx0.json	-o 2HDM_MZP2500		-d lists_25ns_v1_1_0_wVtx0/MC
 
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o TTGJets  		-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o TGJets 		-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o WGToLNuG 		-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o ZGTo2LG   		-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o DYJetsToLL		-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o ttHJetToGG_M125	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o VBFHToGG_M-125	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o DiPhoton		-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o QCD_Pt-30to40	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o QCD_Pt-40toInf	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o QCD_Pt-30toInf	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o GJet_Pt-20to40	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o GJet_Pt-40toInf	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o GluGluHToGG_M-125	-d lists_25ns_v1_1_0_wVtx0/MC
+python extractJSONS.py -i datasets/datasets_74X_bkgs_vtx0.json		-o VHToGG_M125		-d lists_25ns_v1_1_0_wVtx0/MC
 
 
 

@@ -20,10 +20,10 @@
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py QCD_Pt-30toInf     	1  4  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 259296    1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py QCD_Pt-40toInf     	1  5  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 108240    1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DYJetsToLL			1 12  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 6025.2    1 
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GluGluHToGG		1 10  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.08828   1 # 44.14 pb xsec
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VH				1 11  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.004246  1 # 2.123 pb xsec
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ttHJetToGG			1 21  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.0010142 1 # 0.5071pb xsec
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VBFHToGG			1 22  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.007564  1 # 3.782 pb xsec
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GluGluHToGG		1 10  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.0952946   1 # 41.98  pb xsec
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VH				1 11  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.002050718 1 # 0.9034 pb xsec
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ttHJetToGG			1 21  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.001132049 1 # 0.4987 pb xsec
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VBFHToGG			1 22  /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.00890975  1 # 3.925  pb xsec
 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZP600		1 100 /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.001 1 #0.00009338  1 #46.69fb xsec * 0.002br
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZP800		1 101 /afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root 0.001 1 #0.00010348  1 #51.74fb xsec * 0.002br
