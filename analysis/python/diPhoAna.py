@@ -48,7 +48,7 @@ else:
     print "Using name RECO"
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 5000 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 50000 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
@@ -205,7 +205,7 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   bTag = cms.untracked.string(flashggBTag),                
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),    
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons0vtx'),
-                                  #DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons'),
+                                  DiPhotonBDTVtxTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo = cms.InputTag("generator"),
                                   dopureweight = cms.untracked.int32(1),

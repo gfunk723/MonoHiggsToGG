@@ -300,6 +300,13 @@ struct diphoTree_struc_ {
   float phiZ;
   float mva1;
   float mva2;
+
+  float BDTvtxZ;
+  float BDTmassRaw;
+  float BDTptgg;
+  float BDTr91;
+  float BDTr92;
+
 };
 
 
@@ -362,6 +369,7 @@ private:
 
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
+  EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonBDTVtxToken_; 
   EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_; 
   edm::InputTag rhoFixedGrid_;
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
@@ -454,6 +462,7 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   // collections
   vertexToken_(consumes<View<reco::Vertex> >(iConfig.getUntrackedParameter<InputTag> ("VertexTag", InputTag("offlineSlimmedPrimaryVertices")))),
   diPhotonToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonTag", InputTag("flashggDiPhotons0vtx")))),
+  diPhotonBDTVtxToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonTag", InputTag("flashggDiPhotons")))),
   PileUpToken_(consumes<View<PileupSummaryInfo> >(iConfig.getUntrackedParameter<InputTag> ("PileUpTag"))),
   genPhotonExtraToken_(mayConsume<vector<flashgg::GenPhotonExtra> >(iConfig.getParameter<InputTag>("genPhotonExtraTag"))),
   genPartToken_(consumes<View<reco::GenParticle> >(iConfig.getUntrackedParameter<InputTag> ("GenParticlesTag", InputTag("flashggPrunedGenParticles")))),
@@ -532,6 +541,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
   Handle<View<flashgg::DiPhotonCandidate> > diPhotons;
   iEvent.getByToken(diPhotonToken_,diPhotons);
+
+  Handle<View<flashgg::DiPhotonCandidate> > diPhotonsBDTVtx;
+  iEvent.getByToken(diPhotonBDTVtxToken_,diPhotonsBDTVtx);
 
   Handle<View< PileupSummaryInfo> > PileupInfos;
   iEvent.getByToken(PileUpToken_,PileupInfos);
@@ -1121,7 +1133,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	
 		    if (candIndex<9999) {
 		      Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( candIndex );
-		 
+		      Ptr<flashgg::DiPhotonCandidate> candDiphoBDTVtxPtr = diPhotonsBDTVtx->ptrAt( candIndex );
+
 		      // to be kept in the tree
 		      float ptgg, mgg;
 		      int eventClass;
@@ -1157,6 +1170,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int genZ;
 		      float ptZ, etaZ, phiZ;
 		      float mva1, mva2;
+		      float BDTvtxZ, BDTmassRaw, BDTptgg, BDTr91, BDTr92;
 
 		      // fully selected event: tree re-initialization                                                                          
 		      initTreeStructure();        
@@ -1165,7 +1179,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      t1pfmet = theMET->pt();
 		      t1pfmetPhi = theMET->phi();
 		      t1pfmetSumEt = theMET->sumEt();
-
 
 		      //add MET systematic variables Livia
 		      t1pfmetJetEnUp		= theMET->shiftedPt(pat::MET::JetEnUp);
@@ -1193,6 +1206,13 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      calomet = theMET->caloMETPt();
 		      calometPhi = theMET->caloMETPhi();
 		      calometSumEt = theMET->caloMETSumEt();
+
+		      //-------> diphotonBDTvtx system properties 
+		      BDTptgg    = candDiphoBDTVtxPtr->pt();
+		      BDTmassRaw = candDiphoBDTVtxPtr->mass();
+		      BDTr91     = candDiphoBDTVtxPtr->leadingPhoton()->full5x5_r9();
+		      BDTr92     = candDiphoBDTVtxPtr->subLeadingPhoton()->full5x5_r9();
+		      BDTvtxZ    = candDiphoBDTVtxPtr->vtx()->z();
 
 		      //-------> diphoton system properties 
 		      ptgg = candDiphoPtr->pt();
@@ -2022,6 +2042,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.phiZ = phiZ;
 		      treeDipho_.mva1 = mva1;
 		      treeDipho_.mva2 = mva2;
+
+		      treeDipho_.BDTmassRaw = BDTmassRaw;
+		      treeDipho_.BDTptgg = BDTptgg;
+		      treeDipho_.BDTr91 = BDTr91;
+		      treeDipho_.BDTr92 = BDTr92;
+		      treeDipho_.BDTvtxZ = BDTvtxZ;
 	
 		      // Filling the trees
 		      DiPhotonTree->Fill();
@@ -2339,6 +2365,13 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("phiZ",&(treeDipho_.phiZ),"phiZ/F");
   DiPhotonTree->Branch("mva1",&(treeDipho_.mva1),"mva1/F");
   DiPhotonTree->Branch("mva2",&(treeDipho_.mva2),"mva2/F");
+
+  DiPhotonTree->Branch("BDTptgg",&(treeDipho_.BDTptgg),"BDTptgg/F");
+  DiPhotonTree->Branch("BDTmassRaw",&(treeDipho_.BDTmassRaw),"BDTmassRaw/F");
+  DiPhotonTree->Branch("BDTr91",&(treeDipho_.BDTr91),"BDTr91/F");
+  DiPhotonTree->Branch("BDTr92",&(treeDipho_.BDTr92),"BDTr92/F");
+  DiPhotonTree->Branch("BDTvtxZ",&(treeDipho_.BDTvtxZ),"BDTvtxZ/F");
+
 }
 
 void NewDiPhoAnalyzer::endJob() { 
