@@ -519,7 +519,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     if (nMuons > 0 || nEle > 1) continue;
 
     // START SELECTION:
-    if (pt1>(0.65*mgg) && pt2>(0.25*mgg) && t1pfmetCorr >= 80 && ptgg>50 ){
+    if (pt1>(0.45*mgg) && pt2>(0.25*mgg) && t1pfmetCorr >= 70 && ptgg/t1pfmetCorr>0.2 ){
       // split events by eta
       EB1 = false;
       EB2 = false;

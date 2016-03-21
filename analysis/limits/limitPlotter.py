@@ -393,7 +393,7 @@ def MakeLimitPlot(MG):
     MG.Draw("L3")
     if not options.nogrid: dummyHist.Draw("AXIGSAME")
 
-    dummyHist.GetXaxis().SetTitle("m_{DM} [GeV]")
+    dummyHist.GetXaxis().SetTitle("m_{Z'} [GeV]")
     dummyHist.GetXaxis().SetRangeUser(min(OBSmasses)-OFFSETLOW,max(OBSmasses)+OFFSETHIGH)
     if options.doRatio:
      dummyHist.GetYaxis().SetRangeUser(RANGEYRAT[0],RANGEYRAT[1])
@@ -402,7 +402,7 @@ def MakeLimitPlot(MG):
     else: 
      dummyHist.GetYaxis().SetRangeUser(RANGEYABS[0],RANGEYABS[1])
      dummyHist.GetYaxis().SetNdivisions(5,int("%d"%(RANGEYABS[1]-RANGEYABS[0])),0)
-     dummyHist.GetYaxis().SetTitle("#sigma BR(h#chi#bar{#chi} #rightarrow #gamma#gamma#chi#bar{#chi})_{95%CL} [pb]")
+     dummyHist.GetYaxis().SetTitle("#sigma BR(h#chi#bar{#chi} #rightarrow #gamma#gamma#chi#bar{#chi})_{95%CL} [fb]")
 
     dummyHist.GetYaxis().SetTitleOffset(1.5)
     dummyHist.GetXaxis().SetTitleOffset(1.25)
@@ -454,8 +454,8 @@ def MakeLimitPlot(MG):
     if options.doRatio: www_outputname+="_ratio"
     if options.append!="": outputname+="_"+options.append
     if options.append!="": www_outputname+="_"+options.append
-    outputname+="_OptSel1_met105"
-    www_outputname+="_OptSel1_met105"
+    outputname+="_OptSel3_met70"
+    www_outputname+="_OptSel3_met70"
     types=[".pdf",".png",".eps"]
     for type in types: C.SaveAs(outputname+type)
     for type in types: C.SaveAs(www_outputname+type)
