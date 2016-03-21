@@ -14,12 +14,12 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
 
   // values for the different bin edges
   mgg_minAB1 = 100.;
-  mgg_minCD  = 120.;
-  mgg_maxCD  = 130.;
-  mgg_maxAB2 = 150.; 
+  mgg_minCD  = 120.;// mgg signal region lower bound 
+  mgg_maxCD  = 130.;// mgg signal region upper bound
+  mgg_maxAB2 = 180.; 
   met_minB   = 0.;
-  met_minD   = 105.;
-  met_maxD   = 999.;
+  met_minD   = 70.;// MET threshold
+  met_maxD   = 2000.;
   // save MET cut as a string
   if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
   else fMetCut = Form("%2.0f",met_minD);
@@ -966,8 +966,8 @@ void ABCDMethod::InitHists(){
 
 void ABCDMethod::InitVariables(){
   // 1D histograms of interest
-  //fTH1DNames.push_back("nvtx");
-  fTH1DNames.push_back("nvtx_IsolateALL");
+  fTH1DNames.push_back("nvtx");
+  //fTH1DNames.push_back("nvtx_IsolateALL");
 
   // 2D histograms of interest
   fTH2DNames.push_back("t1pfmet_mgg");

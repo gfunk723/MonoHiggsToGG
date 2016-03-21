@@ -222,31 +222,42 @@ void Combiner::DoComb(){
       Float_t fSignalRegIntErr = 0.;
       Float_t fTotalInt = 0.;
       std::vector<Double_t> fBkgInt;
-      //std::vector<Double_t> fSigInt;
-      //std::vector<Double_t> fSigIntErr;
       std::vector<Double_t> fBkgIntErr;
 
       fBkgInt.resize(fNBkg);
       fBkgIntErr.resize(fNBkg);
 
+      // calculate integrals for background
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin1,bin2,fBkgIntErr[mc]);
+	fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,fBkgIntErr[mc]);
 	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
 	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg SignalReg  = " << fBkgInt[mc] << " +/- " << fBkgIntErr[mc] << std::endl; 
+	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fBkgInt[mc] << " +/- " << fBkgIntErr[mc] << std::endl; 
 	if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
 	if (fBkgInt[mc] > 0){
 	  fSignalRegInt += fBkgInt[mc];
 	  fSignalRegIntErr += fBkgIntErr[mc];
 	}
       }
-	//std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
-	std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg SignalReg = " << fSignalRegInt << " +/- " << fSignalRegIntErr  << std::endl; 
-	//std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
+      //std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
+      std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fSignalRegInt << " +/- " << fSignalRegIntErr  << std::endl; 
+
+      // calculate integrals for data
+      Double_t DataInt1, DataErr1, DataInt2, DataErr2;
+      Double_t DataInt, DataIntErr;
+      DataInt1 = fOutDataTH1DHists[th1d]->IntegralAndError(bin0,bin1,DataErr1);
+      DataInt2 = fOutDataTH1DHists[th1d]->IntegralAndError(bin2,bin3,DataErr2);
+      DataInt = DataInt1 + DataInt2;
+      DataIntErr = TMath::Sqrt(DataInt1*DataInt1 + DataInt2*DataInt2);
+      std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << DataInt << " +/- " << DataIntErr << std::endl; 
+
+      // calculate integrals for signal
+      Double_t SigIntegral, SigIntegralErr;
       for (UInt_t mc = 0; mc < fNSig; mc++){
+	SigIntegral = fInSigTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,SigIntegralErr);
 	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	std::cout << " ----- " << fSigNames[mc] << "----- 	Integral in Mgg SignalReg  = " << fSigInt[mc] << " +/- " << fSigIntErr[mc] << std::endl; 
 	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	std::cout << " ----- " << fSigNames[mc] << "----- 	Integral in Mgg SignalReg  = " << SigIntegral << " +/- " << SigIntegralErr << std::endl; 
       }
     }
 

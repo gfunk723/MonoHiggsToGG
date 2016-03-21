@@ -5,7 +5,7 @@ CMS_lumi( TPad* pad, bool isSIM, int iPosX )
 {   
   int iPeriod=4;
   lumi_8TeV="19.7 fb^{-1}";
-  //lumi_8TeV="";
+  lumi_13TeV="2.2 fb^{-1}";
   if(isSIM==true) extraText="Simulation";
   if(isSIM==false)extraText="Preliminary";
   writeExtraText=true;         
@@ -55,8 +55,8 @@ CMS_lumi( TPad* pad, bool isSIM, int iPosX )
   else if ( iPeriod==4 )
     {
       lumiText += lumi_13TeV;
-      lumiText += "13 TeV";
-      //lumiText += " (13 TeV)";
+      //lumiText += "13 TeV";
+      lumiText += " (13 TeV)";
     }
   else if ( iPeriod==7 )
     { 

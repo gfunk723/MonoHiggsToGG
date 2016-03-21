@@ -136,6 +136,8 @@ void Plotter::DoPlots(int prompt){
   Int_t nEvents_goodVtx = 0;
   Int_t nEvents_goodVtx0 = 0;
 
+  Double_t METcut;// METcut to apply 
+
   for (UInt_t entry = 0; entry < nentries; entry++){
     tpho->GetEntry(entry);
 
@@ -280,12 +282,34 @@ void Plotter::DoPlots(int prompt){
       fTH1DMap["eta1_afterIDloose"]->Fill(eta1);
     }
 
+
+
+    // t1pfmet phi Correction
+    Double_t t1pfmetCorrX;
+    Double_t t1pfmetCorrY;
+    Double_t t1pfmetCorrE;
+    t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
+    t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+    //std::cout << "px = t1pfmet*cos(t1pfmetPhi) - (" << fMETCorr[0] << " + " << fMETCorr[1] << "*t1pfmetSumEt)" << std::endl;
+    //std::cout << "py = t1pfmet*sin(t1pfmetPhi) - (" << fMETCorr[2] << " + " << fMETCorr[3] << "*t1pfmetSumEt)" << std::endl;
+    t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+    TLorentzVector correctedMet;
+    correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+    TLorentzVector fLorenzVecZp;
+    fLorenzVecZp = correctedMet + fLorenzVecgg;
+    Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
+    Double_t t1pfmetCorr = correctedMet.Pt();
+
+
+    METcut = 70;// METcut to apply 
+
     // START full selection for plots
     if (passMETfil){ //Data passes MET filter
       //if (true){ // Orignal Selection
-      if (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90){  // OptSel1
+      //if (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90){  // OptSel1
       //if (pt1 > 0.65*mgg && pt2 > 0.25*mgg && ptgg > 50){ // OptSel2
       //if (pt1 > 0.65*mgg && pt2 > 0.25*mgg){ // OptSel2_woPtgg
+      if (pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.2){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
 
@@ -301,24 +325,9 @@ void Plotter::DoPlots(int prompt){
 	  fTH1DMap["nMuon"]->Fill(nMuons,Weight);
 
 	  numPassingAll++;
-	  if (nEle < 1 && nMuons < 1) numPassingLeptonReject++;
+	  if (nEle < 2 && nMuons < 1) numPassingLeptonReject++;
 	  if (nEle >= 2 || nMuons >= 1) continue; //reject events with leptons
 
-	  // t1pfmet phi Correction
-	  Double_t t1pfmetCorrX;
-	  Double_t t1pfmetCorrY;
-	  Double_t t1pfmetCorrE;
-	  t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
-	  t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
-          //std::cout << "px = t1pfmet*cos(t1pfmetPhi) - (" << fMETCorr[0] << " + " << fMETCorr[1] << "*t1pfmetSumEt)" << std::endl;
-          //std::cout << "py = t1pfmet*sin(t1pfmetPhi) - (" << fMETCorr[2] << " + " << fMETCorr[3] << "*t1pfmetSumEt)" << std::endl;
-	  t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
-	  TLorentzVector correctedMet;
-	  correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
-	  TLorentzVector fLorenzVecZp;
-	  fLorenzVecZp = correctedMet + fLorenzVecgg;
-	  Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
-	  Double_t t1pfmetCorr = correctedMet.Pt();
 
           // split events by eta
           EB1 = false;
@@ -409,7 +418,7 @@ void Plotter::DoPlots(int prompt){
           if (isData && doBlind){ // BLIND THE DATA mgg and met distributions
             if (mgg < 115 || mgg > 135){
               fTH1DMap["t1pfmet_scaledipho"]->Fill(t1pfmet,Weight);
-	      if (t1pfmet >= 80) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight);  
+	      if (t1pfmet >= METcut) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight);  
               fTH1DMap["mgg"]->Fill(mgg,Weight);
               fTH2DMap["mgg_PU"]->Fill(nvtx,mgg,Weight);
               fTH2DMap["mgg_ptgg"]->Fill(ptgg,mgg,Weight);
@@ -453,8 +462,8 @@ void Plotter::DoPlots(int prompt){
   	    fTH1DMap["t1pfmetUnclEnDown"]->Fill(t1pfmetUnclusteredEnDown,Weight);
             if (mgg >= 110 && mgg <= 130) fTH1DMap["t1pfmet_selmgg"]->Fill(t1pfmet,Weight); 
             if (ptgg > 70) fTH1DMap["t1pfmet_selptgg"]->Fill(t1pfmet,Weight);
-            if (t1pfmet >= 80) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight); 
-            if (t1pfmet >= 80) fTH1DMap["ptgg_selt1pfmet"]->Fill(ptgg,Weight);
+            if (t1pfmet >= METcut) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight); 
+            if (t1pfmet >= METcut) fTH1DMap["ptgg_selt1pfmet"]->Fill(ptgg,Weight);
             fTH1DMap["pfmet"]->Fill(pfmet,Weight);
             fTH1DMap["calomet"]->Fill(calomet,Weight);
             fTH1DMap["t1pfmet_zoom"]->Fill(t1pfmet,Weight);
@@ -643,7 +652,7 @@ void Plotter::DoPlots(int prompt){
 	  // plots
 	  if ( !isData && dphigMETpass ) fTH1DMap["metCor_Sig"]->Fill(t1pfmetCorr,Weight);
 	  if ( (doBlind && outsideMgg) || !doBlind){
-	    if ( t1pfmetCorr > 80 ) nDataOrig++;
+	    if ( t1pfmetCorr > METcut ) nDataOrig++;
 	    if ( dphigMETpass ){
 	      fTH1DMap["met_aftergMETCut"]->Fill(t1pfmet,Weight);
 	      fTH1DMap["metCor_aftergMETCut"]->Fill(t1pfmetCorr,Weight);
@@ -652,7 +661,7 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["met_afterJetCut"]->Fill(t1pfmet,Weight); 
 	      fTH1DMap["metCor_afterJetCut"]->Fill(t1pfmetCorr,Weight); 
 	    }
-	    if ( t1pfmetCorr > 80 ){
+	    if ( t1pfmetCorr > METcut ){
 	      if ( max_dphiJETMETpass ){
 	        nDatadphi1++;
 	        if ( min_dphiJETMETpass ){
@@ -688,7 +697,7 @@ void Plotter::DoPlots(int prompt){
 	        fTH1DMap["met_IsolateALL"]->Fill(t1pfmet,Weight); 
 	        fTH1DMap["metCor_IsolateALL"]->Fill(t1pfmetCorr,Weight);
 		//if ( isData && t1pfmetCorr > 80 ) std::cout << run << ":" << lumi << ":" << event << std::endl;
-		if ( isData && t1pfmetCorr > 80 ) std::cout << "MET Tail: MET = " << t1pfmetCorr << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
+		if ( isData && t1pfmetCorr > METcut ) std::cout << "MET Tail: MET = " << t1pfmetCorr << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
 	      } 
 	    }
 	  }
@@ -700,7 +709,7 @@ void Plotter::DoPlots(int prompt){
 	    fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
 	    fTH1DMap["ptgg_IsolateALL"]->Fill(ptgg,Weight);
 	    fTH1DMap["nvtx_IsolateALL"]->Fill(nvtx,Weight);
-	    if (t1pfmetCorr > 80){
+	    if (t1pfmetCorr > METcut){
 	        fTH1DMap["ptgg_IsolateALLmet80"]->Fill(ptgg,Weight);
 	        fTH1DMap["nvtx_IsolateALLmet80"]->Fill(nvtx,Weight);
 		fTH1DMap["mgg_IsolateALLmet80"]->Fill(mgg,Weight);
@@ -927,17 +936,23 @@ void Plotter::DoPlots(int prompt){
     nDataPassingdphi->GetXaxis()->SetBinLabel(2,"max #Delta#phi(j,MET)"); 
     nDataPassingdphi->GetXaxis()->SetBinLabel(3,"min #Delta#phi(j,MET)"); 
     nDataPassingdphi->GetXaxis()->SetBinLabel(4,"#Delta#phi(gg,MET)"); 
- 
+
+    //TLegend * leg = new TLegend(0.6,0.8,0.9,0.934);// (x1,y1,x2,y2)
+    //leg->SetBorderSize(4);
+    //leg->SetTextSize(0.2);
+    //leg->AddEntry(nDataPassingdphi,"l","Data");
+
     gStyle->SetOptStat(0);
     TCanvas *c2 = new TCanvas();
     c2->cd();
     nDataPassingdphi->Draw("HIST");
+    //leg->Draw("SAME");
     CMSLumi(c2,12,fLumi);
     c2->SaveAs(Form("%s%s/data_dphicuts_met80.%s",fName.Data(),species.Data(),fType.Data()));
   }
 
-  //std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
-  //std::cout << "Number Events rejected by MET filters:   " << numFailingMETfil    << " out of " << nentries << " events. " << std::endl;
+  std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
+  std::cout << "Number Events rejected by MET filters:   " << numFailingMETfil    << " out of " << nentries << " events. " << std::endl;
   
   //std::cout << "nvtx   Int " << fTH1DMap["nvtx"]->Integral() << std::endl;
   //std::cout << "ptJet1 Int " << fTH1DMap["ptJet1"]->Integral() << std::endl;
@@ -945,8 +960,9 @@ void Plotter::DoPlots(int prompt){
   std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
   UInt_t binMETze = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(0.);
-  UInt_t binMETlo = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(80.);
-  UInt_t binMEThi = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(299.); 
+  UInt_t binMETlo = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(METcut);
+  UInt_t binMEThi = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(299.);
+  std::cout << "MET CUT IS " << METcut << std::endl; 
   //std::cout << "Events in MET tail of CorrMET			= " << fTH1DMap["t1pfmetCorr_partblind"]->Integral(binMETlo,binMEThi) << std::endl;
   ////std::cout << "======================================================" << std::endl;
   ////std::cout << "Events in MET tail of CorrMET + JetCut		= " << fTH1DMap["metCor_afterJetCut"]->Integral(binMETlo,binMEThi) << std::endl;
@@ -970,8 +986,8 @@ void Plotter::DoPlots(int prompt){
 
   //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["t1pfmetCorr_zoom"]->Integral(binMETlo,binMEThi) << std::endl;
   //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["metCor_Sig"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
-  //std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
+  std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
+  std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
 
   //std::cout << "Number Events rejected by Mgg range:     " << numOutOfMggRange    << " out of " << nentries << " events. " << std::endl; 
   //std::cout << "Number Events rejected by Neg Weight:    " << numNegativeWeight   << " out of " << nentries << " events. " << std::endl; 
