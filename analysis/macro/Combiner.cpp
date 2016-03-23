@@ -162,8 +162,8 @@ void Combiner::DoComb(){
         fOutBkgTH1DStacksForUncer[th1d]->Add(GJetsClone[th1d]);
       }
       else{
-        fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
-        fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+        if (fInBkgTH1DHists[th1d][mc]->Integral() >= 0) fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+        if (fInBkgTH1DHists[th1d][mc]->Integral() >= 0) fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
       }
       // draw bkg in legend as box for stack plots, and line for overlay plot
       //if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
@@ -187,11 +187,13 @@ void Combiner::DoComb(){
 
       Float_t fTotalInt = 0.;
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
       }
 	std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
       for (UInt_t mc = 0; mc < fNSig; mc++){
-	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
       }
     }
 
@@ -207,12 +209,18 @@ void Combiner::DoComb(){
       for (UInt_t mc = 0; mc < fNBkg; mc++){
         if (addText!="_n-1"){
 	  std::cout << " *** " << fBkgNames[mc] << " *** " << std::endl;
-	  std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
-	  std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
-	  std::cout << "Efficiency 				= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+          //std::cout << "Events in MET tail of CorrMET + ALL Iso = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
+          //std::cout << "Events in all MET  of CorrMET + ALL Iso = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+          //std::cout << "Efficiency                              = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi
+	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) >= 0 && fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) >= 0){
+	    std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
+	    std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+	    std::cout << "Efficiency 				= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+	  }
+	  else std::cout << "Events in distributions is less than 0." << std::endl;
 	  // sum all backgrounds to get overall efficiency 
-	  fTotalBkgInt_met80  += fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi); 
-	  fTotalBkgInt_metall += fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi); 
+	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) > 0) fTotalBkgInt_met80  += fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi); 
+	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) > 0) fTotalBkgInt_metall += fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi); 
 	}
       }
 
@@ -301,33 +309,15 @@ void Combiner::DoComb(){
   if (addText!="_n-1") Combiner::MakeEffPlots();
 
   // look at photon ID efficienes (only relevant for MVA samples)   
-  cut_pho_pt.resize(fNSig);
-  mva_pho_pt.resize(fNSig);
-  cut_pho_eta.resize(fNSig);
-  mva_pho_eta.resize(fNSig);
-
-  phoIDeff_pt.resize(fNSig);
-  phoIDeff_eta.resize(fNSig);
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,0);
-  }
-
-  SigVtxEffnvtx.resize(fNSig);
-  SigVtxEffmet.resize(fNSig);
-  BkgVtxEffnvtx.resize(fNBkg);
-  BkgVtxEffmet.resize(fNBkg);
-  if (addText!="_n-1") Combiner::VtxEfficiencies();
- 
-  //phoIDeff_pt.resize(fNBkg);
-  //phoIDeff_eta.resize(fNBkg);
+  //for (UInt_t mc = 0; mc < fNSig; mc++){
+  //  if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,0);
+  //}
   //for (UInt_t mc = 0; mc < fNBkg; mc++){
   //  if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,1);
   //}
 
-  //phoIDeff_pt.resize(1);
-  //phoIDeff_eta.resize(1);
-  //if (addText!="_n-1") Combiner::PhotonIDEfficiencies(0,5);
-
+  if (addText!="_n-1") Combiner::VtxEfficiencies();
+ 
   // look at the MET efficiencies after different corrections
   if (addText!="_n-1") Combiner::FindMETEfficiencies();
   
@@ -335,62 +325,54 @@ void Combiner::DoComb(){
 
 }// end Combiner::DoComb
 
+void Combiner::GetEfficiency(TH1D *h_num, TH1D *h_den, TString name, TString sample){
+  if (TEfficiency::CheckConsistency(*h_num,*h_den)){
+    TEfficiency *tmpeff = new TEfficiency(*h_num,*h_den);
+    TCanvas * c1 = new TCanvas();
+    c1->cd();
+    tmpeff->Draw("AP");
+    CMSLumi(c1,11,lumi);
+    c1->SaveAs(Form("%scomb/%s_%s.%s",fOutDir.Data(),name.Data(),sample.Data(),fType.Data()));
+    delete tmpeff;
+    delete c1;
+  }
+  else std::cout << "Check Consistency for Efficiency Plot Fails" << std::endl;
+}// end Combiner::MakeEfficiencyPlot
+
+
+
+
 void Combiner::VtxEfficiencies(){
   // pickup the vtx efficiency histograms
-  UInt_t th1d_nvtx_n, th1d_nvtx_d, th1d_met_n, th1d_met_d;
+  UInt_t th1d_nvtx_n, th1d_nvtx_d;
+  UInt_t th1d_met_n, th1d_met_d;
+  UInt_t th1d_ptzp_n, th1d_ptzp_d;
+  UInt_t th1d_njet_n, th1d_njet_d;
   for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
+    if (fTH1DNames[th1d]=="vtx_eff_ptzp_n") th1d_ptzp_n = th1d;
+    if (fTH1DNames[th1d]=="vtx_eff_ptzp_d") th1d_ptzp_d = th1d;
     if (fTH1DNames[th1d]=="vtx_eff_nvtx_n") th1d_nvtx_n = th1d;
     if (fTH1DNames[th1d]=="vtx_eff_nvtx_d") th1d_nvtx_d = th1d;
     if (fTH1DNames[th1d]=="vtx_eff_met_n")  th1d_met_n	= th1d; 
     if (fTH1DNames[th1d]=="vtx_eff_met_d")  th1d_met_d	= th1d;
+    if (fTH1DNames[th1d]=="vtx_eff_njet_n") th1d_njet_n = th1d;
+    if (fTH1DNames[th1d]=="vtx_eff_njet_d") th1d_njet_d = th1d;
   }
 
   // vtx efficiency plots for signal
   for (UInt_t mc = 0; mc < fNSig; mc++){
-    if (TEfficiency::CheckConsistency(*fInSigTH1DHists[th1d_nvtx_n][mc],*fInSigTH1DHists[th1d_nvtx_d][mc])){
-      SigVtxEffnvtx[mc] = new TEfficiency(*fInSigTH1DHists[th1d_nvtx_n][mc],*fInSigTH1DHists[th1d_nvtx_d][mc]);
-      TCanvas * c1 = new TCanvas(); 
-      c1->cd();
-      SigVtxEffnvtx[mc]->Draw("AP");
-      CMSLumi(c1,11,lumi);
-      c1->SaveAs(Form("%scomb/VtxEff_nvtx_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
-      delete SigVtxEffnvtx[mc];
-      delete c1;
-    }
-    if (TEfficiency::CheckConsistency(*fInSigTH1DHists[th1d_met_n][mc],*fInSigTH1DHists[th1d_met_d][mc])){
-      SigVtxEffmet[mc] = new TEfficiency(*fInSigTH1DHists[th1d_met_n][mc],*fInSigTH1DHists[th1d_met_d][mc]);
-      TCanvas * c1 = new TCanvas(); 
-      c1->cd();
-      SigVtxEffmet[mc]->Draw("AP");
-      CMSLumi(c1,11,lumi);
-      c1->SaveAs(Form("%scomb/VtxEff_met_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
-      delete SigVtxEffmet[mc];
-      delete c1;
-    }
+    Combiner::GetEfficiency(fInSigTH1DHists[th1d_ptzp_n][mc],fInSigTH1DHists[th1d_ptzp_d][mc],"VtxEff_ptzp",fSigNames[mc].Data());
+    Combiner::GetEfficiency(fInSigTH1DHists[th1d_nvtx_n][mc],fInSigTH1DHists[th1d_nvtx_d][mc],"VtxEff_nvtx",fSigNames[mc].Data());
+    Combiner::GetEfficiency(fInSigTH1DHists[th1d_met_n][mc],fInSigTH1DHists[th1d_met_d][mc],"VtxEff_met",fSigNames[mc].Data());
+    Combiner::GetEfficiency(fInSigTH1DHists[th1d_njet_n][mc],fInSigTH1DHists[th1d_njet_d][mc],"VtxEff_njet",fSigNames[mc].Data());
   }
 
   // vtx efficiency plots for background
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    if (TEfficiency::CheckConsistency(*fInBkgTH1DHists[th1d_nvtx_n][mc],*fInBkgTH1DHists[th1d_nvtx_d][mc])){
-      BkgVtxEffnvtx[mc] = new TEfficiency(*fInBkgTH1DHists[th1d_nvtx_n][mc],*fInBkgTH1DHists[th1d_nvtx_d][mc]);
-      TCanvas * c1 = new TCanvas(); 
-      c1->cd();
-      BkgVtxEffnvtx[mc]->Draw("AP");
-      CMSLumi(c1,11,lumi);
-      c1->SaveAs(Form("%scomb/VtxEff_nvtx_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
-      delete BkgVtxEffnvtx[mc];
-      delete c1;
-    }
-    if (TEfficiency::CheckConsistency(*fInBkgTH1DHists[th1d_met_n][mc],*fInBkgTH1DHists[th1d_met_d][mc])){
-      BkgVtxEffmet[mc] = new TEfficiency(*fInBkgTH1DHists[th1d_met_n][mc],*fInBkgTH1DHists[th1d_met_d][mc]);
-      TCanvas * c1 = new TCanvas(); 
-      c1->cd();
-      BkgVtxEffmet[mc]->Draw("AP");
-      CMSLumi(c1,11,lumi);
-      c1->SaveAs(Form("%scomb/VtxEff_met_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
-      delete BkgVtxEffmet[mc];
-      delete c1;
-    }
+    Combiner::GetEfficiency(fInBkgTH1DHists[th1d_ptzp_n][mc],fInBkgTH1DHists[th1d_ptzp_d][mc],"VtxEff_ptzp",fBkgNames[mc].Data());
+    Combiner::GetEfficiency(fInBkgTH1DHists[th1d_nvtx_n][mc],fInBkgTH1DHists[th1d_nvtx_d][mc],"VtxEff_nvtx",fBkgNames[mc].Data());
+    Combiner::GetEfficiency(fInBkgTH1DHists[th1d_met_n][mc],fInBkgTH1DHists[th1d_met_d][mc],"VtxEff_met",fBkgNames[mc].Data());
+    Combiner::GetEfficiency(fInBkgTH1DHists[th1d_njet_n][mc],fInBkgTH1DHists[th1d_njet_d][mc],"VtxEff_njet",fBkgNames[mc].Data());
   }
 
 }// end Combiner::VtxEfficiencies
@@ -398,60 +380,25 @@ void Combiner::VtxEfficiencies(){
 
 void Combiner::PhotonIDEfficiencies(const UInt_t mc, const UInt_t isType){
   // Find the efficiency for photons passing loose selection that have passed the MVA selection
- 
+  UInt_t th1d_pt1_n, th1d_pt1_d;
+  UInt_t th1d_eta1_n, th1d_eta1_d;
   for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
-    if (isType==0){//signal
-      if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
-      if (fTH1DNames[th1d]=="pt1_beforeIDloose"){	mva_pho_pt[mc]  = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();} 
-      if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
-      if (fTH1DNames[th1d]=="eta1_beforeIDloose"){	mva_pho_eta[mc] = (TH1D*)fInSigTH1DHists[th1d][mc]->Clone();}
-    }
-    else if (isType==1){//bkg
-      if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();}
-      if (fTH1DNames[th1d]=="pt1_beforeIDloose"){	mva_pho_pt[mc]  = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();} 
-      if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();}
-      if (fTH1DNames[th1d]=="eta1_beforeIDloose"){	mva_pho_eta[mc] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();}
-    }
-    else{//data
-      if (fTH1DNames[th1d]=="pt1_afterIDloose"){	cut_pho_pt[mc]  = (TH1D*)fOutDataTH1DHists[th1d]->Clone();}
-      if (fTH1DNames[th1d]=="pt1_beforeIDloose"){	mva_pho_pt[mc]  = (TH1D*)fOutDataTH1DHists[th1d]->Clone();} 
-      if (fTH1DNames[th1d]=="eta1_afterIDloose"){	cut_pho_eta[mc] = (TH1D*)fOutDataTH1DHists[th1d]->Clone();}
-      if (fTH1DNames[th1d]=="eta1_beforeIDloose"){	mva_pho_eta[mc] = (TH1D*)fOutDataTH1DHists[th1d]->Clone();}
-    }
-  }
-  if (TEfficiency::CheckConsistency(*cut_pho_pt[mc],*mva_pho_pt[mc])){
-    phoIDeff_pt[mc] = new TEfficiency(*cut_pho_pt[mc],*mva_pho_pt[mc]);
+    if (fTH1DNames[th1d]=="pt1_afterIDloose")	th1d_pt1_n = th1d;
+    if (fTH1DNames[th1d]=="pt1_beforeIDloose")	th1d_pt1_d = th1d;
+    if (fTH1DNames[th1d]=="eta1_afterIDloose")	th1d_eta1_n = th1d;
+    if (fTH1DNames[th1d]=="eta1_beforeIDloose")	th1d_eta1_d = th1d;
   }
 
-  TCanvas * c1 = new TCanvas(); 
-  c1->cd();
-  phoIDeff_pt[mc]->Draw("AP");
-  CMSLumi(c1,11,lumi);
-  if (isType==0) c1->SaveAs(Form("%scomb/phoIDeff_pt_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
-  else if (isType==1) c1->SaveAs(Form("%scomb/phoIDeff_pt_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
-  else c1->SaveAs(Form("%scomb/phoIDeff_pt_Data.%s",fOutDir.Data(),fType.Data()));
-
-  delete cut_pho_pt[mc];
-  delete mva_pho_pt[mc];
-  delete phoIDeff_pt[mc];
-  delete c1;
-
-  if (TEfficiency::CheckConsistency(*cut_pho_eta[mc],*mva_pho_eta[mc])){
-    phoIDeff_eta[mc] = new TEfficiency(*cut_pho_eta[mc],*mva_pho_eta[mc]);
+  if (isType==0){
+    Combiner::GetEfficiency(fInSigTH1DHists[th1d_pt1_n][mc],fInSigTH1DHists[th1d_pt1_d][mc],"phoIDeff_pt",fSigNames[mc].Data());
+    Combiner::GetEfficiency(fInSigTH1DHists[th1d_eta1_n][mc],fInSigTH1DHists[th1d_eta1_d][mc],"phoIDeff_eta",fSigNames[mc].Data());
   }
-
-  TCanvas * c2 = new TCanvas(); 
-  c2->cd();
-  phoIDeff_eta[mc]->Draw("AP");
-  CMSLumi(c2,11,lumi);
-  if (isType==0) c2->SaveAs(Form("%scomb/phoIDeff_eta_%s.%s",fOutDir.Data(),fSigNames[mc].Data(),fType.Data()));
-  else if (isType==1) c2->SaveAs(Form("%scomb/phoIDeff_eta_%s.%s",fOutDir.Data(),fBkgNames[mc].Data(),fType.Data()));
-  else c2->SaveAs(Form("%scomb/phoIDeff_eta_Data.%s",fOutDir.Data(),fType.Data()));
-  
-  delete cut_pho_eta[mc];
-  delete mva_pho_eta[mc];
-  delete phoIDeff_eta[mc];
-  delete c2;
+  else if (isType==1){
+    Combiner::GetEfficiency(fInBkgTH1DHists[th1d_pt1_n][mc],fInBkgTH1DHists[th1d_pt1_d][mc],"phoIDeff_pt",fBkgNames[mc].Data());
+    Combiner::GetEfficiency(fInBkgTH1DHists[th1d_eta1_n][mc],fInBkgTH1DHists[th1d_eta1_d][mc],"phoIDeff_eta",fBkgNames[mc].Data());
+  }
+  else std::cout << "Type is not Sig or Bkg MC" << std::endl;
+ 
 }// end Combiner::PhotonIDEfficiencies
 
 
@@ -1649,6 +1596,10 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("absdphi_g1MET");
     fTH1DNames.push_back("absdphi_ggmet_met100");
     fTH1DNames.push_back("absdphi_g1MET_met100");
+    fTH1DNames.push_back("absdphi_ggmet_met80");
+    fTH1DNames.push_back("absdphi_g1MET_met80");
+    fTH1DNames.push_back("absdphi_maxJetMET_met80");
+    fTH1DNames.push_back("absdphi_minJetMET_met80");
     fTH1DNames.push_back("nvtx_afterJetCut");
     fTH1DNames.push_back("ptgg_afterJetCut");
     fTH1DNames.push_back("mgg_afterJetCut");
@@ -1710,10 +1661,14 @@ void Combiner::InitTH1DNames(){
     fIndexEff = fTH1DNames.size()-1;
     fTH1DNames.push_back("eff_sel");
  
+    fTH1DNames.push_back("vtx_eff_ptzp_n");
+    fTH1DNames.push_back("vtx_eff_ptzp_d");
     fTH1DNames.push_back("vtx_eff_nvtx_n");
     fTH1DNames.push_back("vtx_eff_nvtx_d");
     fTH1DNames.push_back("vtx_eff_met_n");
     fTH1DNames.push_back("vtx_eff_met_d");
+    fTH1DNames.push_back("vtx_eff_njet_n");
+    fTH1DNames.push_back("vtx_eff_njet_d");
 
     //fTH1DNames.push_back("EBHighR9_mgg");
     //fTH1DNames.push_back("EBHighR9_ptgg");

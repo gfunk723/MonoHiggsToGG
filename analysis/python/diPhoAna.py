@@ -48,7 +48,6 @@ else:
     print "Using name RECO"
 
 
-
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 2000 ) )
 
 process.source = cms.Source("PoolSource",

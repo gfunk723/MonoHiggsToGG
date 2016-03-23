@@ -3,8 +3,8 @@
 
 #mkdir -p data/mergedFinal
 
-hadd data/25ns_v76X_v0/GJets.root	data/25ns_v76X_v0/GJet_Pt-20to40.root	data/25ns_v76X_v0/GJet_Pt-40toInf.root 
-hadd data/25ns_v76X_v0/QCD.root		data/25ns_v76X_v0/QCD_Pt-30to40.root	data/25ns_v76X_v0/QCD_Pt-40toInf.root	#data/25ns_v76X_v0/QCD_Pt-30toInf.root
+hadd data/25ns_v76X_v1/GJets.root	data/25ns_v76X_v1/GJet_Pt-20to40.root	data/25ns_v76X_v1/GJet_Pt-40toInf.root 
+hadd data/25ns_v76X_v1/QCD.root		data/25ns_v76X_v1/QCD_Pt-30to40.root	data/25ns_v76X_v1/QCD_Pt-40toInf.root	#data/25ns_v76X_v1/QCD_Pt-30toInf.root
 
-#hadd data/25ns_v76X_v0/DoubleEG.root	data/25ns_v76X_v0/DoubleEG_05Oct.root	data/25ns_v76X_v0/DoubleEG_PromptV4.root 
+#hadd data/25ns_v76X_v1/DoubleEG.root	data/25ns_v76X_v1/DoubleEG_05Oct.root	data/25ns_v76X_v1/DoubleEG_PromptV4.root 
 
