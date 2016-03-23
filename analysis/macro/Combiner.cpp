@@ -180,20 +180,86 @@ void Combiner::DoComb(){
     }
 
     if (fTH1DNames[th1d]=="mgg_IsolateALLmet80"){
+
+      UInt_t sbbin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
+      UInt_t sbbin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(120.);
+      UInt_t sbbin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(130.);
+      UInt_t sbbin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
+
+      std::vector<Double_t> fSigInt;
+      std::vector<Double_t> fSigIntErr;
+      fSigInt.resize(fNSig);
+      fSigIntErr.resize(fNSig);
+
+      std::vector<Double_t> fBkgInt2;
+      std::vector<Double_t> fBkgIntErr2;
+      fBkgInt2.resize(fNBkg);
+      fBkgIntErr2.resize(fNBkg);
+      Float_t fSignalRegInt2 = 0.;
+      Float_t fSignalRegIntErr2 = 0.;
+
+      for (UInt_t mc = 0; mc < fNSig; mc++){
+        fSigInt[mc] = fInSigTH1DHists[th1d][mc]->IntegralAndError(sbbin1,sbbin2,fSigIntErr[mc]);
+	std::cout << " -- S -- " << fSigNames[mc] << " = " << fSigInt[mc] << " +/- " << fSigIntErr[mc] << std::endl; 
+      }
+
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+	fBkgInt2[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(sbbin1,sbbin2,fBkgIntErr2[mc]);
+	//std::cout << " -- B -- " << fBkgNames[mc] << " = " << fBkgInt2[mc] << " +/- " << fBkgIntErr2[mc] << std::endl; 
+	if (fBkgInt2[mc] > 0){
+	  fSignalRegInt2 += fBkgInt2[mc];
+	  fSignalRegIntErr2 += fBkgIntErr2[mc]*fBkgIntErr2[mc];
+	}
+      }
+      std::cout << " -- Tot B -- " << fSignalRegInt2 << " +/- " << TMath::Sqrt(fSignalRegIntErr2) << std::endl; 
+      std::cout << " -- Sqrt B -- " << TMath::Sqrt(fSignalRegInt2) << std::endl; 
+      for (UInt_t mc = 0; mc < fNSig; mc++) std::cout << " -- Sig -- " << fSigInt[mc]/TMath::Sqrt(fSigInt[mc]+fSignalRegInt2) << std::endl; 
+
       UInt_t bin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
       UInt_t bin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(115.);
       UInt_t bin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
       UInt_t bin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
 
+      Float_t fSignalRegInt = 0.;
+      Float_t fSignalRegIntErr = 0.;
       Float_t fTotalInt = 0.;
+      std::vector<Double_t> fBkgInt;
+      std::vector<Double_t> fBkgIntErr;
+
+      fBkgInt.resize(fNBkg);
+      fBkgIntErr.resize(fNBkg);
+
+      // calculate integrals for background
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,fBkgIntErr[mc]);
+	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fBkgInt[mc] << " +/- " << fBkgIntErr[mc] << std::endl; 
+	if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
+	if (fBkgInt[mc] > 0){
+	  fSignalRegInt += fBkgInt[mc];
+	  fSignalRegIntErr += fBkgIntErr[mc];
+	}
       }
-	std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << fOutDataTH1DHists[th1d]->Integral(bin0,bin1)+fOutDataTH1DHists[th1d]->Integral(bin2,bin3) << std::endl; 
+      //std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
+      std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fSignalRegInt << " +/- " << fSignalRegIntErr  << std::endl; 
+
+      // calculate integrals for data
+      Double_t DataInt1, DataErr1, DataInt2, DataErr2;
+      Double_t DataInt, DataIntErr;
+      DataInt1 = fOutDataTH1DHists[th1d]->IntegralAndError(bin0,bin1,DataErr1);
+      DataInt2 = fOutDataTH1DHists[th1d]->IntegralAndError(bin2,bin3,DataErr2);
+      DataInt = DataInt1 + DataInt2;
+      DataIntErr = TMath::Sqrt(DataInt1*DataInt1 + DataInt2*DataInt2);
+      std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << DataInt << " +/- " << DataIntErr << std::endl; 
+
+      // calculate integrals for signal
+      Double_t SigIntegral, SigIntegralErr;
       for (UInt_t mc = 0; mc < fNSig; mc++){
-	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	SigIntegral = fInSigTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,SigIntegralErr);
+	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
+	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
+	std::cout << " ----- " << fSigNames[mc] << "----- 	Integral in Mgg SignalReg  = " << SigIntegral << " +/- " << SigIntegralErr << std::endl; 
       }
     }
 
@@ -951,21 +1017,24 @@ void Combiner::MakeEffPlots(){
   std::vector<Double_t> mass =  {600,800,1000,1200,1400,1700,2500};//{1,10,100,1000}; 
   Int_t binForMass = 0;
 
-  for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
-    if (fTH1DNames[th1d] == "selection_unwgt"){
-      for (UInt_t mc = 0; mc < fNSig; mc++){
-        eff_num = fInSigTH1DHists[th1d][mc]->GetBinContent(8); // events passing sel,mgg,met
-        eff_den = fInSigTH1DHists[th1d][mc]->GetBinContent(2); // events only require pass presel 
-        num_err = TMath::Sqrt(eff_num);
-        den_err = TMath::Sqrt(eff_den);
-        if (eff_den > 0) eff_val = eff_num/eff_den;
-        eff_err = TMath::Sqrt(eff_val*(1.0-eff_val)/eff_den); 
-	//std::cout << fSigNames[mc]<< " mass = " << mass[mc] <<" -> eff_val = " << eff_val << "\\pm " << eff_err << std::endl;
-        binForMass = eff_mDM->FindBin(mass[mc]);
-        eff_mDM->SetBinContent(binForMass,eff_val);
-        eff_mDM->SetBinError(binForMass,eff_err);
+
+  for (UInt_t mc = 0; mc < fNSig; mc++){
+    for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
+      if (fTH1DNames[th1d] == "nvtx_IsolateALLmet80") eff_num = fInSigTH1DHists[th1d][mc]->GetEntries();
+      if (fTH1DNames[th1d] == "selection_unwgt"){
+          //eff_num = fInSigTH1DHists[th1d][mc]->GetBinContent(8); // events passing sel,mgg,met
+          eff_den = fInSigTH1DHists[th1d][mc]->GetBinContent(2); // events have no requirements 
       }
     }
+    if (eff_den > 0) eff_val = eff_num/eff_den;
+    std::cout << "eff_num = " << eff_num << " eff_den = " << eff_den << " eff = " << eff_val << std::endl;
+    num_err = TMath::Sqrt(eff_num);
+    den_err = TMath::Sqrt(eff_den);
+    eff_err = TMath::Sqrt(eff_val*(1.0-eff_val)/eff_den); 
+    //std::cout << fSigNames[mc]<< " mass = " << mass[mc] <<" -> eff_val = " << eff_val << "\\pm " << eff_err << std::endl;
+    binForMass = eff_mDM->FindBin(mass[mc]);
+    eff_mDM->SetBinContent(binForMass,eff_val);
+    eff_mDM->SetBinError(binForMass,eff_err);
   }
 
   eff_mDM->SetMaximum(1.0);
@@ -1104,7 +1173,27 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     ftempLegends->SetLineWidth(2);
     ftempLegends->Draw("SAME");
   }
+  else if (fTH1DNames[th1d]=="mgg_forShape"){
+    fInSigTH1DHists[th1d][0]->SetTitle("");
+    fInSigTH1DHists[th1d][0]->Draw("hist");
+    fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
 
+    TLegend* ftempLegends = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+
+    for (UInt_t mc = 0; mc < fNSig; mc++){
+      if (mc==0 || mc==2 || mc==fNSig-1){
+        fInSigTH1DHists[th1d][mc]->SetLineWidth(2);
+        fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
+        ftempLegends->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
+      }
+    }
+
+    ftempLegends->SetBorderSize(4);
+    ftempLegends->SetLineColor(kBlack);
+    ftempLegends->SetTextSize(0.03);//0.035
+    ftempLegends->SetLineWidth(2);
+    ftempLegends->Draw("SAME");
+  }
   else{   
     fInSigTH1DHists[th1d][0]->SetTitle("");
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
@@ -1554,12 +1643,18 @@ void Combiner::InitTH1DNames(){
     //fTH1DNames.push_back("eleveto2");
     //fTH1DNames.push_back("phi1_pho2pass");
     //fTH1DNames.push_back("phi2_pho1pass");
+    fTH1DNames.push_back("nJets");
+    fTH1DNames.push_back("nElec");
+    fTH1DNames.push_back("nMuon");
+    fTH1DNames.push_back("BDTindex");
+
     fTH1DNames.push_back("t1pfmetCorr");
     fTH1DNames.push_back("t1pfmetphiCorr");
     fTH1DNames.push_back("t1pfmet_zoom");
     fTH1DNames.push_back("t1pfmetSumEt");
     fTH1DNames.push_back("t1pfmet_partblind");
     fTH1DNames.push_back("t1pfmetCorr_partblind");
+    fTH1DNames.push_back("ptggOverMET");
     
     fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
@@ -1593,6 +1688,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("absdphi_maxJetMET_met100");
     fTH1DNames.push_back("absdphi_minJetMET_met100");
     fTH1DNames.push_back("absdphi_maxgMET");
+    fTH1DNames.push_back("absdphi_maxgMET_met80");
     fTH1DNames.push_back("absdphi_g1MET");
     fTH1DNames.push_back("absdphi_ggmet_met100");
     fTH1DNames.push_back("absdphi_g1MET_met100");
@@ -1644,6 +1740,11 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("mgg_met80_forShape");
     fTH1DNames.push_back("mgg_IsolateALL");
     fTH1DNames.push_back("mgg_IsolateALLmet80");
+    fTH1DNames.push_back("ptgg_IsolateALL");
+    fTH1DNames.push_back("ptgg_IsolateALLmet80");
+    fTH1DNames.push_back("nvtx_IsolateALL");
+    fTH1DNames.push_back("nvtx_IsolateALLmet80");
+
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");

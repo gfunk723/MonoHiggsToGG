@@ -49,7 +49,7 @@ int main(){
   bool doPlots = true;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
-  bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
+  bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
@@ -111,34 +111,37 @@ int main(){
     METCorr2016 * metcorrData = new METCorr2016(0,inDir,outDir,"DoubleEG");
     metCorrData = metcorrData->Loop(inDir, "Data");    
     delete metcorrData;    
+
+    //for (UInt_t i=0; i<4; i++){
+    //  std::cout << "MC   " << metCorrMC[i] << std::endl;
+    //  std::cout << "Data " << metCorrData[i] << std::endl;
+    //}
   }
 
   else{
-    std::cout << "Pickup MET Phi Correction" << std::endl; 
-    // pick up MC metCorr
-    TString metStudyMC = Form("%s/metCorr_MC.root",inDir.Data());
-    TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
-    CheckValidFile(fmetCorrMC,metStudyMC);
-    TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
-    CheckValidTH1D(MCmet,"",metStudyMC);
+    if (doPlots){
+      std::cout << "Pickup MET Phi Correction" << std::endl; 
+      // pick up MC metCorr
+      TString metStudyMC = Form("%s/metCorr_MC.root",inDir.Data());
+      TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
+      CheckValidFile(fmetCorrMC,metStudyMC);
+      TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
+      CheckValidTH1D(MCmet,"",metStudyMC);
 
-    // pick up Data metCorr
-    TString metStudyData = Form("%s/metCorr_Data.root",inDir.Data());
-    TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
-    CheckValidFile(fmetCorrDATA,metStudyData);
-    TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
-    CheckValidTH1D(DATAmet,"",metStudyData);
-     
-    for (UInt_t i=0; i<4; i++){
-      metCorrMC.push_back(MCmet->GetBinContent(i+1));
-      metCorrData.push_back(DATAmet->GetBinContent(i+1));
+      // pick up Data metCorr
+      TString metStudyData = Form("%s/metCorr_Data.root",inDir.Data());
+      TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
+      CheckValidFile(fmetCorrDATA,metStudyData);
+      TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
+      CheckValidTH1D(DATAmet,"",metStudyData);
+       
+      for (UInt_t i=0; i<4; i++){
+        metCorrMC.push_back(MCmet->GetBinContent(i+1));
+        metCorrData.push_back(DATAmet->GetBinContent(i+1));
+      }
     }
   }
- 
-  //for (UInt_t i=0; i<4; i++){
-  //  std::cout << "MC   " << metCorrMC[i] << std::endl;
-  //  std::cout << "Data " << metCorrData[i] << std::endl;
-  //}
+
 
   /////////////////////////////////////////////////////
   //

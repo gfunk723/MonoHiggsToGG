@@ -14,12 +14,15 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
 
   // values for the different bin edges
   mgg_minAB1 = 100.;
-  mgg_minCD  = 115.;
-  mgg_maxCD  = 135.;
-  mgg_maxAB2 = 150.; 
+  mgg_minCD  = 120.;// mgg signal region lower bound 
+  mgg_maxCD  = 130.;// mgg signal region upper bound
+  mgg_maxAB2 = 180.; 
   met_minB   = 0.;
-  met_minD   = 80.;
-  met_maxD   = 999.;
+  met_minD   = 70.;// MET threshold
+  met_maxD   = 2000.;
+  // save MET cut as a string
+  if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
+  else fMetCut = Form("%2.0f",met_minD);
 
   // titles for output Latex table
   fSampleTitleMap["Data"]		= "Data";
@@ -98,7 +101,6 @@ ABCDMethod::~ABCDMethod(){
     delete fOutBkgTH2DHists[th2d];
     delete fOutSelBkgTH2DHists[th2d];
   }
-
   for (UInt_t cat = 0; cat < 7; cat++){
     delete fRooData[cat][0];
     for (UInt_t mc = 0; mc < fNBkg+2; mc++){ delete fRooBkg[cat][mc]; }
@@ -156,6 +158,10 @@ void ABCDMethod::DoAnalysis(){
     if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
     if (fBkgNames[mc] == "ttHJetToGG")  i_tth = mc;
     if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
+    if (fBkgNames[mc] == "TGJets")	i_tgj = mc;
+    if (fBkgNames[mc] == "TTGJets")	i_ttgj= mc;
+    if (fBkgNames[mc] == "WGToLNuG")	i_wg  = mc;
+    if (fBkgNames[mc] == "ZGTo2LG")	i_zg  = mc;
   }
 
   // Because QCD has some events with very large weights
@@ -177,6 +183,10 @@ void ABCDMethod::DoAnalysis(){
   fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_gj]); 
   if (doQCDscale) fOutSelBkgTH2DHists[0]->Add(GJetsCloneTH2D[0]);
   else fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_qcd]);    
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_tgj]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_ttgj]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_wg]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_zg]); 
 
   // sum over nonresonant bkgs only
   fOutSelBkgTH1DHists[0] = (TH1D*)fInBkgTH1DHists[0][i_dy]->Clone();
@@ -184,6 +194,10 @@ void ABCDMethod::DoAnalysis(){
   fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_gj]); 
   if (doQCDscale) fOutSelBkgTH1DHists[0]->Add(GJetsClone[0]);
   else fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_qcd]);    
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_tgj]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_ttgj]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_wg]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_zg]); 
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
     //fInBkgTH2DHists[0][mc]->Scale(3000./1260.);// in order to scale to 3fb-1
@@ -267,13 +281,34 @@ void ABCDMethod::DoAnalysis(){
   min_y[7]=0;   
   max_y[7]=0;   
 
-
-  for (UInt_t cat = 0; cat < fNCat; cat++){
+  //for (UInt_t cat = 0; cat < fNCat; cat++){
   //  std::cout << "bin Xmin = " << min_x[cat] << std::endl;
   //  std::cout << "bin Xmax = " << max_x[cat] << std::endl;
   //  std::cout << "bin Ymin = " << min_y[cat] << std::endl;
   //  std::cout << "bin Ymax = " << max_y[cat] << std::endl;
+  //}
+
+  // Get the number of entries in the C region
+  BkgInC.resize(fNBkg);
+  BkgInCErr.resize(fNBkg);
+  BkgInCWgt.resize(fNBkg);
+  BkgInCWgtErr.resize(fNBkg);
+ 
+  DblVec BkgInCWgt1;
+  DblVec BkgInCWgtErr1; 
+  BkgInCWgt1.resize(fNBkg);
+  BkgInCWgtErr1.resize(fNBkg);
+
+  for (UInt_t mc = 0; mc < fNBkg; mc++){
+    BkgInC[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[1][mc], BkgInCErr[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
+    BkgInCWgt1[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[0][mc], BkgInCWgtErr1[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
+    if (BkgInC[mc] > 0) BkgInCWgt[mc] = BkgInCWgt1[mc]/BkgInC[mc];
+    else BkgInCWgt[mc] = 0;
+    //std::cout << "#inCent = " << BkgInC[mc] << std::endl;
+    //std::cout << "#inCtot = " << BkgInCWgt1[mc] << std::endl;
+    //std::cout << "#inCwgt = " << BkgInCWgt[mc] << std::endl;
   }
+
  
   for (UInt_t cat = 0; cat < fNCat; cat++){ // loop over each category 
     Data_Int[cat].resize(1); 		// only one group for data since it is lumped together
@@ -680,7 +715,7 @@ void ABCDMethod::SetRooVariables(){
         fRooBkg[cat][mc] = new RooRealVar(name,name,fCorrBkg[mc]);
       } 
       if (cat == 6){
-        multBkg = fBkg_Int[0][mc]/fBkg_Int[1][mc];
+        multBkg = BkgInCWgt[mc]*fBkg_Int[0][mc]/fBkg_Int[1][mc];
         fRooBkg[cat][mc] = new RooRealVar(name,name,multBkg);
       } 
       if (cat == 7){
@@ -720,21 +755,29 @@ void ABCDMethod::SetRooVariables(){
 }// end SetRooVariables
 
 void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate){
+  // get rates for each sample
   TString sig = *sigrate->format(2,"");
+  // for resonant bkg get the rate from the integral of D region 
   TString vh  = *bkgrate[2][i_vh]->format(2,"");
+  TString vbf = *bkgrate[2][i_vbf]->format(2,"");
+  TString tth = *bkgrate[2][i_tth]->format(2,"");
   TString hgg = *bkgrate[2][i_hgg]->format(2,"");
+  // for non-res bkg get the rate from the ABCD method
   TString dy  = *bkgrate[7][i_dy]->format(2,"");
   TString gg  = *bkgrate[7][i_gg]->format(2,"");
   TString qcd = *bkgrate[7][i_qcd]->format(2,""); 
   TString gj  = *bkgrate[7][i_gj]->format(2,"");
-  TString vbf = *bkgrate[7][i_vbf]->format(2,"");
-  TString tth = *bkgrate[7][i_tth]->format(2,"");
+  TString ttgj= *bkgrate[7][i_ttgj]->format(2,"");
+  TString tgj = *bkgrate[7][i_tgj]->format(2,"");
+  TString wg  = *bkgrate[7][i_wg]->format(2,"");
+  TString zg  = *bkgrate[7][i_zg]->format(2,"");
   //std::cout << "sig = " << sig << " vh " << vh << " hgg " << hgg << " dy " << dy << " gg " << gg << " qcd " << qcd << " gj " << gj << std::endl; 
 
   TStrVec N_C;
   N_C.resize(fNBkg);
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    N_C[mc] = *bkgrate[3][mc]->format(2,"");
+    N_C[mc] = Form("%i",(Int_t)BkgInC[mc]);
+    //N_C[mc] = *bkgrate[3][mc]->format(2,"");
     //std::cout << fBkgNames[mc] << ": C = " << N_C[mc] <<std::endl;
   }
 
@@ -746,7 +789,11 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   TString fac_gj  = *bkgrate[6][i_gj]->format(2,"");
   TString fac_vbf = *bkgrate[6][i_vbf]->format(2,"");
   TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
- 
+  TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
+  TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
+  TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
+  TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
+
   DblVec N_A,N_B,mult; // N_C,mult;
   N_A.resize(fNBkg);
   N_B.resize(fNBkg);
@@ -755,15 +802,20 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   for (UInt_t mc=0; mc < fNBkg; mc++){
     N_A[mc] = bkgrates[0][mc];
     N_B[mc] = bkgrates[1][mc];
-    mult[mc]= N_A[mc]/N_B[mc];
+    mult[mc]= BkgInCWgt[mc]*N_A[mc]/N_B[mc];
+    //std::cout << fBkgNames[mc].Data() <<" mult = " << mult[mc] << std::endl;
+    //std::cout << fBkgNames[mc].Data() <<" fac  = " << *bkgrate[6][mc]->format(2,"") << std::endl;
+    //std::cout << fBkgNames[mc].Data() <<" wgt  = " << BkgInCWgt[mc] << std::endl;
     //std::cout << fBkgNames[mc].Data() << " nA = " << N_A[mc] << " nB = " << N_B[mc] << " nA/nB = " << mult[mc] << std::endl;
   }
+
+  TString DataCardName = Form("%s/DataCard_%s_met%s.txt",fOutDir.Data(),fSigName.Data(),fMetCut.Data());
  
-  std::cout << "Writing data card in: " << fOutDir.Data() << "/DataCard_" << fSigName.Data() <<".txt" << std::endl;
-  fOutTxtFile.open(Form("%s/DataCard_%s.txt",fOutDir.Data(),fSigName.Data())); 
+  std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
+  fOutTxtFile.open(DataCardName); 
   // print out the Data Card file
   if (fOutTxtFile.is_open()){
-    fOutTxtFile << Form("#MonoHgg DataCard for C&C Limit Setting, %f fb-1 ",lumi) << std::endl;
+    fOutTxtFile << Form("#MonoHgg Datacard for MET > %s C&C Limit Setting, %f fb-1 ",fMetCut.Data(),lumi) << std::endl;
     fOutTxtFile << "#Run with:combine -M Asymptotic cardname.txt --run blind " << std::endl;
     fOutTxtFile << Form("# Lumi =  %f fb-1",lumi) << std::endl;
     fOutTxtFile << "imax 1" << std::endl;
@@ -774,22 +826,36 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
     fOutTxtFile << "bin 1"<< std::endl;
     fOutTxtFile << "observation 0 "  << std::endl;
     fOutTxtFile << "------------------------------" << std::endl;
-    fOutTxtFile << "bin		1		1		1		1		1		1		1"<< std::endl;
-    fOutTxtFile << "process		DM		gg		dy		qcd		gj		hgg		vh" << std::endl;
-    fOutTxtFile << "process		0		1		2		3		4		5 		6" << std::endl;
-    fOutTxtFile << Form("rate	       %s	       %s	       %s	       %s	       %s	       %s	       %s",sig.Data(),gg.Data(),dy.Data(),qcd.Data(),gj.Data(),hgg.Data(),vh.Data()) << std::endl; 
+    fOutTxtFile << "bin		1		1	1	1	1	1		1		1		1		1	1	1	1"<< std::endl;
+    fOutTxtFile << "process		DM		gg	dy	qcd	gj	hgg		vh		vbf		tth		ttgj	tgj	wg	zg" << std::endl;
+    fOutTxtFile << "process		0		1	2	3	4	5 		6 		7		8		9	10	11	12" << std::endl;
+    fOutTxtFile << Form("rate		%s	       %s       %s      %s	%s	%s		%s		%s		%s		%s	%s	%s	%s",
+         sig.Data(),gg.Data(),dy.Data(),qcd.Data(),gj.Data(),hgg.Data(),vh.Data(),vbf.Data(),tth.Data(),ttgj.Data(),tgj.Data(),wg.Data(),zg.Data()) << std::endl; 
     fOutTxtFile << "--------------------------------" << std::endl;
-    fOutTxtFile << "#signal related" << std::endl; //just took these numbers from Livia's example (all estimates from 8TeV)
-    fOutTxtFile << "lumi_13TeV lnN	1.1000		-		-		-		-		1.1000     	1.1000" << std::endl;
-    fOutTxtFile << "eff_trig   lnN	1.010000	-		-		-		-		1.01000    	1.01000" << std::endl;
-    fOutTxtFile << "id_eff_eb  lnN	1.02000		-		-		-		-		1.02000    	1.02000   " << std::endl;    
-    fOutTxtFile << "vtxEff     lnN	0.996/1.008	-		-		-		-		0.996/1.008	0.996/1.008" << std::endl; 
+    fOutTxtFile << "#signal related" << std::endl;
+    fOutTxtFile << "lumi        lnN	1.023		-	-	-	-	1.023   	1.023		1.023		1.023		-	-	-	- " << std::endl;
+    fOutTxtFile << "eff         lnN	1.030000 	-	-	-	-	1.030		1.030		1.030		1.030		-	-	-	- " << std::endl;
+    fOutTxtFile << "higg_BR     lnN	0.953/1.050	-	-	-	-	0.953/1.05	0.953/1.05	0.953/1.05	0.953/1.05	-	-	-	- " << std::endl;
+    fOutTxtFile << "higg_alphas lnN	0.940/0.965	-	-	-	-	0.940/0.965	0.940/0.965	0.940/0.964	0.940/0.964	-	-	-	- " << std::endl;
+    fOutTxtFile << "PDFs        lnN	1.05		-	-	-	-	1.05		1.05		1.05		1.05		-	-	-	- " << std::endl;
+    fOutTxtFile << "JetEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "JetEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "PhoEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "PhoEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "UnclEnUp    lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "UnclEnDown  lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
+    fOutTxtFile << "FakeMet     lnN	-		-	-	-	-	0.6/1.4		-		0.6/1.4		0.6/1.4		-	-	-	- " << std::endl;
+   
     fOutTxtFile << "#background related" << std::endl;
     //fOutTxtFile << "abcd_estimate lnN	-	1.27000		1.27000	   1.27000	1.27000		-	-	-  " << std::endl;
-    fOutTxtFile << Form("gg_norm  gmN 	%s	-	%s	   -		-		-	-	-  ",N_C[i_gg].Data(),fac_gg.Data()) << std::endl;
-    fOutTxtFile << Form("dy_norm  gmN 	%s	-	-	   %s		-		-	-	-  ",N_C[i_dy].Data(),fac_dy.Data()) << std::endl;
-    fOutTxtFile << Form("qcd_norm gmN 	%s	-	- 	   -		%s		-	-	-  ",N_C[i_qcd].Data(),fac_qcd.Data()) << std::endl;
-    fOutTxtFile << Form("gj_norm  gmN 	%s	-	-	   -		-		%s	-	-  ",N_C[i_gj].Data(),fac_gj.Data()) << std::endl;
+    fOutTxtFile << Form("gg_norm   gmN 	%s	-	%s	-	-	-	-		-  		-		-		-	-	-	- ",N_C[i_gg].Data(),fac_gg.Data()) << std::endl;
+    fOutTxtFile << Form("dy_norm   gmN 	%s	-	- 	%s	-	-	-		-  		-		-		-	-	-	- ",N_C[i_dy].Data(),fac_dy.Data()) << std::endl;
+    fOutTxtFile << Form("qcd_norm  gmN 	%s	-	- 	-	%s	-	-		-  		-		-		-	-	-	- ",N_C[i_qcd].Data(),fac_qcd.Data()) << std::endl;
+    fOutTxtFile << Form("gj_norm   gmN 	%s	-	- 	-	-	%s	-		-  		-		-		-	-	-	- ",N_C[i_gj].Data(),fac_gj.Data()) << std::endl;
+    fOutTxtFile << Form("ttgj_norm gmN 	%s	-	- 	-	-	-	-		-  		-		-		%s	-	-	- ",N_C[i_ttgj].Data(),fac_ttgj.Data()) << std::endl;
+    fOutTxtFile << Form("tgj_norm  gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	%s	-	- ",N_C[i_tgj].Data(),fac_tgj.Data()) << std::endl;
+    fOutTxtFile << Form("wg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	%s	- ",N_C[i_wg].Data(),fac_wg.Data()) << std::endl;
+    fOutTxtFile << Form("zg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	-	%s",N_C[i_zg].Data(),fac_zg.Data()) << std::endl;
 
   }
   else std::cout << "Unable to open DataCard Output File" << std::endl;
@@ -901,9 +967,11 @@ void ABCDMethod::InitHists(){
 void ABCDMethod::InitVariables(){
   // 1D histograms of interest
   fTH1DNames.push_back("nvtx");
+  //fTH1DNames.push_back("nvtx_IsolateALL");
 
   // 2D histograms of interest
   fTH2DNames.push_back("t1pfmet_mgg");
+  fTH2DNames.push_back("t1pfmet_mgg_unwgt");
 
   // UNBLINDED PLOT TO GET INCLUSIVE NUMBERS:
   //fTH2DNames.push_back("met_mgg");

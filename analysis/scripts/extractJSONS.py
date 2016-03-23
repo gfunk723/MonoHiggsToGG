@@ -40,11 +40,15 @@ def main(argv):
    #print out the line+next 2 (so name,nentries,weight)
    for i in range(0, len(lines)):
       line = lines[i]
-      if outputfile in line and i+2 < len(lines):
-         target.write(lines[i])
-         target.write(lines[i+1])
-         target.write(lines[i+2])
-	 target.write(lines[i+3])
+      if outputfile in line and i+2 < len(lines) and i > 0:
+         if 'true,' in lines[i-1]:
+           line = re.sub('                "name": "', '', line)
+           print 'Removing bad file ', line
+	 else:
+           target.write(lines[i])
+           target.write(lines[i+1])
+           target.write(lines[i+2])
+           target.write(lines[i+3])
 
    target.close()        
    print 'Output file is ', outputname

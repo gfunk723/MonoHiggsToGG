@@ -1,4 +1,3 @@
-#include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -24,7 +23,7 @@
 #include "flashgg/DataFormats/interface/Electron.h"
 #include "flashgg/DataFormats/interface/Muon.h"
 #include "flashgg/DataFormats/interface/Jet.h"
-
+#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 #include "flashgg/Taggers/interface/LeptonSelection.h"
 
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -42,6 +41,9 @@
 #include <fstream>
 
 #define MAX_PU_REWEIGHT 60
+
+// To be modified
+static const Bool_t wantVtxStudies = 0;
 
 using namespace std;
 using namespace edm;
@@ -228,6 +230,7 @@ struct diphoTree_struc_ {
   float vtxX; 
   float vtxY; 
   float vtxZ;
+  float vtx0Z;
   int genmatch1;   
   int genmatch2;
   float genmgg;
@@ -296,6 +299,15 @@ struct diphoTree_struc_ {
   float phiZ;
   float mva1;
   float mva2;
+
+  int Vtx0index;
+  int BDTindex;
+  float BDTvtxZ;
+  float BDTmassRaw;
+  float BDTptgg;
+  float BDTr91;
+  float BDTr92;
+
 };
 
 
@@ -351,12 +363,14 @@ private:
   float applyEnergySmearing(float pt, float sceta,float r9, int run);
   float applyEnergyScaling(int sampleID, float pt, float sceta,float r9, int run);
   bool geometrical_acceptance(float eta1, float eta2);
-
+  double applyJetCorrection(const flashgg::Jet &y);
+  int sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr );
 
   std::vector<edm::EDGetTokenT<View<flashgg::Jet> > > tokenJets_;
-  
+
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
+  EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonBDTVtxToken_; 
   EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_;
   EDGetTokenT<double> rhoToken_;
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
@@ -370,7 +384,8 @@ private:
 
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlagsToken_;
-
+  const reco::JetCorrector* jec_cor_;
+  EDGetTokenT<reco::JetCorrector> mJetCorrector;
   string bTag_;    
 
   typedef std::vector<edm::Handle<edm::View<flashgg::Jet> > > JetCollectionVector;
@@ -433,15 +448,26 @@ private:
   Int_t massLivia = 0;
   Int_t elvetoLivia = 0;
 
+  //counters Margaret 
+  Int_t BDTVtx0Margaret = 0;
+  Int_t BDTVtxMargaret = 0;
+
   // 74X only: met filters lists
   //EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
+
+  // vtx studies
+  TH1F *H_goodVtx;
+  TH1F *H_minDz;
+  TH1F *Hbad_logSumPt2, *Hbad_ptbal, *Hbad_ptasym;
+  TH1F *Hgood_logSumPt2, *Hgood_ptbal, *Hgood_ptasym;
 };
    
 
 NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   // collections
   vertexToken_(consumes<View<reco::Vertex> >(iConfig.getUntrackedParameter<InputTag> ("VertexTag", InputTag("offlineSlimmedPrimaryVertices")))),
-  diPhotonToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonTag", InputTag("flashggDiPhotons")))),
+  diPhotonToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonTag"))),
+  diPhotonBDTVtxToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonBDTVtxTag"))),
   PileUpToken_(consumes<View<PileupSummaryInfo> >(iConfig.getUntrackedParameter<InputTag> ("PileUpTag"))),
   rhoToken_(consumes<double>(iConfig.getParameter<InputTag>("RhoTag"))),
   genPhotonExtraToken_(mayConsume<vector<flashgg::GenPhotonExtra> >(iConfig.getParameter<InputTag>("genPhotonExtraTag"))),
@@ -452,7 +478,8 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ), 
   METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
-  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) )  
+  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) ),
+  mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
 { 
   numPassingCuts.resize(numCuts);
   for (int i=0; i<numCuts; i++) numPassingCuts[i]=0;
@@ -480,6 +507,8 @@ inline bool SortByJetPT(const edm::Ptr<flashgg::Jet> & jet1, const edm::Ptr<flas
 NewDiPhoAnalyzer::~NewDiPhoAnalyzer() { 
 
   std::cout<<"tot:    "<<totLivia<<std::endl;
+  std::cout<<"BDTvtxInd=0:   "<<BDTVtx0Margaret<<::endl;
+  std::cout<<"BDTvtxInd>0:   "<<BDTVtxMargaret<<::endl;
   std::cout<<"trig:   "<<trigLivia<<std::endl;
   std::cout<<"onereco:   "<<onerecoLivia<<std::endl;
   /*  std::cout<<"notrig:   "<<notrigLivia<<std::endl;
@@ -500,6 +529,7 @@ NewDiPhoAnalyzer::~NewDiPhoAnalyzer() {
   std::cout<<"vtx:    "<<vtxLivia<<std::endl;
   std::cout<<"mass:   "<<massLivia<<std::endl;
 
+
  
   // std::cout << "Number of Initial Events = " << eff_start << std::endl;
   // std::cout << "Number of Events Passing HLT = " << eff_passingHLT << std::endl;
@@ -519,6 +549,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
   Handle<View<flashgg::DiPhotonCandidate> > diPhotons;
   iEvent.getByToken(diPhotonToken_,diPhotons);
+
+  Handle<View<flashgg::DiPhotonCandidate> > diPhotonsBDTVtx;
+  iEvent.getByToken(diPhotonBDTVtxToken_,diPhotonsBDTVtx);
 
   Handle<View< PileupSummaryInfo> > PileupInfos;
   iEvent.getByToken(PileUpToken_,PileupInfos);
@@ -564,7 +597,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   Handle<View<flashgg::Electron> > theElectrons;  
   iEvent.getByToken( electronToken_, theElectrons );    
 
-
+  edm::Handle<reco::JetCorrector> corrector;
+  iEvent.getByToken(mJetCorrector, corrector);
+  jec_cor_ = corrector.product();
+       
   // --------------------------------------------------
   // std::cout<<"------------------------------ "<<diPhotons->size()<<" ------------------------------ "<<std::endl;
 
@@ -738,6 +774,29 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
       { std::cout << "WARNING number of MET is not equal to 1" << std::endl; }
     Ptr<pat::MET> theMET = METs->ptrAt( 0 );
 
+    // Compare BDT and Vtx0
+    //std::cout << "Vtx0dipho size = " << diPhotons->size() << " BDTVtxdipho size = " << diPhotonsBDTVtx->size() << std::endl;
+    //if ( diPhotons->size() != diPhotonsBDTVtx->size() ) std::cout << "Vtx0dipho size = " << diPhotons->size() << " BDTVtxdipho size = " << diPhotonsBDTVtx->size() << std::endl;
+    //if ( diPhotons->size()>0){
+    //  for( size_t diphotonlooper = 0; diphotonlooper < diPhotons->size() /*&& diphotonlooper < 1*/; diphotonlooper++ ) {
+    //    Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( diphotonlooper );      
+    //    int theVertex = diphoPtr->vertexIndex();
+    //    std::cout << "Vtx0 = " << theVertex << std::endl;
+    //  }
+    //}
+    
+    if ( diPhotonsBDTVtx->size()>0){
+      for( size_t diphotonlooper = 0; diphotonlooper < diPhotonsBDTVtx->size() /*&& diphotonlooper < 1*/; diphotonlooper++ ) {
+	Ptr<flashgg::DiPhotonCandidate> candDiphoBDTVtxPtr = diPhotonsBDTVtx->ptrAt( diphotonlooper );
+	int theBDTVertex = candDiphoBDTVtxPtr->vertexIndex();
+	//std::cout << "BDTVtx = " << theBDTVertex << std::endl;
+	if (theBDTVertex != 0){
+          //std::cout << "BDTVtx = " << theBDTVertex << std::endl;
+	  BDTVtxMargaret++;
+        }
+	else BDTVtx0Margaret++;
+      }
+    }
 
     // Loop over diphoton candidates
     if (diPhotons->size()>0) {
@@ -755,6 +814,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
       for( size_t diphotonlooper = 0; diphotonlooper < diPhotons->size() /*&& diphotonlooper < 1*/; diphotonlooper++ ) {
 
 	Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( diphotonlooper );      
+
+	//int theVertex = diphoPtr->vertexIndex();
+	//Ptr<flashgg::DiPhotonCandidate> candDiphoBDTVtxPtr = diPhotonsBDTVtx->ptrAt( diphotonlooper );
+	//int theBDTVertex = candDiphoBDTVtxPtr->vertexIndex();
+	//if ( theVertex != theBDTVertex || theVertex != 0 ) std::cout << "SelVtxInd = " << theVertex << " BDTVtxInd = " << theBDTVertex << std::endl;
       
 	float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();         
 	float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9(); 
@@ -1022,13 +1086,19 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		kinScalLivia++;
 		h_selection->Fill(5.,perEveW);
 		numPassingCuts[5]++;
-            
+       
+
+     
 		vector<int> vtxDipho;
 		for( size_t diphotonlooper = 0; diphotonlooper < kinScalDipho.size(); diphotonlooper++ ) {  
 		  int theDiphoton = kinScalDipho[diphotonlooper];
 		  Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( theDiphoton );
 		  bool goodVtx = true;
 		  int theVertex = candDiphoPtr->vertexIndex();
+		  //Ptr<flashgg::DiPhotonCandidate> candDiphoBDTVtxPtr = diPhotonsBDTVtx->ptrAt( theDiphoton );
+		  //int theBDTVertex = candDiphoBDTVtxPtr->vertexIndex();
+		  //if ( theVertex != theBDTVertex ) std::cout << "SelVtxInd = " << theVertex << " BDTVtxInd = " << theBDTVertex << std::endl;
+	          
 		  float vtxX = (primaryVertices->ptrAt(theVertex))->position().x();
 		  float vtxY = (primaryVertices->ptrAt(theVertex))->position().y();
 		  float d0vtx = sqrt( vtxX*vtxX + vtxY*vtxY );
@@ -1082,7 +1152,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		    }
 		    else theMassCorr = massCorrScale; // scale mass for Data
 		
-		    if (theMassCorr <= 100 || theMassCorr >= 180) continue;
+		    if (theMassCorr <= 100 || theMassCorr >= 300) continue;
 		    massDipho.push_back(theDiphoton);
 		  }
 
@@ -1103,11 +1173,25 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			candIndex = theDiphoton;
 		      }
 		    }
-	    
-		    if (candIndex<999) {
-	      
+
+		    // Diphoton candidates choice: highest scalar sum pT
+		    float maxSumPtBDT = -999.;
+		    int candIndexBDT = 9999; // This int will store the index of the best diphoton candidate
+		    for( size_t diphotonlooper = 0; diphotonlooper < massDipho.size(); diphotonlooper++ ) {  
+		      int theDiphoton = massDipho[diphotonlooper];
+		      Ptr<flashgg::DiPhotonCandidate> diphoBDTVtxPtr = diPhotonsBDTVtx->ptrAt( theDiphoton );
+		      float thisSumPt = diphoBDTVtxPtr->leadingPhoton()->et() + diphoBDTVtxPtr->subLeadingPhoton()->et();
+		      if (thisSumPt>maxSumPtBDT) {
+			maxSumPtBDT = thisSumPt;
+			candIndexBDT = theDiphoton;
+		      }
+		    }
+
+
+		    if (candIndex<9999) {
 		      Ptr<flashgg::DiPhotonCandidate> candDiphoPtr = diPhotons->ptrAt( candIndex );
-		 
+		      Ptr<flashgg::DiPhotonCandidate> candDiphoBDTVtxPtr = diPhotonsBDTVtx->ptrAt( candIndexBDT );
+
 		      // to be kept in the tree
 		      float ptgg, mgg;
 		      int eventClass;
@@ -1122,6 +1206,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int presel1, presel2, sel1, sel2, tightsel1, tightsel2, loosesel1, loosesel2;
 		      int vtxIndex;
 		      float vtxX, vtxY, vtxZ;
+		      float vtx0Z;
 		      int genmatch1, genmatch2;
 		      float genmgg;
 		      float geniso1, geniso2;
@@ -1142,6 +1227,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int genZ;
 		      float ptZ, etaZ, phiZ;
 		      float mva1, mva2;
+		      float BDTvtxZ, BDTmassRaw, BDTptgg, BDTr91, BDTr92;
+                      int BDTindex, Vtx0index;
 
 		      // fully selected event: tree re-initialization                                                                          
 		      initTreeStructure();        
@@ -1150,7 +1237,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      t1pfmet = theMET->pt();
 		      t1pfmetPhi = theMET->phi();
 		      t1pfmetSumEt = theMET->sumEt();
-
 
 		      //add MET systematic variables Livia
 		      t1pfmetJetEnUp		= theMET->shiftedPt(pat::MET::JetEnUp);
@@ -1179,7 +1265,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      calometPhi = theMET->caloMETPhi();
 		      calometSumEt = theMET->caloMETSumEt();
 
-		
+		      //-------> diphotonBDTvtx system properties 
+		      BDTptgg    = candDiphoBDTVtxPtr->pt();
+		      BDTmassRaw = candDiphoBDTVtxPtr->mass();
+		      BDTr91     = candDiphoBDTVtxPtr->leadingPhoton()->full5x5_r9();
+		      BDTr92     = candDiphoBDTVtxPtr->subLeadingPhoton()->full5x5_r9();
+		      BDTvtxZ    = candDiphoBDTVtxPtr->vtx()->z();
+		      BDTindex   = candDiphoBDTVtxPtr->vertexIndex();
+		      Vtx0index  = candDiphoPtr->vertexIndex();
+
 		      //-------> diphoton system properties 
 		      ptgg = candDiphoPtr->pt();
 		      massRaw  = candDiphoPtr->mass();
@@ -1345,6 +1439,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      vtxX= candDiphoPtr->vtx()->x();
 		      vtxY= candDiphoPtr->vtx()->y();
 		      vtxZ= candDiphoPtr->vtx()->z();
+		      //-------> first vtx info        
+		      vtx0Z = (primaryVertices->ptrAt(0))->position().z();
 		
 		      //-------> generated vtx info
 		      genVtxX = -999.;
@@ -1412,8 +1508,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      }
 		
 	
-
-		      // chiaraaaaa
 		      // --> only for VH: check the mc truth for Higgs studies
 		      vhtruth = -1;
 		      if (sampleID==11) { //this is VH
@@ -1584,17 +1678,23 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      unsigned int jetCollectionIndex = candDiphoPtr->jetCollectionIndex(); 
 		      std::vector<edm::Ptr<flashgg::Jet> > tempJets(Jets[jetCollectionIndex]->size());
 
-		      // make sure jets are sorted by pT
+		      // make sure jets are sorted by pT after applying JEC
 		      for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
-		        tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
+			//tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
+			//apply JEC
+			Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
+			double scale = applyJetCorrection(*thejet);
+			thejet->correctedJet("Uncorrected").setP4( scale * thejet->correctedJet("Uncorrected").p4() );
+			tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 		      }
+
 		      std::sort(tempJets.begin(),tempJets.end(),SortByJetPT);
 
 		      // loop over sorted jets
 		      unsigned int jetIndex = 0;
 		      for (auto&& thejet : tempJets){
 			jetIndex++;
-			//std::cout << "jet pt =  " << thejet->pt() << std::endl;
+		
 			// jet selection: kinematics and id - hardcoded
 			if( fabs( thejet->eta() ) > 4.7 ) continue;// Margaret changed to include all jets
 			if( thejet->pt() < 30. ) continue;  
@@ -1741,7 +1841,47 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      } // loop over jets
 
 
-		
+		      // vertex studies
+		      if (wantVtxStudies) {
+
+			float vtxOk = -1;
+			float minDz = 9999.;
+			for (int ivtx=0; ivtx<(int)primaryVertices->size(); ivtx++) {
+			  float thisVtxZ = (primaryVertices->ptrAt(ivtx))->position().z();
+			  float theDz = fabs(thisVtxZ-higgsVtxZ);
+			  if (theDz<minDz) {
+			    minDz = theDz;
+			    vtxOk = ivtx;
+			  }
+			}
+			
+			H_goodVtx->Fill(vtxOk);
+			H_minDz->Fill(minDz);
+
+			for (int ivtx=0; ivtx<(int)primaryVertices->size(); ivtx++) {
+			  
+			  if (ivtx!=vtxOk) {  // background 
+			    unsigned int badVtxI = (unsigned int)ivtx;
+			    int badVtxSortedIndexI = sortedIndex( badVtxI, primaryVertices->size(), candDiphoPtr );  
+			    if (badVtxSortedIndexI < (int)candDiphoPtr->nVtxInfoSize() ) {    
+			      Hbad_logSumPt2 -> Fill( candDiphoPtr->logSumPt2(badVtxSortedIndexI) );
+			      Hbad_ptbal     -> Fill( candDiphoPtr->ptBal(badVtxSortedIndexI) );
+			      Hbad_ptasym    -> Fill( candDiphoPtr->ptAsym(badVtxSortedIndexI) );
+			    }
+			  } else {  // signal
+			    unsigned int goodVtxI = (unsigned int)ivtx;
+			    int goodVtxSortedIndexI = sortedIndex( goodVtxI, primaryVertices->size(), candDiphoPtr );
+			    if (goodVtxSortedIndexI < (int)candDiphoPtr->nVtxInfoSize() ) {
+			      Hgood_logSumPt2 -> Fill( candDiphoPtr->logSumPt2(goodVtxSortedIndexI) );
+			      Hgood_ptbal     -> Fill( candDiphoPtr->ptBal(goodVtxSortedIndexI) );
+			      Hgood_ptasym    -> Fill( candDiphoPtr->ptAsym(goodVtxSortedIndexI) );
+			    }
+			  }
+			}
+		      }  // additional vertex studies
+
+
+
 		      // Variables for the tree
 		      treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
 		      treeDipho_.hltPhoton36Photon22Mass15=hltPhoton36Photon22Mass15;
@@ -1895,6 +2035,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.vtxX = vtxX;
 		      treeDipho_.vtxY = vtxY;
 		      treeDipho_.vtxZ = vtxZ;
+		      treeDipho_.vtx0Z = vtx0Z;
 		      treeDipho_.genmatch1 = genmatch1; 
 		      treeDipho_.genmatch2 = genmatch2; 
 		      treeDipho_.genmgg  = genmgg;        // -999: not enough gen level gamma; -1999: strange association with reco
@@ -1962,6 +2103,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.phiZ = phiZ;
 		      treeDipho_.mva1 = mva1;
 		      treeDipho_.mva2 = mva2;
+
+		      treeDipho_.BDTmassRaw = BDTmassRaw;
+		      treeDipho_.BDTptgg = BDTptgg;
+		      treeDipho_.BDTr91 = BDTr91;
+		      treeDipho_.BDTr92 = BDTr92;
+		      treeDipho_.BDTvtxZ = BDTvtxZ;
+		      treeDipho_.BDTindex = BDTindex;
+		      treeDipho_.Vtx0index = Vtx0index;
 	
 		      // Filling the trees
 		      DiPhotonTree->Fill();
@@ -1980,6 +2129,34 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   //delete lazyToolnoZS;
 }
 
+double NewDiPhoAnalyzer::applyJetCorrection(const flashgg::Jet &y)
+    {
+      double jec_adjust = 1.;
+      double jec = jec_cor_->correction( y.correctedJet("Uncorrected") );
+      double oldjec = (y.energy()/y.correctedJet("Uncorrected").energy());
+     
+      //	std::cout << " DOING JEC! We get this jec from the corrector: " << jec << std::endl;
+      //	std::cout << "    ... previous jec was: " << oldjec << std::endl;
+      
+      jec_adjust = jec/oldjec;
+            
+      //float scale = jec_adjust;
+      //   std::cout << ": Jet has pt= " << y.pt() << " eta=" << y.eta()
+      //		<< " and we apply a multiplicative correction of " << scale << std::endl;
+       return jec_adjust;
+    }
+
+
+
+int NewDiPhoAnalyzer::sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr ) {
+
+  for( unsigned int j = 0; j < sizemax; j++ ) {
+    int index = diphoPtr->mvaSortedIndex( j ); 
+    if( index < 0 ) { continue; } 
+    if( ( unsigned int ) index == vtxIndex ) { return j; } 
+  }
+  return -1;   
+}   
 
 bool NewDiPhoAnalyzer::geometrical_acceptance(float eta1, float eta2)
 {
@@ -2015,6 +2192,18 @@ void NewDiPhoAnalyzer::beginJob() {
   //listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
   //listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
   //cout << "met filters lists read" << endl;
+
+  // For vtx studies
+  if (wantVtxStudies) {
+    H_goodVtx = new TH1F("H_goodVtx","H_goodVtx",10,0,10);
+    H_minDz = new TH1F("H_minDz","H_minDz",100,-20,20);
+    Hbad_logSumPt2 = new TH1F("Hbad_logSumPt2","Hbad_logSumPt2",100,-4.,14.);
+    Hbad_ptbal = new TH1F("Hbad_ptbal","Hbad_ptbal",100,-40,140);
+    Hbad_ptasym = new TH1F("Hbad_ptasym","Hbad_ptasym",100,-1,1);
+    Hgood_logSumPt2 = new TH1F("Hgood_logSumPt2","Hgood_logSumPt2",100,-4.,14.);
+    Hgood_ptbal = new TH1F("Hgood_ptbal","Hgood_ptbal",100,-40,140);
+    Hgood_ptasym = new TH1F("Hgood_ptasym","Hgood_ptasym",100,-1,1);
+  }
 
   // Trees
   DiPhotonTree = fs_->make<TTree>("DiPhotonTree","di-photon tree");
@@ -2176,6 +2365,7 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("vtxX",&(treeDipho_.vtxX),"vtxX/F");
   DiPhotonTree->Branch("vtxY",&(treeDipho_.vtxY),"vtxY/F");
   DiPhotonTree->Branch("vtxZ",&(treeDipho_.vtxZ),"vtxZ/F");
+  DiPhotonTree->Branch("vtx0Z",&(treeDipho_.vtx0Z),"vtx0Z/F");
   DiPhotonTree->Branch("higgsVtxX",&(treeDipho_.higgsVtxX),"higgsVtxX/F");
   DiPhotonTree->Branch("higgsVtxY",&(treeDipho_.higgsVtxY),"higgsVtxY/F");
   DiPhotonTree->Branch("higgsVtxZ",&(treeDipho_.higgsVtxZ),"higgsVtxZ/F");
@@ -2238,12 +2428,31 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("phiZ",&(treeDipho_.phiZ),"phiZ/F");
   DiPhotonTree->Branch("mva1",&(treeDipho_.mva1),"mva1/F");
   DiPhotonTree->Branch("mva2",&(treeDipho_.mva2),"mva2/F");
-
-  cout << " finished beginJob " << endl;
+  DiPhotonTree->Branch("BDTptgg",&(treeDipho_.BDTptgg),"BDTptgg/F");
+  DiPhotonTree->Branch("BDTmassRaw",&(treeDipho_.BDTmassRaw),"BDTmassRaw/F");
+  DiPhotonTree->Branch("BDTr91",&(treeDipho_.BDTr91),"BDTr91/F");
+  DiPhotonTree->Branch("BDTr92",&(treeDipho_.BDTr92),"BDTr92/F");
+  DiPhotonTree->Branch("BDTvtxZ",&(treeDipho_.BDTvtxZ),"BDTvtxZ/F");
+  DiPhotonTree->Branch("BDTindex",&(treeDipho_.BDTindex),"BDTindex/I");
+  DiPhotonTree->Branch("Vtx0index",&(treeDipho_.Vtx0index),"Vtx0index/I");
 
 }
 
-void NewDiPhoAnalyzer::endJob() { }
+void NewDiPhoAnalyzer::endJob() { 
+
+  if (wantVtxStudies) {
+    TFile fileVtx("outputVtx.root","RECREATE");
+    fileVtx.cd();
+    H_goodVtx ->Write();
+    H_minDz ->Write();
+    Hbad_logSumPt2 ->Write(); 
+    Hbad_ptbal     ->Write();
+    Hbad_ptasym    ->Write();
+    Hgood_logSumPt2 ->Write(); 
+    Hgood_ptbal     ->Write();
+    Hgood_ptasym    ->Write();
+  }
+}
 
 void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.hltPhoton26Photon16Mass60=-500;
@@ -2377,6 +2586,7 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.vtxX = -500.;
   treeDipho_.vtxY = -500.;
   treeDipho_.vtxZ = -500.;
+  treeDipho_.vtx0Z = -500.;
   treeDipho_.genmatch1 = -500;
   treeDipho_.genmatch2 = -500;
   treeDipho_.genmgg  = -500.;
@@ -2720,7 +2930,7 @@ bool NewDiPhoAnalyzer::testPhotonIsolation(int passSieie, int passCHiso, int pas
 
 
 bool NewDiPhoAnalyzer::isGammaSelected( float rho, float pt, float sceta, float r9, float chiso, float nhiso, float phoiso, float hoe, float sieie, bool passElectronVeto) {
-  std::cout<<rho<<" "<<pt<<" "<<sceta<<" "<<r9<<" "<<chiso<<" "<<nhiso<<" "<<phoiso<<" "<<hoe<<" "<<sieie<<" "<<passElectronVeto<<std::endl;
+  //std::cout<<rho<<" "<<pt<<" "<<sceta<<" "<<r9<<" "<<chiso<<" "<<nhiso<<" "<<phoiso<<" "<<hoe<<" "<<sieie<<" "<<passElectronVeto<<std::endl;
   // classes: 0 = EB highR9, 1 = EB low R9, 2 = EE high R9, 3 = EE lowR9
   int etaclass = fabs(sceta)>1.5;
   int r9class  = r9<0.94;                   

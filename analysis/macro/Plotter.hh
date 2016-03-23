@@ -256,9 +256,11 @@ private:
   Int_t         metF_eeBadSC;
   Int_t         metF_MuonBadTrack;
   Int_t         metF_HadronTrackRes;
+  Int_t		vtxIndex;
   Float_t       vtxX;
   Float_t       vtxY;
   Float_t       vtxZ;
+  Float_t       vtx0Z;
   Float_t       genVtxX;
   Float_t       genVtxY;
   Float_t       genVtxZ;
@@ -278,6 +280,12 @@ private:
   Float_t       ptZ;
   Float_t       etaZ;
   Float_t       phiZ;
+  Float_t	BDTptgg;
+  Float_t	BDTmassRaw;
+  Float_t	BDTr91;
+  Float_t	BDTr92;
+  Float_t	BDTvtxZ;
+  Int_t		BDTindex;
 
 
   // branches
@@ -464,12 +472,20 @@ private:
   TBranch       *b_ptZ;   //!
   TBranch       *b_etaZ;   //!
   TBranch       *b_phiZ;   //!
+  TBranch       *b_vtxIndex;
   TBranch       *b_vtxX;
   TBranch       *b_vtxY;
   TBranch       *b_vtxZ;
+  TBranch       *b_vtx0Z;
   TBranch       *b_genVtxX;
   TBranch       *b_genVtxY;
   TBranch       *b_genVtxZ;
+  TBranch	*b_BDTptgg;
+  TBranch	*b_BDTmassRaw;
+  TBranch	*b_BDTr91;
+  TBranch	*b_BDTr92;
+  TBranch	*b_BDTvtxZ;
+  TBranch	*b_BDTindex;
 
 };
 

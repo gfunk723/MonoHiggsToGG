@@ -65,6 +65,10 @@ private:
   UInt_t	i_dy;
   UInt_t	i_tth;
   UInt_t	i_vbf;
+  UInt_t	i_tgj; 
+  UInt_t	i_ttgj;
+  UInt_t	i_wg; 
+  UInt_t	i_zg;  
 
   Double_t	mgg_minAB1;
   Double_t	mgg_minCD;
@@ -73,6 +77,8 @@ private:
   Double_t	met_minB;
   Double_t	met_minD;
   Double_t	met_maxD;
+
+  TString	fMetCut;
 
   TStrMap	fSampleTitleMap;
 
@@ -86,6 +92,11 @@ private:
   DblVecVec 	Bkg_IntErr;
   DblVecVec 	Data_Int;
   DblVecVec 	Data_IntErr; 
+
+  DblVec	BkgInC;
+  DblVec	BkgInCErr;
+  DblVec	BkgInCWgt;
+  DblVec	BkgInCWgtErr;
 
   DblVecVec 	fSig_Int;
   DblVecVec 	fSig_IntErr;

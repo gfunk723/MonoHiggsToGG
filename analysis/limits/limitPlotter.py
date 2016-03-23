@@ -38,7 +38,7 @@ ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptFit(0)
 #www_path="/afs/cern.ch/user/s/soffi/www/Limits"
-www_path="/afs/cern.ch/user/m/mzientek/www/Plots/25ns_Limits"
+www_path="/afs/cern.ch/user/m/mzientek/www/Plots/25ns_Limits_74X"
 epsilon=0.001
 
 #-------------------------------------------------------------------------
@@ -47,8 +47,8 @@ OBSmasses = []
 EXPmasses = []
 
 
-OBSmassesT = [600,800,1000,1200,1400]#,1700,2000]#,2500]#[1,10,100,1000]
-EXPmassesT = [600,800,1000,1200,1400]#,1700,2000]#,2500]#[1,10,100,1000]
+OBSmassesT = [600,800,1000,1200,1400,1700,2500]#[1,10,100,1000]
+EXPmassesT = [600,800,1000,1200,1400,1700,2500]#[1,10,100,1000]
 
 
 for m in OBSmassesT:
@@ -63,8 +63,8 @@ FILLSTYLE=1001
 SMFILLSTYLE=3244
 FILLCOLOR_95=ROOT.kYellow
 FILLCOLOR_68=ROOT.kGreen
-RANGEYABS=[0.0001,100]
-RANGEYRAT=[0.0001,10]
+RANGEYABS=[0.5,100]
+RANGEYRAT=[0.5,100]
 #RANGEYRAT=[0.0, 2.2]
 RANGEMU = [-4,3.0]
 MINPV = 0.5*10E-5
@@ -393,7 +393,7 @@ def MakeLimitPlot(MG):
     MG.Draw("L3")
     if not options.nogrid: dummyHist.Draw("AXIGSAME")
 
-    dummyHist.GetXaxis().SetTitle("m_{DM} [GeV]")
+    dummyHist.GetXaxis().SetTitle("m_{Z'} [GeV]")
     dummyHist.GetXaxis().SetRangeUser(min(OBSmasses)-OFFSETLOW,max(OBSmasses)+OFFSETHIGH)
     if options.doRatio:
      dummyHist.GetYaxis().SetRangeUser(RANGEYRAT[0],RANGEYRAT[1])
@@ -402,7 +402,7 @@ def MakeLimitPlot(MG):
     else: 
      dummyHist.GetYaxis().SetRangeUser(RANGEYABS[0],RANGEYABS[1])
      dummyHist.GetYaxis().SetNdivisions(5,int("%d"%(RANGEYABS[1]-RANGEYABS[0])),0)
-     dummyHist.GetYaxis().SetTitle("#sigma BR(h#chi#bar{#chi} #rightarrow #gamma#gamma#chi#bar{#chi})_{95%CL} [pb]")
+     dummyHist.GetYaxis().SetTitle("#sigma BR(h#chi#bar{#chi} #rightarrow #gamma#gamma#chi#bar{#chi})_{95%CL} [fb]")
 
     dummyHist.GetYaxis().SetTitleOffset(1.5)
     dummyHist.GetXaxis().SetTitleOffset(1.25)
@@ -433,7 +433,7 @@ def MakeLimitPlot(MG):
     mytextPrel.SetTextSize(0.0285);
     mytextPrel.SetLineWidth(2);
     # mytext.DrawLatex(0.12,0.96,"CMS Preliminary, 19.5 fb^{-1}                                                   #sqrt{s} = 8 TeV")
-    mytextlumi.DrawLatex(0.92,0.96,"3 fb^{-1} (13 TeV)")
+    mytextlumi.DrawLatex(0.92,0.96,"2.2 fb^{-1} (13 TeV)")
     mytextCMS.DrawLatex(0.17915,0.89165,"CMS")
     mytextPrel.DrawLatex(0.17915,0.84665,"Preliminary")
     for t,lineT in enumerate(options.addtxt):
@@ -454,8 +454,8 @@ def MakeLimitPlot(MG):
     if options.doRatio: www_outputname+="_ratio"
     if options.append!="": outputname+="_"+options.append
     if options.append!="": www_outputname+="_"+options.append
-    outputname+="_met250_3fb_new"
-    www_outputname+="_met250_3fb_new"
+    outputname+="_OptSel3_met70"
+    www_outputname+="_OptSel3_met70"
     types=[".pdf",".png",".eps"]
     for type in types: C.SaveAs(outputname+type)
     for type in types: C.SaveAs(www_outputname+type)
