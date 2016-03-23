@@ -256,6 +256,13 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   Float_t	  ptZ;
   Float_t	  etaZ;
   Float_t	  phiZ; 
+  Float_t	  BDTptgg;
+  Float_t	  BDTmassRaw;
+  Float_t	  BDTr91;
+  Float_t	  BDTr92;
+  Float_t	  BDTvtxZ;
+  Int_t		  BDTindex;
+
  
   // List of branches - original tree
   TBranch        *b_run; 
@@ -464,6 +471,13 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   TBranch	 *b_ptZ;
   TBranch	 *b_etaZ;
   TBranch	 *b_phiZ;
+  TBranch	 *b_BDTptgg;
+  TBranch	 *b_BDTmassRaw;
+  TBranch	 *b_BDTr91;
+  TBranch	 *b_BDTr92;
+  TBranch	 *b_BDTvtxZ;
+  TBranch	 *b_BDTindex;
+
 
   // Set branch addresses and branch pointers 
   treeOrig->SetBranchAddress("run", &run, &b_run);
@@ -672,6 +686,14 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
   treeOrig->SetBranchAddress("ptZ", &ptZ, &b_ptZ);
   treeOrig->SetBranchAddress("etaZ", &etaZ, &b_etaZ);
   treeOrig->SetBranchAddress("phiZ", &phiZ, &b_phiZ);
+  treeOrig->SetBranchAddress("BDTptgg", &BDTptgg, &b_BDTptgg);
+  treeOrig->SetBranchAddress("BDTmassRaw", &BDTmassRaw, &b_BDTmassRaw);
+  treeOrig->SetBranchAddress("BDTr91", &BDTr91, &b_BDTr91);
+  treeOrig->SetBranchAddress("BDTr92", &BDTr92, &b_BDTr92);
+  treeOrig->SetBranchAddress("BDTvtxZ", &BDTvtxZ, &b_BDTvtxZ);
+  treeOrig->SetBranchAddress("BDTindex", &BDTindex, &b_BDTindex);
+
+
 
   // new variables to be added
   Float_t xsecWeight;
@@ -897,6 +919,12 @@ void addWeights(const char* filename, float lumiForW, float massTrue=1) {
     theTreeNew->Branch("ptZ", &ptZ,   "ptZ/F");
     theTreeNew->Branch("etaZ", &etaZ, "etaZ/F");
     theTreeNew->Branch("phiZ", &phiZ, "phiZ/F");
+    theTreeNew->Branch("BDTptgg", &BDTptgg, "BDTptgg/F");
+    theTreeNew->Branch("BDTmassRaw", &BDTmassRaw, "BDTmassRaw/F");
+    theTreeNew->Branch("BDTr91", &BDTr91, "BDTr91/F");
+    theTreeNew->Branch("BDTr92", &BDTr92, "BDTr92/F");
+    theTreeNew->Branch("BDTvtxZ", &BDTvtxZ, "BDTvtxZ/F");
+    theTreeNew->Branch("BDTindex", &BDTindex, "BDTindex/I");
   }
   
   for(int i=0; i<nentriesOrig; i++) {

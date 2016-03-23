@@ -41,13 +41,13 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString inDir = "data/25ns_v74X_v1/"; 			// input directory of the samples
-  TString outDir = "./diPhoPlots/25ns_v74X_v1_OptSel3/";	// output directory to send results
+  TString inDir = "data/25ns_v74X_v2/"; 			// input directory of the samples
+  TString outDir = "./diPhoPlots/25ns_v74X_v2_OptSel3/";	// output directory to send results
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
-  bool doPlots = false;		// make plots for each sample individually
-  bool doComb = false;		// make stack/overlay plots
+  bool doMETCorr = true;	// redo the MET correction for MC and data, else take the Corr from the root file
+  bool doPlots = true;		// make plots for each sample individually
+  bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 

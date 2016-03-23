@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = False; 
+isMC = True; 
 is76X = False; #CANNOT RUN ON 76X in 74X
 isFLASHgg_1_1_0 = False;
 ######################
@@ -48,15 +48,15 @@ else:
     print "Using name RECO"
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 50000 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 500 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	#vtx0:
-	#"/store/user/mzientek/flashgg/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_1/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_1-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160314_221441/0000/myMicroAODOutputFile_116.root",
-	"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_1.root",
-	"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_10.root",
-	"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_100.root",
+	"/store/user/mzientek/flashgg/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_1/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_1-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160314_221441/0000/myMicroAODOutputFile_116.root",
+	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_1.root",
+	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_10.root",
+	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_100.root",
 	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal/1_1_0/MonoHgg_2HDM_MZP600_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal-1_1_0-v0-soffi-2HDM_MZP600_A0300_Hgg_miniAODv2/160310_222132/0000/myMicroAODOutputFile_1.root",
 	#"/store/user/mzientek/flashgg/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_1/GluGluHToGG_M-125_13TeV_powheg_pythia8/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_1-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160314_221930/0000/myMicroAODOutputFile_1.root",
 	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal/1_1_0/MonoHgg_2HDM_MZP600_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal-1_1_0-v0-soffi-2HDM_MZP600_A0300_Hgg_miniAODv2/160310_222132/0000/myMicroAODOutputFile_1.root",
@@ -214,10 +214,10 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   DiPhotonBDTVtxTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo = cms.InputTag("generator"),
-                                  dopureweight = cms.untracked.int32(0),
+                                  dopureweight = cms.untracked.int32(1),
                                   bits         = cms.InputTag('TriggerResults::HLT'),
                                   flags        = cms.InputTag(flag),
-				  sampleIndex  = cms.untracked.int32(10007),
+				  sampleIndex  = cms.untracked.int32(7),
                                   puWFileName  = cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_fullReReco74X.root'),  
                                   xsec         = cms.untracked.double(1), #pb
                                   kfac         = cms.untracked.double(1.),

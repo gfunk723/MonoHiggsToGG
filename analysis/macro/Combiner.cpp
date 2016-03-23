@@ -1642,6 +1642,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("nJets");
     fTH1DNames.push_back("nElec");
     fTH1DNames.push_back("nMuon");
+    fTH1DNames.push_back("BDTindex");
 
     fTH1DNames.push_back("t1pfmetCorr");
     fTH1DNames.push_back("t1pfmetphiCorr");

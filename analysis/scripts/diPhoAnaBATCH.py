@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = True;
+isMC = False;
 is76X = False; #CANNOT RUN ON 76X in 74X
 isFLASHgg_1_1_0 = True;
 ######################
@@ -166,7 +166,7 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   bTag = cms.untracked.string(flashggBTag),      
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),   
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons0vtx'),
-                                  #DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons'),
+                                  DiPhotonBDTVtxTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo = cms.InputTag("generator"),
 				  bits	        = cms.InputTag('TriggerResults::HLT'),
