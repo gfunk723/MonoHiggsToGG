@@ -40,7 +40,7 @@ typedef TH2DMap::iterator		TH2DMapIter;
 
 class Plotter{
 public:
-  Plotter(const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, const TString type, const DblVec metcorr);
+  Plotter(const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, const TString type, const DblVec metcorr, const int whichSelection);
   ~Plotter();
 
   void DoPlots(int prompt);  
@@ -84,6 +84,7 @@ private:
 
   TTree * 		tpho;
   Int_t			nentries;
+  Int_t			fWhichSel;
 
   TH1DMap		fTH1DMap;
   TH1DMap		fTH1DNewMap; //these histos have overflow bin

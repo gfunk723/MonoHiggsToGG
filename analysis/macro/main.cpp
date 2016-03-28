@@ -1,11 +1,14 @@
 
-  // Compile:
-  // make clean
+  //////////////////////////////////////////////////////////////////////////////////////
+  //
+  // To Compile:
+  // make clean (if you have changed something in the .hh files)
   // make
   //
   // Call this script:
   // ./main
   //
+  //////////////////////////////////////////////////////////////////////////////////////
 
 #include "Plotter.hh"
 #include "Combiner.hh"
@@ -41,14 +44,27 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString inDir = "data/25ns_v74X_v2/"; 			// input directory of the samples
-  TString outDir = "./diPhoPlots/25ns_v74X_v2_OptSel3/";	// output directory to send results
+  int whichSelection = 3; // Choose which selection to apply
+  TString selName = "";   // Original selection w/ MET > 80
+  if (whichSelection == 0) selName = "OrigSel";// MET > 70  
+  if (whichSelection == 1) selName = "OptSel1";// pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90,	MET > 105  
+  if (whichSelection == 2) selName = "OptSel2";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 50,	MET > 80 
+  if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2,	MET > 70 
+  if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.55, pt2/m > 0.25, ptgg/MET > 0.4,	MET > 105
+  if (whichSelection == 5) selName = "OptSel5";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85,	MET > 50
+
+  //////////////////////////////////////////////////////////////////////////////////////
+
+  TString inDir = "data/25ns_v74X_v2/"; 					// input directory of the samples
+  TString outDir = Form("./diPhoPlots/25ns_v74X_v2_%s/",selName.Data());	// output directory to send results
+
+  //////////////////////////////////////////////////////////////////////////////////////
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = true;	// redo the MET correction for MC and data, else take the Corr from the root file
-  bool doPlots = true;		// make plots for each sample individually
-  bool doComb = true;		// make stack/overlay plots
-  bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
+  bool doPlots = false;		// make plots for each sample individually
+  bool doComb = false;		// make stack/overlay plots
+  bool doABCD = true;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
@@ -243,163 +259,164 @@ int main(){
   // 7th : bool doBlinding
   // 8th : type of plots
   // 9th : metCorr vector
+  // 10th: which selection
   //
   /////////////////////////////////////////////////////
 
   if (doFakeData){
     std::cout << "Working on FakeData sample" << std::endl;
-    Plotter * FakeData = new Plotter(inDir,outDir,"FakeData",puweights_Data,lumi,true,doBlind,type,metCorrData);
+    Plotter * FakeData = new Plotter(inDir,outDir,"FakeData",puweights_Data,lumi,true,doBlind,type,metCorrData,whichSelection);
     FakeData->DoPlots(0);
     delete FakeData;
     std::cout << "Finished FakeData sample" << std::endl;
   }
   if (doPlots){
     std::cout << "Working on DoubleEG sample" << std::endl;
-    Plotter * dEG = new Plotter(inDir,outDir,"DoubleEG",puweights_Data,lumi,true,doBlind,type,metCorrData);
+    Plotter * dEG = new Plotter(inDir,outDir,"DoubleEG",puweights_Data,lumi,true,doBlind,type,metCorrData,whichSelection);
     dEG->DoPlots(0);
     delete dEG;
     std::cout << "Finished DoubleEG sample" << std::endl;
 
     std::cout << "Working on GJets sample" << std::endl;
-    Plotter * GJets = new Plotter(inDir,outDir,"GJets",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * GJets = new Plotter(inDir,outDir,"GJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     GJets->DoPlots(1);
     delete GJets;
     std::cout << "Finished GJets sample" << std::endl;
 
     std::cout << "Working on QCD sample" << std::endl;
-    Plotter * QCD = new Plotter(inDir,outDir,"QCD",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * QCD = new Plotter(inDir,outDir,"QCD",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     QCD->DoPlots(2);
     delete QCD;
     std::cout << "Finished QCD sample" << std::endl;
 
     std::cout << "Working on WZH sample" << std::endl;
-    Plotter * WZH = new Plotter(inDir,outDir,"VH",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * WZH = new Plotter(inDir,outDir,"VH",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     WZH->DoPlots(0);
     delete WZH;
     std::cout << "Finished WZH sample" << std::endl;
 
     std::cout << "Working on WGToLNuG sample" << std::endl;
-    Plotter * WGToLNuG = new Plotter(inDir,outDir,"WGToLNuG",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * WGToLNuG = new Plotter(inDir,outDir,"WGToLNuG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     WGToLNuG->DoPlots(0);
     delete WGToLNuG;
     std::cout << "Finished WGToLNuG sample" << std::endl;
 
     std::cout << "Working on ZGTo2LG sample" << std::endl;
-    Plotter * ZGTo2LG = new Plotter(inDir,outDir,"ZGTo2LG",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * ZGTo2LG = new Plotter(inDir,outDir,"ZGTo2LG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     ZGTo2LG->DoPlots(0);
     delete ZGTo2LG;
     std::cout << "Finished ZGTo2LG sample" << std::endl;
 
     std::cout << "Working on TGJets sample" << std::endl;
-    Plotter * TGJets = new Plotter(inDir,outDir,"TGJets",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * TGJets = new Plotter(inDir,outDir,"TGJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     TGJets->DoPlots(0);
     delete TGJets;
     std::cout << "Finished TGJets sample" << std::endl;
 
     std::cout << "Working on TTGJets sample" << std::endl;
-    Plotter * TTGJets = new Plotter(inDir,outDir,"TTGJets",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * TTGJets = new Plotter(inDir,outDir,"TTGJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     TTGJets->DoPlots(0);
     delete TTGJets;
     std::cout << "Finished TTGJets sample" << std::endl;
 
     std::cout << "Working on GluGluH sample" << std::endl;
-    Plotter * GGHGG = new Plotter(inDir,outDir,"GluGluHToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * GGHGG = new Plotter(inDir,outDir,"GluGluHToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     GGHGG->DoPlots(0);
     delete GGHGG;
     std::cout << "Finished GluGluH sample" << std::endl;
 
     std::cout << "Working on ttHJetToGG sample" << std::endl;
-    Plotter * ttH = new Plotter(inDir,outDir,"ttHJetToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * ttH = new Plotter(inDir,outDir,"ttHJetToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     ttH->DoPlots(0);
     delete ttH;
     std::cout << "Finished ttHJetToGG sample" << std::endl;
 
     std::cout << "Working on VBFHToGG sample" << std::endl;
-    Plotter * VBF = new Plotter(inDir,outDir,"VBFHToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * VBF = new Plotter(inDir,outDir,"VBFHToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     VBF->DoPlots(0);
     delete VBF;
     std::cout << "Finished VBFHToGG sample" << std::endl;
   
     std::cout << "Working on DiPhoton sample" << std::endl;
-    Plotter * GG = new Plotter(inDir,outDir,"DiPhoton",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * GG = new Plotter(inDir,outDir,"DiPhoton",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     GG->DoPlots(0);
     delete GG;
     std::cout << "Finished DiPhoton sample" << std::endl;
 
     std::cout << "Working on DYJets sample" << std::endl;
-    Plotter * DY = new Plotter(inDir,outDir,"DYJetsToLL",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DY = new Plotter(inDir,outDir,"DYJetsToLL",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DY->DoPlots(0);
     delete DY;
     std::cout << "Finished DYJets sample" << std::endl;
 
     std::cout << "Working on DMHgg 2HDM MZP600 sample" << std::endl;
-    Plotter * DMH_mZP600 = new Plotter(inDir,outDir,"2HDM_mZP600",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP600 = new Plotter(inDir,outDir,"2HDM_mZP600",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP600->DoPlots(0);
     delete DMH_mZP600;
     std::cout << "Finished DMHgg 2HDM MZP600 sample" << std::endl;
    
     std::cout << "Working on DMHgg 2HDM MZP800 sample" << std::endl;
-    Plotter * DMH_mZP800 = new Plotter(inDir,outDir,"2HDM_mZP800",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP800 = new Plotter(inDir,outDir,"2HDM_mZP800",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP800->DoPlots(0);
     delete DMH_mZP800;
     std::cout << "Finished DMHgg 2HDM MZP800 sample" << std::endl;
    
     std::cout << "Working on DMHgg 2HDM MZP1000 sample" << std::endl;
-    Plotter * DMH_mZP1000 = new Plotter(inDir,outDir,"2HDM_mZP1000",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP1000 = new Plotter(inDir,outDir,"2HDM_mZP1000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP1000->DoPlots(0);
     delete DMH_mZP1000;
     std::cout << "Finished DMHgg 2HDM MZP1000 sample" << std::endl;
    
     std::cout << "Working on DMHgg 2HDM MZP1200 sample" << std::endl;
-    Plotter * DMH_mZP1200 = new Plotter(inDir,outDir,"2HDM_mZP1200",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP1200 = new Plotter(inDir,outDir,"2HDM_mZP1200",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP1200->DoPlots(0);
     delete DMH_mZP1200;
     std::cout << "Finished DMHgg 2HDM MZP1200 sample" << std::endl;
 
     std::cout << "Working on DMHgg 2HDM MZP1400 sample" << std::endl;
-    Plotter * DMH_mZP1400 = new Plotter(inDir,outDir,"2HDM_mZP1400",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP1400 = new Plotter(inDir,outDir,"2HDM_mZP1400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP1400->DoPlots(0);
     delete DMH_mZP1400;
     std::cout << "Finished DMHgg 2HDM MZP1400 sample" << std::endl;
 
     std::cout << "Working on DMHgg 2HDM MZP1700 sample" << std::endl;
-    Plotter * DMH_mZP1700 = new Plotter(inDir,outDir,"2HDM_mZP1700",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP1700 = new Plotter(inDir,outDir,"2HDM_mZP1700",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP1700->DoPlots(0);
     delete DMH_mZP1700;
     std::cout << "Finished DMHgg 2HDM MZP1700 sample" << std::endl;
 
     //std::cout << "Working on DMHgg 2HDM MZP2000 sample" << std::endl;
-    //Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    //Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_mZP2000->DoPlots(0);
     //delete DMH_mZP2000;
     //std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
 
     std::cout << "Working on DMHgg 2HDM MZP2500 sample" << std::endl;
-    Plotter * DMH_mZP2500 = new Plotter(inDir,outDir,"2HDM_mZP2500",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * DMH_mZP2500 = new Plotter(inDir,outDir,"2HDM_mZP2500",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     DMH_mZP2500->DoPlots(0);
     delete DMH_mZP2500;
     std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
     
     //std::cout << "Working on DMHgg M1000 sample" << std::endl;
-    //Plotter * DMH_M1000 = new Plotter(inDir,outDir,"DMHtoGG_M1000",puweights_sig,lumi,false,doBlind,type,metCorrMC);
+    //Plotter * DMH_M1000 = new Plotter(inDir,outDir,"DMHtoGG_M1000",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_M1000->DoPlots(0);
     //delete DMH_M1000;
     //std::cout << "Finished DMHgg M1000 sample" << std::endl;
   
     //std::cout << "Working on DMHgg M100 sample" << std::endl;
-    //Plotter * DMH_M100 = new Plotter(inDir,outDir,"DMHtoGG_M100",puweights_sig,lumi,false,doBlind,type,metCorrMC);
+    //Plotter * DMH_M100 = new Plotter(inDir,outDir,"DMHtoGG_M100",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_M100->DoPlots(0);
     //delete DMH_M100;
     //std::cout << "Finished DMHgg M100 sample" << std::endl;
   
     //std::cout << "Working on DMHgg M10 sample" << std::endl;
-    //Plotter * DMH_M10 = new Plotter(inDir,outDir,"DMHtoGG_M10",puweights_sig,lumi,false,doBlind,type,metCorrMC);
+    //Plotter * DMH_M10 = new Plotter(inDir,outDir,"DMHtoGG_M10",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_M10->DoPlots(0);
     //delete DMH_M10;
     //std::cout << "Finished DMHgg M10 sample" << std::endl;
   
     //std::cout << "Working on DMHgg M1 sample" << std::endl;
-    //Plotter * DMH_M1 = new Plotter(inDir,outDir,"DMHtoGG_M1",puweights_sig,lumi,false,doBlind,type,metCorrMC);
+    //Plotter * DMH_M1 = new Plotter(inDir,outDir,"DMHtoGG_M1",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_M1->DoPlots(0);
     //delete DMH_M1;
     //std::cout << "Finished DMHgg M1 sample" << std::endl;
@@ -591,11 +608,12 @@ int main(){
   // 2rd : lumi
   // 3th : output directory
   // 4th : bool do rescaling of GJets to replace QCD sample
+  // 5th : which selection (this just affects the MET cut)
   //
   ////////////////////////////////////////////////////
 
   if (doABCD){
-    ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,doBlind,doQCDrescale);
+    ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,doBlind,doQCDrescale,whichSelection);
     abcd->DoAnalysis();
     delete abcd; 
   }// end doABCD
