@@ -1,6 +1,6 @@
 #include "ABCDMethod.hh"
 
-ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TString outdir, Bool_t Blind, Bool_t doQCDrescale){
+ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TString outdir, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection){
 
   // load RooFit
   gSystem->Load("libRooFit");
@@ -11,6 +11,14 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   doQCDscale = doQCDrescale;
   fInDir = outdir;
   fOutDir = outdir+"ABCD";
+  fWhichSel = whichSelection;
+
+  Double_t METcut = 70;// METcut to apply 
+  if (fWhichSel == 1) METcut = 105;
+  if (fWhichSel == 2) METcut = 80;
+  if (fWhichSel == 3) METcut = 70; 
+  if (fWhichSel == 4) METcut = 105; 
+  if (fWhichSel == 5) METcut = 50; 
 
   // values for the different bin edges
   mgg_minAB1 = 100.;
@@ -18,7 +26,7 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   mgg_maxCD  = 130.;// mgg signal region upper bound
   mgg_maxAB2 = 180.; 
   met_minB   = 0.;
-  met_minD   = 70.;// MET threshold
+  met_minD   = METcut;// MET threshold
   met_maxD   = 2000.;
   // save MET cut as a string
   if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
