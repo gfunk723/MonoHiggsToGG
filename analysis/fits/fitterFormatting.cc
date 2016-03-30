@@ -514,7 +514,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     if (catType==0 && t1pfmetCorr > 70) passSelection = true; 
     if (catType==1 && pt1>(0.50*mgg) && pt2>(0.25*mgg) && ptgg > 90 && t1pfmetCorr >= 105)		passSelection = true; 
     if (catType==2 && pt1>(0.55*mgg) && pt2>(0.25*mgg) && ptgg/t1pfmetCorr > 0.5 && t1pfmetCorr >= 95)	passSelection = true; 
-    if (catType==3 && pt1>(0.55*mgg) && pt2>(0.25*mgg) && ptgg > 85 && t1pfmetCorr >= 50)		passSelection = true; 
+    if (catType==3 && pt1>(0.55*mgg) && pt2>(0.25*mgg) && ptgg > 90 && t1pfmetCorr >= 50)		passSelection = true; 
     if (catType==4 && pt1>(0.45*mgg) && pt2>(0.25*mgg) && ptgg/t1pfmetCorr > 0.2 && t1pfmetCorr >= 70)	passSelection = true; 
 
     if (passSelection){
