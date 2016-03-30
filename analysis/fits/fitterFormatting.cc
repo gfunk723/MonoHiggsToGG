@@ -1,5 +1,6 @@
 #include <TFile.h>
 #include <TTree.h>
+#include <TH1.h>
 #include <TLorentzVector.h>
 #include <TBranch.h>
 #include <iostream>
@@ -17,24 +18,10 @@ using namespace std;
 //   7th: outFile name
 //   8th: category type
 
-////////////////////////////////////////////////////
-// 
-//   Category Types
-//   0 = Photon Categories, No additional Sel.
-//   1 = Photon Categories, MET > 50
-//   2 = Photon Categories, pT1 > 80, pT2 > 30
-//   3 = Photon Categories, pT1 > 80, pT2 > 30, MET > 50
-//   4 = MET Categories
-//   5 = MET Categories, pT1 > 80, pT2 > 30  
-//
-// Photon Categories = all,EE,EB,EEHighR9,EELowR9,EBHighR9,EBLowR9
-// MET Categories = met0 (inclusive), met0-50, met50 (50 & above)
-//
-////////////////////////////////////////////////////
-
 void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample, TString outFile,  UInt_t catType) {
   cout << "Formatting " << inDir << filename << endl;
   cout << "Move to Pasquale's format for fit." << endl;
+  cout << "Using selection " << catType << endl;
 
   TFile *fileOrig = 0;
   TTree *treeOrig = 0;
@@ -72,34 +59,34 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   thePhotonCat.push_back("EE");
   UInt_t numPhoCat = thePhotonCat.size();
 
-  // setup for the met categories out
-  // vector to store values of selection
-  std::vector<Int_t> MetCut;
-  MetCut.push_back(0);
-  MetCut.push_back(50);
-  // vector to store how selection is applied to trees
-  std::vector<TString> MetCat;
-  MetCat.push_back(TString::Format("t1pfmet>=%d",MetCut[0]));			 	// met > MetCut0
-  MetCat.push_back(TString::Format("t1pfmet>=%d && t1pfmet<%d",MetCut[0],MetCut[1]));	// met [MetCut0,MetCut1] 
-  //MetCat.push_back(TString::Format("t1pfmet>=%d && t1pfmet<%d",MetCut[1],MetCut[2])); 	// met [MetCut1,MetCut2]
-  //MetCat.push_back(TString::Format("t1pfmet>=%d && t1pfmet<%d",MetCut[2],MetCut[3]));   // met [MetCut2,MetCut3]
-  MetCat.push_back(TString::Format("t1pfmet>=%d",MetCut[1]));				// met > MetCut3
-  UInt_t numMetCat = MetCat.size();
-  // vector to store names for met cat out
-  std::vector<TString> theMetCat;
-  theMetCat.push_back(TString::Format("met%d",MetCut[0]));
-  theMetCat.push_back(TString::Format("met%d-%d",MetCut[0],MetCut[1]));
-  //theMetCat.push_back(TString::Format("met%d-%d",MetCut[1],MetCut[2]));
-  //theMetCat.push_back(TString::Format("met%d-%d",MetCut[2],MetCut[3]));
-  theMetCat.push_back(TString::Format("met%d",MetCut[1]));
+  //// setup for the met categories out
+  //// vector to store values of selection
+  //std::vector<Int_t> MetCut;
+  //MetCut.push_back(0);
+  //MetCut.push_back(50);
+  //// vector to store how selection is applied to trees
+  //std::vector<TString> MetCat;
+  //MetCat.push_back(TString::Format("t1pfmet>=%d",MetCut[0]));			 	// met > MetCut0
+  //MetCat.push_back(TString::Format("t1pfmet>=%d && t1pfmet<%d",MetCut[0],MetCut[1]));	// met [MetCut0,MetCut1] 
+  ////MetCat.push_back(TString::Format("t1pfmet>=%d && t1pfmet<%d",MetCut[1],MetCut[2])); 	// met [MetCut1,MetCut2]
+  ////MetCat.push_back(TString::Format("t1pfmet>=%d && t1pfmet<%d",MetCut[2],MetCut[3]));   // met [MetCut2,MetCut3]
+  //MetCat.push_back(TString::Format("t1pfmet>=%d",MetCut[1]));				// met > MetCut3
+  //UInt_t numMetCat = MetCat.size();
+  //// vector to store names for met cat out
+  //std::vector<TString> theMetCat;
+  //theMetCat.push_back(TString::Format("met%d",MetCut[0]));
+  //theMetCat.push_back(TString::Format("met%d-%d",MetCut[0],MetCut[1]));
+  ////theMetCat.push_back(TString::Format("met%d-%d",MetCut[1],MetCut[2]));
+  ////theMetCat.push_back(TString::Format("met%d-%d",MetCut[2],MetCut[3]));
+  //theMetCat.push_back(TString::Format("met%d",MetCut[1]));
 
   // make output file and new trees
   cout << "OutputFile: " << outDir << "/" << outFile << endl;
   TFile *fileNew = TFile::Open(TString::Format("%s/%s",outDir.Data(),outFile.Data()),"RECREATE");
   vector<TTree*> trees;
   trees.resize(numPhoCat);
-  vector<TDirectory*> newDir;
-  newDir.resize(numMetCat);  
+  //vector<TDirectory*> newDir;
+  //newDir.resize(MetCat);  
 
   // make output structure of directories
   TString dir1 = "";
@@ -399,8 +386,8 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   //}// end loop over new trees in met cat
 
   // make vectors to store if passing different met cuts
-  vector<bool> passMet;
-  passMet.resize(numMetCat);
+  //vector<bool> passMet;
+  //passMet.resize(numMetCat);
 
   bool EB1, EB2;
   bool EE1, EE2;
@@ -416,6 +403,22 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TLorentzVector fLorenzVecJet3;
   TLorentzVector fLorenzVecJet4;
   TLorentzVector correctedMet;
+
+  std::cout << "Pickup MET Phi Correction" << std::endl; 
+  std::vector< Double_t > fMETCorrMC;
+  std::vector< Double_t > fMETCorrData;
+  // pick up MC metCorr
+  TString metStudyMC = Form("%s/metCorr_MC.root",inDir.Data());
+  TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
+  TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
+  // pick up Data metCorr
+  TString metStudyData = Form("%s/metCorr_Data.root",inDir.Data());
+  TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
+  TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
+  for (UInt_t i=0; i<4; i++){
+    fMETCorrMC.push_back(MCmet->GetBinContent(i+1));
+    fMETCorrData.push_back(DATAmet->GetBinContent(i+1));
+  }
 
   for (UInt_t i=0; i<nentriesOrig; i++){
     treeOrig->GetEntry(i);
@@ -440,18 +443,6 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
 
     // met-phi correction
     Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE;
-
-    std::vector< Double_t > fMETCorrData;
-    fMETCorrData.push_back(-3.49829);
-    fMETCorrData.push_back(-0.0250039);
-    fMETCorrData.push_back(3.22072);
-    fMETCorrData.push_back(-0.0193479);
-    
-    std::vector< Double_t > fMETCorrMC;
-    fMETCorrMC.push_back(-1.33055);
-    fMETCorrMC.push_back(-0.00700742);
-    fMETCorrMC.push_back(0.267872);
-    fMETCorrMC.push_back(-0.00486139);
 
     if (type=="data"){ 
       t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
@@ -519,7 +510,14 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     if (nMuons > 0 || nEle > 1) continue;
 
     // START SELECTION:
-    if (pt1>(0.45*mgg) && pt2>(0.25*mgg) && t1pfmetCorr >= 70 && ptgg/t1pfmetCorr>0.2 ){
+    bool passSelection = false;
+    if (catType==0 && t1pfmetCorr > 70) passSelection = true; 
+    if (catType==1 && pt1>(0.50*mgg) && pt2>(0.25*mgg) && ptgg > 90 && t1pfmetCorr >= 105)		passSelection = true; 
+    if (catType==2 && pt1>(0.55*mgg) && pt2>(0.25*mgg) && ptgg/t1pfmetCorr > 0.5 && t1pfmetCorr >= 95)	passSelection = true; 
+    if (catType==3 && pt1>(0.55*mgg) && pt2>(0.25*mgg) && ptgg > 85 && t1pfmetCorr >= 50)		passSelection = true; 
+    if (catType==4 && pt1>(0.45*mgg) && pt2>(0.25*mgg) && ptgg/t1pfmetCorr > 0.2 && t1pfmetCorr >= 70)	passSelection = true; 
+
+    if (passSelection){
       // split events by eta
       EB1 = false;
       EB2 = false;
@@ -540,15 +538,15 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       if (r91 > 0.94 && r92 > 0.94) hiR9 = true;
       else if (r91 <= 0.94 || r92 <= 0.94) loR9 = true;
 
-      // see if passing different MET cuts (not used right now)
-      for (UInt_t met=0; met<numMetCat; met++){
-	passMet[met]=false;
-        if (met==0 && t1pfmetCorr>=MetCut[met]) passMet[met]=true;
-        else if (met==numMetCat-1 && t1pfmetCorr>=MetCut[met-1]) passMet[met]=true;
-        else{
-          if (t1pfmetCorr>=MetCut[met-1] && t1pfmetCorr<MetCut[met]) passMet[met]=true;
-        }
-      }// end met loop
+      //// see if passing different MET cuts (not used right now)
+      //for (UInt_t met=0; met<numMetCat; met++){
+      //  passMet[met]=false;
+      //  if (met==0 && t1pfmetCorr>=MetCut[met]) passMet[met]=true;
+      //  else if (met==numMetCat-1 && t1pfmetCorr>=MetCut[met-1]) passMet[met]=true;
+      //  else{
+      //    if (t1pfmetCorr>=MetCut[met-1] && t1pfmetCorr<MetCut[met]) passMet[met]=true;
+      //  }
+      //}// end met loop
 
 
       // set the new variables (i.e. renamed from old tree)

@@ -130,9 +130,8 @@ In short:
 Convert ntuples from FLASHgg format to format for fits by using fitterFormatting.cc 
 Called by: `./formatNtupleForFitting.sh`
 
-Need to specify the actual cuts to be applied and the values of the MET correction to be applied for Data and MC inside fitterFormatting.cc. 
-N.B. Something nice to fix would be to make this more automated by calling the METcorr root files and using the whichSelection as done in the Plotter.
-
+Choose which selection to apply by specifying the values of category: 0 to 4 are currently allowed.
+Additional categories can be applied by adding the selection in fitterFormatting.cc.
 
 -----------------------------------------------------------
 # Copy the Framework from Github
