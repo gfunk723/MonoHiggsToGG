@@ -70,7 +70,7 @@ Can also run: `./submitAll_DiPhioton.py` which has the names of current samples 
 From the macro directory:
 
 - Merge the output files with `./mergeTrees.sh` specifying in here the output directory
-- Add the weights to the trees with addWeightsToTree.cc run by `./weighTrees.sh LUMI` which addWeights for provided LUMI (in pb^-1)
+- Add the weights to the trees with addWeightsToTree.cc run by `./weighTrees.sh LUMI` which weights for the provided `LUMI` (in pb^-1)
 - Merge the species with `./mergeSpecies.sh`
 
 NB. The structure of how to use these scripts can be seen in `doAll.sh`
@@ -90,6 +90,7 @@ The ones that are currently in place:
 -  if (whichSelection == 2) selName = "OptSel2"; 
 -  if (whichSelection == 3) selName = "OptSel3"; 
 -  if (whichSelection == 4) selName = "OptSel4"; 
+
 The values of the cuts on the pTs are defined in Plotter.cpp. The MET cuts are also defined in the Plotter & in ABCD.cpp.
 If you want to add additional selection options, you will need to add the respective cuts to both of these.
 
