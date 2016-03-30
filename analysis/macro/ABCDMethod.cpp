@@ -1,6 +1,6 @@
 #include "ABCDMethod.hh"
 
-ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TString outdir, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection){
+ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TString indir, const TString outdir, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection){
 
   // load RooFit
   gSystem->Load("libRooFit");
@@ -9,16 +9,15 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   lumi = inLumi;
   doBlind = Blind;
   doQCDscale = doQCDrescale;
-  fInDir = outdir;
+  fInDir = indir;
   fOutDir = outdir+"ABCD";
   fWhichSel = whichSelection;
 
   Double_t METcut = 70;// METcut to apply 
   if (fWhichSel == 1) METcut = 105;
-  if (fWhichSel == 2) METcut = 80;
-  if (fWhichSel == 3) METcut = 70; 
-  if (fWhichSel == 4) METcut = 105; 
-  if (fWhichSel == 5) METcut = 50; 
+  if (fWhichSel == 2) METcut = 95;
+  if (fWhichSel == 3) METcut = 50; 
+  if (fWhichSel == 4) METcut = 70; 
 
   // values for the different bin edges
   mgg_minAB1 = 100.;

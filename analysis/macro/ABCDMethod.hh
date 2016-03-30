@@ -38,7 +38,7 @@ typedef std::vector<RooVec>	 RooVecVec;
 
 class ABCDMethod{
 public: 
-  ABCDMethod(const SamplePairVec Samples, const Double_t inLumi, const TString outname, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection);
+  ABCDMethod(const SamplePairVec Samples, const Double_t inLumi, const TString indir, const TString outname, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection);
   void DoAnalysis();
   Double_t ComputeIntAndErr(TH2D *& h, Double_t & error, const UInt_t minX, const UInt_t maxX, const UInt_t minY, const UInt_t maxY);
   Double_t ComputeIntAndErr1D(TH1D *& h, Double_t & error, const UInt_t minX, const UInt_t maxX);

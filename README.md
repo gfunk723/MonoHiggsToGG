@@ -85,12 +85,11 @@ Can use `make clean` to clean.
 
 Choose which selection to apply (whichSelection).
 The ones that are currently in place:
--  if (whichSelection == 0) selName = "OrigSel";// No additional selection on ntuples 		MET > 70  
--  if (whichSelection == 1) selName = "OptSel1";// pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90,	MET > 105  
--  if (whichSelection == 2) selName = "OptSel2";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 50,	MET > 80 
--  if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2,	MET > 70 
--  if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.55, pt2/m > 0.25, ptgg/MET > 0.4,	MET > 105
--  if (whichSelection == 5) selName = "OptSel5";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85,	MET > 50
+-  if (whichSelection == 0) selName = "OrigSel";
+-  if (whichSelection == 1) selName = "OptSel1";  
+-  if (whichSelection == 2) selName = "OptSel2"; 
+-  if (whichSelection == 3) selName = "OptSel3"; 
+-  if (whichSelection == 4) selName = "OptSel4"; 
 The values of the cuts on the pTs are defined in Plotter.cpp. The MET cuts are also defined in the Plotter & in ABCD.cpp.
 If you want to add additional selection options, you will need to add the respective cuts to both of these.
 

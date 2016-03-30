@@ -139,10 +139,9 @@ void Plotter::DoPlots(int prompt){
 
   Double_t METcut = 70;// METcut to apply 
   if (fWhichSel == 1) METcut = 105;
-  if (fWhichSel == 2) METcut = 80;
-  if (fWhichSel == 3) METcut = 70; 
-  if (fWhichSel == 4) METcut = 105; 
-  if (fWhichSel == 5) METcut = 50; 
+  if (fWhichSel == 2) METcut = 95;
+  if (fWhichSel == 3) METcut = 50; 
+  if (fWhichSel == 4) METcut = 70; 
 
   for (UInt_t entry = 0; entry < nentries; entry++){
     tpho->GetEntry(entry);
@@ -309,19 +308,17 @@ void Plotter::DoPlots(int prompt){
     // START full selection for plots
     if (passMETfil){ //Data passes MET filter
       /////////////////////////////////////////////////////////////////
-      // OptSel1 = using ptgg & optimized w/o requirement on number of events 
-      // OptSel2 = BIASED b/c used data for optimization
-      // OptSel3 = using ptgg/MET & optimized w/ requirement on number of events
-      // OptSel4 = using ptgg & w/ requirement on number of events
-      // OptSel5 = using ptgg/MET & optimized w/o requirement on number of events
+      // OptSel1 = using ptgg 	  & optimized w/o requirement on number of events 
+      // OptSel2 = using ptgg/MET & optimized w/o requirement on number of events
+      // OptSel3 = using ptgg	  & optimized w/ requirement on number of events
+      // OptSel4 = using ptgg/MET & optimized w/ requirement on number of events
       /////////////////////////////////////////////////////////////////
       bool passTheSel = false;
       if (fWhichSel==0) passTheSel = true; // Orignal Selection
-      if (fWhichSel==1 && (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90)) 		passTheSel = true;// OptSel1
-      if (fWhichSel==2 && (pt1 > 0.65*mgg && pt2 > 0.25*mgg && ptgg > 50)) 		passTheSel = true;// OptSel2 
-      if (fWhichSel==3 && (pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.2)) passTheSel = true;// OptSel3
-      if (fWhichSel==4 && (pt1 > 0.55*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.4)) passTheSel = true;// OptSel4
-      if (fWhichSel==5 && (pt1 > 0.55*mgg && pt2 > 0.25*mgg && ptgg > 85)) 		passTheSel = true;// OptSel5 
+      if (fWhichSel==1 && (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)) 		passTheSel = true;// OptSel1 (for M600 point)
+      if (fWhichSel==2 && (pt1 > 0.55*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.5)) passTheSel = true;// OptSel2 (for M600 point)
+      if (fWhichSel==3 && (pt1 > 0.55*mgg && pt2 > 0.25*mgg && ptgg > 85)) 		passTheSel = true;// OptSel3
+      if (fWhichSel==4 && (pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.2)) passTheSel = true;// OptSel4
 
       if (passTheSel){
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
