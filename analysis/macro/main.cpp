@@ -44,7 +44,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 2; // Choose which selection to apply
+  int whichSelection = 4; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -581,20 +581,20 @@ int main(){
     // Combiner( Samples, lumi, colorMap , outDir, doNmin1plots, doStack)
     
     // do overlay plots for normal plots
-    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale);
+    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale,whichSelection);
     combAll->DoComb();
     delete combAll;   
     // do stack plots for normal plots
-    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale);
+    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale,whichSelection);
     stackAll->DoComb();
     delete stackAll;   
  
     ////// do overlay plots for n-1 plots
-    //Combiner *combAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,false,type,doQCDrescale);
+    //Combiner *combAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,false,type,doQCDrescale,whichSelection);
     //combAlln1->DoComb();
     //delete combAlln1;   
     ////// do stack plots for n-1 plots 
-    //Combiner *stackAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,true,type,doQCDrescale);
+    //Combiner *stackAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,true,type,doQCDrescale,whichSelection);
     //stackAlln1->DoComb();
     //delete stackAlln1;   
   }// end doComb
