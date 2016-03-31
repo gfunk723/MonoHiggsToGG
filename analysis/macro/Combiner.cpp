@@ -185,7 +185,29 @@ void Combiner::DoComb(){
 
     if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
       std::ofstream	fOutTableTxtFile2;
-      fOutTableTxtFile2.open(Form("%s/IntegralsAfterAllCuts.tex",fOutDir.Data()));
+      fOutTableTxtFile2.open(Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()));
+
+      TStrMap fLatexSampleTitleMap;
+      fLatexSampleTitleMap["QCD"] 		= "QCD";
+      fLatexSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
+      fLatexSampleTitleMap["VH"]		= "V + H";
+      fLatexSampleTitleMap["DYJetsToLL"]	= "Drell-Yan";
+      fLatexSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
+      fLatexSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
+      fLatexSampleTitleMap["ttHJetToGG"]	= "tt $+ H \\rightarrow \\gamma\\gamma$";
+      fLatexSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
+      fLatexSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
+      fLatexSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+      fLatexSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
+      fLatexSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
+      fLatexSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1000"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1200"]	= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1400"]	= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
 
       UInt_t sbbin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
       UInt_t sbbin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(120.);
@@ -216,7 +238,7 @@ void Combiner::DoComb(){
         fOutTableTxtFile2 << "\\begin{table}[bthp]" <<std::endl;
         fOutTableTxtFile2 << "\\begin{tabular}{|l|r|}" <<std::endl;
         fOutTableTxtFile2 << "\\hline \\hline" <<std::endl;
-        fOutTableTxtFile2 << "\\multicolumn{3}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
+        fOutTableTxtFile2 << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
         fOutTableTxtFile2 << "\\hline \\hline" << std::endl;
         fOutTableTxtFile2 << "Sample & Integral \\\\" << std::endl;
         fOutTableTxtFile2 << "\\hline" <<std::endl;
@@ -257,14 +279,15 @@ void Combiner::DoComb(){
         // calculate integrals for background
         for (UInt_t mc = 0; mc < fNBkg; mc++){
           fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,fBkgIntErr[mc]);
-          fOutTableTxtFile2 << fSampleTitleMap[fBkgNames[mc]] << " & " << fBkgInt[mc] << " \\pm " << fBkgIntErr[mc] << "\\\\" << std::endl; 
+          fOutTableTxtFile2 << fLatexSampleTitleMap[fBkgNames[mc]] << " & " << fBkgInt[mc] << " $\\pm$ " << fBkgIntErr[mc] << "\\\\" << std::endl; 
           if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
           if (fBkgInt[mc] > 0){
             fSignalRegInt += fBkgInt[mc];
             fSignalRegIntErr += fBkgIntErr[mc];
           }
         }
-        fOutTableTxtFile2 << "Total Bkg & " << fSignalRegInt << " \\pm " << fSignalRegIntErr << " \\\\" << std::endl; 
+        fOutTableTxtFile2 << "\\hline" << std::endl;
+        fOutTableTxtFile2 << "Total Bkg & " << fSignalRegInt << " $\\pm$ " << fSignalRegIntErr << " \\\\" << std::endl; 
 
         // calculate integrals for data
         Double_t DataInt1, DataErr1, DataInt2, DataErr2;
@@ -274,14 +297,14 @@ void Combiner::DoComb(){
         DataInt = DataInt1 + DataInt2;
         DataIntErr = TMath::Sqrt(DataInt1*DataInt1 + DataInt2*DataInt2);
         fOutTableTxtFile2 << "\\hline" << std::endl;
-        fOutTableTxtFile2 << " Data (sideband) & " << DataInt << " \\pm " << DataIntErr << " \\\\" << std::endl; 
+        fOutTableTxtFile2 << " Data (sideband) & " << DataInt << " $\\pm$ " << DataIntErr << " \\\\" << std::endl; 
         fOutTableTxtFile2 << "\\hline" << std::endl;
 
         // calculate integrals for signal
         Double_t SigIntegral, SigIntegralErr;
         for (UInt_t mc = 0; mc < fNSig; mc++){
           SigIntegral = fInSigTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,SigIntegralErr);
-          fOutTableTxtFile2 << fSampleTitleMap[fSigNames[mc]] << " & " << SigIntegral << " \\pm " << SigIntegralErr << "\\\\" << std::endl; 
+          fOutTableTxtFile2 << fLatexSampleTitleMap[fSigNames[mc]] << " & " << SigIntegral << " $\\pm$ " << SigIntegralErr << "\\\\" << std::endl; 
         }
       fOutTableTxtFile2 << "\\hline" << std::endl;
       fOutTableTxtFile2 << "\\end{tabular}" <<std::endl;
@@ -290,7 +313,7 @@ void Combiner::DoComb(){
       // ==========================================================
       // end Latex doc
       fOutTableTxtFile2 << "\\end{document}" <<std::endl;
-      std::cout << "Writing ResultsTable in " << Form("%s/IntegralsAfterAllCuts.tex",fOutDir.Data()) << std::endl;
+      std::cout << "Writing ResultsTable in " << Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()) << std::endl;
       }
       else std::cout << "File didn't Open" << std::endl;
       // close output text files
@@ -625,7 +648,7 @@ void Combiner::FindMETEfficiencies(){
 
   // write as a table for Latex
   std::ofstream	fOutTableTxtFile;
-  fOutTableTxtFile.open(Form("%s/ResultsSystematicsForLatex.tex",fOutDir.Data()));
+  fOutTableTxtFile.open(Form("%s/comb/ResultsSystematicsForLatex.tex",fOutDir.Data()));
 
   TStrMap fSampleTitleMap;
   fSampleTitleMap["QCD"] 		= "QCD";
