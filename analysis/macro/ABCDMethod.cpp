@@ -1,6 +1,6 @@
 #include "ABCDMethod.hh"
 
-ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TString indir, const TString outdir, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection){
+ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TString indir, const TString outdir, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection, const Int_t mass ){
 
   // load RooFit
   gSystem->Load("libRooFit");
@@ -13,11 +13,36 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fOutDir = outdir+"ABCD";
   fWhichSel = whichSelection;
 
-  Double_t METcut = 70;// METcut to apply 
-  if (fWhichSel == 1) METcut = 105;
-  if (fWhichSel == 2) METcut = 95;
-  if (fWhichSel == 3) METcut = 50; 
-  if (fWhichSel == 4) METcut = 70; 
+  //Double_t METcut = 70;// METcut to apply 
+  //if (fWhichSel == 3) METcut = 50; 
+  //if (fWhichSel == 4) METcut = 70; 
+
+  // Set up the METcutVec 
+  // to store METcut to apply
+  if (fWhichSel == 1){
+    METcutVec.push_back(105);
+    METcutVec.push_back(105);
+    METcutVec.push_back(165);
+    METcutVec.push_back(220);
+    METcutVec.push_back(245);
+    METcutVec.push_back(255);
+    METcutVec.push_back(255);
+    METcutVec.push_back(255);
+  } 
+  else if (fWhichSel == 2){
+    METcutVec.push_back(95);
+    METcutVec.push_back(95);
+    METcutVec.push_back(170);
+    METcutVec.push_back(170);
+    METcutVec.push_back(230);
+    METcutVec.push_back(255);
+    METcutVec.push_back(255);
+    METcutVec.push_back(255);
+  }
+  else if (fWhichSel == 3) METcutVec.push_back(50);
+  else if (fWhichSel == 4) METcutVec.push_back(70);
+  else METcutVec.push_back(70); 
+  Int_t fNSel = METcutVec.size();
 
   // values for the different bin edges
   mgg_minAB1 = 100.;
@@ -25,11 +50,19 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   mgg_maxCD  = 130.;// mgg signal region upper bound
   mgg_maxAB2 = 180.; 
   met_minB   = 0.;
-  met_minD   = METcut;// MET threshold
   met_maxD   = 2000.;
+
+  // MET threshold
+  if (fWhichSel != 1 && fWhichSel !=2 ) met_minD   = METcutVec[0];
+  else met_minD = METcutVec[mass];
+
   // save MET cut as a string
   if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
   else fMetCut = Form("%2.0f",met_minD);
+
+  // make output txt file with output table
+  fOutTableTxtFile.open(Form("%s/ResultsTableForLatex_Sel%i_%i.tex",fOutDir.Data(),fWhichSel,mass));
+  std::cout << "OptSel" << fWhichSel << " for the n = " << mass << " mass point." << std::endl;
 
   // titles for output Latex table
   fSampleTitleMap["Data"]		= "Data";
@@ -58,8 +91,6 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
 
-  // make output txt file with output table
-  fOutTableTxtFile.open(Form("%s/ResultsTableForLatex.tex",fOutDir.Data()));
 
   // make output root file
   MakeOutDirectory(Form("%s",fOutDir.Data()));
@@ -124,18 +155,18 @@ ABCDMethod::~ABCDMethod(){
 }
 
 
-void ABCDMethod::DoAnalysis(){
+void ABCDMethod::DoAnalysis( UInt_t mass ){
 
   // add all data files together
   // data : copy first histogram & add all others too it 
   for (UInt_t data = 0; data < fNData; data++){
     //std::cout << "number entries in data in " << fInDataTH2DHists[0][data]->GetEntries() << std::endl;
     if (data == 0){
-      fOutDataTH2DHists[0] = (TH2D*)fInDataTH2DHists[0][data]->Clone(); 
+      fOutDataTH2DHists[0] = (TH2D*)fInDataTH2DHists[mass*2][data]->Clone(); 
       fOutDataTH1DHists[0] = (TH1D*)fInDataTH1DHists[0][data]->Clone(); 
     }
     else {
-      fOutDataTH2DHists[0]->Add(fInDataTH2DHists[0][data]);
+      fOutDataTH2DHists[0]->Add(fInDataTH2DHists[mass*2][data]);
       fOutDataTH1DHists[0]->Add(fInDataTH1DHists[0][data]);
     }
   }
@@ -179,21 +210,21 @@ void ABCDMethod::DoAnalysis(){
   Double_t qcd_integral_new = 0;
   qcd_integral = fInBkgTH1DHists[0][i_qcd]->Integral();  
   GJetsClone[0] = (TH1D*)fInBkgTH1DHists[0][i_gj]->Clone();
-  GJetsCloneTH2D[0] = (TH2D*)fInBkgTH2DHists[0][i_gj]->Clone();
+  GJetsCloneTH2D[0] = (TH2D*)fInBkgTH2DHists[mass*2][i_gj]->Clone();
   gjets_integral = GJetsClone[0]->Integral();
   if (gjets_integral > 0) GJetsClone[0]->Scale(qcd_integral/gjets_integral);
   if (gjets_integral > 0) GJetsCloneTH2D[0]->Scale(qcd_integral/gjets_integral);
 
   // sum over nonresonant bkgs only
-  fOutSelBkgTH2DHists[0] = (TH2D*)fInBkgTH2DHists[0][i_dy]->Clone();
-  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_gg]);
-  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_gj]); 
+  fOutSelBkgTH2DHists[0] = (TH2D*)fInBkgTH2DHists[mass*2][i_dy]->Clone();
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_gg]);
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_gj]); 
   if (doQCDscale) fOutSelBkgTH2DHists[0]->Add(GJetsCloneTH2D[0]);
-  else fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_qcd]);    
-  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_tgj]); 
-  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_ttgj]); 
-  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_wg]); 
-  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_zg]); 
+  else fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_qcd]);    
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_tgj]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_ttgj]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_wg]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][i_zg]); 
 
   // sum over nonresonant bkgs only
   fOutSelBkgTH1DHists[0] = (TH1D*)fInBkgTH1DHists[0][i_dy]->Clone();
@@ -211,7 +242,7 @@ void ABCDMethod::DoAnalysis(){
     //std::cout << "number entries in bkg in " << fInBkgTH2DHists[0][mc]->GetEntries() << std::endl;
     // use below if summing over all backgrounds
     if (mc == 0){
-      fOutBkgTH2DHists[0] = (TH2D*)fInBkgTH2DHists[0][mc]->Clone();
+      fOutBkgTH2DHists[0] = (TH2D*)fInBkgTH2DHists[mass*2][mc]->Clone();
       fOutBkgTH1DHists[0] = (TH1D*)fInBkgTH1DHists[0][mc]->Clone();
     }
     else if (doQCDscale && mc == i_qcd){
@@ -219,7 +250,7 @@ void ABCDMethod::DoAnalysis(){
       fOutBkgTH2DHists[0]->Add(GJetsCloneTH2D[0]);
     }
     else{
-      fOutBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][mc]);
+      fOutBkgTH2DHists[0]->Add(fInBkgTH2DHists[mass*2][mc]);
       fOutBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][mc]);
     }
   } 
@@ -248,40 +279,40 @@ void ABCDMethod::DoAnalysis(){
  
   // find bin boundaries for each category using BkgTH2DHist[0][0]
   // cat0 = A1 
-  min_x[0]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minAB1); 
-  max_x[0]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minCD)-1;
-  min_y[0]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minD);   
-  max_y[0]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_maxD);   
+  min_x[0]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minAB1); 
+  max_x[0]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minCD)-1;
+  min_y[0]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minD);   
+  max_y[0]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_maxD);   
   // cat1 = B1
-  min_x[1]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minAB1); 
-  max_x[1]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minCD)-1;
-  min_y[1]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minB);   
-  max_y[1]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minD)-1; 
+  min_x[1]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minAB1); 
+  max_x[1]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minCD)-1;
+  min_y[1]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minB);   
+  max_y[1]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minD)-1; 
   // cat2 = A2
-  min_x[2]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxCD)+1;
-  max_x[2]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxAB2); 
-  min_y[2]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minD);   
-  max_y[2]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_maxD);   
+  min_x[2]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxCD)+1;
+  max_x[2]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxAB2); 
+  min_y[2]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minD);   
+  max_y[2]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_maxD);   
   // cat3 = B2
-  min_x[3]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxCD)+1;
-  max_x[3]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxAB2); 
-  min_y[3]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minB);   
-  max_y[3]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minD)-1; 
+  min_x[3]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxCD)+1;
+  max_x[3]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxAB2); 
+  min_y[3]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minB);   
+  max_y[3]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minD)-1; 
   // cat4 = D
-  min_x[4]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minCD);  
-  max_x[4]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxCD);  
-  min_y[4]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minD);   
-  max_y[4]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_maxD);   
+  min_x[4]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minCD);  
+  max_x[4]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxCD);  
+  min_y[4]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minD);   
+  max_y[4]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_maxD);   
   // cat5 = C
-  min_x[5]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minCD);  
-  max_x[5]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxCD);  
-  min_y[5]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minB);   
-  max_y[5]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minD);   
+  min_x[5]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minCD);  
+  max_x[5]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxCD);  
+  min_y[5]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minB);   
+  max_y[5]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minD);   
   // cat6 = ALL (using 2D histos!!!)
-  min_x[6]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_minAB1); 
-  max_x[6]=fInBkgTH2DHists[0][0]->GetXaxis()->FindBin(mgg_maxAB2); 
-  min_y[6]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_minB);   
-  max_y[6]=fInBkgTH2DHists[0][0]->GetYaxis()->FindBin(met_maxD);   
+  min_x[6]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_minAB1); 
+  max_x[6]=fInBkgTH2DHists[mass*2][0]->GetXaxis()->FindBin(mgg_maxAB2); 
+  min_y[6]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_minB);   
+  max_y[6]=fInBkgTH2DHists[mass*2][0]->GetYaxis()->FindBin(met_maxD);   
   // cat7 = ALL (using 1D histos!!!)
   min_x[7]=fInBkgTH1DHists[0][0]->GetXaxis()->FindBin(1.0);
   max_y[7]=fInBkgTH1DHists[0][0]->GetYaxis()->FindBin(40.0);
@@ -307,8 +338,8 @@ void ABCDMethod::DoAnalysis(){
   BkgInCWgtErr1.resize(fNBkg);
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    BkgInC[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[1][mc], BkgInCErr[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
-    BkgInCWgt1[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[0][mc], BkgInCWgtErr1[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
+    BkgInC[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[mass*2+1][mc], BkgInCErr[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
+    BkgInCWgt1[mc] = ABCDMethod::ComputeIntAndErr(fInBkgTH2DHists[mass*2][mc], BkgInCWgtErr1[mc], min_x[5], max_x[5], min_y[5], max_y[5]);
     if (BkgInC[mc] > 0) BkgInCWgt[mc] = BkgInCWgt1[mc]/BkgInC[mc];
     else BkgInCWgt[mc] = 0;
     //std::cout << "#inCent = " << BkgInC[mc] << std::endl;
@@ -345,7 +376,7 @@ void ABCDMethod::DoAnalysis(){
       Data_Int[cat][0] = ABCDMethod::ComputeIntAndErr( fOutDataTH2DHists[0], Data_IntErr[cat][0],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]); 
 
       for (UInt_t mc = 0; mc < fNBkg; mc++){ 
-        Bkg_Int[cat][mc] = ABCDMethod::ComputeIntAndErr( fInBkgTH2DHists[0][mc], Bkg_IntErr[cat][mc],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]); 
+        Bkg_Int[cat][mc] = ABCDMethod::ComputeIntAndErr( fInBkgTH2DHists[mass*2][mc], Bkg_IntErr[cat][mc],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]); 
       }// finished with bkg samples separately, look at the combined sample
       // total bkg
       Bkg_Int[cat][fNBkg] = ABCDMethod::ComputeIntAndErr( fOutBkgTH2DHists[0], Bkg_IntErr[cat][fNBkg],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]);
@@ -353,7 +384,7 @@ void ABCDMethod::DoAnalysis(){
       Bkg_Int[cat][fNBkg+1] = ABCDMethod::ComputeIntAndErr( fOutSelBkgTH2DHists[0], Bkg_IntErr[cat][fNBkg+1],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]);
 
       for (UInt_t mc = 0; mc < fNSig; mc++){ 
-        Sig_Int[cat][mc] = ABCDMethod::ComputeIntAndErr( fInSigTH2DHists[0][mc], Sig_IntErr[cat][mc],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]); 
+        Sig_Int[cat][mc] = ABCDMethod::ComputeIntAndErr( fInSigTH2DHists[mass*2][mc], Sig_IntErr[cat][mc],  min_x[cat], max_x[cat], min_y[cat], max_y[cat]); 
       } 
     }
 
@@ -371,7 +402,7 @@ void ABCDMethod::DoAnalysis(){
   }
 
 
-  ABCDMethod::DoABCDCalculations(); // calculate corr & diff values
+  ABCDMethod::DoABCDCalculations(mass); // calculate corr & diff values
 
   fExpData.resize(1);
   fExpBkg.resize(fNBkg+2);
@@ -394,10 +425,10 @@ void ABCDMethod::DoAnalysis(){
     //std::cout << fSigNames[mc] <<": Exp D = " << fExpSig[mc] << " Exp D err " << fExpErrSig[mc] << std::endl;
   }
 
-  ABCDMethod::FillTable();
+  ABCDMethod::FillTable(mass);
 
   for (UInt_t mc = 0; mc < fNSig; mc++){
-    ABCDMethod::WriteDataCard(fSigNames[mc].Data(),fRooSig[2][mc],fExpSig[mc],fBkg_Int,fRooBkg);
+    ABCDMethod::WriteDataCard(fSigNames[mc].Data(),fRooSig[2][mc],fExpSig[mc],fBkg_Int,fRooBkg,mass);
   }
 }
 
@@ -448,17 +479,17 @@ void ABCDMethod::GetFinalValuesForABCDReg(){
   }// end cat loop over A,B,D,C
 }
 
-void ABCDMethod::DoABCDCalculations(){
+void ABCDMethod::DoABCDCalculations(UInt_t mass){
 
   // calculate correlation for each sample
   fCorrData.push_back(fOutDataTH2DHists[0]->GetCorrelationFactor(1,2)); 
   for (UInt_t mc = 0; mc < fNBkg; mc++){ 
-    fCorrBkg.push_back(fInBkgTH2DHists[0][mc]->GetCorrelationFactor(1,2));
+    fCorrBkg.push_back(fInBkgTH2DHists[mass*2][mc]->GetCorrelationFactor(1,2));
   }
   fCorrBkg.push_back(fOutBkgTH2DHists[0]->GetCorrelationFactor(1,2)); // all bkg samples added together
   fCorrBkg.push_back(fOutSelBkgTH2DHists[0]->GetCorrelationFactor(1,2)); // all non-resonant bkg samples
   for (UInt_t mc = 0; mc < fNSig; mc++){ 
-    fCorrSig.push_back(fInSigTH2DHists[0][mc]->GetCorrelationFactor(1,2));
+    fCorrSig.push_back(fInSigTH2DHists[mass*2][mc]->GetCorrelationFactor(1,2));
   } 
 
   //calculate Diff = TMath::Abs((NC*NA/NB-ND)/(NC*NA/NB));
@@ -497,7 +528,7 @@ Double_t ABCDMethod::FindExpectedValuesInD(const Double_t NA, const Double_t NB,
   return ExpND;
 }
 
-void ABCDMethod::FillTable(){
+void ABCDMethod::FillTable(const UInt_t mass){
   if (fOutTableTxtFile.is_open()){
 
      //setup Latex doc
@@ -629,7 +660,7 @@ void ABCDMethod::FillTable(){
 
      // finish Latex doc
      fOutTableTxtFile << "\\end{document}" <<std::endl;
-     std::cout << "Writing ResultsTable in " << Form("%s/ResultsTableForLatex.tex",fOutDir.Data()) << std::endl;
+     std::cout << "Writing ResultsTable in " << Form("%s/ResultsTableForLatex_Sel%i_%i.tex",fOutDir.Data(),fWhichSel,mass) << std::endl;
 
      //std::cout << "Data: A    =  " << *(fRooData[0][0]->format(2,"EXPF")) << std::endl;
      //std::cout << "Data: B    =  " << *(fRooData[1][0]->format(2,"EXPF")) << std::endl;
@@ -698,7 +729,8 @@ void ABCDMethod::SetRooVariables(){
       fRooData[cat][0] = new RooRealVar(name,name,fCorrData[0]);
     } 
     if (cat == 6){
-      multData = fData_Int[0][0]/fData_Int[1][0];
+      if (fData_Int[1][0] > 0.0) multData = fData_Int[0][0]/fData_Int[1][0];
+      else multData = 0.0;
       fRooData[cat][0] = new RooRealVar(name,name,multData);
     } 
     if (cat == 7){
@@ -722,7 +754,8 @@ void ABCDMethod::SetRooVariables(){
         fRooBkg[cat][mc] = new RooRealVar(name,name,fCorrBkg[mc]);
       } 
       if (cat == 6){
-        multBkg = BkgInCWgt[mc]*fBkg_Int[0][mc]/fBkg_Int[1][mc];
+        if (fBkg_Int[1][mc] > 0.0) multBkg = BkgInCWgt[mc]*fBkg_Int[0][mc]/fBkg_Int[1][mc];
+        else multBkg = 0.0;
         fRooBkg[cat][mc] = new RooRealVar(name,name,multBkg);
       } 
       if (cat == 7){
@@ -745,7 +778,8 @@ void ABCDMethod::SetRooVariables(){
         fRooSig[cat][mc] = new RooRealVar(name,name,fCorrSig[mc]);
       } 
       if (cat == 6){
-        multSig = fSig_Int[0][mc]/fSig_Int[1][mc];
+        if (fSig_Int[1][mc] > 0.0) multSig = fSig_Int[0][mc]/fSig_Int[1][mc];
+        else multSig = 0.0;
         fRooSig[cat][mc] = new RooRealVar(name,name,multSig);
       } 
       if (cat == 7){
@@ -761,7 +795,7 @@ void ABCDMethod::SetRooVariables(){
 
 }// end SetRooVariables
 
-void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate){
+void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate, const UInt_t mass){
   // get rates for each sample
   TString sig = *sigrate->format(2,"");
   // for resonant bkg get the rate from the integral of D region 
@@ -809,14 +843,15 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   for (UInt_t mc=0; mc < fNBkg; mc++){
     N_A[mc] = bkgrates[0][mc];
     N_B[mc] = bkgrates[1][mc];
-    mult[mc]= BkgInCWgt[mc]*N_A[mc]/N_B[mc];
+    if (N_B[mc] > 0) mult[mc]= BkgInCWgt[mc]*N_A[mc]/N_B[mc];
+    else mult[mc] = 0;
     //std::cout << fBkgNames[mc].Data() <<" mult = " << mult[mc] << std::endl;
     //std::cout << fBkgNames[mc].Data() <<" fac  = " << *bkgrate[6][mc]->format(2,"") << std::endl;
     //std::cout << fBkgNames[mc].Data() <<" wgt  = " << BkgInCWgt[mc] << std::endl;
     //std::cout << fBkgNames[mc].Data() << " nA = " << N_A[mc] << " nB = " << N_B[mc] << " nA/nB = " << mult[mc] << std::endl;
   }
 
-  TString DataCardName = Form("%s/DataCard_%s_met%s.txt",fOutDir.Data(),fSigName.Data(),fMetCut.Data());
+  TString DataCardName = Form("%s/DataCard_%s_Sel%i_%i_met%s.txt",fOutDir.Data(),fSigName.Data(),fWhichSel,mass,fMetCut.Data());
  
   std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
   fOutTxtFile.open(DataCardName); 
@@ -979,6 +1014,40 @@ void ABCDMethod::InitVariables(){
   // 2D histograms of interest
   fTH2DNames.push_back("t1pfmet_mgg");
   fTH2DNames.push_back("t1pfmet_mgg_unwgt");
+
+  if (fWhichSel == 1){
+    fTH2DNames.push_back("Sel1_M1_met_mgg");
+    fTH2DNames.push_back("Sel1_M1_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel1_M2_met_mgg");
+    fTH2DNames.push_back("Sel1_M2_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel1_M3_met_mgg");
+    fTH2DNames.push_back("Sel1_M3_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel1_M4_met_mgg");
+    fTH2DNames.push_back("Sel1_M4_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel1_M5_met_mgg");
+    fTH2DNames.push_back("Sel1_M5_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel1_M6_met_mgg");
+    fTH2DNames.push_back("Sel1_M6_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel1_M7_met_mgg");
+    fTH2DNames.push_back("Sel1_M7_met_mgg_unwgt");
+  }
+
+  if (fWhichSel == 2){
+    fTH2DNames.push_back("Sel2_M1_met_mgg");
+    fTH2DNames.push_back("Sel2_M1_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel2_M2_met_mgg");
+    fTH2DNames.push_back("Sel2_M2_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel2_M3_met_mgg");
+    fTH2DNames.push_back("Sel2_M3_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel2_M4_met_mgg");
+    fTH2DNames.push_back("Sel2_M4_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel2_M5_met_mgg");
+    fTH2DNames.push_back("Sel2_M5_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel2_M6_met_mgg");
+    fTH2DNames.push_back("Sel2_M6_met_mgg_unwgt");
+    fTH2DNames.push_back("Sel2_M7_met_mgg");
+    fTH2DNames.push_back("Sel2_M7_met_mgg_unwgt");
+  }
 
   // UNBLINDED PLOT TO GET INCLUSIVE NUMBERS:
   //fTH2DNames.push_back("met_mgg");

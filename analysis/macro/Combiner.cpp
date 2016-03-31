@@ -1214,10 +1214,13 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
 
   CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
 
-  fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_comb%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
-  fOutFile->cd();
-  fOutTH1DCanvases[th1d]->Write(Form("%s%s_comb%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
-
+  // don't save plots that are used for efficiencies 
+  if (fTH1DNames[th1d]!="vtx_eff_ptzp_n" && fTH1DNames[th1d]!="vtx_eff_ptzp_d" && fTH1DNames[th1d]!="vtx_eff_nvtx_n" && fTH1DNames[th1d]!="vtx_eff_nvtx_d" && fTH1DNames[th1d]!="vtx_eff_met_n" && fTH1DNames[th1d]!="vtx_eff_met_d" && fTH1DNames[th1d]!="vtx_eff_njet_n" && fTH1DNames[th1d]!="vtx_eff_njet_d" && fTH1DNames[th1d]!="JetEnUp" && fTH1DNames[th1d]!="JetEnDown" && fTH1DNames[th1d]!="JetResUp" && fTH1DNames[th1d]!="JetResDown" && fTH1DNames[th1d]!="MuonEnUp" && fTH1DNames[th1d]!="MuonEnDown" && fTH1DNames[th1d]!="EleEnUp" && fTH1DNames[th1d]!="EleEnDown" && fTH1DNames[th1d]!="TauEnUp" && fTH1DNames[th1d]!="TauEnDown" && fTH1DNames[th1d]!="PhoEnUp" && fTH1DNames[th1d]!="PhoEnDown" && fTH1DNames[th1d]!="UnclEnUp" && fTH1DNames[th1d]!="UnclEnDown" && fTH1DNames[th1d]!="pt1_afterIDloose"&& fTH1DNames[th1d]!="pt1_beforeIDloose" && fTH1DNames[th1d]!="eta1_afterIDloose" && fTH1DNames[th1d]!="eta1_beforeIDloose"){
+    // for all other plots
+    fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_comb%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
+    fOutFile->cd();
+    fOutTH1DCanvases[th1d]->Write(Form("%s%s_comb%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+  }
 
 }// end Combiner::DrawCanvasOverlay
 
@@ -1363,9 +1366,11 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
 
   CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
 
-  fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_stack%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
-  fOutFile->cd();
-  fOutTH1DCanvases[th1d]->Write(Form("%s%s_stack%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+  if (fTH1DNames[th1d]!="vtx_eff_ptzp_n" && fTH1DNames[th1d]!="vtx_eff_ptzp_d" && fTH1DNames[th1d]!="vtx_eff_nvtx_n" && fTH1DNames[th1d]!="vtx_eff_nvtx_d" && fTH1DNames[th1d]!="vtx_eff_met_n" && fTH1DNames[th1d]!="vtx_eff_met_d" && fTH1DNames[th1d]!="vtx_eff_njet_n" && fTH1DNames[th1d]!="vtx_eff_njet_d" && fTH1DNames[th1d]!="JetEnUp" && fTH1DNames[th1d]!="JetEnDown" && fTH1DNames[th1d]!="JetResUp" && fTH1DNames[th1d]!="JetResDown" && fTH1DNames[th1d]!="MuonEnUp" && fTH1DNames[th1d]!="MuonEnDown" && fTH1DNames[th1d]!="EleEnUp" && fTH1DNames[th1d]!="EleEnDown" && fTH1DNames[th1d]!="TauEnUp" && fTH1DNames[th1d]!="TauEnDown" && fTH1DNames[th1d]!="PhoEnUp" && fTH1DNames[th1d]!="PhoEnDown" && fTH1DNames[th1d]!="UnclEnUp" && fTH1DNames[th1d]!="UnclEnDown" && fTH1DNames[th1d]!="pt1_afterIDloose"&& fTH1DNames[th1d]!="pt1_beforeIDloose" && fTH1DNames[th1d]!="eta1_afterIDloose" && fTH1DNames[th1d]!="eta1_beforeIDloose"){
+    fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_stack%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
+    fOutFile->cd();
+    fOutTH1DCanvases[th1d]->Write(Form("%s%s_stack%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+  }
 
   /*
   for (UInt_t mc = 0; mc < fNSig; mc++){

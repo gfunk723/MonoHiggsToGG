@@ -44,7 +44,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 0; // Choose which selection to apply
+  int whichSelection = 2; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -61,9 +61,9 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString type = "png";		// type of plots to be made
-  bool doMETCorr = true;	// redo the MET correction for MC and data, else take the Corr from the root file
-  bool doPlots = false;		// make plots for each sample individually
-  bool doComb = false;		// make stack/overlay plots
+  bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
+  bool doPlots = true;		// make plots for each sample individually
+  bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
@@ -614,15 +614,18 @@ int main(){
   ////////////////////////////////////////////////////
 
   if (doABCD){
-    if (whichSelection!=1 || whichSelection!=2){
-      ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,outDir,doBlind,doQCDrescale,whichSelection);
-      abcd->DoAnalysis();
+    if (whichSelection!=1 && whichSelection!=2){
+      ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,outDir,doBlind,doQCDrescale,whichSelection,0);
+      abcd->DoAnalysis(0);
       delete abcd; 
     }
     else{
-      ABCDMethod *abcd = new ABCDMethod(Samples,lumi,origDir,outDir,doBlind,doQCDrescale,whichSelection);
-      abcd->DoAnalysis();
-      delete abcd; 
+      UInt_t NumMasses = 8; // 0 runs just the cut for the lowest mass, the selection for each mass  
+      for (UInt_t mass = 0; mass < NumMasses; mass++){
+        ABCDMethod *abcd = new ABCDMethod(Samples,lumi,origDir,outDir,doBlind,doQCDrescale,whichSelection,mass);
+        abcd->DoAnalysis(mass);
+        delete abcd; 
+      }
     }
   }// end doABCD
 
