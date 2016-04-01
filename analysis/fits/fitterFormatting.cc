@@ -466,8 +466,6 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     Double_t max_dphi_JetMET = 0.;
 
     if (nJets > 0){
-      Double_t min_dphi_JetMET = 10.;
-      Double_t max_dphi_JetMET = 0.;
       Double_t dphiJet1METmin = 10;
       Double_t dphiJet2METmin = 10;
       Double_t dphiJet3METmin = 10;
@@ -518,6 +516,10 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     if (catType==4 && pt1>(0.45*mgg) && pt2>(0.25*mgg) && ptgg/t1pfmetCorr > 0.2 && t1pfmetCorr >= 70)	passSelection = true; 
 
     if (passSelection){
+      //if (mgg < 115 || mgg > 135){
+      //  if (type=="data") std::cout << "MET Tail: mgg = " << mgg << " MET= " << t1pfmetCorr << " Run = " << run << " Lumi = " << "XXXXX" << " Event " << event << std::endl;     
+      //}
+
       // split events by eta
       EB1 = false;
       EB2 = false;

@@ -259,9 +259,10 @@ void Plotter::DoPlots(int prompt){
     // Check that the weight is not less than 0
     Bool_t weightNegative = false;
     if (Weight <= 0) weightNegative = true;
+    if (weightNegative) numNegativeWeight++;
 
     if (mgg < 100 || mgg >= 180) numOutOfMggRange++;
-    if (weightNegative) numNegativeWeight++;
+
     if (!passEV1 || !passEV2) numFailEV++;
     if (prompt==1 || prompt==2){
       if (genmatch1==1 && genmatch2==1) numDuplicateRemoved++;
@@ -287,8 +288,6 @@ void Plotter::DoPlots(int prompt){
       fTH1DMap["pt1_afterIDloose"]->Fill(pt1);
       fTH1DMap["eta1_afterIDloose"]->Fill(eta1);
     }
-
-
 
     // t1pfmet phi Correction
     Double_t t1pfmetCorrX;
@@ -336,9 +335,9 @@ void Plotter::DoPlots(int prompt){
 	  fTH1DMap["nElec"]->Fill(nEle,Weight);
 	  fTH1DMap["nMuon"]->Fill(nMuons,Weight);
 
-	  numPassingAll++;
 	  if (nEle < 2 && nMuons < 1) numPassingLeptonReject++;
 	  if (nEle >= 2 || nMuons >= 1) continue; //reject events with leptons
+
 
 
           // split events by eta
@@ -534,10 +533,9 @@ void Plotter::DoPlots(int prompt){
 	  //Bool_t dphiJet2METpass = true;	// dphi Jet2-MET < 2.7
 	  Bool_t max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
 	  Bool_t min_dphiJETMETpass = true;	// min dphi Jet-MET > 0.5 
-	
-          Double_t max_dphi_JetMET = 0.;
 	  Double_t min_dphi_JetMET = 10.;
- 
+          Double_t max_dphi_JetMET = 0.;
+
 	  //if(run==260538&& lumi==245 && event==413101759)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
 	  //if(run==260426&& lumi==49  && event==81336845) 	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
 	  //if(run==260424&& lumi==593 && event==1100585340)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
@@ -647,10 +645,9 @@ void Plotter::DoPlots(int prompt){
 	  if (t1pfmetCorr > METcut) fTH1DMap["absdphi_maxgMET_metCUT"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
 
 	  // DeltaPhi between gg and MET
-	  Double_t dphiggMET = 0;
-          dphiggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhiCorr));
+	  Double_t dphiggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhiCorr));
 	  Bool_t dphiggMETpass = false; // dphi gg-MET > 2.1
-	  if ( dphiggMET > 2.1 ) dphiggMETpass = true;
+	  if ( dphiggMET >= 2.1 ) dphiggMETpass = true;
 
 	  // make a set of bools for easier comparison
 	  Bool_t outsideMgg = false; // event lies outside mgg range
@@ -704,7 +701,7 @@ void Plotter::DoPlots(int prompt){
 	        fTH1DMap["met_IsolateALL"]->Fill(t1pfmet,Weight); 
 	        fTH1DMap["metCor_IsolateALL"]->Fill(t1pfmetCorr,Weight);
 		//if ( isData && t1pfmetCorr > 80 ) std::cout << run << ":" << lumi << ":" << event << std::endl;
-		if ( isData && t1pfmetCorr > METcut ) std::cout << "MET Tail: MET = " << t1pfmetCorr << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
+		if ( isData && t1pfmetCorr > METcut ) std::cout << "MET Tail: mgg = " << mgg << " MET = " << t1pfmetCorr << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
 	      } 
 	    }
 	  }
@@ -714,36 +711,38 @@ void Plotter::DoPlots(int prompt){
 	    //-------------- 
 	    fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
 	    fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
-	    //-------------- for OptSel1 and OptSel2 ABCD  
-	    if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
-	    if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
-	    if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
-	    if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
-	    if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
-	    if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
-	    if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
-	    if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
+	    //-------------- for OptSel1 and OptSel2 ABCD 
+	    if (fWhichSel==0){ 
+	      if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
+	      if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
+	      if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
+	      if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
+	      if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
+	      if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
+	      if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
+	      if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
 
-	    if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
-	    if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
-	    if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
-	    if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
-	    if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
-	    if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
-	    if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
-	    if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
-	    if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
+	      if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
+	      if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
+	      if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
+	      if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
+	      if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
+	      if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
+	      if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
+	      if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
+	      if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
+            }
 	    //-------------- 
 
 	    fTH1DMap["metCorr_forShape"]->Fill(t1pfmetCorr,Weight);
@@ -761,39 +760,44 @@ void Plotter::DoPlots(int prompt){
 	  }
           if ( isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass ){
 	    if (doBlind){
+
 	      if (outsideMgg){
+		if (t1pfmetCorr > 70) numPassingAll++;
+
 	        fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
 	        fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
 	        //-------------- for OptSel1 and OptSel2 ABCD  
-	        if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
-	        if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
-	        if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
-	        if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
-	        if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
-	        if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
-	        if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
-	        if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
+		if (fWhichSel==0){
+	          if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
+	          if (pt1/mgg > 0.50 && pt2/mgg > 0.25 && ptgg > 90)  fTH2DMap["Sel1_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
+	          if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
+	          if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg > 135) fTH2DMap["Sel1_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
+	          if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
+	          if (pt1/mgg > 0.85 && pt2/mgg > 0.25 && ptgg > 170) fTH2DMap["Sel1_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
+	          if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
+	          if (pt1/mgg > 1.20 && pt2/mgg > 0.25 && ptgg > 250) fTH2DMap["Sel1_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg > 260) fTH2DMap["Sel1_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
 
-	        if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
-	        if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
-	        if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
-	        if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
-	        if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
-	        if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
-	        if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
-	        if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
-	        if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
+	          if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M600
+	          if (pt1/mgg > 0.55 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.5) fTH2DMap["Sel2_M1_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M600
+	          if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M800
+	          if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M2_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M800
+	          if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1000
+	          if (pt1/mgg > 0.80 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M3_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1000
+	          if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1200
+	          if (pt1/mgg > 1.30 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.2) fTH2DMap["Sel2_M4_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1200
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1400
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M5_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1400
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M1700
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M6_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M1700
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
+	          if (pt1/mgg > 1.40 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
+		}
 	        //-------------- 
 		fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
 		if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
@@ -1054,13 +1058,13 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
 
-  if (!isData) std::cout << "Total Vtx(BDT) Efficiency = " << Form("%1.3f",(Double_t)nEvents_goodVtx/(Double_t)nEvents_allVtx) << std::endl; 
+  //if (!isData) std::cout << "Total Vtx(BDT) Efficiency = " << Form("%1.3f",(Double_t)nEvents_goodVtx/(Double_t)nEvents_allVtx) << std::endl; 
   //if (!isData) std::cout << "Total Vtx0     Efficiency = " << Form("%1.3f",(Double_t)nEvents_goodVtx0/(Double_t)nEvents_allVtx) << std::endl; 
 
   //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["t1pfmetCorr_zoom"]->Integral(binMETlo,binMEThi) << std::endl;
   //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["metCor_Sig"]->Integral(binMETlo,binMEThi) << std::endl;
-  std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
-  std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
+  //std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
+  //std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
 
   //std::cout << "Number Events rejected by Mgg range:     " << numOutOfMggRange    << " out of " << nentries << " events. " << std::endl; 
   //std::cout << "Number Events rejected by Neg Weight:    " << numNegativeWeight   << " out of " << nentries << " events. " << std::endl; 
@@ -1073,7 +1077,6 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "Number Events rejected by ElectronVeto:  " << numRelFailEV           << " out of rel " << nRel1entries << " events. " << std::endl; 
   //std::cout << "Number Events rejected by MET filters:   " << numRelFailingMETfil    << " out of rel " << nRel2entries << " events. " << std::endl;
   //std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of rel " << nRel3entries << " events. " << std::endl; 
-
 
   Double_t effPU = 0;
   Double_t effpt = 0;
@@ -1192,7 +1195,8 @@ void Plotter::SetUpPlots(){
   fTH1DMap["met_IsolateALL"]		= Plotter::MakeTH1DPlot("met_IsolateALL","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["metCor_IsolateALL"]		= Plotter::MakeTH1DPlot("metCorr_IsolateALL","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["mgg_IsolateALL"]		= Plotter::MakeTH1DPlot("mgg_IsolateALL","",41,99.,181.,"m_{#gamma#gamma} (GeV)","");  
-  fTH1DMap["mgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLmetCUT","",41,99.,181.,"m_{#gamma#gamma} (GeV)","");  
+  //fTH1DMap["mgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLmetCUT","",41,99.,181.,"m_{#gamma#gamma} (GeV)","");  
+  fTH1DMap["mgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLmetCUT","",75,105.,180.,"m_{#gamma#gamma} (GeV)","");  
   fTH1DMap["ptgg_IsolateALL"]		= Plotter::MakeTH1DPlot("ptgg_IsolateALL","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");  
   fTH1DMap["ptgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("ptgg_IsolateALLmetCUT","",60,0.,600.,"p_{T,#gamma#gamma} (GeV)","");  
   fTH1DMap["nvtx_IsolateALL"]		= Plotter::MakeTH1DPlot("nvtx_IsolateALL","",60,0.,60.,"nvtx","");  
@@ -1337,39 +1341,38 @@ void Plotter::SetUpPlots(){
   fTH2DMap["t1pfmet_mgg"]		= Plotter::MakeTH2DPlot("t1pfmet_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   fTH2DMap["t1pfmet_mgg_unwgt"]		= Plotter::MakeTH2DPlot("t1pfmet_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   // for ABCD with cuts for each mass point
-  // OptSel1
-  fTH2DMap["Sel1_M1_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M1_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M1_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M1_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M2_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M2_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M2_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M2_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M3_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M3_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M3_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M3_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M4_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M4_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M4_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M4_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M5_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M5_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M5_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M5_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M6_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M6_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M6_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M6_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M7_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M7_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel1_M7_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M7_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  // OptSel2
-  fTH2DMap["Sel2_M1_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M1_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M1_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M1_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M2_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M2_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M2_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M2_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M3_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M3_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M3_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M3_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M4_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M4_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M4_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M4_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M5_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M5_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M5_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M5_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M6_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M6_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M6_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M6_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M7_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M7_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-  fTH2DMap["Sel2_M7_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M7_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
-
-
-  
+  if (fWhichSel==0){
+    // OptSel1
+    fTH2DMap["Sel1_M1_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M1_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M1_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M1_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M2_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M2_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M2_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M2_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M3_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M3_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M3_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M3_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M4_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M4_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M4_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M4_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M5_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M5_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M5_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M5_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M6_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M6_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M6_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M6_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M7_met_mgg"]		= Plotter::MakeTH2DPlot("Sel1_M7_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel1_M7_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel1_M7_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    // OptSel2
+    fTH2DMap["Sel2_M1_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M1_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M1_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M1_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M2_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M2_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M2_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M2_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M3_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M3_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M3_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M3_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M4_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M4_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M4_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M4_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M5_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M5_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M5_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M5_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M6_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M6_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M6_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M6_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M7_met_mgg"]		= Plotter::MakeTH2DPlot("Sel2_M7_met_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+    fTH2DMap["Sel2_M7_met_mgg_unwgt"]	= Plotter::MakeTH2DPlot("Sel2_M7_met_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
+  }
 
 }// end Plotter::SetUpPlots
 
