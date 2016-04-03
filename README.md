@@ -20,12 +20,34 @@ This package depends on [flashgg](https://github.com/cms-analysis/flashgg).
 (Follow what is done here from P. Musella: https://github.com/cms-analysis/flashgg/tree/master/MetaData 
  and here from C. Rovelli: https://github.com/musella/diphotons/tree/master/fullAnalysisRoma )
 
-## Step 1) Produce catalogue of MicroAODs
+## Step 1) Produce catalogue of MicroAODs and Extract JSON & PU Weights File
 Once MicroAOD files are produced run these scripts to create the json file (catalogue) and  compute the weights:
 
-- `fggManageSamples.py -C MonoHgg -V VERSION import`
-- `fggManageSamples.py -C MonoHgg review`
-- `fggManageSamples.py -C MonoHgg check`
+- `fggManageSamples.py -C CAMPAIGN -V VERSION import`
+- `fggManageSamples.py -C CAMPAIGN review`
+- `fggManageSamples.py -C CAMPAIGN check`
+
+NB: This searches for datasets matching the form: *CAMPAIGN-VERSION*
+
+### Step 1.a) Extract JSON
+Extract the processed json (used as an input in the analyzer) and used to compute the PU weight file: 
+- `fggManageSamples.py -C CAMPAIGN getlumi <full dataset name>` 
+
+This json corresponds to the processed (through FLASHgg) dataset. We are interested in the the AND of this json and the golden json. 
+The convolution json is applyed in the analyzer to make sure we are restricted to the right portion of the data.
+This is specified in the diPhoAna.py (and diPhoAnaBATCH.py) in `JSONfile`.
+To get this convolution of these jsons use brilcalc:
+- `compareJSON.py --and processed.json golden.json >> processedANDgolden.json`
+ 
+### Step 1.b) Get PU Weights File
+To get pileup in data, only need to specify MyAnalysisJSON.txt:
+
+```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 52 --numPileupBins 52  MyDataPileupHistogram.root```
+
+To get the PU weights file, next run the macro `pileupWeights.C` (found in macro dir.)
+which uses MyDataPileupHistogram.root and compares it with a MC pileup histogram found in: /afs/cern.ch/user/c/crovelli/public/json2015/mcPUhisto___25ns_startup_poissonOOT.root
+
+This produces the `pileupWeights.root` file which is used in the analyzer.
 
 ## Step 2) Copy json to the scripts/list* directory
 - Copy directly from FLASHgg catalogue or list as produced in Step 1.
@@ -43,9 +65,10 @@ OR run `./runExtractFilesAndWeights.sh` does the same thing (takes input list of
 
 ## Step 4) Run in local the diphoton analyzer (from python directory):
 - Write by hand one microAOD file that can be taken from the json file
-- Fix by hand xsec and sumDataSet that can be found from the json file corresponding
+- Fix by hand xsec and sumDataSet that can be found from the corresponding json file
+- For data, specify the `JSONfile` as mentioned earlier
 - Specify the bool isMC = true or false
-- Optional: put in PU reweighting file
+- Optional: put in PU reweighting file (`puWFileName`) 
 - called by `cmsRun diPhoAna.py`
    
 ## Step 5) Run in batch the diphoton analyzer (from script directory):
