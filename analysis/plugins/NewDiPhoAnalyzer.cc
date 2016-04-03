@@ -891,7 +891,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	preselHLTLivia++;
 	h_selection->Fill(1.,perEveW);
 	numPassingCuts[1]++;
-     
+
+
+        //if (sampleID>0 && sampleID<10000) {     // MC
+        //  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
+	//    int thePdgId = fabs(genParticles->ptrAt( genLoop )->pdgId()); 
+	//    std::cout << thePdgId << std::endl;
+	//  }
+        //}
+ 
 	// Diphoton candidates: Id/isolation selection
 	vector<int> selectedDipho;
 	for( size_t diphotonlooper = 0; diphotonlooper < preselHLTDipho.size(); diphotonlooper++ ) {

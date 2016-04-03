@@ -4,7 +4,8 @@
 void pileupWeights() {
 
   TFile fileData("MyDataPileupHistogram.root");
-  TFile fileMC("/afs/cern.ch/user/c/crovelli/public/json2015/mcPUhisto___25ns_startup_poissonOOT.root");
+  //TFile fileMC("/afs/cern.ch/user/c/crovelli/public/json2015/mcPUhisto___25ns_startup_poissonOOT.root");
+  TFile fileMC("/afs/cern.ch/user/c/crovelli/public/json2015/rereco76x/mcPUhisto___25ns_FallMC_matchData_PoissonOOTPU.root");
   
   TH1D *generated_pu = (TH1D*)fileMC.Get("pileupMC");
   generated_pu->Sumw2();

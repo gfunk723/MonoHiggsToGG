@@ -42,10 +42,11 @@ To get this convolution of these jsons use brilcalc:
 ### Step 1.b) Get PU Weights File
 To get pileup in data, only need to specify MyAnalysisJSON.txt:
 
-```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 52 --numPileupBins 52  MyDataPileupHistogram.root```
+```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50  MyDataPileupHistogram.root```
 
 To get the PU weights file, next run the macro `pileupWeights.C` (found in macro dir.)
-which uses MyDataPileupHistogram.root and compares it with a MC pileup histogram found in: /afs/cern.ch/user/c/crovelli/public/json2015/mcPUhisto___25ns_startup_poissonOOT.root
+which uses MyDataPileupHistogram.root and compares it with a MC pileup histogram found in: 
+/afs/cern.ch/user/c/crovelli/public/json2015/rereco76x/mcPUhisto___25ns_FallMC_matchData_PoissonOOTPU.root
 
 This produces the `pileupWeights.root` file which is used in the analyzer.
 

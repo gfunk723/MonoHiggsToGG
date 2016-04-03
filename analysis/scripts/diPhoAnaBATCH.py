@@ -5,7 +5,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = False;
+isMC = True;
 is76X = True;
 isFLASHgg_1_1_0 = False;
 ######################
@@ -58,7 +58,7 @@ process.source = cms.Source("PoolSource",
 if (isMC==False):
     print "applying 2015D json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/goldenAndProcessed_76X.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_76X_vtx0.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)  
 
@@ -81,7 +81,7 @@ if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
 
-    era = "Summer15_25nsV7"
+    era = "Fall15_25nsV2"
     if isMC : 
         era += "_MC"
     else :

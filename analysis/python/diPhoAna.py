@@ -48,16 +48,19 @@ else:
     print "Using name RECO"
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 500 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 5000 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
-	"file:myMicroAODOutputFile.root"
-	#76X
+	#"file:myMicroAODOutputFile.root"
+	# 76X
+	# vtx0:
+	"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP1000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-1000_MA0-300/160331_204112/0000/myMicroAODOutputFile_1.root", 
+	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_Sig/1_3_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph/RunIIFall15DR76-1_3_0-25ns_MZp-1200_MA0-300_v2/160401_091523/0000/myMicroAODOutputFile_2.root"
 	#"/store/user/soffi/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_0/GluGluHToGG_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_0-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160225_095156/0000/myMicroAODOutputFile_1.root",
 	#"/store/user/soffi/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_0/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_0-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160225_094833/0000/myMicroAODOutputFile_1.root", 
-	#74X sample for comparison
-	#vtx0:
+	# 74X sample for comparison
+	# vtx0:
 	#"/store/user/mzientek/flashgg/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_1/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_1-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160314_221441/0000/myMicroAODOutputFile_116.root",
 	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_1.root",
 	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal/1_1_0/MonoHgg_2HDM_MZP600_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal-1_1_0-v0-soffi-2HDM_MZP600_A0300_Hgg_miniAODv2/160310_222132/0000/myMicroAODOutputFile_1.root",
@@ -72,7 +75,7 @@ process.source = cms.Source("PoolSource",
 if (isMC==False):
     print "applying 2015D json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/goldenAndProcessed_76X.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_76X_vtx0.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)                              
     print myLumis 
@@ -199,7 +202,7 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   bits         = cms.InputTag('TriggerResults::HLT'),
                                   flags        = cms.InputTag(flag),
 				  sampleIndex  = cms.untracked.int32(100),
-                                  puWFileName  = cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_76X.root'),  
+                                  puWFileName  = cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root'),  
                                   xsec         = cms.untracked.double(1), #pb
                                   kfac         = cms.untracked.double(1.),
                                   sumDataset   = cms.untracked.double(1.0),   # chiara
