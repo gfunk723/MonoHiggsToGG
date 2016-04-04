@@ -26,8 +26,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
     METcutVec.push_back(220);
     METcutVec.push_back(245);
     METcutVec.push_back(255);
-    METcutVec.push_back(255);
-    METcutVec.push_back(255);
+    METcutVec.push_back(285);
+    METcutVec.push_back(285);
   } 
   else if (fWhichSel == 2){
     METcutVec.push_back(95);
@@ -36,8 +36,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
     METcutVec.push_back(170);
     METcutVec.push_back(230);
     METcutVec.push_back(255);
-    METcutVec.push_back(255);
-    METcutVec.push_back(255);
+    METcutVec.push_back(285);
+    METcutVec.push_back(285);
   }
   else if (fWhichSel == 3) METcutVec.push_back(50);
   else if (fWhichSel == 4) METcutVec.push_back(70);
@@ -90,6 +90,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
+  fSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
 
 
   // make output root file

@@ -44,7 +44,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 0; // Choose which selection to apply
+  int whichSelection = 4; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -63,7 +63,7 @@ int main(){
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = true;		// make plots for each sample individually
-  bool doComb = false;		// make stack/overlay plots
+  bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
@@ -308,7 +308,7 @@ int main(){
     std::cout << "Finished ZGTo2LG sample" << std::endl;
 
     std::cout << "Working on ZZTo2L2Nu sample" << std::endl;
-    Plotter * ZZTo2L2Nu = new Plotter(inDir,outDir,"ZZTo2L2Nu",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * ZZTo2L2Nu = new Plotter(inDir,outDir,"ZZTo2L2Nu",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     ZZTo2L2Nu->DoPlots(0);
     delete ZZTo2L2Nu;
     std::cout << "Finished ZZTo2L2Nu sample" << std::endl;
@@ -326,7 +326,7 @@ int main(){
     std::cout << "Finished TTGJets sample" << std::endl;
 
     std::cout << "Working on TTGG_0Jets sample" << std::endl;
-    Plotter * TTGG0Jets = new Plotter(inDir,outDir,"TTGG_0Jets",puweights_MC,lumi,false,doBlind,type,metCorrMC);
+    Plotter * TTGG0Jets = new Plotter(inDir,outDir,"TTGG_0Jets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     TTGG0Jets->DoPlots(0);
     delete TTGG0Jets;
     std::cout << "Finished TTGG_0Jets sample" << std::endl;
@@ -397,11 +397,11 @@ int main(){
     delete DMH_mZP1700;
     std::cout << "Finished DMHgg 2HDM MZP1700 sample" << std::endl;
 
-    //std::cout << "Working on DMHgg 2HDM MZP2000 sample" << std::endl;
-    //Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    //DMH_mZP2000->DoPlots(0);
-    //delete DMH_mZP2000;
-    //std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
+    std::cout << "Working on DMHgg 2HDM MZP2000 sample" << std::endl;
+    Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    DMH_mZP2000->DoPlots(0);
+    delete DMH_mZP2000;
+    std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
 
     std::cout << "Working on DMHgg 2HDM MZP2500 sample" << std::endl;
     Plotter * DMH_mZP2500 = new Plotter(inDir,outDir,"2HDM_mZP2500",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
@@ -409,6 +409,18 @@ int main(){
     delete DMH_mZP2500;
     std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
     
+    std::cout << "Working on DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
+    Plotter * DMH_mZP600_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP600_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    DMH_mZP600_mA0400->DoPlots(0);
+    delete DMH_mZP600_mA0400;
+    std::cout << "Finished DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
+   
+    std::cout << "Working on DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
+    Plotter * DMH_mZP800_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP800_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    DMH_mZP800_mA0400->DoPlots(0);
+    delete DMH_mZP800_mA0400;
+    std::cout << "Finished DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
+   
     //std::cout << "Working on DMHgg M1000 sample" << std::endl;
     //Plotter * DMH_M1000 = new Plotter(inDir,outDir,"DMHtoGG_M1000",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_M1000->DoPlots(0);
@@ -464,8 +476,10 @@ int main(){
   colorMap["2HDM_mZP1200"]		= kPink-6;
   colorMap["2HDM_mZP1400"]		= kPink+4;
   colorMap["2HDM_mZP1700"]		= kMagenta-2;
-  //colorMap["2HDM_mZP2000"]		= kPink-1;
+  colorMap["2HDM_mZP2000"]		= kPink-1;
   colorMap["2HDM_mZP2500"]		= kMagenta+2;
+  colorMap["2HDM_mZP600_mA0400"]	= kRed;
+  colorMap["2HDM_mZP800_mA0400"]	= kRed-4;
 
   SamplePairVec Samples; // vector to also be used for stack plots
   //ordered to match Livia
@@ -495,8 +509,10 @@ int main(){
   Samples.push_back(SamplePair("2HDM_mZP1200",0)); 
   Samples.push_back(SamplePair("2HDM_mZP1400",0)); 
   Samples.push_back(SamplePair("2HDM_mZP1700",0)); 
-  //Samples.push_back(SamplePair("2HDM_mZP2000",0));  
+  Samples.push_back(SamplePair("2HDM_mZP2000",0));  
   Samples.push_back(SamplePair("2HDM_mZP2500",0));  
+  Samples.push_back(SamplePair("2HDM_mZP600_mA0400",0));
+  Samples.push_back(SamplePair("2HDM_mZP800_mA0400",0));
 
   UInt_t nbkg = 0;
   UInt_t nsig = 0;
