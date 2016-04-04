@@ -26,8 +26,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
     METcutVec.push_back(220);
     METcutVec.push_back(245);
     METcutVec.push_back(255);
-    METcutVec.push_back(255);
-    METcutVec.push_back(255);
+    METcutVec.push_back(285);
+    METcutVec.push_back(285);
   } 
   else if (fWhichSel == 2){
     METcutVec.push_back(95);
@@ -36,8 +36,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
     METcutVec.push_back(170);
     METcutVec.push_back(230);
     METcutVec.push_back(255);
-    METcutVec.push_back(255);
-    METcutVec.push_back(255);
+    METcutVec.push_back(285);
+    METcutVec.push_back(285);
   }
   else if (fWhichSel == 3) METcutVec.push_back(50);
   else if (fWhichSel == 4) METcutVec.push_back(70);
