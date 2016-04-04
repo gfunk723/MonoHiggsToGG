@@ -44,7 +44,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 4; // Choose which selection to apply
+  int whichSelection = 0; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -63,7 +63,7 @@ int main(){
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = true;		// make plots for each sample individually
-  bool doComb = true;		// make stack/overlay plots
+  bool doComb = false;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 

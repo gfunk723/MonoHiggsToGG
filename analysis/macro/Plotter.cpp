@@ -101,23 +101,18 @@ void Plotter::DoPlots(int prompt){
     fTH1DMap["selection_unwgt"]->Fill(i+0.5,fSelection_unwgt[i]);
   }
 
+  Int_t numMargaretMETfil   = 0; 
+  Int_t numMargaretSel      = 0;
+  Int_t numMargaretTrig     = 0;
+  Int_t numMargaretDupRem   = 0;
+  Int_t numMargaretLepVeto  = 0;
+  Int_t numMargaretmgg      = 0;
+  Int_t numMargaretMETcut   = 0;
+  Int_t numMargaretmaxggMET = 0;
+  Int_t numMargaretmaxjMET  = 0;
+  Int_t numMargaretminjMET  = 0;
+
   Int_t numFailingMETfil = 0;
-  Int_t numOutOfMggRange = 0;
-  Int_t numNegativeWeight = 0;
-  Int_t numFailEV = 0;
-  Int_t numDuplicateRemoved = 0;
-  Int_t numPassingAll = 0;
- 
-  Int_t numRelFailingMETfil = 0;
-  Int_t numRelOutOfMggRange = 0;
-  Int_t numRelFailEV = 0;
-
-  Int_t nRel0entries = nentries;
-  Int_t nRel1entries = 0;
-  Int_t nRel2entries = 0;
-  Int_t nRel3entries = 0;
-
-  Int_t numPassingLeptonReject = 0;
 
   Int_t nData = 0;
   Int_t nDataMETfil1 = 0;
@@ -135,9 +130,8 @@ void Plotter::DoPlots(int prompt){
 
   Int_t nEvents_allVtx = 0;
   Int_t nEvents_goodVtx = 0;
-  Int_t nEvents_goodVtx0 = 0;
-
-  
+  Int_t nEvents_goodVtx0 = 0; 
+ 
   Double_t METcut = 70;// METcut to apply for OrigSel
   if (fWhichSel == 1) METcut = 105;// OptSel1
   if (fWhichSel == 2) METcut = 95;//  OptSel2
@@ -256,32 +250,6 @@ void Plotter::DoPlots(int prompt){
       }
     } 
 
-    // Check that the weight is not less than 0
-    Bool_t weightNegative = false;
-    if (Weight <= 0) weightNegative = true;
-    if (weightNegative) numNegativeWeight++;
-
-    if (mgg < 100 || mgg >= 180) numOutOfMggRange++;
-
-    if (!passEV1 || !passEV2) numFailEV++;
-    if (prompt==1 || prompt==2){
-      if (genmatch1==1 && genmatch2==1) numDuplicateRemoved++;
-    }
-
-    if (mgg >= 100 && mgg < 180){
-      nRel1entries++;
-      if (!passBoth){
-        numRelFailEV++;
-      }
-      else{
-        nRel2entries++;
-	if (!passMETfil){
-	  numRelFailingMETfil++;
-	}
-	else nRel3entries++;
-      }
-    }  
-
     fTH1DMap["pt1_beforeIDloose"]->Fill(pt1);
     fTH1DMap["eta1_beforeIDloose"]->Fill(eta1);
     if (passBoth){// check that diphoton passes the loose ID
@@ -307,6 +275,7 @@ void Plotter::DoPlots(int prompt){
 
     // START full selection for plots
     if (passMETfil){ //Data passes MET filter
+      numMargaretMETfil++;
       /////////////////////////////////////////////////////////////////
       // OptSel1 = using ptgg 	  & optimized w/o requirement on number of events 
       // OptSel2 = using ptgg/MET & optimized w/o requirement on number of events
@@ -321,24 +290,23 @@ void Plotter::DoPlots(int prompt){
       if (fWhichSel==4 && (pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.2)) passTheSel = true;// OptSel4
 
       if (passTheSel){
+        numMargaretSel++;
         fTH1DMap["eff_sel"]->Fill(1.5,Weight);
         if (!isData || (isData && hltDiphoton30Mass95==1)){ // data has to pass trigger
-
+          numMargaretTrig++;
           // to remove duplicate events 
 	  // original implementation:
           if (prompt==1 && (genmatch1==1 && genmatch2==1)) continue;   // only PF and FF for gjets  
           if (prompt==2 && (genmatch1==1 && genmatch2==1)) continue;   // only PF and FF for gjets  
           //if (prompt==2 && (genmatch1==1 || genmatch2==1)) continue;   // only FF for QCD       
-
+          numMargaretDupRem++;
 
 	  fTH1DMap["nJets"]->Fill(nJets,Weight);
 	  fTH1DMap["nElec"]->Fill(nEle,Weight);
 	  fTH1DMap["nMuon"]->Fill(nMuons,Weight);
 
-	  if (nEle < 2 && nMuons < 1) numPassingLeptonReject++;
 	  if (nEle >= 2 || nMuons >= 1) continue; //reject events with leptons
-
-
+	  numMargaretLepVeto++;
 
           // split events by eta
           EB1 = false;
@@ -705,6 +673,23 @@ void Plotter::DoPlots(int prompt){
 	      } 
 	    }
 	  }
+
+	  if ( dphiggMETpass ){
+            numMargaretmaxggMET++;
+	    if ( max_dphiJETMETpass ){
+	      numMargaretmaxjMET++;
+              if ( min_dphiJETMETpass ){
+                numMargaretminjMET++;
+	        if ( !isData && mgg > 120 && mgg < 130 ){
+	          numMargaretmgg++;
+		  if ( t1pfmetCorr > METcut ){
+		    numMargaretMETcut++;
+		  }
+		}
+              }
+            }
+          }
+
 	  if ( !isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass  ){
 	    //-------------- 
 	    // ABCD plots
@@ -762,7 +747,6 @@ void Plotter::DoPlots(int prompt){
 	    if (doBlind){
 
 	      if (outsideMgg){
-		if (t1pfmetCorr > 70) numPassingAll++;
 
 	        fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
 	        fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
@@ -1030,7 +1014,7 @@ void Plotter::DoPlots(int prompt){
 
   std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
   std::cout << "Number Events rejected by MET filters:   " << numFailingMETfil    << " out of " << nentries << " events. " << std::endl;
-  
+
   //std::cout << "nvtx   Int " << fTH1DMap["nvtx"]->Integral() << std::endl;
   //std::cout << "ptJet1 Int " << fTH1DMap["ptJet1"]->Integral() << std::endl;
 
@@ -1057,26 +1041,21 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "Efficiency in         CorrMET + ALL Iso		= " << fTH1DMap["metCor_IsolateALL"]->Integral(binMETlo,binMEThi)/fTH1DMap["metCor_IsolateALL"]->Integral(binMETze,binMEThi) << std::endl; 
   //std::cout << "======================================================" << std::endl;
   std::cout << "======================================================" << std::endl;
-
   //if (!isData) std::cout << "Total Vtx(BDT) Efficiency = " << Form("%1.3f",(Double_t)nEvents_goodVtx/(Double_t)nEvents_allVtx) << std::endl; 
   //if (!isData) std::cout << "Total Vtx0     Efficiency = " << Form("%1.3f",(Double_t)nEvents_goodVtx0/(Double_t)nEvents_allVtx) << std::endl; 
 
-  //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["t1pfmetCorr_zoom"]->Integral(binMETlo,binMEThi) << std::endl;
-  //if (!isData) std::cout << "Events in MET tail of CorrMET + gMETCut(SIG)= " << fTH1DMap["metCor_Sig"]->Integral(binMETlo,binMEThi) << std::endl;
-  //std::cout << "Number Events PASSING lepton reject:     " << numPassingLeptonReject << " out of " << nentries << " events. " << std::endl; 
-  //std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of " << nentries << " events. " << std::endl; 
+  std::cout << " Starting number of events         = " << nentries << std::endl;
+  std::cout << " Num of events after MET fil       = " << numMargaretMETfil   << std::endl;
+  std::cout << " Num of events after Selection     = " << numMargaretSel      << std::endl;
+  std::cout << " Num of events after Trigger       = " << numMargaretTrig     << std::endl;
+  std::cout << " Num of events after Duplicate Rem = " << numMargaretDupRem   << std::endl;
+  std::cout << " Num of events after Lepton Vetoes = " << numMargaretLepVeto  << std::endl;
+  std::cout << " Num of events after maxDphiggMET  = " << numMargaretmaxggMET << std::endl;
+  std::cout << " Num of events after maxDphiJetMET = " << numMargaretmaxjMET  << std::endl;
+  std::cout << " Num of events after minDphiJetMET = " << numMargaretminjMET  << std::endl;
+  std::cout << " Num of events in mgg [120,130]    = " << numMargaretmgg      << std::endl;
+  std::cout << " Num of events after MET cut       = " << numMargaretMETcut   << std::endl;
 
-  //std::cout << "Number Events rejected by Mgg range:     " << numOutOfMggRange    << " out of " << nentries << " events. " << std::endl; 
-  //std::cout << "Number Events rejected by Neg Weight:    " << numNegativeWeight   << " out of " << nentries << " events. " << std::endl; 
-  //std::cout << "Number Events rejected by ElectronVeto:  " << numFailEV           << " out of " << nentries << " events. " << std::endl; 
-  //std::cout << "Number Events rejected by DupRemoval:    " << numDuplicateRemoved << " out of " << nentries << " events. " << std::endl;  
-  //std::cout << "Number Events PASSING all selection:     " << numPassingAll       << " out of " << nentries << " events. " << std::endl; 
-  //
-  //std::cout << "Number Events that have passed Analyzer: " << nentries << " events. " << std::endl;
-  //std::cout << "Number Events rejected by Mgg range:     " << numOutOfMggRange       << " out of rel " << nRel0entries << " events. " << std::endl; 
-  //std::cout << "Number Events rejected by ElectronVeto:  " << numRelFailEV           << " out of rel " << nRel1entries << " events. " << std::endl; 
-  //std::cout << "Number Events rejected by MET filters:   " << numRelFailingMETfil    << " out of rel " << nRel2entries << " events. " << std::endl;
-  //std::cout << "Number Events PASSING all selection:     " << numPassingAll          << " out of rel " << nRel3entries << " events. " << std::endl; 
 
   Double_t effPU = 0;
   Double_t effpt = 0;

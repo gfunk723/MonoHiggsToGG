@@ -454,8 +454,8 @@ def MakeLimitPlot(MG):
     if options.doRatio: www_outputname+="_ratio"
     if options.append!="": outputname+="_"+options.append
     if options.append!="": www_outputname+="_"+options.append
-    outputname+="_OptSel3_met70"
-    www_outputname+="_OptSel3_met70"
+    outputname+="_OptSel2_VariedMET"
+    www_outputname+="_OptSel2_VariedMET"
     types=[".pdf",".png",".eps"]
     for type in types: C.SaveAs(outputname+type)
     for type in types: C.SaveAs(www_outputname+type)
