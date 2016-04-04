@@ -44,28 +44,27 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-
-  int whichSelection = 3; // Choose which selection to apply
-  TString selName = "";   // Original selection w/ MET > 80
-  if (whichSelection == 0) selName = "OrigSel";// MET > 70  
-  if (whichSelection == 1) selName = "OptSel1";// pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90,	MET > 105  
-  if (whichSelection == 2) selName = "OptSel2";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 50,	MET > 80 
-  if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2,	MET > 70 
-  if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.55, pt2/m > 0.25, ptgg/MET > 0.4,	MET > 105
-  if (whichSelection == 5) selName = "OptSel5";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85,	MET > 50
+  int whichSelection = 0; // Choose which selection to apply
+  TString selName = "";   
+  if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
+  if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
+  if (whichSelection == 2) selName = "OptSel2";// for Data/MC plot using m600 cuts: pt2/m > 0.55, pt2/m > 0.25, ptgg/MET > 0.5, MET > 95 
+  if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85, MET > 50 (using ptgg w/ requirement on #events) 
+  if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2, MET > 70 (using ptgg/MET w/ requirement on #events)
 
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString inDir = "data/25ns_v76X_v1/"; 					// input directory of the samples
-  TString outDir = Form("./diPhoPlots/25ns_v76X_v1_%s/",selName.Data());	// output directory to send results
+  TString inDir = "data/25ns_v76X_v2/"; 					// input directory of the samples
+  TString outDir = Form("./diPhoPlots/25ns_v76X_v2_%s/",selName.Data());	// output directory to send results
+  TString origDir = "./diPhoPlots/25ns_v76X_v2_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
 
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
-  bool doPlots = false;		// make plots for each sample individually
+  bool doPlots = true;		// make plots for each sample individually
   bool doComb = false;		// make stack/overlay plots
-  bool doABCD = true;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
@@ -598,20 +597,20 @@ int main(){
     // Combiner( Samples, lumi, colorMap , outDir, doNmin1plots, doStack)
     
     // do overlay plots for normal plots
-    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale);
+    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale,whichSelection);
     combAll->DoComb();
     delete combAll;   
     // do stack plots for normal plots
-    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale);
+    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale,whichSelection);
     stackAll->DoComb();
     delete stackAll;   
  
     ////// do overlay plots for n-1 plots
-    //Combiner *combAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,false,type,doQCDrescale);
+    //Combiner *combAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,false,type,doQCDrescale,whichSelection);
     //combAlln1->DoComb();
     //delete combAlln1;   
     ////// do stack plots for n-1 plots 
-    //Combiner *stackAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,true,type,doQCDrescale);
+    //Combiner *stackAlln1 = new Combiner(Samples,lumi,colorMap,outDir,true,true,type,doQCDrescale,whichSelection);
     //stackAlln1->DoComb();
     //delete stackAlln1;   
   }// end doComb
@@ -623,16 +622,27 @@ int main(){
   // Arguments of Combiner
   // 1st : SamplePairVec (Samples) that has Name,VALUE
   // 2rd : lumi
-  // 3th : output directory
-  // 4th : bool do rescaling of GJets to replace QCD sample
-  // 5th : which selection (this just affects the MET cut)
+  // 3rd : input directory
+  // 4th : output directory
+  // 5th : bool do rescaling of GJets to replace QCD sample
+  // 6th : which selection (this just affects the MET cut)
   //
   ////////////////////////////////////////////////////
 
   if (doABCD){
-    ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,doBlind,doQCDrescale,whichSelection);
-    abcd->DoAnalysis();
-    delete abcd; 
+    if (whichSelection!=1 && whichSelection!=2){
+      ABCDMethod *abcd = new ABCDMethod(Samples,lumi,outDir,outDir,doBlind,doQCDrescale,whichSelection,0);
+      abcd->DoAnalysis(0);
+      delete abcd; 
+    }
+    else{
+      UInt_t NumMasses = 8; // 0 runs just the cut for the lowest mass, the selection for each mass  
+      for (UInt_t mass = 0; mass < NumMasses; mass++){
+        ABCDMethod *abcd = new ABCDMethod(Samples,lumi,origDir,outDir,doBlind,doQCDrescale,whichSelection,mass);
+        abcd->DoAnalysis(mass);
+        delete abcd; 
+      }
+    }
   }// end doABCD
 
   //clear the vectors after they have been used

@@ -10,7 +10,7 @@
 #   5th: input filename 
 #   6th: sample name
 #   7th: outfile name
-#   8th: category type (NOT YET USED)
+#   8th: category type 
 #
 # final files used for the fit are:
 #   outdir/Output_MC.root
@@ -20,26 +20,20 @@
 # Sidenote: Safely ignore warning message "tab completion not implemented for this context" 
 # This comes from the tabs included for making the inputs to fitterFormatting easier to read below 
 
-indir="../macro/data/25ns_v74X_v1/"
-outdir="ntuples4fit_OptSel3_met70"
-
-## Categories not implemented yet
-## just an idea for making these tools easier
-categType="0";
 #############################################
 # 
 #   Category Types
-#   0 = Photon Categories, No additional Sel.
-#   1 = Photon Categories, MET > 50
-#   2 = Photon Categories, pT1 > 80, pT2 > 30
-#   3 = Photon Categories, pT1 > 80, pT2 > 30, MET > 50
-#   4 = MET Categories
-#   5 = MET Categories, pT1 > 80, pT2 > 30  
-#
-# Photon Categories = all,EE,EB,EEHighR9,EELowR9,EBHighR9,EBLowR9
-# MET Categories = met0 (inclusive), met0-50, met50 (50 & above)
+#   0 = No additional Sel. (i.e. Original Selection from Analayzer) w/ MET > 70
+#   1 = OptSel1 : pt1/m > 0.50, pt2/m > 0.25, ptgg > 90, MET > 105
+#   2 = OptSel2 : pt1/m > 0.55, pt2/m > 0.25, ptgg/MET > 0.5, MET > 95
+#   3 = OptSel3 : pt1/m > 0.55, pt2/m > 0.25, ptgg > 85, MET > 50 
+#   4 = OptSel4 : pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2, MET > 70
 #
 #############################################
+
+categType="4";
+indir="../macro/data/25ns_v74X_v2/"
+outdir="ntuples4fit_vtx0_OptSel$categType"
 
 mkdir -p $outdir
 

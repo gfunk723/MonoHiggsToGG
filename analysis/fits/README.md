@@ -15,9 +15,11 @@ specifying fitterFormatting input arguements:
    1st: input directory
    2nd: output directory
    3rd: type (sig, bkg, data)
-   4th: input filename 
-   5th: sample name
-   6th: outfile name
+   4th: prompt (for duplicate removal)
+   5th: input filename 
+   6th: sample name
+   7th: outfile name
+   8th: category type (which selection to apply)
 
  final files used for the fit are:
    `outdir/Output_MC.root` and 

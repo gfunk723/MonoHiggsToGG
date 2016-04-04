@@ -29,7 +29,7 @@ Once MicroAOD files are produced run these scripts to create the json file (cata
 
 NB: This searches for datasets matching the form: *CAMPAIGN-VERSION*
 
-### Step 1.a) Extract JSON
+### a) Extract JSON
 Extract the processed json (used as an input in the analyzer) and used to compute the PU weight file: 
 - `fggManageSamples.py -C CAMPAIGN getlumi <full dataset name>` 
 
@@ -39,7 +39,7 @@ This is specified in the diPhoAna.py (and diPhoAnaBATCH.py) in `JSONfile`.
 To get this convolution of these jsons use brilcalc:
 - `compareJSON.py --and processed.json golden.json >> processedANDgolden.json`
  
-### Step 1.b) Get PU Weights File
+### b) Get PU Weights File
 To get pileup in data, only need to specify MyAnalysisJSON.txt:
 
 ```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50  MyDataPileupHistogram.root```
@@ -94,7 +94,7 @@ Can also run: `./submitAll_DiPhioton.py` which has the names of current samples 
 From the macro directory:
 
 - Merge the output files with `./mergeTrees.sh` specifying in here the output directory
-- Add the weights to the trees with addWeightsToTree.cc run by `./weighTrees.sh LUMI` which addWeights for provided LUMI (in pb^-1)
+- Add the weights to the trees with addWeightsToTree.cc run by `./weighTrees.sh LUMI` which weights for the provided `LUMI` (in pb^-1)
 - Merge the species with `./mergeSpecies.sh`
 
 NB. The structure of how to use these scripts can be seen in `doAll.sh`
@@ -109,12 +109,12 @@ Can use `make clean` to clean.
 
 Choose which selection to apply (whichSelection).
 The ones that are currently in place:
--  if (whichSelection == 0) selName = "OrigSel";// No additional selection on ntuples 		MET > 70  
--  if (whichSelection == 1) selName = "OptSel1";// pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90,	MET > 105  
--  if (whichSelection == 2) selName = "OptSel2";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 50,	MET > 80 
--  if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2,	MET > 70 
--  if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.55, pt2/m > 0.25, ptgg/MET > 0.4,	MET > 105
--  if (whichSelection == 5) selName = "OptSel5";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85,	MET > 50
+-  if (whichSelection == 0) selName = "OrigSel";
+-  if (whichSelection == 1) selName = "OptSel1";  
+-  if (whichSelection == 2) selName = "OptSel2"; 
+-  if (whichSelection == 3) selName = "OptSel3"; 
+-  if (whichSelection == 4) selName = "OptSel4"; 
+
 The values of the cuts on the pTs are defined in Plotter.cpp. The MET cuts are also defined in the Plotter & in ABCD.cpp.
 If you want to add additional selection options, you will need to add the respective cuts to both of these.
 
@@ -154,9 +154,8 @@ In short:
 Convert ntuples from FLASHgg format to format for fits by using fitterFormatting.cc 
 Called by: `./formatNtupleForFitting.sh`
 
-Need to specify the actual cuts to be applied and the values of the MET correction to be applied for Data and MC inside fitterFormatting.cc. 
-N.B. Something nice to fix would be to make this more automated by calling the METcorr root files and using the whichSelection as done in the Plotter.
-
+Choose which selection to apply by specifying the values of category: 0 to 4 are currently allowed.
+Additional categories can be applied by adding the selection in fitterFormatting.cc.
 
 -----------------------------------------------------------
 # Copy the Framework from Github

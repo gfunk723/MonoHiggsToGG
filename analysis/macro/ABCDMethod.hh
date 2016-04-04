@@ -38,17 +38,17 @@ typedef std::vector<RooVec>	 RooVecVec;
 
 class ABCDMethod{
 public: 
-  ABCDMethod(const SamplePairVec Samples, const Double_t inLumi, const TString outname, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection);
-  void DoAnalysis();
+  ABCDMethod(const SamplePairVec Samples, const Double_t inLumi, const TString indir, const TString outname, Bool_t Blind, Bool_t doQCDrescale, Double_t whichSelection, const Int_t mass);
+  void DoAnalysis(const UInt_t mass);
   Double_t ComputeIntAndErr(TH2D *& h, Double_t & error, const UInt_t minX, const UInt_t maxX, const UInt_t minY, const UInt_t maxY);
   Double_t ComputeIntAndErr1D(TH1D *& h, Double_t & error, const UInt_t minX, const UInt_t maxX);
   void GetFinalValuesForABCDReg();
-  void DoABCDCalculations();
+  void DoABCDCalculations(const UInt_t mass);
   Double_t FindDiff(const Double_t NA, const Double_t NB, const Double_t NC, const Double_t ND);
   Double_t FindExpectedValuesInD(const Double_t NA, const Double_t NB, const Double_t NC, const Double_t NAerr, const Double_t NBerr, const Double_t NCerr, Double_t & NDerr);
   void SetRooVariables();
-  void FillTable();
-  void WriteDataCard(const TString fSampleName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate);
+  void FillTable(const UInt_t mass);
+  void WriteDataCard(const TString fSampleName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate, const UInt_t mass);
   void InitHists();
   void InitVariables();
   ~ABCDMethod();
@@ -77,6 +77,8 @@ private:
   Double_t	met_minB;
   Double_t	met_minD;
   Double_t	met_maxD;
+
+  DblVec	METcutVec;
 
   Int_t		fWhichSel;
   TString	fMetCut;

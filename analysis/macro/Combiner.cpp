@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale){
+Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection){
 
   if (doNmin1) addText = "_n-1";
   else addText="";
@@ -16,6 +16,12 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   lumi	= inLumi;
   fOutDir = outdir;
   TString fOut = "comb";
+  
+  METcut = 70;// METcut to apply for OrigSel
+  if (fWhichSel == 1) METcut = 105;// OptSel1
+  if (fWhichSel == 2) METcut = 95;//  OptSel2
+  if (fWhichSel == 3) METcut = 50;//  OptSel3
+  if (fWhichSel == 4) METcut = 70;//  OptSel4
 
   MakeOutDirectory(Form("%s%s",fOutDir.Data(),fOut.Data()));
   fOutFile = new TFile(Form("%s%s/combplots%s.root",fOutDir.Data(),fOut.Data(),addText.Data()),"RECREATE");
@@ -151,7 +157,7 @@ void Combiner::DoComb(){
     // bkg : copy histos and add to stacks
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       //fInBkgTH1DHists[th1d][mc]->Scale(lumi);
-      if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_met80_forShape"){
+      if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_metCUT_forShape"){
         if (mc==i_vh || mc==i_tth || mc==i_hgg || mc==i_vbf){
           fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
           fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
@@ -179,7 +185,31 @@ void Combiner::DoComb(){
       }
     }
 
-    if (fTH1DNames[th1d]=="mgg_IsolateALLmet80"){
+    if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
+      std::ofstream	fOutTableTxtFile2;
+      fOutTableTxtFile2.open(Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()));
+
+      TStrMap fLatexSampleTitleMap;
+      fLatexSampleTitleMap["QCD"] 		= "QCD";
+      fLatexSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
+      fLatexSampleTitleMap["VH"]		= "V + H";
+      fLatexSampleTitleMap["DYJetsToLL"]	= "Drell-Yan";
+      fLatexSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
+      fLatexSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
+      fLatexSampleTitleMap["ttHJetToGG"]	= "tt $+ H \\rightarrow \\gamma\\gamma$";
+      fLatexSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
+      fLatexSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
+      fLatexSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+      fLatexSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
+      fLatexSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
+      fLatexSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1000"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1200"]	= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1400"]	= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
 
       UInt_t sbbin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
       UInt_t sbbin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(120.);
@@ -198,78 +228,109 @@ void Combiner::DoComb(){
       Float_t fSignalRegInt2 = 0.;
       Float_t fSignalRegIntErr2 = 0.;
 
-      for (UInt_t mc = 0; mc < fNSig; mc++){
-        fSigInt[mc] = fInSigTH1DHists[th1d][mc]->IntegralAndError(sbbin1,sbbin2,fSigIntErr[mc]);
-	std::cout << " -- S -- " << fSigNames[mc] << " = " << fSigInt[mc] << " +/- " << fSigIntErr[mc] << std::endl; 
+      if (fOutTableTxtFile2.is_open()){
+        //setup Latex doc
+        fOutTableTxtFile2 << "\\documentclass[a4paper,landscape]{article}" << std::endl;
+        fOutTableTxtFile2 << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
+        fOutTableTxtFile2 << "\\begin{document}" << std::endl;
+
+        // ==========================================================
+        // start summary of results table
+        fOutTableTxtFile2 << "\% Summary of MET Systematics" << std::endl; 
+        fOutTableTxtFile2 << "\\begin{table}[bthp]" <<std::endl;
+        fOutTableTxtFile2 << "\\begin{tabular}{|l|r|}" <<std::endl;
+        fOutTableTxtFile2 << "\\hline \\hline" <<std::endl;
+        fOutTableTxtFile2 << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",lumi) <<"} \\\\" <<std::endl;
+        fOutTableTxtFile2 << "\\hline \\hline" << std::endl;
+        fOutTableTxtFile2 << "Sample & Integral \\\\" << std::endl;
+        fOutTableTxtFile2 << "\\hline" <<std::endl;
+
+        for (UInt_t mc = 0; mc < fNSig; mc++){
+          fSigInt[mc] = fInSigTH1DHists[th1d][mc]->IntegralAndError(sbbin1,sbbin2,fSigIntErr[mc]);
+          //fOutTableTxtFile2 << fSampleTitleMap[fSigNames[mc]] << " & " << fSigInt[mc] << " \\pm " << fSigIntErr[mc] << "\\\\" << std::endl; 
+        }
+
+        for (UInt_t mc = 0; mc < fNBkg; mc++){
+          fBkgInt2[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(sbbin1,sbbin2,fBkgIntErr2[mc]);
+          //fOutTableTxtFile2 << fSampleTitleMap[fBkgNames[mc]] << " & " << fBkgInt2[mc] << " \\pm " << fBkgIntErr2[mc] << "\\\\" << std::endl; 
+          //std::cout << " -- B -- " << fBkgNames[mc] << " = " << fBkgInt2[mc] << " +/- " << fBkgIntErr2[mc] << std::endl; 
+          if (fBkgInt2[mc] > 0){
+            fSignalRegInt2 += fBkgInt2[mc];
+            fSignalRegIntErr2 += fBkgIntErr2[mc]*fBkgIntErr2[mc];
+          }
+        }
+
+        //fOutTableTxtFile2 << "Total Bkg &" << fSignalRegInt2 << " \\pm " << TMath::Sqrt(fSignalRegIntErr2) << "\\\\" << std::endl; 
+        //fOutTableTxtFile2 << "Sqrt Bkg &" << TMath::Sqrt(fSignalRegInt2) << std::endl; 
+        //for (UInt_t mc = 0; mc < fNSig; mc++) std::cout << " -- Sig -- " << fSigInt[mc]/TMath::Sqrt(fSigInt[mc]+fSignalRegInt2) << std::endl; 
+
+        UInt_t bin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
+        UInt_t bin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(115.);
+        UInt_t bin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
+        UInt_t bin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
+
+        Float_t fSignalRegInt = 0.;
+        Float_t fSignalRegIntErr = 0.;
+        Float_t fTotalInt = 0.;
+        std::vector<Double_t> fBkgInt;
+        std::vector<Double_t> fBkgIntErr;
+
+        fBkgInt.resize(fNBkg);
+        fBkgIntErr.resize(fNBkg);
+
+        // calculate integrals for background
+        for (UInt_t mc = 0; mc < fNBkg; mc++){
+          fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,fBkgIntErr[mc]);
+          fOutTableTxtFile2 << fLatexSampleTitleMap[fBkgNames[mc]] << " & " << fBkgInt[mc] << " $\\pm$ " << fBkgIntErr[mc] << "\\\\" << std::endl; 
+          if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
+          if (fBkgInt[mc] > 0){
+            fSignalRegInt += fBkgInt[mc];
+            fSignalRegIntErr += fBkgIntErr[mc];
+          }
+        }
+        fOutTableTxtFile2 << "\\hline" << std::endl;
+        fOutTableTxtFile2 << "Total Bkg & " << fSignalRegInt << " $\\pm$ " << fSignalRegIntErr << " \\\\" << std::endl; 
+
+        // calculate integrals for data
+        Double_t DataInt1, DataErr1, DataInt2, DataErr2;
+        Double_t DataInt, DataIntErr;
+        DataInt1 = fOutDataTH1DHists[th1d]->IntegralAndError(bin0,bin1,DataErr1);
+        DataInt2 = fOutDataTH1DHists[th1d]->IntegralAndError(bin2,bin3,DataErr2);
+        DataInt = DataInt1 + DataInt2;
+        DataIntErr = TMath::Sqrt(DataInt1*DataInt1 + DataInt2*DataInt2);
+        fOutTableTxtFile2 << "\\hline" << std::endl;
+        fOutTableTxtFile2 << " Data (sideband) & " << DataInt << " $\\pm$ " << DataIntErr << " \\\\" << std::endl; 
+        fOutTableTxtFile2 << "\\hline" << std::endl;
+
+        // calculate integrals for signal
+        Double_t SigIntegral, SigIntegralErr;
+        for (UInt_t mc = 0; mc < fNSig; mc++){
+          SigIntegral = fInSigTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,SigIntegralErr);
+          fOutTableTxtFile2 << fLatexSampleTitleMap[fSigNames[mc]] << " & " << SigIntegral << " $\\pm$ " << SigIntegralErr << "\\\\" << std::endl; 
+        }
+      fOutTableTxtFile2 << "\\hline" << std::endl;
+      fOutTableTxtFile2 << "\\end{tabular}" <<std::endl;
+      fOutTableTxtFile2 << "\\end{table}" <<std::endl;
+
+      // ==========================================================
+      // end Latex doc
+      fOutTableTxtFile2 << "\\end{document}" <<std::endl;
+      std::cout << "Writing ResultsTable in " << Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()) << std::endl;
       }
+      else std::cout << "File didn't Open" << std::endl;
+      // close output text files
+      fOutTableTxtFile2.close();
 
-      for (UInt_t mc = 0; mc < fNBkg; mc++){
-	fBkgInt2[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(sbbin1,sbbin2,fBkgIntErr2[mc]);
-	//std::cout << " -- B -- " << fBkgNames[mc] << " = " << fBkgInt2[mc] << " +/- " << fBkgIntErr2[mc] << std::endl; 
-	if (fBkgInt2[mc] > 0){
-	  fSignalRegInt2 += fBkgInt2[mc];
-	  fSignalRegIntErr2 += fBkgIntErr2[mc]*fBkgIntErr2[mc];
-	}
-      }
-      std::cout << " -- Tot B -- " << fSignalRegInt2 << " +/- " << TMath::Sqrt(fSignalRegIntErr2) << std::endl; 
-      std::cout << " -- Sqrt B -- " << TMath::Sqrt(fSignalRegInt2) << std::endl; 
-      for (UInt_t mc = 0; mc < fNSig; mc++) std::cout << " -- Sig -- " << fSigInt[mc]/TMath::Sqrt(fSigInt[mc]+fSignalRegInt2) << std::endl; 
-
-      UInt_t bin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
-      UInt_t bin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(115.);
-      UInt_t bin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
-      UInt_t bin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
-
-      Float_t fSignalRegInt = 0.;
-      Float_t fSignalRegIntErr = 0.;
-      Float_t fTotalInt = 0.;
-      std::vector<Double_t> fBkgInt;
-      std::vector<Double_t> fBkgIntErr;
-
-      fBkgInt.resize(fNBkg);
-      fBkgIntErr.resize(fNBkg);
-
-      // calculate integrals for background
-      for (UInt_t mc = 0; mc < fNBkg; mc++){
-	fBkgInt[mc] = fInBkgTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,fBkgIntErr[mc]);
-	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Sidebands  = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInBkgTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	//std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
-	std::cout << " ----- " << fBkgNames[mc] << "----- 	Integral in Mgg Full range = " << fBkgInt[mc] << " +/- " << fBkgIntErr[mc] << std::endl; 
-	if (fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3) > 0) fTotalInt += fInBkgTH1DHists[th1d][mc]->Integral(bin0,bin3);
-	if (fBkgInt[mc] > 0){
-	  fSignalRegInt += fBkgInt[mc];
-	  fSignalRegIntErr += fBkgIntErr[mc];
-	}
-      }
-      //std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fTotalInt << std::endl; 
-      std::cout << " ----- Tot Bkg  ----- 	Integral in Mgg Full range = " << fSignalRegInt << " +/- " << fSignalRegIntErr  << std::endl; 
-
-      // calculate integrals for data
-      Double_t DataInt1, DataErr1, DataInt2, DataErr2;
-      Double_t DataInt, DataIntErr;
-      DataInt1 = fOutDataTH1DHists[th1d]->IntegralAndError(bin0,bin1,DataErr1);
-      DataInt2 = fOutDataTH1DHists[th1d]->IntegralAndError(bin2,bin3,DataErr2);
-      DataInt = DataInt1 + DataInt2;
-      DataIntErr = TMath::Sqrt(DataInt1*DataInt1 + DataInt2*DataInt2);
-      std::cout << " ----- Data ----- 	Integral in Mgg Sidebands = " << DataInt << " +/- " << DataIntErr << std::endl; 
-
-      // calculate integrals for signal
-      Double_t SigIntegral, SigIntegralErr;
-      for (UInt_t mc = 0; mc < fNSig; mc++){
-	SigIntegral = fInSigTH1DHists[th1d][mc]->IntegralAndError(bin0,bin3,SigIntegralErr);
-	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Sidebands  = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin1)+fInSigTH1DHists[th1d][mc]->Integral(bin2,bin3) << std::endl; 
-	//std::cout << " ----- " << fSigNames[mc] << " ----- 	Integral in Mgg Full range = " << fInSigTH1DHists[th1d][mc]->Integral(bin0,bin3) << std::endl; 
-	std::cout << " ----- " << fSigNames[mc] << "----- 	Integral in Mgg SignalReg  = " << SigIntegral << " +/- " << SigIntegralErr << std::endl; 
-      }
     }
+
 
     // print out efficiencies for fake MET systematic 
     if (fTH1DNames[th1d]=="metCorr_IsolateALL"){
       UInt_t binMETze = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(0.);
-      UInt_t binMETlo = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(80.);
+      UInt_t binMETlo = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(METcut);
       UInt_t binMEThi = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(299.);
 
-      Float_t fTotalBkgInt_met80 = 0.;
+      Float_t fTotalBkgInt_metCUT = 0.;
       Float_t fTotalBkgInt_metall = 0.;
       Float_t fTotalBkgEfficiency = 0.;
       for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -285,7 +346,7 @@ void Combiner::DoComb(){
 	  }
 	  else std::cout << "Events in distributions is less than 0." << std::endl;
 	  // sum all backgrounds to get overall efficiency 
-	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) > 0) fTotalBkgInt_met80  += fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi); 
+	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) > 0) fTotalBkgInt_metCUT  += fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi); 
 	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) > 0) fTotalBkgInt_metall += fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi); 
 	}
       }
@@ -297,9 +358,9 @@ void Combiner::DoComb(){
       std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi) << std::endl;
       std::cout << "Efficiency 					= " << fDataEfficiency << std::endl; 
       // efficiency for total bkg MC
-      fTotalBkgEfficiency = fTotalBkgInt_met80/fTotalBkgInt_metall;
+      fTotalBkgEfficiency = fTotalBkgInt_metCUT/fTotalBkgInt_metall;
       std::cout << " *** Total Bkg *** " << std::endl;
-      std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fTotalBkgInt_met80  << std::endl;
+      std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fTotalBkgInt_metCUT  << std::endl;
       std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fTotalBkgInt_metall << std::endl;
       std::cout << "Efficiency 				= " << fTotalBkgEfficiency << std::endl; 
       // ratio of eff data/ eff bkg MC 
@@ -589,7 +650,7 @@ void Combiner::FindMETEfficiencies(){
 
   // write as a table for Latex
   std::ofstream	fOutTableTxtFile;
-  fOutTableTxtFile.open(Form("%s/ResultsSystematicsForLatex.tex",fOutDir.Data()));
+  fOutTableTxtFile.open(Form("%s/comb/ResultsSystematicsForLatex.tex",fOutDir.Data()));
 
   TStrMap fSampleTitleMap;
   fSampleTitleMap["QCD"] 		= "QCD";
@@ -1020,7 +1081,7 @@ void Combiner::MakeEffPlots(){
 
   for (UInt_t mc = 0; mc < fNSig; mc++){
     for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
-      if (fTH1DNames[th1d] == "nvtx_IsolateALLmet80") eff_num = fInSigTH1DHists[th1d][mc]->GetEntries();
+      if (fTH1DNames[th1d] == "nvtx_IsolateALLmetCUT") eff_num = fInSigTH1DHists[th1d][mc]->GetEntries();
       if (fTH1DNames[th1d] == "selection_unwgt"){
           //eff_num = fInSigTH1DHists[th1d][mc]->GetBinContent(8); // events passing sel,mgg,met
           eff_den = fInSigTH1DHists[th1d][mc]->GetBinContent(2); // events have no requirements 
@@ -1218,10 +1279,13 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
 
   CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
 
-  fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_comb%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
-  fOutFile->cd();
-  fOutTH1DCanvases[th1d]->Write(Form("%s%s_comb%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
-
+  // don't save plots that are used for efficiencies 
+  if (fTH1DNames[th1d]!="vtx_eff_ptzp_n" && fTH1DNames[th1d]!="vtx_eff_ptzp_d" && fTH1DNames[th1d]!="vtx_eff_nvtx_n" && fTH1DNames[th1d]!="vtx_eff_nvtx_d" && fTH1DNames[th1d]!="vtx_eff_met_n" && fTH1DNames[th1d]!="vtx_eff_met_d" && fTH1DNames[th1d]!="vtx_eff_njet_n" && fTH1DNames[th1d]!="vtx_eff_njet_d" && fTH1DNames[th1d]!="JetEnUp" && fTH1DNames[th1d]!="JetEnDown" && fTH1DNames[th1d]!="JetResUp" && fTH1DNames[th1d]!="JetResDown" && fTH1DNames[th1d]!="MuonEnUp" && fTH1DNames[th1d]!="MuonEnDown" && fTH1DNames[th1d]!="EleEnUp" && fTH1DNames[th1d]!="EleEnDown" && fTH1DNames[th1d]!="TauEnUp" && fTH1DNames[th1d]!="TauEnDown" && fTH1DNames[th1d]!="PhoEnUp" && fTH1DNames[th1d]!="PhoEnDown" && fTH1DNames[th1d]!="UnclEnUp" && fTH1DNames[th1d]!="UnclEnDown" && fTH1DNames[th1d]!="pt1_afterIDloose"&& fTH1DNames[th1d]!="pt1_beforeIDloose" && fTH1DNames[th1d]!="eta1_afterIDloose" && fTH1DNames[th1d]!="eta1_beforeIDloose"){
+    // for all other plots
+    fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_comb%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
+    fOutFile->cd();
+    fOutTH1DCanvases[th1d]->Write(Form("%s%s_comb%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+  }
 
 }// end Combiner::DrawCanvasOverlay
 
@@ -1261,7 +1325,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   }
   Double_t dataInt = 0;
 
-  if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_met80_forShape"){
+  if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_metCUT_forShape"){
 
     THStack* mgg_Shape = new THStack();
     TLegend* ftempLegend = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
@@ -1367,9 +1431,11 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
 
   CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
 
-  fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_stack%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
-  fOutFile->cd();
-  fOutTH1DCanvases[th1d]->Write(Form("%s%s_stack%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+  if (fTH1DNames[th1d]!="vtx_eff_ptzp_n" && fTH1DNames[th1d]!="vtx_eff_ptzp_d" && fTH1DNames[th1d]!="vtx_eff_nvtx_n" && fTH1DNames[th1d]!="vtx_eff_nvtx_d" && fTH1DNames[th1d]!="vtx_eff_met_n" && fTH1DNames[th1d]!="vtx_eff_met_d" && fTH1DNames[th1d]!="vtx_eff_njet_n" && fTH1DNames[th1d]!="vtx_eff_njet_d" && fTH1DNames[th1d]!="JetEnUp" && fTH1DNames[th1d]!="JetEnDown" && fTH1DNames[th1d]!="JetResUp" && fTH1DNames[th1d]!="JetResDown" && fTH1DNames[th1d]!="MuonEnUp" && fTH1DNames[th1d]!="MuonEnDown" && fTH1DNames[th1d]!="EleEnUp" && fTH1DNames[th1d]!="EleEnDown" && fTH1DNames[th1d]!="TauEnUp" && fTH1DNames[th1d]!="TauEnDown" && fTH1DNames[th1d]!="PhoEnUp" && fTH1DNames[th1d]!="PhoEnDown" && fTH1DNames[th1d]!="UnclEnUp" && fTH1DNames[th1d]!="UnclEnDown" && fTH1DNames[th1d]!="pt1_afterIDloose"&& fTH1DNames[th1d]!="pt1_beforeIDloose" && fTH1DNames[th1d]!="eta1_afterIDloose" && fTH1DNames[th1d]!="eta1_beforeIDloose"){
+    fOutTH1DCanvases[th1d]->SaveAs(Form("%scomb/%s_stack%s%s.%s",fOutDir.Data(),fTH1DNames[th1d].Data(),addText.Data(),suffix.Data(),fType.Data()));  
+    fOutFile->cd();
+    fOutTH1DCanvases[th1d]->Write(Form("%s%s_stack%s",fTH1DNames[th1d].Data(),suffix.Data(),addText.Data()));
+  }
 
   /*
   for (UInt_t mc = 0; mc < fNSig; mc++){
@@ -1685,17 +1751,13 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("absdphiJet2MET");
     fTH1DNames.push_back("absdphi_maxJetMET");
     fTH1DNames.push_back("absdphi_minJetMET");
-    fTH1DNames.push_back("absdphi_maxJetMET_met100");
-    fTH1DNames.push_back("absdphi_minJetMET_met100");
     fTH1DNames.push_back("absdphi_maxgMET");
-    fTH1DNames.push_back("absdphi_maxgMET_met80");
+    fTH1DNames.push_back("absdphi_maxgMET_metCUT");
     fTH1DNames.push_back("absdphi_g1MET");
-    fTH1DNames.push_back("absdphi_ggmet_met100");
-    fTH1DNames.push_back("absdphi_g1MET_met100");
-    fTH1DNames.push_back("absdphi_ggmet_met80");
-    fTH1DNames.push_back("absdphi_g1MET_met80");
-    fTH1DNames.push_back("absdphi_maxJetMET_met80");
-    fTH1DNames.push_back("absdphi_minJetMET_met80");
+    fTH1DNames.push_back("absdphi_ggmet_metCUT");
+    fTH1DNames.push_back("absdphi_g1MET_metCUT");
+    fTH1DNames.push_back("absdphi_maxJetMET_metCUT");
+    fTH1DNames.push_back("absdphi_minJetMET_metCUT");
     fTH1DNames.push_back("nvtx_afterJetCut");
     fTH1DNames.push_back("ptgg_afterJetCut");
     fTH1DNames.push_back("mgg_afterJetCut");
@@ -1737,13 +1799,13 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("metCorr_IsolateALL");
     fTH1DNames.push_back("metCorr_forShape");
     fTH1DNames.push_back("mgg_forShape");
-    fTH1DNames.push_back("mgg_met80_forShape");
+    fTH1DNames.push_back("mgg_metCUT_forShape");
     fTH1DNames.push_back("mgg_IsolateALL");
-    fTH1DNames.push_back("mgg_IsolateALLmet80");
+    fTH1DNames.push_back("mgg_IsolateALLmetCUT");
     fTH1DNames.push_back("ptgg_IsolateALL");
-    fTH1DNames.push_back("ptgg_IsolateALLmet80");
+    fTH1DNames.push_back("ptgg_IsolateALLmetCUT");
     fTH1DNames.push_back("nvtx_IsolateALL");
-    fTH1DNames.push_back("nvtx_IsolateALLmet80");
+    fTH1DNames.push_back("nvtx_IsolateALLmetCUT");
 
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
