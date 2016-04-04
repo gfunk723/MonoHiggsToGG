@@ -21,7 +21,6 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   // to store METcut to apply
   if (fWhichSel == 1){
     METcutVec.push_back(105);
-    METcutVec.push_back(105);
     METcutVec.push_back(165);
     METcutVec.push_back(220);
     METcutVec.push_back(245);
@@ -30,7 +29,6 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
     METcutVec.push_back(285);
   } 
   else if (fWhichSel == 2){
-    METcutVec.push_back(95);
     METcutVec.push_back(95);
     METcutVec.push_back(170);
     METcutVec.push_back(170);
@@ -54,7 +52,7 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
 
   // MET threshold
   if (fWhichSel != 1 && fWhichSel !=2 ) met_minD   = METcutVec[0];
-  else met_minD = METcutVec[mass];
+  else met_minD = METcutVec[mass-1];
 
   // save MET cut as a string
   if (met_minD >= 100) fMetCut = Form("%3.0f",met_minD);
