@@ -424,7 +424,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
     treeOrig->GetEntry(i);
 
     // check that data passes METfilters
-    if (type=="data" && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1 || metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
+    if (type=="data" && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
 
     // check that passes trigger
     if (type=="data" && hltDiphoton30Mass95==0) continue;

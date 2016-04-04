@@ -62,7 +62,7 @@ int main(){
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
-  bool doPlots = true;		// make plots for each sample individually
+  bool doPlots = false;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
@@ -74,7 +74,7 @@ int main(){
   bool doReweightPU = false;	// use PURW from old files if !makePURWfiles
   bool doCompare = false;	// call Comparer (not yet working) 
 
-  Double_t lumi =  2.2;  // in fb^-1  
+  Double_t lumi =  2.3;  // in fb^-1  
   UInt_t nBins_vtx = 60; // number of bins for PURW 
   
   //////////////////////////////////////////////////////////////////////////////////////
