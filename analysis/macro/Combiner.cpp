@@ -202,6 +202,8 @@ void Combiner::DoComb(){
       fLatexSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
       fLatexSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
       fLatexSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+      fLatexSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu \\nu$";
+      fLatexSampleTitleMap["TTGG_0Jets"]	= "tt + $\\gamma \\gamma$";
       fLatexSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
       fLatexSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
       fLatexSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
@@ -667,7 +669,7 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
   fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
-  fSampleTitleMap["ZGTo2LG"]		= "Z + Z $\\rightarrow ll \\nu\\nu$";
+  fSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu\\nu$";
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TTGG_0Jets"]		= "tt + $\\gamma\\gamma$";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";

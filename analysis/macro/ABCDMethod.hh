@@ -43,14 +43,14 @@ public:
   Double_t ComputeIntAndErr(TH2D *& h, Double_t & error, const UInt_t minX, const UInt_t maxX, const UInt_t minY, const UInt_t maxY);
   Double_t ComputeIntAndErr1D(TH1D *& h, Double_t & error, const UInt_t minX, const UInt_t maxX);
   void GetFinalValuesForABCDReg();
-  void DoABCDCalculations(const UInt_t mass);
+  void DoABCDCalculations();
   Double_t FindDiff(const Double_t NA, const Double_t NB, const Double_t NC, const Double_t ND);
   Double_t FindExpectedValuesInD(const Double_t NA, const Double_t NB, const Double_t NC, const Double_t NAerr, const Double_t NBerr, const Double_t NCerr, Double_t & NDerr);
   void SetRooVariables();
   void FillTable(const UInt_t mass);
   void WriteDataCard(const TString fSampleName, const RooRealVar* sigrate, const Double_t expsig, const DblVecVec bkgrates, const RooVecVec bkgrate, const UInt_t mass);
   void InitHists();
-  void InitVariables();
+  void InitVariables(const UInt_t mass);
   ~ABCDMethod();
 
 private:
@@ -67,8 +67,10 @@ private:
   UInt_t	i_vbf;
   UInt_t	i_tgj; 
   UInt_t	i_ttgj;
+  UInt_t	i_ttgg;
   UInt_t	i_wg; 
   UInt_t	i_zg;  
+  UInt_t	i_zz;  
 
   Double_t	mgg_minAB1;
   Double_t	mgg_minCD;

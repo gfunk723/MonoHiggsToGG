@@ -93,8 +93,8 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
 
   TLegend *leg1;
   leg1 = new TLegend(0.58,0.80,0.82,0.85,"", "brNDC");// x1,y1,x2,y2
-  leg1->AddEntry(h_Sig1,"Sig1","L");
-  leg1->AddEntry(h_Sig2,"Sig2","L");
+  leg1->AddEntry(h_Sig1,nameFileSig1,"L");
+  leg1->AddEntry(h_Sig2,nameFileSig2,"L");
 
   leg1->SetTextSize(0.035);
   leg1->SetTextFont(42);
