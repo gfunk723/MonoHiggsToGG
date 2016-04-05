@@ -38,7 +38,7 @@ ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptFit(0)
 #www_path="/afs/cern.ch/user/s/soffi/www/Limits"
-www_path="/afs/cern.ch/user/m/mzientek/www/Plots/25ns_Limits_74X"
+www_path="/afs/cern.ch/user/m/mzientek/www/Plots/25ns_Limits_76X"
 epsilon=0.001
 
 #-------------------------------------------------------------------------
@@ -47,8 +47,8 @@ OBSmasses = []
 EXPmasses = []
 
 
-OBSmassesT = [600,800,1000,1200,1400,1700,2500]#[1,10,100,1000]
-EXPmassesT = [600,800,1000,1200,1400,1700,2500]#[1,10,100,1000]
+OBSmassesT = [600,800,1000,1200,1400,1700,2000,2500]#[1,10,100,1000]
+EXPmassesT = [600,800,1000,1200,1400,1700,2000,2500]#[1,10,100,1000]
 
 
 for m in OBSmassesT:
@@ -454,8 +454,8 @@ def MakeLimitPlot(MG):
     if options.doRatio: www_outputname+="_ratio"
     if options.append!="": outputname+="_"+options.append
     if options.append!="": www_outputname+="_"+options.append
-    outputname+="_OptSel2_VariedMET"
-    www_outputname+="_OptSel2_VariedMET"
+    outputname+="76X_OptSel1"
+    www_outputname+="76X_OptSel1"
     types=[".pdf",".png",".eps"]
     for type in types: C.SaveAs(outputname+type)
     for type in types: C.SaveAs(www_outputname+type)

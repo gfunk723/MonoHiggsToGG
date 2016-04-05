@@ -531,7 +531,7 @@ Double_t ABCDMethod::FindDiff(const Double_t NA, const Double_t NB, const Double
 Double_t ABCDMethod::FindExpectedValuesInD(const Double_t NA, const Double_t NB, const Double_t NC, const Double_t NAerr, const Double_t NBerr, const Double_t NCerr, Double_t & NDerr){ // find expected values in the D (signal) region
   Double_t ExpND = 0.;
   NDerr = 0.;
-  if (NB > 0){ 
+  if (NB > 0 && NA > 0 && NC > 0 ){ 
     ExpND = NC*NA/NB;                                                                                                                                
     NDerr = std::sqrt((NCerr*NCerr*NA*NA/(NB*NB))+(NAerr*NAerr*NC*NC/(NB*NB))+(NBerr*NBerr*NC*NC*NA*NA/(std::pow(NB,4))));
   }
