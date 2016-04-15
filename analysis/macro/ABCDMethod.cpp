@@ -587,8 +587,8 @@ void ABCDMethod::FillTable(const UInt_t mass){
      fOutTableTxtFile << Form("$m_{\\gamma \\gamma}$ in $[%3.f-%3.f]$ GeV and MET $>$ %3.f GeV",mgg_minCD,mgg_maxCD,met_minD)<<" \\\\" <<std::endl;
      fOutTableTxtFile << "\\hline" <<std::endl;
 
-     ABCDMethod::SetRooVariables();
-     fOutTableTxtFile << "Data &  " << *(fRooData[2][0]->format(2,"EXPF")) <<  " \\\\" << std::endl;
+     //ABCDMethod::SetRooVariables();
+     if (!doBlind) fOutTableTxtFile << "Data &  " << *(fRooData[2][0]->format(2,"EXPF")) <<  " \\\\" << std::endl;
      //std::cout << "Data &  " << *(fRooData[2][0]->format(2,"EXPF")) << std::endl;
      fOutTableTxtFile << "\\hline" << std::endl;
 
@@ -622,15 +622,28 @@ void ABCDMethod::FillTable(const UInt_t mass){
      fOutTableTxtFile << "Sample & Corr($m_{\\gamma\\gamma}$,MET) & $N_A$ & $N_B$ & $N_C$ & $N_D$ & Expected D & Diff  \\\\" << std::endl;
      fOutTableTxtFile << "\\hline" <<std::endl;
 
-     //fOutTableTxtFile << "Data &  " << 
-     //   *(fRooData[5][0]->format(2,"XPF")) << " &  " <<
-     //   *(fRooData[0][0]->format(2,"EXPF")) << " &  " << 
-     //   *(fRooData[1][0]->format(2,"EXPF")) << " &  " << 
-     //   *(fRooData[3][0]->format(2,"EXPF")) << " &  " <<  
-     //   *(fRooData[2][0]->format(2,"EXPF")) << " &  " << 
-     //   *(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
-     //   Form("%f",fDiffData[0]) <<"$ \\\\" << std::endl;
-     //fOutTableTxtFile << "\\hline" << std::endl;
+     if (!doBlind){
+     fOutTableTxtFile << "Data &  " << 
+        *(fRooData[5][0]->format(2,"XPF")) << " &  " <<
+        *(fRooData[0][0]->format(2,"EXPF")) << " &  " << 
+        *(fRooData[1][0]->format(2,"EXPF")) << " &  " << 
+        *(fRooData[3][0]->format(2,"EXPF")) << " &  " <<  
+        *(fRooData[2][0]->format(2,"EXPF")) << " &  " << 
+        *(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
+        Form("%f",fDiffData[0]) <<"$ \\\\" << std::endl;
+     fOutTableTxtFile << "\\hline" << std::endl;
+     }
+     else{
+       fOutTableTxtFile << "Data &  " << 
+          *(fRooData[5][0]->format(2,"XPF")) << " &  " <<
+          *(fRooData[0][0]->format(2,"EXPF")) << " &  " << 
+          *(fRooData[1][0]->format(2,"EXPF")) << " &  " << 
+          *(fRooData[3][0]->format(2,"EXPF")) << " &  " << 
+	  " - " << " &  " << // remove the N_D from printout
+          *(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
+          " - " << " &  " << // remove the Diff from printout
+       fOutTableTxtFile << "\\hline" << std::endl;
+     }	
 
      for (UInt_t mc = 0; mc < fNBkg; mc++){
        fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << " &  " << 
