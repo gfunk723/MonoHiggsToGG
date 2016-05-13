@@ -32,3 +32,36 @@ python extractJSONS.py -i datasets/datasets_76X_sig_vtx0.json		-o 2HDM_MZP2500		
 
 python extractJSONS.py -i datasets/datasets_76X_sig_vtx0.json		-o 2HDM_MZp-600		-d lists_25ns_v76X_vtx0/MC
 python extractJSONS.py -i datasets/datasets_76X_sig_vtx0.json		-o 2HDM_MZp-800		-d lists_25ns_v76X_vtx0/MC
+
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-800_MA0-500		-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-800_MA0-600		-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1000_MA0-400	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1000_MA0-500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1000_MA0-600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1000_MA0-700	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1000_MA0-800	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1200_MA0-400	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1200_MA0-500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1200_MA0-600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1200_MA0-700	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1200_MA0-800	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1400_MA0-400	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1400_MA0-500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1400_MA0-600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1400_MA0-700	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1400_MA0-800	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1700_MA0-400	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1700_MA0-500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1700_MA0-600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1700_MA0-700	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-1700_MA0-800	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2000_MA0-400	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2000_MA0-500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2000_MA0-600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2000_MA0-700	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2000_MA0-800	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2500_MA0-500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2500_MA0-600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2500_MA0-700	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_officialsig.json	-o 2HDM_MZp-2500_MA0-800	-d lists_25ns_v76X_vtx0/MC
+
