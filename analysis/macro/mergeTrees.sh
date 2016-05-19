@@ -35,5 +35,36 @@ hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2500.root		../../
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP600_mA0400.root		../../output/job_201643_17/2HDM_MZp-600/2HDM_MZp-600*.root
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP800_mA0400.root		../../output/job_201643_17/2HDM_MZp-800/2HDM_MZp-800*.root
 
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP800_mA0500.root		../../output/job_2016513_16/2HDM_MZp-800_MA0-500/2HDM_MZp-800*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1000_mA0400.root		../../output/job_2016513_16/2HDM_MZp-1000_MA0-400/2HDM_MZp-1000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1000_mA0500.root		../../output/job_2016513_16/2HDM_MZp-1000_MA0-500/2HDM_MZp-1000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1000_mA0600.root		../../output/job_2016513_16/2HDM_MZp-1000_MA0-600/2HDM_MZp-1000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1000_mA0700.root		../../output/job_2016513_16/2HDM_MZp-1000_MA0-700/2HDM_MZp-1000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1000_mA0800.root		../../output/job_2016513_16/2HDM_MZp-1000_MA0-800/2HDM_MZp-1000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1200_mA0400.root		../../output/job_2016513_16/2HDM_MZp-1200_MA0-400/2HDM_MZp-1200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1200_mA0500.root		../../output/job_2016513_16/2HDM_MZp-1200_MA0-500/2HDM_MZp-1200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1200_mA0600.root		../../output/job_2016513_16/2HDM_MZp-1200_MA0-600/2HDM_MZp-1200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1200_mA0700.root		../../output/job_2016513_16/2HDM_MZp-1200_MA0-700/2HDM_MZp-1200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1200_mA0800.root		../../output/job_2016513_16/2HDM_MZp-1200_MA0-800/2HDM_MZp-1200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1400_mA0400.root		../../output/job_2016513_16/2HDM_MZp-1400_MA0-400/2HDM_MZp-1400*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1400_mA0500.root		../../output/job_2016513_16/2HDM_MZp-1400_MA0-500/2HDM_MZp-1400*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1400_mA0600.root		../../output/job_2016513_16/2HDM_MZp-1400_MA0-600/2HDM_MZp-1400*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1400_mA0700.root		../../output/job_2016513_16/2HDM_MZp-1400_MA0-700/2HDM_MZp-1400*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1400_mA0800.root		../../output/job_2016513_16/2HDM_MZp-1400_MA0-800/2HDM_MZp-1400*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1700_mA0400.root		../../output/job_2016513_16/2HDM_MZp-1700_MA0-400/2HDM_MZp-1700*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1700_mA0500.root		../../output/job_2016513_16/2HDM_MZp-1700_MA0-500/2HDM_MZp-1700*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1700_mA0600.root		../../output/job_2016513_16/2HDM_MZp-1700_MA0-600/2HDM_MZp-1700*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1700_mA0700.root		../../output/job_2016513_16/2HDM_MZp-1700_MA0-700/2HDM_MZp-1700*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1700_mA0800.root		../../output/job_2016513_16/2HDM_MZp-1700_MA0-800/2HDM_MZp-1700*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2000_mA0400.root		../../output/job_2016513_16/2HDM_MZp-2000_MA0-400/2HDM_MZp-2000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2000_mA0500.root		../../output/job_2016513_16/2HDM_MZp-2000_MA0-500/2HDM_MZp-2000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2000_mA0600.root		../../output/job_2016513_16/2HDM_MZp-2000_MA0-600/2HDM_MZp-2000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2000_mA0700.root		../../output/job_2016513_16/2HDM_MZp-2000_MA0-700/2HDM_MZp-2000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2000_mA0800.root		../../output/job_2016513_16/2HDM_MZp-2000_MA0-800/2HDM_MZp-2000*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2500_mA0500.root		../../output/job_2016513_16/2HDM_MZp-2500_MA0-500/2HDM_MZp-2500*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2500_mA0600.root		../../output/job_2016513_16/2HDM_MZp-2500_MA0-600/2HDM_MZp-2500*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2500_mA0700.root		../../output/job_2016513_16/2HDM_MZp-2500_MA0-700/2HDM_MZp-2500*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP2500_mA0800.root		../../output/job_2016513_16/2HDM_MZp-2500_MA0-800/2HDM_MZp-2500*.root
+
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/DoubleEG.root  			../../output/job_201643_15/DoubleEG/DoubleEG*.root
 

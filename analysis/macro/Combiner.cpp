@@ -1726,6 +1726,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("t1pfmetphiCorr");
     fTH1DNames.push_back("t1pfmet_zoom");
     fTH1DNames.push_back("t1pfmetSumEt");
+    fTH1DNames.push_back("t1pfmetSumEtCorr");
     fTH1DNames.push_back("t1pfmet_partblind");
     fTH1DNames.push_back("t1pfmetCorr_partblind");
     fTH1DNames.push_back("ptggOverMET");
@@ -1759,6 +1760,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("absdphiJet2MET");
     fTH1DNames.push_back("absdphi_maxJetMET");
     fTH1DNames.push_back("absdphi_minJetMET");
+    fTH1DNames.push_back("absdphiUncorr_maxJetMET");
+    fTH1DNames.push_back("absdphiUncorr_minJetMET");
     fTH1DNames.push_back("absdphi_maxgMET");
     fTH1DNames.push_back("absdphi_maxgMET_metCUT");
     fTH1DNames.push_back("absdphi_g1MET");
@@ -1822,6 +1825,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("phigg");
     fTH1DNames.push_back("dphi_ggmet");
     fTH1DNames.push_back("absdphi_ggJet1");
+    fTH1DNames.push_back("absdphiUncorr_ggmet");
     fTH1DNames.push_back("absdphi_ggmet");
     fIndexDphi = fTH1DNames.size()-1;
     fTH1DNames.push_back("deta_gg");
