@@ -12,6 +12,7 @@
 
 #include "Plotter.hh"
 #include "Combiner.hh"
+#include "CardMaker.hh"
 #include "Comparer.hh"
 #include "ReweightPU.hh"
 #include "METCorr2016.hh"
@@ -44,7 +45,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 1; // Choose which selection to apply
+  int whichSelection = 0; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -64,8 +65,9 @@ int main(){
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = false;		// make plots for each sample individually
   bool doComb = false;		// make stack/overlay plots
-  bool doABCD = true;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
+  bool makeDataCards = true;    // make datacards for hybrid method
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
@@ -94,6 +96,7 @@ int main(){
       doPlots = false;
       doComb = false;
       doABCD = false;
+      makeDataCards = false;
       doCompare = false;
       doReweightPU = false;
       makePURWfiles = false;
@@ -572,6 +575,31 @@ int main(){
 
   /////////////////////////////////////////////////////
   //
+  // Make data cards using hybrid method
+  //
+  // Arguements to CardMaker:
+  //
+  // 1st : SamplePairVec (Samples) that has Name,VALUE
+  // 2nd : ColorMap for samples
+  // 3rd : lumi
+  // 4th : PU weight vector
+  // 5th : input directory
+  // 5th : output directory
+  // 6th : type of plots out 
+  //
+  /////////////////////////////////////////////////////
+
+  if (makeDataCards){
+    std::cout << "Making datacards using the hybrid method" << std::endl;
+    CardMaker *cards = new CardMaker(Samples,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    cards->MakeCards();
+    delete cards;
+    std::cout << "Finished making datacards" << std::endl; 
+  }
+
+
+  /////////////////////////////////////////////////////
+  //
   // Make comparison plots for all samples
   //
   // Arguments to Plotter:
@@ -587,10 +615,10 @@ int main(){
 
   if (doCompare){
     std::cout << "Working on Comparing All Samples" << std::endl;
-    Comparer *comp = new Comparer(Samples,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
-    comp->DoComparison();
-    delete comp;
-    std::cout << "Finished Comparing Samples" << std::endl;
+    //Comparer *comp = new Comparer(Samples,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    //comp->DoComparison();
+    //delete comp;
+    //std::cout << "Finished Comparing Samples" << std::endl;
   }
 
   ////////////////////////////////////////////////////
