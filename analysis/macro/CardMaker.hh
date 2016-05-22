@@ -31,6 +31,7 @@
 #include "RooGaussian.h"
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 
 using namespace RooFit;
@@ -43,7 +44,10 @@ typedef std::vector<TPad*>    TPadVec;
 typedef std::vector<TLegend*> TLegVec;
 typedef std::vector<TCanvas*> TCanvVec;
 typedef std::vector<TLine*>   TLineVec;
+typedef std::vector<UInt_t>   IntVec;
 typedef std::vector<Double_t> DblVec;
+typedef std::vector<IntVec>   IntVecVec;
+typedef std::vector<DblVec>   DblVecVec;
 typedef std::vector<TTree*>   TTreeVec;
 typedef std::vector<TTreeVec>		TTreeVecVec;
 typedef std::vector<TTreeVecVec>	TTreeVecVecVec;
@@ -57,11 +61,13 @@ typedef std::vector<RooDataSetVecVec>	RooDataSetVecVecVec;
 
 class CardMaker{
 public:
-  CardMaker(const ColorMap colorMap, const Double_t inLumi, const DblVec puweights, const TString inname, const TString outname, const Bool_t Blind, const TString type);
+  CardMaker(const Double_t scalefactor, const ColorMap colorMap, const Double_t inLumi, const DblVec puweights, const TString inname, const TString outname, const Bool_t Blind, const TString type);
   void MakeCards();
+  void SetupCutsToApply();
   void GetInFilesAndMakeTChain();
   void SetBranchAddresses( TTree * treeIn ); 
-  void ApplyCommonSelection(const TString sampleName, const UInt_t sampleID);
+  void ApplyCommonSelection(const TString sampleName, const UInt_t sampleID, const UInt_t sampleNumber);
+  void WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t Int_NA_Bkg, const Double_t NA_Bkg, const Double_t ND_Data, const DblVec ND_Res);
 
   void DoComparison();
 
@@ -74,10 +80,23 @@ private:
   TString	fType;
   Bool_t	doBlind;
   DblVec	fPUWeights;
+  UInt_t	fNSamples;  
+  TString	fOut;
+  Double_t	alpha;
 
   TTree * 	tpho;
 
+  DblVec	Cut_pt1mgg;
+  DblVec	Cut_pt2mgg;
+  DblVec	Cut_ptgg;
+  DblVec	Cut_met;
 
+  IntVecVec	Int_Results_NA; 
+  IntVecVec	Int_Results_ND;
+  DblVecVec	Dbl_Results_NA;
+  DblVecVec	Dbl_Results_ND;
+
+  std::ofstream	fOutTxtFile;
 
   TStrMap	fSampleTitleMap;
   ColorMap	fColorMap;

@@ -1,18 +1,19 @@
 #include "CardMaker.hh"
 #include "../../../DataFormats/Math/interface/deltaPhi.h"
 
-CardMaker::CardMaker( const ColorMap colorMap, const Double_t inLumi, const DblVec puweights, const TString indir, const TString outdir, const Bool_t Blind, const TString type){
+CardMaker::CardMaker(const Double_t scalefactor, const ColorMap colorMap, const Double_t inLumi, const DblVec puweights, const TString indir, const TString outdir, const Bool_t Blind, const TString type){
 
   // Load RooFit
   gSystem->Load("libRooFit");
 
   // Store input variables
+  alpha = scalefactor;
   fType = type;
   flumi = inLumi;
   fInDir = indir;
   fOutDir = outdir;
   doBlind = Blind;
-  TString fOut = "cards"; 
+  fOut = "cards"; 
   fPUWeights = puweights;
 
   // Make output datacard files
@@ -25,10 +26,10 @@ CardMaker::CardMaker( const ColorMap colorMap, const Double_t inLumi, const DblV
 
   // Set up sampleID matches
   // resonant bkgs
-  Samples.push_back(SamplePair("ttHJetToGG",0)); 
-  Samples.push_back(SamplePair("VBFHToGG",0)); 
   Samples.push_back(SamplePair("GluGluHToGG",0)); 
+  Samples.push_back(SamplePair("VBFHToGG",0)); 
   Samples.push_back(SamplePair("VH",0));
+  Samples.push_back(SamplePair("ttHJetToGG",0)); 
   // non-resonant bkgs
   Samples.push_back(SamplePair("DYJetsToLL",1));
   Samples.push_back(SamplePair("DiPhoton",1));
@@ -110,6 +111,7 @@ CardMaker::CardMaker( const ColorMap colorMap, const Double_t inLumi, const DblV
   fNBkg = fBkgNames.size();
   fNRes = fResNames.size();
   fNSig = fSigNames.size();
+  fNSamples = fNData+fNBkg+fNRes+fNSig;
 
   // Open input files & make the TChain w/ trees
   //CardMaker::GetInFilesAndMakeTChain();
@@ -139,16 +141,77 @@ CardMaker::~CardMaker(){
 
 void CardMaker::MakeCards(){
 
-  for (SamplePairVecIter iter = Samples.begin(); iter != Samples.end(); ++iter){
-    // open the file for each sample, open the tree for that file and then 
-    // apply the common selection to each sample
-    CardMaker::ApplyCommonSelection( (*iter).first, (*iter).second );
+  // set up vectors storing cuts to apply
+  CardMaker::SetupCutsToApply();
+
+  // set up vectors to store results
+  Int_Results_NA.resize(fNSamples);
+  Int_Results_ND.resize(fNSamples); 
+  Dbl_Results_NA.resize(fNSamples);
+  Dbl_Results_ND.resize(fNSamples);
+  for (UInt_t iter = 0; iter < fNSamples; ++iter){ 
+    Int_Results_NA[iter].resize(fNSig);
+    Int_Results_ND[iter].resize(fNSig); 
+    Dbl_Results_NA[iter].resize(fNSig);
+    Dbl_Results_ND[iter].resize(fNSig);
+    for (UInt_t n = 0; n < fNSig; n++){
+      Int_Results_NA[iter][n] = 0;
+      Int_Results_ND[iter][n] = 0; 
+      Dbl_Results_NA[iter][n] = 0;
+      Dbl_Results_ND[iter][n] = 0;
+    } 
   }
+
+  UInt_t SampleNumber=0;
+  DblVecVec Dbl_Results_ND_Sig;
+  DblVecVec Dbl_Results_ND_Res; 
+  DblVecVec Dbl_Results_ND_Data;
+  DblVec    Dbl_Results_NA_Bkg;
+  IntVec    Int_Results_NA_Bkg;
+
+  Dbl_Results_NA_Bkg.resize(fNSig);// one entry for each cut (because one cut for each signal)
+  for (UInt_t n=0; n<fNSig; n++) Dbl_Results_NA_Bkg[n]=0; 
+  Int_Results_NA_Bkg.resize(fNSig);// one entry for each cut (because one cut for each signal)
+  for (UInt_t n=0; n<fNSig; n++) Int_Results_NA_Bkg[n]=0; 
+  Dbl_Results_ND_Res.resize(fNSig);// one entry for each cut (because one cut for each signal)
+  for (UInt_t n=0; n<fNSig; n++){
+    Dbl_Results_ND_Res[n].resize(fNRes);//values for each resonant bkg;
+    for (UInt_t mc=0; mc<fNRes; mc++) Dbl_Results_ND_Res[n][mc]=0; 
+  }
+
+  // open the file for each sample, open the tree for that file and then 
+  // apply the common selection to each sample
+  for (SamplePairVecIter iter = Samples.begin(); iter != Samples.end(); ++iter){
+    CardMaker::ApplyCommonSelection( (*iter).first, (*iter).second, SampleNumber);
+    // regroup to be more convenient for datacard writing
+    if ((*iter).second==0){
+      for (UInt_t n=0; n<fNSig; n++){
+	for (UInt_t mc=0; mc<fNRes; mc++){
+	  Dbl_Results_ND_Res[n][mc] = Dbl_Results_ND[SampleNumber][n];
+	}
+      }
+      //Dbl_Results_ND_Res.push_back(Dbl_Results_ND[SampleNumber]);
+    }
+    else if ((*iter).second==2) Dbl_Results_ND_Data.push_back(Dbl_Results_ND[SampleNumber]);
+    else if ((*iter).second==1){
+      for (UInt_t n=0; n<fNSig; n++){ 
+        Dbl_Results_NA_Bkg[n]+=Dbl_Results_NA[SampleNumber][n];
+        Int_Results_NA_Bkg[n]+=Int_Results_NA[SampleNumber][n];
+      }
+    }
+    else  Dbl_Results_ND_Sig.push_back(Dbl_Results_ND[SampleNumber]);
+    SampleNumber++;
+  }
+
+  // Write out the datacard (one for each signal sample)
+  for (UInt_t mc=0; mc < fNSig; mc++){
+    CardMaker::WriteDataCard( fSigNames[mc] , Dbl_Results_ND_Sig[mc][mc], Int_Results_NA_Bkg[mc], Dbl_Results_NA_Bkg[mc], Dbl_Results_ND_Data[0][mc], Dbl_Results_ND_Res[mc]);
+  } 
 
 }// end CardMaker::MakeCards
 
 
-void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sampleID ){
+void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sampleID , const UInt_t sampleNumber){
 
   // open each file
   TFile *fileOrig = 0;
@@ -206,7 +269,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
     // met-phi correction
-    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE;
+    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE, t1pfmetCorr;
 
     if (sampleID==2){// data 
       t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
@@ -218,6 +281,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     }
     t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
     correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+    t1pfmetCorr = correctedMet.Pt();
 
     // calculate the weight
     Double_t Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
@@ -282,6 +346,21 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
     if (nMuons > 0 || nEle > 1) continue;
 
+    // any events that make it to this point have passed all the common selection
+    for (UInt_t cut=0; cut < fNSig; cut++){
+      if (pt1/mgg > Cut_pt1mgg[cut] && pt2/mgg > Cut_pt2mgg[cut] && ptgg > Cut_ptgg[cut]){
+        if (t1pfmetCorr > Cut_met[cut]){
+	  if (mgg > 120 && mgg < 130){
+	    Int_Results_ND[sampleNumber][cut]++;
+            Dbl_Results_ND[sampleNumber][cut]+=Weight;
+	  }
+	  else{
+	    Int_Results_NA[sampleNumber][cut]++;
+            Dbl_Results_NA[sampleNumber][cut]+=Weight;
+	  }
+	}// met cut
+      }// pt1/mgg, pt2/mgg, ptgg cuts
+    }// loop over the cuts (one for each signal sample)
 
  
   }// loop over entries in treeOrig
@@ -295,25 +374,59 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
 
 
-//void CardMaker::WriteDataCard(){
-//
-//  //TString DataCardName = Form("%s/DataCard_%s_Sel%i_%i_met%s.txt",fOutDir.Data(),fSigName.Data(),fWhichSel,mass,fMetCut.Data());
-//  //std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
-//  //fOutTxtFile.open(DataCardName); 
-//  //if (fOutTxtFile.is_open()){
-//  //  fOutTxtFile << Form("#MonoHgg Datacard for MET > %s C&C Limit Setting, %f fb-1 ",fMetCut.Data(),flumi) << std::endl;
-//  //  fOutTxtFile << "#Run with:combine -M Asymptotic cardname.txt --run blind " << std::endl;
-//  //  fOutTxtFile << Form("# Lumi =  %f fb-1",flumi) << std::endl;
-//  //
-//  //}// fOutTxtFile is_open
-//  //else std::cout << "Unable to open DataCard Output File" << std::endl;
-//  //fOutTxtFile.close();
-//  //std::cout << "Finished Writing DataCard" << std::endl;
-//
-//
-//
-//
-//}// end CardMaker::WriteDataCard
+void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t Int_NA_Bkg, const Double_t NA_Bkg, const Double_t ND_Data, const DblVec ND_Res){
+
+  //final calculation: bkg rate = (Int)NA * Weight * alpha
+  Double_t predBkg = NA_Bkg*alpha;
+  Double_t gmNscale = predBkg/(Double_t)Int_NA_Bkg;
+
+  TString DataCardName = Form("%s/%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
+  std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
+  fOutTxtFile.open(DataCardName); 
+  if (fOutTxtFile.is_open()){
+    fOutTxtFile << Form("#MonoHgg Datacard for C&C Limit Setting, %f fb-1 ",flumi) << std::endl;
+    fOutTxtFile << "#Run with:combine -M Asymptotic cardname.txt --run blind " << std::endl;
+    fOutTxtFile << Form("# Lumi =  %f fb-1",flumi) << std::endl;
+    fOutTxtFile << "imax 1 " << std::endl;
+    fOutTxtFile << "jmax * " << std::endl;
+    fOutTxtFile << "kmax * " << std::endl;
+    fOutTxtFile << "------------------------------------" << std::endl;
+    fOutTxtFile << "bin 1" << std::endl;
+    if (doBlind) fOutTxtFile << "observation 0" << std::endl;
+    else fOutTxtFile << Form("observation %f",ND_Data) << std::endl;
+    fOutTxtFile << "------------------------------------" << std::endl;
+    fOutTxtFile << "bin	    1	1	1	1	1	1" << std::endl;
+    fOutTxtFile << "process	   s	b	hgg	vbf	vh	tth" << std::endl;
+    fOutTxtFile << "process	   0	1	2	3	4	5" << std::endl;
+    fOutTxtFile << Form("rate	   %f	%f	%f	%f	%f	%f",ND_Sig,predBkg,ND_Res[0],ND_Res[1],ND_Res[2],ND_Res[3]) << std::endl;
+    fOutTxtFile << " " << std::endl;
+    fOutTxtFile << "------------------------------------" << std::endl;
+    fOutTxtFile << "#MC related" << std::endl;
+    fOutTxtFile << "lumi	    lnN	1.023	-	1.023	1.023	1.023	1.023" << std::endl;
+    fOutTxtFile << "eff	    lnN	1.030   -       1.030   1.030   1.030   1.030" << std::endl;
+    fOutTxtFile << "higg_BR     lnN	0.953/1.050	-	0.953/1.050	0.953/1.050	0.953/1.050	0.953/1.050" << std::endl;
+    fOutTxtFile << "higg_alphas lnN 0.940/0.965	-	0.940/0.965	0.940/0.965	0.940/0.965	0.940/0.965" << std::endl;
+    fOutTxtFile << "PDFs        lnN 1.05		-	1.05		1.05		1.05		1.05" << std::endl;
+    fOutTxtFile << "JetEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "JetEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "PhoEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "PhoEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "UnclEnUp    lnN 1.005           -       -               -               1.005           -" << std::endl;
+    fOutTxtFile << "UnclEnDown  lnN 1.005           -       -               -               1.005           -" << std::endl;
+    fOutTxtFile << "FakeMet     lnN -               0.6/1.4	0.6/1.4         0.6/1.4		-		0.6/1.4 " << std::endl;
+    fOutTxtFile << "------------------------------------" << std::endl;
+    fOutTxtFile << "#background related " << std::endl;
+    fOutTxtFile << Form("bg_lept	    gmN	%i	-	%f	-	-	-	-",Int_NA_Bkg,gmNscale) << std::endl;
+    fOutTxtFile << "alpha lnN - 1.2 - - - -" << std::endl;
+  
+  }// fOutTxtFile is_open
+  else std::cout << "Unable to open DataCard Output File" << std::endl;
+  fOutTxtFile.close();
+  std::cout << "Finished Writing DataCard" << std::endl;
+
+
+
+}// end CardMaker::WriteDataCard
 
 
 
@@ -530,6 +643,242 @@ RooArgSet* CardMaker::DefineVariables(){
   RooArgSet* ntplVars = new RooArgSet(*mgg,*eta1,*eta2,*r91,*r92,*nvtx,*t1pfmet,*weight,*hltDiphoton30Mass95);
   return ntplVars;
 }
+
+void CardMaker::SetupCutsToApply(){
+
+  /////////////////////////////////////////////////////////  
+  // Setup cuts for pt1/mgg for each signal sample
+  Cut_pt1mgg.push_back(0.50); // mZp600, mA0300
+  Cut_pt1mgg.push_back(0.80); // mZp800, mA0300
+  Cut_pt1mgg.push_back(0.85); // mZp1000, mA0300
+  Cut_pt1mgg.push_back(1.20); // mZp1200, mA0300
+  Cut_pt1mgg.push_back(1.40); // mZp1400, mA0300
+  Cut_pt1mgg.push_back(1.40); // mZp1700, mA0300
+  Cut_pt1mgg.push_back(1.40); // mZp2000, mA0300
+  Cut_pt1mgg.push_back(1.40); // mZp2500, mA0300
+
+  Cut_pt1mgg.push_back(Cut_pt1mgg[0]); // mZp600, mA0400
+  Cut_pt1mgg.push_back(Cut_pt1mgg[1]); // mZp800, mA0400
+  Cut_pt1mgg.push_back(Cut_pt1mgg[2]); // mZp1000, mA0400
+  Cut_pt1mgg.push_back(Cut_pt1mgg[3]); // mZp1200, mA0400
+  Cut_pt1mgg.push_back(Cut_pt1mgg[4]); // mZp1400, mA0400
+  Cut_pt1mgg.push_back(Cut_pt1mgg[5]); // mZp1700, mA0400
+  Cut_pt1mgg.push_back(Cut_pt1mgg[6]); // mZp2000, mA0400
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[7]); // mZp2500, mA0400
+
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[0]); // mZp600, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[1]); // mZp800, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[2]); // mZp1000, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[3]); // mZp1200, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[4]); // mZp1400, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[5]); // mZp1700, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[6]); // mZp2000, mA0500
+  Cut_pt1mgg.push_back(Cut_pt1mgg[7]); // mZp2500, mA0500
+   
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[0]); // mZp600, mA0600
+  Cut_pt1mgg.push_back(Cut_pt1mgg[1]); // mZp800, mA0600
+  Cut_pt1mgg.push_back(Cut_pt1mgg[2]); // mZp1000, mA0600
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[3]); // mZp1200, mA0600
+  Cut_pt1mgg.push_back(Cut_pt1mgg[4]); // mZp1400, mA0600
+  Cut_pt1mgg.push_back(Cut_pt1mgg[5]); // mZp1700, mA0600
+  Cut_pt1mgg.push_back(Cut_pt1mgg[6]); // mZp2000, mA0600
+  Cut_pt1mgg.push_back(Cut_pt1mgg[7]); // mZp2500, mA0600
+   
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[0]); // mZp600, mA0700
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[1]); // mZp800, mA0700
+  Cut_pt1mgg.push_back(Cut_pt1mgg[2]); // mZp1000, mA0700
+  Cut_pt1mgg.push_back(Cut_pt1mgg[3]); // mZp1200, mA0700
+  Cut_pt1mgg.push_back(Cut_pt1mgg[4]); // mZp1400, mA0700
+  Cut_pt1mgg.push_back(Cut_pt1mgg[5]); // mZp1700, mA0700
+  Cut_pt1mgg.push_back(Cut_pt1mgg[6]); // mZp2000, mA0700
+  Cut_pt1mgg.push_back(Cut_pt1mgg[7]); // mZp2500, mA0700
+   
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[0]); // mZp600, mA0800
+  //Cut_pt1mgg.push_back(Cut_pt1mgg[1]); // mZp800, mA0800
+  Cut_pt1mgg.push_back(Cut_pt1mgg[2]); // mZp1000, mA0800
+  Cut_pt1mgg.push_back(Cut_pt1mgg[3]); // mZp1200, mA0800
+  Cut_pt1mgg.push_back(Cut_pt1mgg[4]); // mZp1400, mA0800
+  Cut_pt1mgg.push_back(Cut_pt1mgg[5]); // mZp1700, mA0800
+  Cut_pt1mgg.push_back(Cut_pt1mgg[6]); // mZp2000, mA0800
+  Cut_pt1mgg.push_back(Cut_pt1mgg[7]); // mZp2500, mA0800
+  
+
+ 
+  /////////////////////////////////////////////////////////  
+  // Setup cuts for pt2/mgg for each signal sample
+  Cut_pt2mgg.push_back(0.25); // mZp600, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp800, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp1000, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp1200, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp1400, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp1700, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp2000, mA0300
+  Cut_pt2mgg.push_back(0.25); // mZp2500, mA0300
+
+  Cut_pt2mgg.push_back(Cut_pt2mgg[0]); // mZp600, mA0400
+  Cut_pt2mgg.push_back(Cut_pt2mgg[1]); // mZp800, mA0400
+  Cut_pt2mgg.push_back(Cut_pt2mgg[2]); // mZp1000, mA0400
+  Cut_pt2mgg.push_back(Cut_pt2mgg[3]); // mZp1200, mA0400
+  Cut_pt2mgg.push_back(Cut_pt2mgg[4]); // mZp1400, mA0400
+  Cut_pt2mgg.push_back(Cut_pt2mgg[5]); // mZp1700, mA0400
+  Cut_pt2mgg.push_back(Cut_pt2mgg[6]); // mZp2000, mA0400
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[7]); // mZp2500, mA0400
+
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[0]); // mZp600, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[1]); // mZp800, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[2]); // mZp1000, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[3]); // mZp1200, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[4]); // mZp1400, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[5]); // mZp1700, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[6]); // mZp2000, mA0500
+  Cut_pt2mgg.push_back(Cut_pt2mgg[7]); // mZp2500, mA0500
+   
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[0]); // mZp600, mA0600
+  Cut_pt2mgg.push_back(Cut_pt2mgg[1]); // mZp800, mA0600
+  Cut_pt2mgg.push_back(Cut_pt2mgg[2]); // mZp1000, mA0600
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[3]); // mZp1200, mA0600
+  Cut_pt2mgg.push_back(Cut_pt2mgg[4]); // mZp1400, mA0600
+  Cut_pt2mgg.push_back(Cut_pt2mgg[5]); // mZp1700, mA0600
+  Cut_pt2mgg.push_back(Cut_pt2mgg[6]); // mZp2000, mA0600
+  Cut_pt2mgg.push_back(Cut_pt2mgg[7]); // mZp2500, mA0600
+   
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[0]); // mZp600, mA0700
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[1]); // mZp800, mA0700
+  Cut_pt2mgg.push_back(Cut_pt2mgg[2]); // mZp1000, mA0700
+  Cut_pt2mgg.push_back(Cut_pt2mgg[3]); // mZp1200, mA0700
+  Cut_pt2mgg.push_back(Cut_pt2mgg[4]); // mZp1400, mA0700
+  Cut_pt2mgg.push_back(Cut_pt2mgg[5]); // mZp1700, mA0700
+  Cut_pt2mgg.push_back(Cut_pt2mgg[6]); // mZp2000, mA0700
+  Cut_pt2mgg.push_back(Cut_pt2mgg[7]); // mZp2500, mA0700
+   
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[0]); // mZp600, mA0800
+  //Cut_pt2mgg.push_back(Cut_pt2mgg[1]); // mZp800, mA0800
+  Cut_pt2mgg.push_back(Cut_pt2mgg[2]); // mZp1000, mA0800
+  Cut_pt2mgg.push_back(Cut_pt2mgg[3]); // mZp1200, mA0800
+  Cut_pt2mgg.push_back(Cut_pt2mgg[4]); // mZp1400, mA0800
+  Cut_pt2mgg.push_back(Cut_pt2mgg[5]); // mZp1700, mA0800
+  Cut_pt2mgg.push_back(Cut_pt2mgg[6]); // mZp2000, mA0800
+  Cut_pt2mgg.push_back(Cut_pt2mgg[7]); // mZp2500, mA0800
+  
+
+  
+  /////////////////////////////////////////////////////////  
+  // Setup cuts for ptgg for each signal sample
+  Cut_ptgg.push_back(90);  // mZp600, mA0300
+  Cut_ptgg.push_back(135); // mZp800, mA0300
+  Cut_ptgg.push_back(170); // mZp1000, mA0300
+  Cut_ptgg.push_back(250); // mZp1200, mA0300
+  Cut_ptgg.push_back(260); // mZp1400, mA0300
+  Cut_ptgg.push_back(315); // mZp1700, mA0300
+  Cut_ptgg.push_back(315); // mZp2000, mA0300
+  Cut_ptgg.push_back(315); // mZp2500, mA0300
+
+  Cut_ptgg.push_back(Cut_ptgg[0]); // mZp600, mA0400
+  Cut_ptgg.push_back(Cut_ptgg[1]); // mZp800, mA0400
+  Cut_ptgg.push_back(Cut_ptgg[2]); // mZp1000, mA0400
+  Cut_ptgg.push_back(Cut_ptgg[3]); // mZp1200, mA0400
+  Cut_ptgg.push_back(Cut_ptgg[4]); // mZp1400, mA0400
+  Cut_ptgg.push_back(Cut_ptgg[5]); // mZp1700, mA0400
+  Cut_ptgg.push_back(Cut_ptgg[6]); // mZp2000, mA0400
+  //Cut_ptgg.push_back(Cut_ptgg[7]); // mZp2500, mA0400
+
+  //Cut_ptgg.push_back(Cut_ptgg[0]); // mZp600, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[1]); // mZp800, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[2]); // mZp1000, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[3]); // mZp1200, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[4]); // mZp1400, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[5]); // mZp1700, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[6]); // mZp2000, mA0500
+  Cut_ptgg.push_back(Cut_ptgg[7]); // mZp2500, mA0500
+   
+  //Cut_ptgg.push_back(Cut_ptgg[0]); // mZp600, mA0600
+  Cut_ptgg.push_back(Cut_ptgg[1]); // mZp800, mA0600
+  Cut_ptgg.push_back(Cut_ptgg[2]); // mZp1000, mA0600
+  //Cut_ptgg.push_back(Cut_ptgg[3]); // mZp1200, mA0600
+  Cut_ptgg.push_back(Cut_ptgg[4]); // mZp1400, mA0600
+  Cut_ptgg.push_back(Cut_ptgg[5]); // mZp1700, mA0600
+  Cut_ptgg.push_back(Cut_ptgg[6]); // mZp2000, mA0600
+  Cut_ptgg.push_back(Cut_ptgg[7]); // mZp2500, mA0600
+   
+  //Cut_ptgg.push_back(Cut_ptgg[0]); // mZp600, mA0700
+  //Cut_ptgg.push_back(Cut_ptgg[1]); // mZp800, mA0700
+  Cut_ptgg.push_back(Cut_ptgg[2]); // mZp1000, mA0700
+  Cut_ptgg.push_back(Cut_ptgg[3]); // mZp1200, mA0700
+  Cut_ptgg.push_back(Cut_ptgg[4]); // mZp1400, mA0700
+  Cut_ptgg.push_back(Cut_ptgg[5]); // mZp1700, mA0700
+  Cut_ptgg.push_back(Cut_ptgg[6]); // mZp2000, mA0700
+  Cut_ptgg.push_back(Cut_ptgg[7]); // mZp2500, mA0700
+   
+  //Cut_ptgg.push_back(Cut_ptgg[0]); // mZp600, mA0800
+  //Cut_ptgg.push_back(Cut_ptgg[1]); // mZp800, mA0800
+  Cut_ptgg.push_back(Cut_ptgg[2]); // mZp1000, mA0800
+  Cut_ptgg.push_back(Cut_ptgg[3]); // mZp1200, mA0800
+  Cut_ptgg.push_back(Cut_ptgg[4]); // mZp1400, mA0800
+  Cut_ptgg.push_back(Cut_ptgg[5]); // mZp1700, mA0800
+  Cut_ptgg.push_back(Cut_ptgg[6]); // mZp2000, mA0800
+  Cut_ptgg.push_back(Cut_ptgg[7]); // mZp2500, mA0800
+   
+
+  
+  /////////////////////////////////////////////////////////  
+  // Setup cuts for MET for each signal sample
+  Cut_met.push_back(105); // mZp600, mA0300
+  Cut_met.push_back(165); // mZp800, mA0300
+  Cut_met.push_back(220); // mZp1000, mA0300
+  Cut_met.push_back(245); // mZp1200, mA0300
+  Cut_met.push_back(255); // mZp1400, mA0300
+  Cut_met.push_back(285); // mZp1700, mA0300
+  Cut_met.push_back(285); // mZp2000, mA0300
+  Cut_met.push_back(285); // mZp2500, mA0300
+
+  Cut_met.push_back(Cut_met[0]); // mZp600, mA0400
+  Cut_met.push_back(Cut_met[1]); // mZp800, mA0400
+  Cut_met.push_back(Cut_met[2]); // mZp1000, mA0400
+  Cut_met.push_back(Cut_met[3]); // mZp1200, mA0400
+  Cut_met.push_back(Cut_met[4]); // mZp1400, mA0400
+  Cut_met.push_back(Cut_met[5]); // mZp1700, mA0400
+  Cut_met.push_back(Cut_met[6]); // mZp2000, mA0400
+  //Cut_met.push_back(Cut_met[7]); // mZp2500, mA0400
+
+  //Cut_met.push_back(Cut_met[0]); // mZp600, mA0500
+  Cut_met.push_back(Cut_met[1]); // mZp800, mA0500
+  Cut_met.push_back(Cut_met[2]); // mZp1000, mA0500
+  Cut_met.push_back(Cut_met[3]); // mZp1200, mA0500
+  Cut_met.push_back(Cut_met[4]); // mZp1400, mA0500
+  Cut_met.push_back(Cut_met[5]); // mZp1700, mA0500
+  Cut_met.push_back(Cut_met[6]); // mZp2000, mA0500
+  Cut_met.push_back(Cut_met[7]); // mZp2500, mA0500
+   
+  //Cut_met.push_back(Cut_met[0]); // mZp600, mA0600
+  Cut_met.push_back(Cut_met[1]); // mZp800, mA0600
+  Cut_met.push_back(Cut_met[2]); // mZp1000, mA0600
+  //Cut_met.push_back(Cut_met[3]); // mZp1200, mA0600
+  Cut_met.push_back(Cut_met[4]); // mZp1400, mA0600
+  Cut_met.push_back(Cut_met[5]); // mZp1700, mA0600
+  Cut_met.push_back(Cut_met[6]); // mZp2000, mA0600
+  Cut_met.push_back(Cut_met[7]); // mZp2500, mA0600
+   
+  //Cut_met.push_back(Cut_met[0]); // mZp600, mA0700
+  //Cut_met.push_back(Cut_met[1]); // mZp800, mA0700
+  Cut_met.push_back(Cut_met[2]); // mZp1000, mA0700
+  Cut_met.push_back(Cut_met[3]); // mZp1200, mA0700
+  Cut_met.push_back(Cut_met[4]); // mZp1400, mA0700
+  Cut_met.push_back(Cut_met[5]); // mZp1700, mA0700
+  Cut_met.push_back(Cut_met[6]); // mZp2000, mA0700
+  Cut_met.push_back(Cut_met[7]); // mZp2500, mA0700
+   
+  //Cut_met.push_back(Cut_met[0]); // mZp600, mA0800
+  //Cut_met.push_back(Cut_met[1]); // mZp800, mA0800
+  Cut_met.push_back(Cut_met[2]); // mZp1000, mA0800
+  Cut_met.push_back(Cut_met[3]); // mZp1200, mA0800
+  Cut_met.push_back(Cut_met[4]); // mZp1400, mA0800
+  Cut_met.push_back(Cut_met[5]); // mZp1700, mA0800
+  Cut_met.push_back(Cut_met[6]); // mZp2000, mA0800
+  Cut_met.push_back(Cut_met[7]); // mZp2500, mA0800
+   
+
+}// end CardMaker::SetupCutsToApply
+
 
 
 void CardMaker::SetBranchAddresses( TTree * treeIn){

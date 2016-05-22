@@ -53,6 +53,8 @@ int main(){
   if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85, MET > 50 (using ptgg w/ requirement on #events) 
   if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2, MET > 70 (using ptgg/MET w/ requirement on #events)
 
+  Double_t alpha = 0.19; // Scale factor for C&C 
+
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString inDir = "data/25ns_v76X_v2/"; 					// input directory of the samples
@@ -579,6 +581,7 @@ int main(){
   //
   // Arguements to CardMaker:
   //
+  // 1st : alpha (scale factor)
   // 2nd : ColorMap for samples
   // 3rd : lumi
   // 4th : PU weight vector
@@ -590,7 +593,7 @@ int main(){
 
   if (makeDataCards){
     std::cout << "Making datacards using the hybrid method" << std::endl;
-    CardMaker *cards = new CardMaker(colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    CardMaker *cards = new CardMaker(alpha,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
     cards->MakeCards();
     delete cards;
     std::cout << "Finished making datacards" << std::endl; 
