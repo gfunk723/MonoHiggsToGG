@@ -579,7 +579,6 @@ int main(){
   //
   // Arguements to CardMaker:
   //
-  // 1st : SamplePairVec (Samples) that has Name,VALUE
   // 2nd : ColorMap for samples
   // 3rd : lumi
   // 4th : PU weight vector
@@ -591,7 +590,7 @@ int main(){
 
   if (makeDataCards){
     std::cout << "Making datacards using the hybrid method" << std::endl;
-    CardMaker *cards = new CardMaker(Samples,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    CardMaker *cards = new CardMaker(colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
     cards->MakeCards();
     delete cards;
     std::cout << "Finished making datacards" << std::endl; 
