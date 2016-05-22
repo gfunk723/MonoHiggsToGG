@@ -582,10 +582,9 @@ int main(){
   // Arguements to CardMaker:
   //
   // 1st : alpha (scale factor)
-  // 2nd : ColorMap for samples
-  // 3rd : lumi
-  // 4th : PU weight vector
-  // 5th : input directory
+  // 2nd : lumi
+  // 3rd : PU weight vector
+  // 4th : input directory
   // 5th : output directory
   // 6th : type of plots out 
   //
@@ -593,7 +592,7 @@ int main(){
 
   if (makeDataCards){
     std::cout << "Making datacards using the hybrid method" << std::endl;
-    CardMaker *cards = new CardMaker(alpha,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    CardMaker *cards = new CardMaker(alpha,lumi,puweights_MC,inDir,outDir,doBlind,type);
     cards->MakeCards();
     delete cards;
     std::cout << "Finished making datacards" << std::endl; 
@@ -610,8 +609,8 @@ int main(){
   // 3rd : lumi
   // 4th : PU weight vector
   // 5th : input directory
-  // 5th : output directory
-  // 6th : type of plots out 
+  // 6th : output directory
+  // 7th : type of plots out 
   //
   /////////////////////////////////////////////////////
 

@@ -4,75 +4,31 @@
 #include "Style.hh"
 
 #include "TFile.h"
-#include "TH1D.h"
-#include "TH2F.h"
 #include "TString.h"
 #include "TTree.h"
-#include "TCanvas.h"
-#include "TPad.h"
 #include "TROOT.h"
 #include "TMath.h"
-#include "TSystem.h"
-#include "TStyle.h"
-#include "TDirectory.h"
-#include "TLegend.h"
-#include "TPaveText.h"
-#include "TLatex.h"
-#include "THStack.h"
 #include "TLorentzVector.h"
-#include "TLine.h"
-#include "TChain.h"
-
-#include "RooRealVar.h"
-#include "RooDataSet.h"
-#include "RooWorkspace.h"
-#include "RooPlot.h"
-#include "RooFormula.h"
-#include "RooGaussian.h"
 
 #include <iostream>
 #include <fstream>
 #include <cmath>
 
-using namespace RooFit;
-
-typedef std::vector<TFile*>   TFileVec;
-typedef std::vector<TH1D*>    TH1DVec;
-typedef std::vector<TH1DVec>  TH1DVecVec;
-typedef std::vector<THStack*> THStackVec;
-typedef std::vector<TPad*>    TPadVec;
-typedef std::vector<TLegend*> TLegVec;
-typedef std::vector<TCanvas*> TCanvVec;
-typedef std::vector<TLine*>   TLineVec;
 typedef std::vector<UInt_t>   IntVec;
 typedef std::vector<Double_t> DblVec;
 typedef std::vector<IntVec>   IntVecVec;
 typedef std::vector<DblVec>   DblVecVec;
-typedef std::vector<TTree*>   TTreeVec;
-typedef std::vector<TTreeVec>		TTreeVecVec;
-typedef std::vector<TTreeVecVec>	TTreeVecVecVec;
-
-typedef std::vector<RooDataSet*> 	RooDataSetVec;
-typedef std::vector<RooRealVar*> 	RooRealVarVec;
-typedef std::vector<RooDataSetVec>	RooDataSetVecVec;
-typedef std::vector<RooDataSetVecVec>	RooDataSetVecVecVec;
-
 
 
 class CardMaker{
 public:
-  CardMaker(const Double_t scalefactor, const ColorMap colorMap, const Double_t inLumi, const DblVec puweights, const TString inname, const TString outname, const Bool_t Blind, const TString type);
+  CardMaker(const Double_t scalefactor, const Double_t inLumi, const DblVec puweights, const TString inname, const TString outname, const Bool_t Blind, const TString type);
   void MakeCards();
   void SetupCutsToApply();
-  void GetInFilesAndMakeTChain();
   void SetBranchAddresses( TTree * treeIn ); 
   void ApplyCommonSelection(const TString sampleName, const UInt_t sampleID, const UInt_t sampleNumber);
   void WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t Int_NA_Bkg, const Double_t NA_Bkg, const Double_t ND_Data, const DblVec ND_Res);
 
-  void DoComparison();
-
-  void AddRooWorkspace(RooWorkspace* w, const TString sampleName);
-  RooArgSet * DefineVariables();
   ~CardMaker();
 
 private:
@@ -83,8 +39,7 @@ private:
   UInt_t	fNSamples;  
   TString	fOut;
   Double_t	alpha;
-
-  TTree * 	tpho;
+  TString	mainCut;
 
   DblVec	Cut_pt1mgg;
   DblVec	Cut_pt2mgg;
@@ -98,37 +53,9 @@ private:
 
   std::ofstream	fOutTxtFile;
 
-  TStrMap	fSampleTitleMap;
-  ColorMap	fColorMap;
-
-  RooWorkspace* fRooWorkspace;
-  RooArgSet*	fNtupleVars;
-  RooDataSetVec	fSigSet;
-  RooDataSetVec	fDataSet;
-  RooDataSetVec	fBkgSet;
-  RooRealVarVec	fInvMass;	
-
-  RooDataSetVecVecVec	fSigSetInCat;
-  TTreeVecVecVec	fSigChain;
-
   SamplePairVec	Samples;
-
-  TString	mainCut;
-  UInt_t	nMetCat;
-  TStrVec	MetCat;
-  UInt_t	nPhoCat;
-  TStrVec	PhoCat;
-  UInt_t 	nTotCat;
-
   TString	fInDir;
   TString	fOutDir;
-  TString	fOutName;
-  TFile *	fOutFile;
-
-  TFileVec	fDataFiles;
-  TFileVec	fBkgFiles;
-  TFileVec	fResFiles;
-  TFileVec	fSigFiles;
 
   TStrVec	fDataNames;
   TStrVec	fBkgNames;
@@ -139,14 +66,7 @@ private:
   UInt_t	fNBkg;
   UInt_t	fNRes;
 
-  TTreeVec	fDataTrees;
-  TTreeVec	fBkgTrees;
-  TTreeVec	fSigTrees;
-  TChain * 	fAllChain;
   UInt_t	nentries;
-
-  TStrVec	fTH1DNames;
-  UInt_t	fNTH1D;
 
 
 

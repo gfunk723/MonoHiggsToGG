@@ -1,7 +1,7 @@
 #include "CardMaker.hh"
 #include "../../../DataFormats/Math/interface/deltaPhi.h"
 
-CardMaker::CardMaker(const Double_t scalefactor, const ColorMap colorMap, const Double_t inLumi, const DblVec puweights, const TString indir, const TString outdir, const Bool_t Blind, const TString type){
+CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const DblVec puweights, const TString indir, const TString outdir, const Bool_t Blind, const TString type){
 
   // Load RooFit
   gSystem->Load("libRooFit");
@@ -16,13 +16,11 @@ CardMaker::CardMaker(const Double_t scalefactor, const ColorMap colorMap, const 
   fOut = "cards"; 
   fPUWeights = puweights;
 
+  mainCut = "(mgg >= 100 && mgg <= 300)";// not used 
+
   // Make output datacard files
   MakeOutDirectory(Form("%s%s",fOutDir.Data(),fOut.Data()));
 
-  //fOutFile = new TFile(Form("%s%s/combplots.root",fOutDir.Data(),fOut.Data()),"RECREATE");
-  //CheckValidFile(fOutFile, Form("%s%s/combplots.root",fOutDir.Data(),fOut.Data())); 
-
-  mainCut = "(mgg >= 100 && mgg <= 300)"; 
 
   // Set up sampleID matches
   // resonant bkgs
@@ -113,29 +111,10 @@ CardMaker::CardMaker(const Double_t scalefactor, const ColorMap colorMap, const 
   fNSig = fSigNames.size();
   fNSamples = fNData+fNBkg+fNRes+fNSig;
 
-  // Open input files & make the TChain w/ trees
-  //CardMaker::GetInFilesAndMakeTChain();
-
-  //CardMaker::SetTChainBranchAddresses();
-  //nentries = fAllChain->GetEntries();
-  //
-  //// Check that TChain is filled
-  //if (nentries == 0){
-  //  std::cout << "nentries in TChain is 0! Exiting." << std::endl;
-  //  return;
-  //}
-
 }// end CardMaker::CardMaker
 
 CardMaker::~CardMaker(){
   std::cout << "Finished & Deleting" << std::endl;
-
-  //for (UInt_t da = 0; da < fNData; da++) { delete fDataFiles[da]; }
-  //for (UInt_t mc = 0; mc < fNBkg;  mc++) { delete fBkgFiles[mc];  }
-  //for (UInt_t mc = 0; mc < fNRes;  mc++) { delete fResFiles[mc];  }
-  //for (UInt_t mc = 0; mc < fNSig;  mc++) { delete fSigFiles[mc];  }
-
-  //delete fOutFile;
  
 }// end CardMaker::~CardMaker
 
@@ -429,220 +408,6 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
 }// end CardMaker::WriteDataCard
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void CardMaker::DoComparison(){
-
-  // set up RooArgSet with ntuple variables of interest
-  fNtupleVars = CardMaker::DefineVariables();
- 
-  // set up RooWorkspace
-  fRooWorkspace = new RooWorkspace("fRooWorkspace");
-
-  for (UInt_t mc=0; mc < fNSig; mc++){
-    CardMaker::AddRooWorkspace(fRooWorkspace,fSigNames[mc]);
-  } 
-
-  fSigChain.resize(fNSig);
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    fSigChain[mc].resize(nMetCat);
-    for (UInt_t met = 0; met < nMetCat; met++){
-      fSigChain[mc][met].resize(nPhoCat);
-      for (UInt_t pho = 0; pho < nPhoCat; pho++){
-        fSigChain[mc][met][pho] = new TTree();
-      }
-    }
-  }
- 
-
-  TStrVec SampleID;
-  SampleID.resize(fNSig); 
-  SampleID[0]="100";
-  SampleID[1]="101";
-  SampleID[2]="102";
-  SampleID[3]="103";
-  SampleID[4]="104";
-
-  Double_t wgt = 1;
-  for (UInt_t entry = 0; entry < nentries; entry++){
-    fAllChain->GetEntry(entry);
-
-    //get weight for each event
-    if (sampleID > 0 && sampleID < 10000){// MC
-      wgt = (weight)*fPUWeights[nvtx];
-    }
-    else wgt = 1.;// don't apply weight to data
-
-
-    //apply selection
-    if (hltDiphoton30Mass95 == 1){
-      if (mgg >= 100 && mgg <= 200){
-	for (UInt_t mc = 0; mc < fNSig; mc++){
-          if (sampleID == SampleID[mc]){
-            for (UInt_t met = 0; met < nMetCat; met++){
-              for (UInt_t pho = 0; pho < nPhoCat; pho++){
-                if (MetCat[met] && PhoCat[pho]){
-		   fSigChain[mc][met][pho]->Fill(); 
-	        }
-              }
-            }
-          }
-        } 
-      }// end mgg selection
-    }// end trigger selection 
-
-
-
-  }// end loop over entries in TChain
-
-}// end CardMaker::DoComparison
-
-void CardMaker::AddRooWorkspace( RooWorkspace* w, const TString sampleName){
-  w->var("mgg");
-  fSigSet.resize(fNSig);
-
-  TStrVec SampleID;
-  SampleID.resize(fNSig); 
-  SampleID[0]="100";
-  SampleID[1]="101";
-  SampleID[2]="102";
-  SampleID[3]="103";
-  SampleID[4]="104";
-
-  fSigSetInCat.resize(fNSig);
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    fSigSetInCat[mc].resize(nMetCat);
-    for (UInt_t met = 0; met < nMetCat; met++){
-      fSigSetInCat[mc][met].resize(nPhoCat);
-    }
-  }
-
-  TString name = "";
-  TString sel  = ""; 
-  TString cut = "";
-  for (UInt_t mc = 0; mc < fNSig; mc++){
-    name = TString::Format("fSigSet_%s",fSigNames[mc].Data());
-    //fSigSet[mc] = new RooDataSet(name,name,fAllChain,*fNtupleVars,mainCut,"weight");
-    for (UInt_t met = 0; met < nMetCat; met++){
-      for (UInt_t pho = 0; pho < nPhoCat; pho++){
-        sel  = TString::Format("%s && (sampleID==%s) %s %s",mainCut.Data(),SampleID[mc].Data(),MetCat[met].Data(),PhoCat[pho].Data());
-     
-        fSigSetInCat[mc][met][pho] = new RooDataSet(name,name,fSigChain[mc][met][pho],*fNtupleVars,cut,"weight");
-  
-        //fSigSetInCat[mc][met][pho] = (RooDataSet*) fSigSet[mc]->reduce(*w->var("mass"),mainCut+MetCat[met]+PhoCat[pho]); 
-      }
-    }
-  } 
-
-
-
-}// end CardMaker::AddRooWorkspace
-
-void CardMaker::GetInFilesAndMakeTChain(){
- // open input files into TFileVec for data
- fDataFiles.resize(fNData);
- TStrVec datafile;
- datafile.resize(fNData);
- for (UInt_t data = 0; data < fNData; data++){
-   datafile[data] = Form("%s%s.root",fInDir.Data(),fDataNames[data].Data());
-   fDataFiles[data] = TFile::Open(datafile[data].Data());
-   CheckValidFile(fDataFiles[data],datafile[data]);
- }
-
- // open input files into TFileVec for bkg
- fBkgFiles.resize(fNBkg);
- TStrVec bkgfile;
- bkgfile.resize(fNBkg);
- for (UInt_t mc = 0; mc < fNBkg; mc++) {
-   bkgfile[mc] = Form("%s%s.root",fInDir.Data(),fBkgNames[mc].Data());
-   fBkgFiles[mc] = TFile::Open(bkgfile[mc].Data());
-   CheckValidFile(fBkgFiles[mc],bkgfile[mc]);
- }
-
- // open input files into TFileVec for resonant bkg
- fResFiles.resize(fNRes);
- TStrVec resfile;
- resfile.resize(fNRes);
- for (UInt_t mc = 0; mc < fNRes; mc++) {
-   resfile[mc] = Form("%s%s.root",fInDir.Data(),fResNames[mc].Data());
-   fResFiles[mc] = TFile::Open(resfile[mc].Data());
-   CheckValidFile(fResFiles[mc],resfile[mc]);
- }
-
- // open input files into TFileVec for sig
- fSigFiles.resize(fNSig);
- TStrVec sigfile;
- sigfile.resize(fNSig);
- for (UInt_t mc = 0; mc < fNSig; mc++) {
-   sigfile[mc] = Form("%s%s.root",fInDir.Data(),fSigNames[mc].Data());
-   fSigFiles[mc] = TFile::Open(sigfile[mc].Data());
-   CheckValidFile(fSigFiles[mc],sigfile[mc]);
- }
-
- // make a TChain that has all of the trees from 
- // but first check that the DiPhotonTree is found
- fAllChain = new TChain("DiPhotonTree");
- for (UInt_t mc = 0; mc < fNBkg; mc++){
-   TTree * tree = (TTree*)fBkgFiles[mc]->Get("DiPhotonTree"); 
-   CheckValidTree(tree,"DiPhotonTree",Form("%s%s.root",fInDir.Data(),fBkgNames[mc].Data())); 
-   fAllChain->Add(bkgfile[mc]);
- }
-
-}// end CardMaker::GetInFilesAndMakeTChain
-
-
-
-RooArgSet* CardMaker::DefineVariables(){
-  // define variables of the input ntuple of form:
-  // RooRealVar( Name, Title, Min, Max, units)
-  RooRealVar* mgg     = new RooRealVar("mgg","m(gg)",100,200,"GeV");
-  RooRealVar* eta1    = new RooRealVar("eta1","eta(g1)",-10,10,"");
-  RooRealVar* eta2    = new RooRealVar("eta2","eta(g2)",-10,10,"");
-  RooRealVar* r91     = new RooRealVar("r91","r9(g1)",-10,10,"");
-  RooRealVar* r92     = new RooRealVar("r92","r9(g2)",-10,10,"");
-  RooRealVar* nvtx    = new RooRealVar("nvtx","nvtx",0,60,"");
-  RooRealVar* weight  = new RooRealVar("weight","weight",-5,5,"");
-  RooRealVar* t1pfmet = new RooRealVar("t1pfmet","t1pfmet",0,1200,""); 
-  RooRealVar* hltDiphoton30Mass95  = new RooRealVar("hltDiphoton30Mass95","hltDiphoton30Mass95",-0.5,1.5,"");
-
-  RooArgSet* ntplVars = new RooArgSet(*mgg,*eta1,*eta2,*r91,*r92,*nvtx,*t1pfmet,*weight,*hltDiphoton30Mass95);
-  return ntplVars;
-}
 
 void CardMaker::SetupCutsToApply(){
 
