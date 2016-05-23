@@ -27,7 +27,7 @@ public:
   void SetupCutsToApply();
   void SetBranchAddresses( TTree * treeIn ); 
   void ApplyCommonSelection(const TString sampleName, const UInt_t sampleID, const UInt_t sampleNumber);
-  void WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t Int_NA_Bkg, const Double_t NA_Bkg, const Double_t ND_Data, const DblVec ND_Res);
+  void WriteDataCard(const TString fSigName, const Double_t ND_Sig, const Double_t NA_Data, const Double_t ND_Data, const DblVec ND_Res);
 
   ~CardMaker();
 

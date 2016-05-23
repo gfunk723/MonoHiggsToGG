@@ -145,6 +145,7 @@ void CardMaker::MakeCards(){
   DblVecVec Dbl_Results_ND_Sig;
   DblVecVec Dbl_Results_ND_Res; 
   DblVecVec Dbl_Results_ND_Data;
+  DblVecVec Dbl_Results_NA_Data;
   DblVec    Dbl_Results_NA_Bkg;
   IntVec    Int_Results_NA_Bkg;
 
@@ -153,10 +154,6 @@ void CardMaker::MakeCards(){
   Int_Results_NA_Bkg.resize(fNSig);// one entry for each cut (because one cut for each signal)
   for (UInt_t n=0; n<fNSig; n++) Int_Results_NA_Bkg[n]=0; 
   Dbl_Results_ND_Res.resize(fNSig);// one entry for each cut (because one cut for each signal)
-  for (UInt_t n=0; n<fNSig; n++){
-    Dbl_Results_ND_Res[n].resize(fNRes);//values for each resonant bkg;
-    for (UInt_t mc=0; mc<fNRes; mc++) Dbl_Results_ND_Res[n][mc]=0; 
-  }
 
   // open the file for each sample, open the tree for that file and then 
   // apply the common selection to each sample
@@ -165,17 +162,21 @@ void CardMaker::MakeCards(){
     // regroup to be more convenient for datacard writing
     if ((*iter).second==0){
       for (UInt_t n=0; n<fNSig; n++){
-	for (UInt_t mc=0; mc<fNRes; mc++){
-	  Dbl_Results_ND_Res[n][mc] = Dbl_Results_ND[SampleNumber][n];
-	}
+	//std::cout << "ND res bkg = " << Dbl_Results_ND[SampleNumber][n] << std::endl;
+        Dbl_Results_ND_Res[n].push_back(Dbl_Results_ND[SampleNumber][n]);
       }
       //Dbl_Results_ND_Res.push_back(Dbl_Results_ND[SampleNumber]);
     }
-    else if ((*iter).second==2) Dbl_Results_ND_Data.push_back(Dbl_Results_ND[SampleNumber]);
+    else if ((*iter).second==2){
+      Dbl_Results_ND_Data.push_back(Dbl_Results_ND[SampleNumber]);
+      Dbl_Results_NA_Data.push_back(Dbl_Results_NA[SampleNumber]);
+    }
     else if ((*iter).second==1){
       for (UInt_t n=0; n<fNSig; n++){ 
+	//std::cout << " Dbl_NA = " << Dbl_Results_NA[SampleNumber][n] << " Int_NA = " << Int_Results_NA[SampleNumber][n] << std::endl;
         Dbl_Results_NA_Bkg[n]+=Dbl_Results_NA[SampleNumber][n];
         Int_Results_NA_Bkg[n]+=Int_Results_NA[SampleNumber][n];
+	//std::cout << "FINAL Dbl_NA = " << Dbl_Results_NA_Bkg[n] << " Int_NA = " << Int_Results_NA_Bkg[n] << std::endl;
       }
     }
     else  Dbl_Results_ND_Sig.push_back(Dbl_Results_ND[SampleNumber]);
@@ -184,7 +185,7 @@ void CardMaker::MakeCards(){
 
   // Write out the datacard (one for each signal sample)
   for (UInt_t mc=0; mc < fNSig; mc++){
-    CardMaker::WriteDataCard( fSigNames[mc] , Dbl_Results_ND_Sig[mc][mc], Int_Results_NA_Bkg[mc], Dbl_Results_NA_Bkg[mc], Dbl_Results_ND_Data[0][mc], Dbl_Results_ND_Res[mc]);
+    CardMaker::WriteDataCard( fSigNames[mc] , Dbl_Results_ND_Sig[mc][mc], Dbl_Results_NA_Data[0][mc], Dbl_Results_ND_Data[0][mc], Dbl_Results_ND_Res[mc]);
   } 
 
 }// end CardMaker::MakeCards
@@ -341,8 +342,14 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
       }// pt1/mgg, pt2/mgg, ptgg cuts
     }// loop over the cuts (one for each signal sample)
 
- 
   }// loop over entries in treeOrig
+
+  
+  //for (UInt_t cut=0; cut < fNSig; cut++){
+  //  if (sampleID!=2) std::cout << "Number of events in signal region = " << Dbl_Results_ND[sampleNumber][cut] << std::endl;
+  //  if (sampleID==1) std::cout << "(Int) Number of events in sideband region = " << Int_Results_NA[sampleNumber][cut] << std::endl;
+  //  if (sampleID==1) std::cout << "(Dbl) Number of events in sideband region = " << Dbl_Results_NA[sampleNumber][cut] << std::endl;
+  //}
 
   delete treeOrig;
   delete fileOrig;
@@ -353,11 +360,10 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
 
 
-void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t Int_NA_Bkg, const Double_t NA_Bkg, const Double_t ND_Data, const DblVec ND_Res){
+void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, const Double_t NA_Data, const Double_t ND_Data, const DblVec ND_Res){
 
   //final calculation: bkg rate = (Int)NA * Weight * alpha
-  Double_t predBkg = NA_Bkg*alpha;
-  Double_t gmNscale = predBkg/(Double_t)Int_NA_Bkg;
+  Double_t predBkg = NA_Data*alpha;
 
   TString DataCardName = Form("%s/%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
   std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
@@ -395,7 +401,7 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
     fOutTxtFile << "FakeMet     lnN -               0.6/1.4	0.6/1.4         0.6/1.4		-		0.6/1.4 " << std::endl;
     fOutTxtFile << "------------------------------------" << std::endl;
     fOutTxtFile << "#background related " << std::endl;
-    fOutTxtFile << Form("bg_lept	    gmN	%i	-	%f	-	-	-	-",Int_NA_Bkg,gmNscale) << std::endl;
+    fOutTxtFile << Form("bg_lept	    gmN	%f	-	%f	-	-	-	-",NA_Data,alpha) << std::endl;
     fOutTxtFile << "alpha lnN - 1.2 - - - -" << std::endl;
   
   }// fOutTxtFile is_open
