@@ -423,7 +423,7 @@ void Plotter::DoPlots(int prompt){
             if (calomet < 100) fTH1DMap["calomet"]->Fill(calomet,Weight);
             /*if (ptgg<0) */ fTH1DMap["ptgg"]->Fill(ptgg,Weight);
           }
-          else{
+          else{// not blinded data
 
             fTH1DMap["mgg"]->Fill(mgg,Weight);
             fTH1DMap["ptgg"]->Fill(ptgg,Weight);
@@ -810,9 +810,7 @@ void Plotter::DoPlots(int prompt){
 	  }
           if ( isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass ){
 	    if (doBlind){
-
 	      //if (outsideMgg){
-
 	        fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
 	        fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
 	        //-------------- for OptSel1 and OptSel2 ABCD  
@@ -847,11 +845,19 @@ void Plotter::DoPlots(int prompt){
 	          if (pt1/mgg > 1.50 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); // M2500
 	          if (pt1/mgg > 1.50 && pt2/mgg > 0.25 && ptgg/t1pfmetCorr > 0.3) fTH2DMap["Sel2_M7_met_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);  // M2500
 		}
-	        //-------------- 
+	        else{// whichSelection !=0
+	          fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
+	          fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
+		}
 	        if (outsideMgg){
 		  fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
 		  if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
 		}
+		//}// end outside mgg
+	      }// end doBlind
+              else{ 
+		fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
+		if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
 	      }
 	      fTH1DMap["ptgg_IsolateALL"]->Fill(ptgg,Weight);
 	      fTH1DMap["nvtx_IsolateALL"]->Fill(nvtx,Weight);
@@ -859,19 +865,6 @@ void Plotter::DoPlots(int prompt){
 		fTH1DMap["ptgg_IsolateALLmetCUT"]->Fill(ptgg,Weight);
 	        fTH1DMap["nvtx_IsolateALLmetCUT"]->Fill(nvtx,Weight);
 	      }
-	    //}
-	    else{// whichSelection !=0
-	      fTH2DMap["t1pfmet_mgg"]->Fill(mgg,t1pfmetCorr,Weight);
-	      fTH2DMap["t1pfmet_mgg_unwgt"]->Fill(mgg,t1pfmetCorr);
-	      if (outsideMgg) fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
-	      fTH1DMap["ptgg_IsolateALL"]->Fill(ptgg,Weight);
-	      fTH1DMap["nvtx_IsolateALL"]->Fill(nvtx,Weight);
-	      if (t1pfmetCorr > METcut){
-		if (outsideMgg) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
-		fTH1DMap["ptgg_IsolateALLmetCUT"]->Fill(ptgg,Weight);
-	        fTH1DMap["nvtx_IsolateALLmetCUT"]->Fill(nvtx,Weight);
-	      }
-	    }
 	  } 
 
 
@@ -1522,7 +1515,7 @@ void Plotter::SavePlots(){
     CMSLumi(canv2d,0,fLumi);
 
     canv2d->SetLogy(0);
-    canv2d->SaveAs(Form("%s%s/%s.%s",fName.Data(),species.Data(),(*mapiter).first.Data(),fType.Data()));
+    //canv2d->SaveAs(Form("%s%s/%s.%s",fName.Data(),species.Data(),(*mapiter).first.Data(),fType.Data()));
   }// end of loop over mapiter for 2d plots
   delete canv2d;
 
