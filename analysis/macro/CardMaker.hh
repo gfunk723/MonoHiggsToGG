@@ -27,6 +27,7 @@ public:
   void SetupCutsToApply();
   void SetBranchAddresses( TTree * treeIn ); 
   void ApplyCommonSelection(const TString sampleName, const UInt_t sampleID, const UInt_t sampleNumber);
+  void MakeYieldAndEfficiencyTables(const DblVecVec ND_Sig, const DblVecVec Err_ND_Sig, const DblVecVec Eff_Sig, const DblVecVec Err_Eff_Sig);
   void WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t NA_Data, const UInt_t ND_Data, const DblVec ND_Res);
 
   ~CardMaker();
@@ -50,7 +51,10 @@ private:
   IntVecVec	Int_Results_ND;
   DblVecVec	Dbl_Results_NA;
   DblVecVec	Dbl_Results_ND;
+  IntVecVec	Int_Starting;
+  DblVecVec	Dbl_Starting;
 
+  std::ofstream fOutResultsGrid;
   std::ofstream	fOutTxtFile;
 
   SamplePairVec	Samples;

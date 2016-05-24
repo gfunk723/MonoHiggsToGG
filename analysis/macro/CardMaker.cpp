@@ -115,6 +115,7 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   fNBkg = fBkgNames.size();
   fNRes = fResNames.size();
   fNSig = fSigNames.size();
+  std::cout << "fNSig = " << fNSig << std::endl;
   fNSamples = fNData+fNBkg+fNRes+fNSig;
 
 }// end CardMaker::CardMaker
@@ -128,6 +129,18 @@ void CardMaker::MakeCards(){
 
   // set up vectors storing cuts to apply
   CardMaker::SetupCutsToApply();
+
+  // set up vectors to store starting numbers (for efficiencies)
+  Int_Starting.resize(fNSamples);
+  Dbl_Starting.resize(fNSamples);
+  for (UInt_t iter = 0; iter < fNSamples; ++iter){ 
+    Int_Starting[iter].resize(fNSig);
+    Int_Starting[iter].resize(fNSig); 
+    for (UInt_t n = 0; n < fNSig; n++){
+      Int_Starting[iter][n] = 0;
+      Dbl_Starting[iter][n] = 0;
+    } 
+  }
 
   // set up vectors to store results
   Int_Results_NA.resize(fNSamples);
@@ -191,9 +204,13 @@ void CardMaker::MakeCards(){
 	//std::cout << "FINAL Dbl_NA = " << Dbl_Results_NA_Bkg[n] << " Int_NA = " << Int_Results_NA_Bkg[n] << std::endl;
       }
     }
-    else  Dbl_Results_ND_Sig.push_back(Dbl_Results_ND[SampleNumber]);
+    else{
+      Dbl_Results_ND_Sig.push_back(Dbl_Results_ND[SampleNumber]);
+    }
     SampleNumber++;
   }
+
+  //CardMaker::MakeYieldAndEfficiencyTables( Dbl_Results_ND_Sig );
 
   // Write out the datacard (one for each signal sample)
   for (UInt_t mc=0; mc < fNSig; mc++){
@@ -201,7 +218,6 @@ void CardMaker::MakeCards(){
   } 
 
 }// end CardMaker::MakeCards
-
 
 void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sampleID , const UInt_t sampleNumber){
 
@@ -369,6 +385,185 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 }// end CardMaker::ApplyCommonSelection
 
 
+void CardMaker::MakeYieldAndEfficiencyTables( const DblVecVec ND_Sig, const DblVecVec Err_ND_Sig, const DblVecVec Eff_Sig, const DblVecVec Err_Eff_Sig){
+
+  TString OutputTableName = Form("%s/SignalYieldAndEffGrid.txt",fOutDir.Data());
+  std::cout << "Writing Yield and Efficiency Table in: " << OutputTableName.Data() << std::endl;
+  fOutResultsGrid.open(OutputTableName);
+  if (fOutResultsGrid.is_open()){
+   
+     //setup Latex doc
+     fOutResultsGrid << "\\documentclass[a4paper,landscape]{article}" << std::endl;
+     fOutResultsGrid << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
+     fOutResultsGrid << "\\begin{document}" << std::endl;
+
+     // setup yields table
+     fOutResultsGrid << "\% Summary of Events in Signal Region for each sample" << std::endl;
+     fOutResultsGrid << "\\begin{table}[bthp]" <<std::endl;
+     fOutResultsGrid << "\\begin{tabular}{ccccccc}" <<std::endl;
+     fOutResultsGrid << "\\hline \\hline" <<std::endl;
+     //fOutResultsGrid << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",flumi) <<" \\\\" <<std::endl;
+     //fOutResultsGrid << "\\hline" <<std::endl;
+
+     fOutResultsGrid << "	& 300 	& 400 	& 500 	& 600 	& 700 	& 800  \\\\" << std::endl;  
+     fOutResultsGrid << " 600 	& " << Form("%1.3f",ND_Sig[0][0]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[0][0]) 
+		     << " & "       << Form("%1.3f",ND_Sig[8][8]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[8][8])  
+		     << " & "       << " - "  
+		     << " & "       << " - "  
+		     << " & "       << " - "  
+		     << " & "       << " - " 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 800 	& " << Form("%1.3f",ND_Sig[1][1]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[1][1]) 
+		     << " & "       << Form("%1.3f",ND_Sig[9][9]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[9][9]) 
+		     << " & "       << Form("%1.3f",ND_Sig[15][15]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[15][15]) 
+		     << " & "       << " - "   
+		     << " & "       << " - "
+		     << " & "       << " - " 
+		     << " \\\\" << std::endl;
+
+     fOutResultsGrid << " 1000 	& " << Form("%1.3f",ND_Sig[2][2])   	<< " \\pm " << Form("%1.3f",Err_ND_Sig[2][2]) 
+		     << " & "       << Form("%1.3f",ND_Sig[10][10]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[10][10]) 
+		     << " & "       << Form("%1.3f",ND_Sig[16][16]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[16][16]) 
+		     << " & "       << Form("%1.3f",ND_Sig[22][22]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[22][22]) 
+		     << " & "       << Form("%1.3f",ND_Sig[27][27]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[27][27]) 
+		     << " & "       << Form("%1.3f",ND_Sig[33][33]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[33][33]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 1200 	& " << Form("%1.3f",ND_Sig[3][3]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[3][3]) 
+		     << " & "       << Form("%1.3f",ND_Sig[11][11]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[11][11]) 
+		     << " & "       << Form("%1.3f",ND_Sig[17][17]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[17][17]) 
+		     << " & "       << " - "  
+		     << " & "       << Form("%1.3f",ND_Sig[28][28]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[28][28]) 
+		     << " & "       << Form("%1.3f",ND_Sig[34][34]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[34][34]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 1400 	& " << Form("%1.3f",ND_Sig[4][4]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[4][4]) 
+		     << " & "       << Form("%1.3f",ND_Sig[12][12])	<< " \\pm " << Form("%1.3f",Err_ND_Sig[12][12]) 
+		     << " & "       << Form("%1.3f",ND_Sig[18][18]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[18][18]) 
+		     << " & "       << Form("%1.3f",ND_Sig[23][23]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[23][23]) 
+		     << " & "       << Form("%1.3f",ND_Sig[29][29]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[29][29]) 
+		     << " & "       << Form("%1.3f",ND_Sig[35][35]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[35][35]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 1700 	& " << Form("%1.3f",ND_Sig[5][5]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[5][5]) 
+		     << " & "       << Form("%1.3f",ND_Sig[13][13]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[13][13]) 
+		     << " & "       << Form("%1.3f",ND_Sig[19][19]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[19][19]) 
+		     << " & "       << Form("%1.3f",ND_Sig[24][24]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[24][24]) 
+		     << " & "       << Form("%1.3f",ND_Sig[30][30]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[30][30]) 
+		     << " & "       << Form("%1.3f",ND_Sig[36][36]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[36][36]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 2000 	& " << Form("%1.3f",ND_Sig[6][6]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[6][6]) 
+		     << " & "       << Form("%1.3f",ND_Sig[14][14]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[14][14]) 
+		     << " & "       << Form("%1.3f",ND_Sig[20][20]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[20][20]) 
+		     << " & "       << Form("%1.3f",ND_Sig[25][25]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[25][25]) 
+		     << " & "       << Form("%1.3f",ND_Sig[31][31]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[31][31]) 
+		     << " & "       << Form("%1.3f",ND_Sig[37][37]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[37][37]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 2500 	& " << Form("%1.3f",ND_Sig[7][7]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[7][7]) 
+		     << " & "       << " - " 
+		     << " & "       << Form("%1.3f",ND_Sig[21][21]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[21][21]) 
+		     << " & "       << Form("%1.3f",ND_Sig[26][26]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[26][26]) 
+		     << " & "       << Form("%1.3f",ND_Sig[32][32]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[32][32]) 
+		     << " & "       << Form("%1.3f",ND_Sig[38][38]) 	<< " \\pm " << Form("%1.3f",Err_ND_Sig[38][38]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << "\\hline \\hline" <<std::endl;
+     fOutResultsGrid << "\\end{tabular}" <<std::endl;
+     fOutResultsGrid << "\\end{table}" <<std::endl;
+     // end yield table
+
+     // setup efficiency table
+     fOutResultsGrid << "\% Summary of Signal Efficiencies" << std::endl;
+     fOutResultsGrid << "\\begin{table}[bthp]" <<std::endl;
+     fOutResultsGrid << "\\begin{tabular}{ccccccc}" <<std::endl;
+     fOutResultsGrid << "\\hline \\hline" <<std::endl;
+     //fOutResultsGrid << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",flumi) <<" \\\\" <<std::endl;
+     //fOutResultsGrid << "\\hline" <<std::endl;
+
+     fOutResultsGrid << "	& 300 	& 400 	& 500 	& 600 	& 700 	& 800  \\\\" << std::endl;  
+     fOutResultsGrid << " 600 	& " << Form("%1.3f",Eff_Sig[0][0]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[0][0]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[8][8]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[8][8])  
+		     << " & "       << " - "  
+		     << " & "       << " - "  
+		     << " & "       << " - "  
+		     << " & "       << " - " 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 800 	& " << Form("%1.3f",Eff_Sig[1][1]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[1][1]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[9][9]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[9][9]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[15][15]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[15][15]) 
+		     << " & "       << " - "   
+		     << " & "       << " - "
+		     << " & "       << " - " 
+		     << " \\\\" << std::endl;
+
+     fOutResultsGrid << " 1000 	& " << Form("%1.3f",Eff_Sig[2][2])   	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[2][2]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[10][10]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[10][10]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[16][16]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[16][16]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[22][22]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[22][22]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[27][27]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[27][27]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[33][33]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[33][33]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 1200 	& " << Form("%1.3f",Eff_Sig[3][3]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[3][3]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[11][11]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[11][11]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[17][17]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[17][17]) 
+		     << " & "       << " - "  
+		     << " & "       << Form("%1.3f",Eff_Sig[28][28]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[28][28]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[34][34]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[34][34]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 1400 	& " << Form("%1.3f",Eff_Sig[4][4]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[4][4]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[12][12])	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[12][12]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[18][18]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[18][18]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[23][23]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[23][23]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[29][29]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[29][29]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[35][35]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[35][35]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 1700 	& " << Form("%1.3f",Eff_Sig[5][5]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[5][5]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[13][13]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[13][13]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[19][19]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[19][19]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[24][24]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[24][24]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[30][30]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[30][30]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[36][36]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[36][36]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 2000 	& " << Form("%1.3f",Eff_Sig[6][6]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[6][6]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[14][14]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[14][14]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[20][20]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[20][20]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[25][25]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[25][25]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[31][31]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[31][31]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[37][37]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[37][37]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << " 2500 	& " << Form("%1.3f",Eff_Sig[7][7]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[7][7]) 
+		     << " & "       << " - " 
+		     << " & "       << Form("%1.3f",Eff_Sig[21][21]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[21][21]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[26][26]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[26][26]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[32][32]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[32][32]) 
+		     << " & "       << Form("%1.3f",Eff_Sig[38][38]) 	<< " \\pm " << Form("%1.3f",Err_Eff_Sig[38][38]) 
+		     << " \\\\" << std::endl; 
+
+     fOutResultsGrid << "\\hline \\hline" <<std::endl;
+     fOutResultsGrid << "\\end{tabular}" <<std::endl;
+     fOutResultsGrid << "\\end{table}" <<std::endl;
+     // end efficiency table
+
+     // finish Latex doc
+     fOutResultsGrid << "\\end{document}" <<std::endl;
+
+
+
+  }// fOutResultsGrid is_open
+  else std::cout << "Unable to open Yields/Efficiency Table Output File" << std::endl;
+  fOutResultsGrid.close();
+  std::cout << "Finished Writing Yields and Efficieny Table" << std::endl;
+
+}// end CardMaker::MakeYieldAndEfficiencyTables
 
 
 
@@ -377,7 +572,7 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
   //final calculation: bkg rate = (Int)NA * Weight * alpha
   Double_t predBkg = (Double_t)NA_Data*alpha;
 
-  TString DataCardName = Form("%s/%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
+  TString DataCardName = Form("%s%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
   std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
   fOutTxtFile.open(DataCardName); 
   if (fOutTxtFile.is_open()){
