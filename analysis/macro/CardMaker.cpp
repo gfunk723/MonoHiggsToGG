@@ -440,7 +440,8 @@ void CardMaker::MakeYieldAndEfficiencyTables( const DblVecVec ND_Sig, const DblV
      //fOutResultsGrid << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",flumi) <<" \\\\" <<std::endl;
      //fOutResultsGrid << "\\hline" <<std::endl;
 
-     fOutResultsGrid << "	& 300 	& 400 	& 500 	& 600 	& 700 	& 800  \\\\" << std::endl;  
+     fOutResultsGrid << " $m_{A^0}$ & 300 	& 400 	& 500 	& 600 	& 700 	& 800  \\\\" << std::endl; 
+     fOutResultsGrid << " $m_{Z'}$ & & & & & & \\\\" << std::endl;  
      fOutResultsGrid << "\\hline \\hline" << std::endl; 
      fOutResultsGrid << " 600 	& " << Form("%1.3f",ND_Sig[0][0]) 	<< "$ \\pm $" << Form("%1.3f",Err_ND_Sig[0][0]) 
 		     << " & "       << Form("%1.3f",ND_Sig[8][8]) 	<< "$ \\pm $" << Form("%1.3f",Err_ND_Sig[8][8])  
@@ -519,7 +520,8 @@ void CardMaker::MakeYieldAndEfficiencyTables( const DblVecVec ND_Sig, const DblV
      //fOutResultsGrid << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",flumi) <<" \\\\" <<std::endl;
      //fOutResultsGrid << "\\hline" <<std::endl;
 
-     fOutResultsGrid << "	& 300 	& 400 	& 500 	& 600 	& 700 	& 800  \\\\" << std::endl; 
+     fOutResultsGrid << " $m_{A^0}$ & 300 	& 400 	& 500 	& 600 	& 700 	& 800  \\\\" << std::endl; 
+     fOutResultsGrid << " $m_{Z'}$ & & & & & & \\\\" << std::endl;  
      fOutResultsGrid << "\\hline \\hline" << std::endl; 
      fOutResultsGrid << " 600 	& " << Form("%1.3f",Eff_Sig[0][0]) 	<< "$ \\pm $" << Form("%1.3f",Err_Eff_Sig[0][0]) 
 		     << " & "       << Form("%1.3f",Eff_Sig[8][8]) 	<< "$ \\pm $" << Form("%1.3f",Err_Eff_Sig[8][8])  
