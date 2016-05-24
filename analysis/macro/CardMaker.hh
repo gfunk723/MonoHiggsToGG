@@ -51,9 +51,11 @@ private:
   IntVecVec	Int_Results_ND;
   DblVecVec	Dbl_Results_NA;
   DblVecVec	Dbl_Results_ND;
-  IntVecVec	Int_Starting;
-  DblVecVec	Dbl_Starting;
+  IntVec	Int_Starting;
+  DblVec	Dbl_Starting;
   DblVecVec	Dbl_Errors;
+  DblVecVec	Dbl_Efficiency;
+  DblVecVec	Dbl_Efficiency_Errors;
 
   std::ofstream fOutResultsGrid;
   std::ofstream	fOutTxtFile;
