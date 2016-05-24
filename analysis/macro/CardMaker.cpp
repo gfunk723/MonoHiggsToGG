@@ -217,15 +217,15 @@ void CardMaker::MakeCards(){
     SampleNumber++;
   }
 
-  // uncertainty calculation for yields
-  DblVecVec Dbl_Error_ND_Sig;
-  Dbl_Error_ND_Sig.resize(fNSig);
-  for (UInt_t mc=0; mc<fNSig; mc++){
-    Dbl_Error_ND_Sig[mc].resize(fNSig);
-    for (UInt_t n=0; n<fNSig; n++){
-      Dbl_Error_ND_Sig[mc][n] = TMath::Sqrt(Dbl_Errors_Sig[mc][n]);
-    }
-  }
+  //// uncertainty calculation for yields
+  //DblVecVec Dbl_Error_ND_Sig;
+  //Dbl_Error_ND_Sig.resize(fNSig);
+  //for (UInt_t mc=0; mc<fNSig; mc++){
+  //  Dbl_Error_ND_Sig[mc].resize(fNSig);
+  //  for (UInt_t n=0; n<fNSig; n++){
+  //    Dbl_Error_ND_Sig[mc][n] = TMath::Sqrt(Dbl_Errors_Sig[mc][n]);
+  //  }
+  //}
 
   DblVecVec Dbl_Eff_Sig;
   DblVecVec Dbl_Error_Eff_Sig;
@@ -241,7 +241,7 @@ void CardMaker::MakeCards(){
   }
  
 
-  CardMaker::MakeYieldAndEfficiencyTables( Dbl_Results_ND_Sig , Dbl_Error_ND_Sig, Dbl_Eff_Sig, Dbl_Error_Eff_Sig);
+  CardMaker::MakeYieldAndEfficiencyTables( Dbl_Results_ND_Sig , Dbl_Errors_Sig, Dbl_Eff_Sig, Dbl_Error_Eff_Sig);
 
   // Write out the datacard (one for each signal sample)
   for (UInt_t mc=0; mc < fNSig; mc++){
