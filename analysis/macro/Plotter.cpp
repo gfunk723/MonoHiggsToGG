@@ -855,7 +855,8 @@ void Plotter::DoPlots(int prompt){
 		}
 		//}// end outside mgg
 	      }// end doBlind
-              else{ 
+              else{
+		fTH2DMap["met_mgg"]->Fill(mgg,t1pfmetCorr,Weight); 
 		fTH1DMap["mgg_IsolateALL"]->Fill(mgg,Weight);
 		if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
 	      }
@@ -1400,6 +1401,7 @@ void Plotter::SetUpPlots(){
   fTH2DMap["ptzp_njets"]		= Plotter::MakeTH2DPlot("ptzp_njets","",10,0.,10.,100,0.,500.,"Num Jets","Z' p_{T} (GeV)");
 
   // 2D plot for ABCD method
+  fTH2DMap["met_mgg"]			= Plotter::MakeTH2DPlot("met_mgg","",200,100.,300.,75.,0.,150,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   fTH2DMap["t1pfmet_mgg"]		= Plotter::MakeTH2DPlot("t1pfmet_mgg","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   fTH2DMap["t1pfmet_mgg_unwgt"]		= Plotter::MakeTH2DPlot("t1pfmet_mgg_unwgt","",800,100.,300.,4000,0.,1000,"m_{#gamma#gamma} (GeV)","E_{T}^{miss} (GeV)");
   // for ABCD with cuts for each mass point
@@ -1515,7 +1517,7 @@ void Plotter::SavePlots(){
     CMSLumi(canv2d,0,fLumi);
 
     canv2d->SetLogy(0);
-    //canv2d->SaveAs(Form("%s%s/%s.%s",fName.Data(),species.Data(),(*mapiter).first.Data(),fType.Data()));
+    canv2d->SaveAs(Form("%s%s/%s.%s",fName.Data(),species.Data(),(*mapiter).first.Data(),fType.Data()));
   }// end of loop over mapiter for 2d plots
   delete canv2d;
 

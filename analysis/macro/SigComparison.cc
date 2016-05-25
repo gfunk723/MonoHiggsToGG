@@ -13,37 +13,39 @@
 
 using namespace std;
 
-void makePlots(std::string, int, double, double, TString, TString, TString);
+void makePlots(std::string, int, double, double, TString, TString, TString, TString);
 
 void SigComparison(){
  
   cout << "Signal Comparison" << endl;
 
   TString inDir = "data/25ns_v76X_v2/";
-  TString nameFileSig1 = "2HDM_mZP600.root"; 
-  TString nameFileSig2 = "2HDM_mZP600_mA0400.root"; 
+  TString nameFileSig1 = "2HDM_mZP1200_mA0800"; 
+  TString nameFileSig2 = "2HDM_mZP1700_mA0800"; 
+  TString outDir = "~/www/Plots/CompareSignal";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   cout << "Comparing Sample " << nameFileSig1 << " and " << nameFileSig2 << endl;
 
-  makePlots("pt1",    30, 0.,  300, inDir, nameFileSig1, nameFileSig2);
-  makePlots("pt2",    30, 0.,  300, inDir, nameFileSig1, nameFileSig2);
-  makePlots("mgg",    26, 99., 151, inDir, nameFileSig1, nameFileSig2);
-  makePlots("ptgg",   60, 0.,  600, inDir, nameFileSig1, nameFileSig2);
-  makePlots("nvtx",   40, 0.,  40,  inDir, nameFileSig1, nameFileSig2);
-  makePlots("t1pfmet",75, 0.,  900, inDir, nameFileSig1, nameFileSig2);
+  makePlots("mgg",    26, 99., 151, inDir, outDir, nameFileSig1, nameFileSig2);
+  makePlots("t1pfmet",75, 0.,  900, inDir, outDir, nameFileSig1, nameFileSig2);
+  //makePlots("pt1",    30, 0.,  300, inDir, outDir, nameFileSig1, nameFileSig2);
+  //makePlots("pt2",    30, 0.,  300, inDir, outDir, nameFileSig1, nameFileSig2);
+  //makePlots("ptgg",   60, 0.,  600, inDir, outDir, nameFileSig1, nameFileSig2);
+  //makePlots("nvtx",   40, 0.,  40,  inDir, outDir, nameFileSig1, nameFileSig2);
+
 
 }
 
 
-void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir, TString nameFileSig1, TString nameFileSig2){
+void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir, TString outDir, TString nameFileSig1, TString nameFileSig2){
   
   TString mainCut = "(mgg>=100 && mgg<180)";
 
   TFile* fileSig1;
   TFile* fileSig2;
-  fileSig1 = new TFile(inDir+nameFileSig1); 
-  fileSig2 = new TFile(inDir+nameFileSig2); 
+  fileSig1 = new TFile(inDir+nameFileSig1+".root"); 
+  fileSig2 = new TFile(inDir+nameFileSig2+".root"); 
   
   TTree* treeSig1 = (TTree*)fileSig1->Get("DiPhotonTree");
   TTree* treeSig2 = (TTree*)fileSig2->Get("DiPhotonTree");
@@ -149,8 +151,8 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
   
   CMS_lumi(ctmp,false,11);
   ctmp->cd();
-  ctmp->SaveAs(("~/www/Plots/CompareSignal/sig_"+var+"_log.png").c_str());
-  ctmp->SaveAs(("~/www/Plots/CompareSignal/sig_"+var+"_log.pdf").c_str());
+  ctmp->SaveAs(Form("%s/sig_%s_%s_%s_log.png",outDir.Data(),var.c_str(),nameFileSig1.Data(),nameFileSig2.Data()));
+  ctmp->SaveAs(Form("%s/sig_%s_%s_%s_log.pdf",outDir.Data(),var.c_str(),nameFileSig1.Data(),nameFileSig2.Data()));
  
   delete ctmp;
   //delete h_line;
