@@ -306,7 +306,10 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     t1pfmetCorr = correctedMet.Pt();
 
     // calculate the weight
-    Double_t Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
+    Double_t Weight = 1.0;
+    if (sampleID==2) Weight = 1; // no weight for data
+    else if (sampleID==0 || sampleID==1) Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
+    else Weight = (weight)*fPUWeights[nvtx]*(1000);// reweighted to 1pb
 
     // check that data passes METfilters
     if (sampleID==2 && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
@@ -599,12 +602,23 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
   //final calculation: bkg rate = (Int)NA * Weight * alpha
   Double_t predBkg = (Double_t)NA_Data*alpha;
 
+  TString mZp = "";
+  if (fSigName=="2HDM_mZP600" || fSigName=="2HDM_mZP600_mA0400") mZp="600";  
+  if (fSigName=="2HDM_mZP800" || fSigName=="2HDM_mZP800_mA0400" || fSigName=="2HDM_mZP800_mA0500" || fSigName=="2HDM_mZP800_mA0600") mZp="800";  
+  if (fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HMD_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
+  if (fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HMD_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
+  if (fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HMD_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
+  if (fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HMD_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
+  if (fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HMD_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
+  if (fSigName=="2HDM_mZP2500" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HMD_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
+
+
   TString DataCardName = Form("%s%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
   std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
   fOutTxtFile.open(DataCardName); 
   if (fOutTxtFile.is_open()){
     fOutTxtFile << Form("#MonoHgg Datacard for C&C Limit Setting, %f fb-1 ",flumi) << std::endl;
-    fOutTxtFile << "#Run with:combine -M Asymptotic cardname.txt --run blind " << std::endl;
+    //fOutTxtFile << "#Run with:combine -M Asymptotic cardname.txt --run blind " << std::endl;
     fOutTxtFile << Form("# Lumi =  %f fb-1",flumi) << std::endl;
     fOutTxtFile << "imax 1 " << std::endl;
     fOutTxtFile << "jmax * " << std::endl;
@@ -615,24 +629,24 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
     else fOutTxtFile << Form("observation %i",ND_Data) << std::endl;
     fOutTxtFile << "------------------------------------" << std::endl;
     fOutTxtFile << "bin	    1	1	1	1	1	1" << std::endl;
-    fOutTxtFile << "process	   s	b	hgg	vbf	vh	tth" << std::endl;
+    fOutTxtFile << Form("process	   MonoH_%s	b	GGH	VBF	VH	TTH",mZp.Data()) << std::endl;
     fOutTxtFile << "process	   0	1	2	3	4	5" << std::endl;
     fOutTxtFile << Form("rate	   %f	%f	%f	%f	%f	%f",ND_Sig,predBkg,ND_Res[0],ND_Res[1],ND_Res[2],ND_Res[3]) << std::endl;
     fOutTxtFile << " " << std::endl;
     fOutTxtFile << "------------------------------------" << std::endl;
     fOutTxtFile << "#MC related" << std::endl;
-    fOutTxtFile << "lumi	    lnN	1.023	-	1.023	1.023	1.023	1.023" << std::endl;
-    fOutTxtFile << "eff	    lnN	1.030   -       1.030   1.030   1.030   1.030" << std::endl;
-    fOutTxtFile << "higg_BR     lnN	0.953/1.050	-	0.953/1.050	0.953/1.050	0.953/1.050	0.953/1.050" << std::endl;
-    fOutTxtFile << "higg_alphas lnN 0.940/0.965	-	0.940/0.965	0.940/0.965	0.940/0.965	0.940/0.965" << std::endl;
-    fOutTxtFile << "PDFs        lnN 1.05		-	1.05		1.05		1.05		1.05" << std::endl;
-    fOutTxtFile << "JetEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
-    fOutTxtFile << "JetEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
-    fOutTxtFile << "PhoEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
-    fOutTxtFile << "PhoEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
-    fOutTxtFile << "UnclEnUp    lnN 1.005           -       -               -               1.005           -" << std::endl;
-    fOutTxtFile << "UnclEnDown  lnN 1.005           -       -               -               1.005           -" << std::endl;
-    fOutTxtFile << "FakeMet     lnN -               0.6/1.4	0.6/1.4         0.6/1.4		-		0.6/1.4 " << std::endl;
+    fOutTxtFile << "lumi_13TeV	    lnN	1.023	-	1.023	1.023	1.023	1.023" << std::endl;
+    fOutTxtFile << "CMS_MonoH_eff	    lnN	1.030   -       1.030   1.030   1.030   1.030" << std::endl;
+    fOutTxtFile << "CMS_MonoH_higg_BR     lnN	0.953/1.050	-	0.953/1.050	0.953/1.050	0.953/1.050	0.953/1.050" << std::endl;
+    fOutTxtFile << "CMS_MonoH_higg_alphas lnN 0.940/0.965	-	0.940/0.965	0.940/0.965	0.940/0.965	0.940/0.965" << std::endl;
+    fOutTxtFile << "CMS_MonoH_PDFs        lnN 1.05		-	1.05		1.05		1.05		1.05" << std::endl;
+    fOutTxtFile << "CMS_MonoH_JetEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "CMS_MonoH_JetEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "CMS_MonoH_PhoEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "CMS_MonoH_PhoEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
+    fOutTxtFile << "CMS_MonoH_UnclEnUp    lnN 1.005           -       -               -               1.005           -" << std::endl;
+    fOutTxtFile << "CMS_MonoH_UnclEnDown  lnN 1.005           -       -               -               1.005           -" << std::endl;
+    fOutTxtFile << "CMS_MonoH_FakeMet     lnN -               0.6/1.4	0.6/1.4         0.6/1.4		-		0.6/1.4 " << std::endl;
     fOutTxtFile << "------------------------------------" << std::endl;
     fOutTxtFile << "#background related " << std::endl;
     fOutTxtFile << Form("bg_lept	    gmN	%i	-	%f	-	-	-	-",NA_Data,alpha) << std::endl;
