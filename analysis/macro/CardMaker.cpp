@@ -309,7 +309,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     Double_t Weight = 1.0;
     if (sampleID==2) Weight = 1; // no weight for data
     else if (sampleID==0 || sampleID==1) Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
-    else Weight = (weight)*fPUWeights[nvtx]*(1000);// reweighted to 1pb
+    else Weight = (weight)*fPUWeights[nvtx];//*(1000);// reweighted to 1pb
 
     // check that data passes METfilters
     if (sampleID==2 && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
@@ -613,7 +613,12 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
   if (fSigName=="2HDM_mZP2500" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HMD_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
 
 
-  TString DataCardName = Form("%s%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
+  Bool_t A0300 = false;
+  if (fSigName=="2HDM_mZP600" || fSigName=="2HDM_mZP800" || fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2500") A0300=true;
+
+  TString DataCardName;
+  if (A0300) DataCardName = Form("%s%s/DataCard_%s_mA0300.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
+  else DataCardName = Form("%s%s/DataCard_%s.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
   std::cout << "Writing data card in: " << DataCardName.Data() << std::endl;
   fOutTxtFile.open(DataCardName); 
   if (fOutTxtFile.is_open()){
