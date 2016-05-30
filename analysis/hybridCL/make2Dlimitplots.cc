@@ -6,8 +6,6 @@
 #include <TCanvas.h>
 #include <TLegend.h>
 #include <TMath.h>
-#include "Style.hh"
-#include "Style.cpp"
 #include "../macro/mkPlotsLivia/CMS_lumi.C"
 #include <iostream>
 
@@ -58,12 +56,12 @@ void makePlots(TString inDir, TString outDir){
   higgsCombineFiles_MA0800.resize(nMasses);
 
   for (UInt_t n=0; n<nMasses; n++){
-    higgsCombineFiles_MA0300[n] = new TFile(inDir+"Cards_2HDM_76X_A0300/higgsCombineTest.HybridNew.mH"+mass[n]+".root");
-    higgsCombineFiles_MA0400[n] = new TFile(inDir+"Cards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH"+mass[n]+".root");
-    higgsCombineFiles_MA0500[n] = new TFile(inDir+"Cards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH"+mass[n]+".root");
-    higgsCombineFiles_MA0600[n] = new TFile(inDir+"Cards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH"+mass[n]+".root");
-    higgsCombineFiles_MA0700[n] = new TFile(inDir+"Cards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH"+mass[n]+".root");
-    higgsCombineFiles_MA0800[n] = new TFile(inDir+"Cards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH"+mass[n]+".root");
+    higgsCombineFiles_MA0300[n] = new TFile(Form("%sCards_2HDM_76X_A0300/higgsCombineTest.HybridNew.mH%i.mA0300.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0400[n] = new TFile(Form("%sCards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH%i.mA0400.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0500[n] = new TFile(Form("%sCards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH%i.mA0500.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0600[n] = new TFile(Form("%sCards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH%i.mA0600.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0700[n] = new TFile(Form("%sCards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH%i.mA0700.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
   }
 
  // load the trees

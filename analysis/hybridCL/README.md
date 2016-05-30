@@ -25,10 +25,10 @@ Can do this locally, for example with command:
 
 Batch script that does this for each mass point and each quantile is in `getquantiles.sh`. 
 
-To find the observed number of events use `--expectedFromGrid=-1`.
+To find the observed number of events use remove the `--expectedFromGrid` option.
 Do this in a different directory as the input grid file, otherwise the output will overwrite the file.  
 
-Then `hadd` the output root files.
+Then `hadd` the output root files. (This can easily be done with the bash script `haddquantiles.sh` .)
 
 ## Step 3) Make limit plots
 
