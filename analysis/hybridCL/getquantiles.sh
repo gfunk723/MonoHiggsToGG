@@ -1,0 +1,14 @@
+#! /bin/sh
+
+mA0=300
+path="/afs/cern.ch/work/m/mzientek/public/HybridNewCL/2HDM_A0${mA0}/"
+
+for mass in 600 800 1000 1200 1400 1700 2000 2500
+  do
+    echo ${mass} 
+    for quantile in 0.5 0.025 0.16 0.84 0.975 -1
+      do
+	echo ${quantile} 
+        combine DataCard_2HDM_mZP${mass}_mA0${mA0}.txt -m ${mass} -M HybridNew --freq --grid=${path}higgsCombineTest.HybridNew.mH${mass}.mA0${mA0}.root --expectedFromGrid=${quantile}  
+      done
+  done

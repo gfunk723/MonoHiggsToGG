@@ -11,7 +11,10 @@ Test locally with one job:
 
 To run on the batch queue calls combine.py in the datacard directory.
 Can see an example of how to submit in `submitcombine.sh`. This submission has format:
+
 ```python combine.py -i inputdatacard.txt -d outputdir -q 1nh -M HybridNew --onews --begin mZp --end mZp -t ntoys``` 
+
+Then `hadd` the output root files. (This can easily be achieved with the bash script `runhadd.sh`.)
 
 ## Step 2) Get the quantiles
 
