@@ -36,4 +36,7 @@ Run `limitplotter.py`, called by `limitplotter.sh`.
 
 This also uses as input the root files for the theoretical cross-sections (`gz08_fbU.root` and `Signal_crossSections.root`). 
 
+## Step 4) Make 2D limit plots
 
+Run macro `make2Dlimitplots.cc` called by:
+```root -l -b -q make2Dlimitplots.cc```

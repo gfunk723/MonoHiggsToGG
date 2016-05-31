@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void makePlots(TString, TString);
+void makePlots(TString, TString, UInt_t);
 
 void make2Dlimitplots(){
  
@@ -21,23 +21,26 @@ void make2Dlimitplots(){
   TString outDir = "~/www/Plots/25ns_Limits_76X/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
-  makePlots(inDir, outDir);
+  // type of limit plot to make (expected or observed limits)
+  UInt_t type = 0; // 0=Exp,1=Obs
+
+  makePlots(inDir, outDir, type);
 
 }
 
 
-void makePlots(TString inDir, TString outDir){
+void makePlots(TString inDir, TString outDir, UInt_t type){
 
   // mZp masses 
   std::vector<UInt_t> mass;
   mass.push_back(600);
   mass.push_back(800);
   mass.push_back(1000);
-  mass.push_back(1200);
-  mass.push_back(1400);
-  mass.push_back(1700);
-  mass.push_back(2000);
-  mass.push_back(2500);
+  //mass.push_back(1200);
+  //mass.push_back(1400);
+  //mass.push_back(1700);
+  //mass.push_back(2000);
+  //mass.push_back(2500);
   UInt_t nMasses = mass.size();
 
   // pick up the higgsCombine files for each A0 mass
@@ -57,11 +60,11 @@ void makePlots(TString inDir, TString outDir){
 
   for (UInt_t n=0; n<nMasses; n++){
     higgsCombineFiles_MA0300[n] = new TFile(Form("%sCards_2HDM_76X_A0300/higgsCombineTest.HybridNew.mH%i.mA0300.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0400[n] = new TFile(Form("%sCards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH%i.mA0400.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0500[n] = new TFile(Form("%sCards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH%i.mA0500.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0600[n] = new TFile(Form("%sCards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH%i.mA0600.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0700[n] = new TFile(Form("%sCards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH%i.mA0700.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
+    //higgsCombineFiles_MA0400[n] = new TFile(Form("%sCards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH%i.mA0400.root",inDir.Data(),mass[n]));
+    //higgsCombineFiles_MA0500[n] = new TFile(Form("%sCards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH%i.mA0500.root",inDir.Data(),mass[n]));
+    //higgsCombineFiles_MA0600[n] = new TFile(Form("%sCards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH%i.mA0600.root",inDir.Data(),mass[n]));
+    //higgsCombineFiles_MA0700[n] = new TFile(Form("%sCards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH%i.mA0700.root",inDir.Data(),mass[n]));
+    //higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
   }
 
  // load the trees
@@ -81,16 +84,57 @@ void makePlots(TString inDir, TString outDir){
  
  for (UInt_t n=0; n<nMasses; n++){
    trees_MA0300[n] = (TTree*)higgsCombineFiles_MA0300[n]->Get("limits");
-   trees_MA0400[n] = (TTree*)higgsCombineFiles_MA0400[n]->Get("limits");
-   trees_MA0500[n] = (TTree*)higgsCombineFiles_MA0500[n]->Get("limits");
-   trees_MA0600[n] = (TTree*)higgsCombineFiles_MA0600[n]->Get("limits");
-   trees_MA0700[n] = (TTree*)higgsCombineFiles_MA0700[n]->Get("limits");
-   trees_MA0800[n] = (TTree*)higgsCombineFiles_MA0800[n]->Get("limits");
+   //trees_MA0400[n] = (TTree*)higgsCombineFiles_MA0400[n]->Get("limits");
+   //trees_MA0500[n] = (TTree*)higgsCombineFiles_MA0500[n]->Get("limits");
+   //trees_MA0600[n] = (TTree*)higgsCombineFiles_MA0600[n]->Get("limits");
+   //trees_MA0700[n] = (TTree*)higgsCombineFiles_MA0700[n]->Get("limits");
+   //trees_MA0800[n] = (TTree*)higgsCombineFiles_MA0800[n]->Get("limits");
  }
 
- 
+ // setup output plot
+ TH2D * limits = new TH2D("limits","limits",8,0,8,6,0,6);
+ limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
+ limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
+ limits->SetTitle("");
 
+ //limits->SetBinLabel(1,1,"600");
 
- 
+ // setup canvas
+ TCanvas * c = new TCanvas("c","");
+ c->cd();
+ gStyle->SetOptStat(0);
+
+ std::string quantile="0";
+ if (type==0) quantile="0.5";
+ if (type==1) quantile="-1";
+
+ // original tree leaves
+ //Float_t limit = 0.;
+ //Double_t quantileExpected = 0.;
+
+ //// original tree branches
+ //TBranch *b_limit;
+ //TBranch *b_quantileExpected;
+
+ //for (UInt_t n=0; n<nMasses; n++){
+ //  trees_MA0300[n]->SetBranchAddress("limit",&limit,&b_limit);
+ //  trees_MA0300[n]->SetBranchAddress("quantileExpected",&quantileExpected,&b_quantileExpected);
+ //}  
+
+ for (UInt_t n=0; n<nMasses; n++){
+   //UInt_t nentries = trees_MA0300[n]->GetEntries();
+   //for (UInt_t entry=0; entry < nentries; entry++){
+   //  trees_MA0300[n]->GetEntry(entry);
+   //}
+   //trees_MA0300[n]->Draw("limit",("quantileExpected=="+quantile).c_str());
+ } 
+
+ // draw plot
+ limits->Draw("COLZ TEXT"); 
+
+ // save plot
+ CMS_lumi(c,false,8);
+ c->cd();
+ c->SaveAs(Form("%s/limits2D_2HDM.png",outDir.Data()));
 
 }
