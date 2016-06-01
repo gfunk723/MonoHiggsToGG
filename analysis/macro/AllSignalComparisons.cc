@@ -20,7 +20,7 @@ void AllSignalComparisons(){
   cout << "Signal Comparison" << endl;
 
   TString inDir = "data/25ns_v76X_v2/";
-  TString mZp = "1000";
+  TString mZp = "2000";
   TString nameFileSig1 = Form("2HDM_mZP%s",mZp.Data()); 
   TString nameFileSig2 = Form("2HDM_mZP%s_mA0400",mZp.Data()); 
   TString nameFileSig3 = Form("2HDM_mZP%s_mA0500",mZp.Data()); 
@@ -68,9 +68,9 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
   
   std::vector< TH1F* > histoSig;
   histoSig.resize(nFiles);
-  for (UInt_t n=0; n<nFiles; n++){
-    histoSig[n] = new TH1F("histoSig","",BINS,MIN,MAX);
-  }
+  //for (UInt_t n=0; n<nFiles; n++){
+  //  histoSig[n] = new TH1F("histoSig","",BINS,MIN,MAX);
+  //}
  
   gStyle->SetOptStat(0);
 

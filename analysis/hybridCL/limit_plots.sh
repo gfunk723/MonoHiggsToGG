@@ -1,5 +1,11 @@
 #!/bin/bash
 
+path="~/private/HiggsCombine/CMSSW_7_1_5/src/diphotons/Analysis/macros/Cards_2HDM_76X_A0300/"
+
+./limit_plots.py --do-limits -M HybridNew --input-dir ${path} -O ~/www/Plots/HybridLimits/ --label MonoHgg --lumi 2.3 --use-fb --load lumi_limits.json
+
+
+
 
 #target=$1 && shift
 
@@ -19,10 +25,6 @@ inputDir=$1
 
 
 
-
-./limit_plots.py --do-limits -M Asymptotic --input-dir 	 ntuples4fit_boostchiara_met80_cic_default_shapes_lumi_2.246     -O ~/www/plotsMonoH/FitLimits/ntuples4fit_boostchiara_met80_cic_default_shapes_lumi_2.246	--label MonoHgg --lumi 2.246 --use-fb		  --load lumi_limits.json
-./limit_plots.py --do-limits -M Asymptotic --input-dir 	 ntuples4fit_boostchiara_met70_cic_default_shapes_lumi_2.246     -O ~/www/plotsMonoH/FitLimits/ntuples4fit_boostchiara_met70_cic_default_shapes_lumi_2.246		     --label MonoHgg --lumi 2.246 --use-fb          --load lumi_limits.json
-./limit_plots.py --do-limits -M Asymptotic --input-dir   ntuples4fit_boostchiara_met50_cic_default_shapes_lumi_2.246     -O ~/www/plotsMonoH/FitLimits/ntuples4fit_boostchiara_met50_cic_default_shapes_lumi_2.246	   --label MonoHgg --lumi 2.246 --use-fb --load lumi_limits.json
 
 #./limit_plots.py --compare-expected -O ~/www/plotsMonoH/FitLimits/ --label MonoHgg --lumi 2.246 --use-fb
 

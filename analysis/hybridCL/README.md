@@ -3,6 +3,10 @@
 # Running the Hybrid-New CLs in Combine
 -------------------------------------------------------- 
 
+Need to have the high mass diphoton tools installed 
+( https://github.com/musella/diphotons ). 
+You need to compile with `scram b -j 16` the RooUtils and Utils directories.
+
 ## Step 1) Run toys
 This is a time consuming step, need to run as jobs. 
 

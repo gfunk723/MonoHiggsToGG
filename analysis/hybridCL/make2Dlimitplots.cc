@@ -12,6 +12,7 @@
 using namespace std;
 
 void makePlots(TString, TString, UInt_t);
+void getLimits(TTree* &, Double_t &, std::string); 
 
 void make2Dlimitplots(){
  
@@ -108,26 +109,13 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  if (type==0) quantile="0.5";
  if (type==1) quantile="-1";
 
- // original tree leaves
- //Float_t limit = 0.;
- //Double_t quantileExpected = 0.;
-
- //// original tree branches
- //TBranch *b_limit;
- //TBranch *b_quantileExpected;
-
- //for (UInt_t n=0; n<nMasses; n++){
- //  trees_MA0300[n]->SetBranchAddress("limit",&limit,&b_limit);
- //  trees_MA0300[n]->SetBranchAddress("quantileExpected",&quantileExpected,&b_quantileExpected);
- //}  
+ std::vector< Double_t > limitval300;
+ limitval300.resize(nMasses);
 
  for (UInt_t n=0; n<nMasses; n++){
-   //UInt_t nentries = trees_MA0300[n]->GetEntries();
-   //for (UInt_t entry=0; entry < nentries; entry++){
-   //  trees_MA0300[n]->GetEntry(entry);
-   //}
-   //trees_MA0300[n]->Draw("limit",("quantileExpected=="+quantile).c_str());
- } 
+   getLimits(trees_MA0300[n],limitval300[n],quantile); 
+   delete trees_MA0300[n];
+ }
 
  // draw plot
  limits->Draw("COLZ TEXT"); 
@@ -138,3 +126,28 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  c->SaveAs(Form("%s/limits2D_2HDM.png",outDir.Data()));
 
 }
+
+void getLimits(TTree* & tree, Double_t & Limit, std::string quantile){
+
+  Double_t limit;
+  Double_t quantileExpected;
+
+  TBranch *b_limit;
+  TBranch *b_quantileExpected;
+
+  tree->SetBranchAddress("limit",&limit,&b_limit);
+  tree->SetBranchAddress("quantileExpected",&quantileExpected,&b_quantileExpected);
+ 
+  Limit = 0;
+
+  //UInt_t nentries = tree->GetEntries();
+  //for (UInt_t entry = 0; entry < nentries; entry++){
+  //  tree->GetEntry();
+  //  if (quantileExpected==quantile) Limit=limit;
+  //}  
+  
+  //delete tree;
+
+
+}
+
