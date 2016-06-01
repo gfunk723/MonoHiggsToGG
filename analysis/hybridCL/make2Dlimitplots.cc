@@ -12,7 +12,8 @@
 using namespace std;
 
 void makePlots(TString, TString, UInt_t);
-void getLimits(TTree* &, Double_t &, std::string); 
+//void getLimits(TTree* &, Double_t &, std::string); 
+void getLimits(TFile*, Double_t &, Double_t); 
 
 void make2Dlimitplots(){
  
@@ -37,11 +38,11 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
   mass.push_back(600);
   mass.push_back(800);
   mass.push_back(1000);
-  //mass.push_back(1200);
-  //mass.push_back(1400);
-  //mass.push_back(1700);
-  //mass.push_back(2000);
-  //mass.push_back(2500);
+  mass.push_back(1200);
+  mass.push_back(1400);
+  mass.push_back(1700);
+  mass.push_back(2000);
+  mass.push_back(2500);
   UInt_t nMasses = mass.size();
 
   // pick up the higgsCombine files for each A0 mass
@@ -68,30 +69,6 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
     //higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
   }
 
- // load the trees
- std::vector<TTree* > trees_MA0300;  
- std::vector<TTree* > trees_MA0400;  
- std::vector<TTree* > trees_MA0500;  
- std::vector<TTree* > trees_MA0600;  
- std::vector<TTree* > trees_MA0700;  
- std::vector<TTree* > trees_MA0800;  
- 
- trees_MA0300.resize(nMasses);  
- trees_MA0400.resize(nMasses);  
- trees_MA0500.resize(nMasses);  
- trees_MA0600.resize(nMasses);  
- trees_MA0700.resize(nMasses);  
- trees_MA0800.resize(nMasses);  
- 
- for (UInt_t n=0; n<nMasses; n++){
-   trees_MA0300[n] = (TTree*)higgsCombineFiles_MA0300[n]->Get("limits");
-   //trees_MA0400[n] = (TTree*)higgsCombineFiles_MA0400[n]->Get("limits");
-   //trees_MA0500[n] = (TTree*)higgsCombineFiles_MA0500[n]->Get("limits");
-   //trees_MA0600[n] = (TTree*)higgsCombineFiles_MA0600[n]->Get("limits");
-   //trees_MA0700[n] = (TTree*)higgsCombineFiles_MA0700[n]->Get("limits");
-   //trees_MA0800[n] = (TTree*)higgsCombineFiles_MA0800[n]->Get("limits");
- }
-
  // setup output plot
  TH2D * limits = new TH2D("limits","limits",8,0,8,6,0,6);
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
@@ -105,49 +82,62 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  c->cd();
  gStyle->SetOptStat(0);
 
- std::string quantile="0";
- if (type==0) quantile="0.5";
- if (type==1) quantile="-1";
+ Double_t quantile=0;
+ TString  typeQuantile="";
+ if (type==0){
+   quantile=0.5;
+   typeQuantile="_exp";
+ }
+ if (type==1){
+   quantile=-1;
+   typeQuantile="_obs";
+ }
 
  std::vector< Double_t > limitval300;
  limitval300.resize(nMasses);
 
  for (UInt_t n=0; n<nMasses; n++){
-   getLimits(trees_MA0300[n],limitval300[n],quantile); 
-   delete trees_MA0300[n];
+   getLimits(higgsCombineFiles_MA0300[n],limitval300[n],quantile); 
+   //std::cout << limitval300[n] << std::endl;
+   limits->Fill((Double_t)n,0.,limitval300[n]);
  }
+
 
  // draw plot
  limits->Draw("COLZ TEXT"); 
 
  // save plot
- CMS_lumi(c,false,8);
+ CMS_lumi(c,false,9);
  c->cd();
- c->SaveAs(Form("%s/limits2D_2HDM.png",outDir.Data()));
+ c->SaveAs(Form("%s/limits2D_2HDM%s.png",outDir.Data(),typeQuantile.Data()));
 
 }
 
-void getLimits(TTree* & tree, Double_t & Limit, std::string quantile){
+void getLimits(TFile* file, Double_t & Limit, Double_t quantile){
 
   Double_t limit;
-  Double_t quantileExpected;
+  Float_t quantileExpected;
 
   TBranch *b_limit;
   TBranch *b_quantileExpected;
 
-  tree->SetBranchAddress("limit",&limit,&b_limit);
-  tree->SetBranchAddress("quantileExpected",&quantileExpected,&b_quantileExpected);
+  TTree* tree = (TTree*)file->Get("limit");
+ 
+  tree->SetBranchAddress("limit", &limit, &b_limit);
+  tree->SetBranchAddress("quantileExpected", &quantileExpected, &b_quantileExpected);
  
   Limit = 0;
-
-  //UInt_t nentries = tree->GetEntries();
-  //for (UInt_t entry = 0; entry < nentries; entry++){
-  //  tree->GetEntry();
-  //  if (quantileExpected==quantile) Limit=limit;
-  //}  
+  UInt_t nentries = tree->GetEntries();
+  for (UInt_t entry = 0; entry < nentries; entry++){
+    tree->GetEntry(entry);
+    //std::cout << "Quantile = " << quantileExpected << std::endl;
+    //std::cout << "Limit    = " << limit << std::endl;
+    if (quantileExpected==quantile) Limit=limit;
+  }
   
-  //delete tree;
-
+  //std::cout << "Limit    = " << Limit << std::endl;
+  
+  delete tree;
 
 }
 
