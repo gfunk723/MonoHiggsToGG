@@ -12,7 +12,6 @@
 using namespace std;
 
 void makePlots(TString, TString, UInt_t);
-//void getLimits(TTree* &, Double_t &, std::string); 
 void getLimits(TFile*, Double_t &, Double_t); 
 
 void make2Dlimitplots(){
@@ -23,10 +22,10 @@ void make2Dlimitplots(){
   TString outDir = "~/www/Plots/25ns_Limits_76X/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
-  // type of limit plot to make (expected or observed limits)
-  UInt_t type = 0; // 0=Exp,1=Obs
-
-  makePlots(inDir, outDir, type);
+  // makePlots(inDir, outDir, type)
+  // type of limit plot to make (expected or observed limits) 0=Exp,1=Obs
+  makePlots(inDir, outDir, 0);
+  makePlots(inDir, outDir, 1);
 
 }
 
@@ -62,11 +61,11 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
 
   for (UInt_t n=0; n<nMasses; n++){
     higgsCombineFiles_MA0300[n] = new TFile(Form("%sCards_2HDM_76X_A0300/higgsCombineTest.HybridNew.mH%i.mA0300.root",inDir.Data(),mass[n]));
-    //higgsCombineFiles_MA0400[n] = new TFile(Form("%sCards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH%i.mA0400.root",inDir.Data(),mass[n]));
-    //higgsCombineFiles_MA0500[n] = new TFile(Form("%sCards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH%i.mA0500.root",inDir.Data(),mass[n]));
-    //higgsCombineFiles_MA0600[n] = new TFile(Form("%sCards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH%i.mA0600.root",inDir.Data(),mass[n]));
-    //higgsCombineFiles_MA0700[n] = new TFile(Form("%sCards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH%i.mA0700.root",inDir.Data(),mass[n]));
-    //higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0400[n] = new TFile(Form("%sCards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH%i.mA0400.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0500[n] = new TFile(Form("%sCards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH%i.mA0500.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0600[n] = new TFile(Form("%sCards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH%i.mA0600.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0700[n] = new TFile(Form("%sCards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH%i.mA0700.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
   }
 
  // setup output plot
@@ -95,11 +94,32 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
 
  std::vector< Double_t > limitval300;
  limitval300.resize(nMasses);
+ std::vector< Double_t > limitval400;
+ limitval400.resize(nMasses);
+ std::vector< Double_t > limitval500;
+ limitval500.resize(nMasses);
+ std::vector< Double_t > limitval600;
+ limitval600.resize(nMasses);
+ std::vector< Double_t > limitval700;
+ limitval700.resize(nMasses);
+ std::vector< Double_t > limitval800;
+ limitval800.resize(nMasses);
 
  for (UInt_t n=0; n<nMasses; n++){
    getLimits(higgsCombineFiles_MA0300[n],limitval300[n],quantile); 
-   //std::cout << limitval300[n] << std::endl;
-   limits->Fill((Double_t)n,0.,limitval300[n]);
+   getLimits(higgsCombineFiles_MA0400[n],limitval400[n],quantile); 
+   getLimits(higgsCombineFiles_MA0500[n],limitval500[n],quantile); 
+   getLimits(higgsCombineFiles_MA0600[n],limitval600[n],quantile); 
+   getLimits(higgsCombineFiles_MA0700[n],limitval700[n],quantile); 
+   getLimits(higgsCombineFiles_MA0800[n],limitval800[n],quantile); 
+
+   // fill limit plot
+   limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]);
+   limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]);
+   limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]);
+   limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]);
+   limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]);
+   limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]);
  }
 
 
@@ -122,19 +142,22 @@ void getLimits(TFile* file, Double_t & Limit, Double_t quantile){
   TBranch *b_quantileExpected;
 
   TTree* tree = (TTree*)file->Get("limit");
+  if (tree!=(TTree*)NULL){
  
-  tree->SetBranchAddress("limit", &limit, &b_limit);
-  tree->SetBranchAddress("quantileExpected", &quantileExpected, &b_quantileExpected);
+    tree->SetBranchAddress("limit", &limit, &b_limit);
+    tree->SetBranchAddress("quantileExpected", &quantileExpected, &b_quantileExpected);
  
-  Limit = 0;
-  UInt_t nentries = tree->GetEntries();
-  for (UInt_t entry = 0; entry < nentries; entry++){
-    tree->GetEntry(entry);
-    //std::cout << "Quantile = " << quantileExpected << std::endl;
-    //std::cout << "Limit    = " << limit << std::endl;
-    if (quantileExpected==quantile) Limit=limit;
-  }
-  
+    Limit = 0;
+    UInt_t nentries = tree->GetEntries();
+    for (UInt_t entry = 0; entry < nentries; entry++){
+      tree->GetEntry(entry);
+      //std::cout << "Quantile = " << quantileExpected << std::endl;
+      //std::cout << "Limit    = " << limit << std::endl;
+      if (quantileExpected==quantile) Limit=limit;
+    }
+
+  }// if valid tree
+  else Limit = 0;
   //std::cout << "Limit    = " << Limit << std::endl;
   
   delete tree;
