@@ -8,8 +8,7 @@
 #include <TMath.h>
 #include "../macro/mkPlotsLivia/CMS_lumi.C"
 #include <iostream>
-
-using namespace std;
+#include <vector>
 
 void makePlots(TString, TString, UInt_t);
 void getLimits(TFile*, Double_t &, Double_t); 
@@ -74,7 +73,23 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
  limits->SetTitle("");
 
- //limits->SetBinLabel(1,1,"600");
+ // set the lables for the Xaxis (mZp)
+ limits->GetXaxis()->SetBinLabel(1,"600");
+ limits->GetXaxis()->SetBinLabel(2,"800");
+ limits->GetXaxis()->SetBinLabel(3,"1000");
+ limits->GetXaxis()->SetBinLabel(4,"1200");
+ limits->GetXaxis()->SetBinLabel(5,"1400");
+ limits->GetXaxis()->SetBinLabel(6,"1700");
+ limits->GetXaxis()->SetBinLabel(7,"2000");
+ limits->GetXaxis()->SetBinLabel(8,"2500");
+
+ // set the lables for the Yaxis (mA0)
+ limits->GetYaxis()->SetBinLabel(1,"300");
+ limits->GetYaxis()->SetBinLabel(2,"400");
+ limits->GetYaxis()->SetBinLabel(3,"500");
+ limits->GetYaxis()->SetBinLabel(4,"600");
+ limits->GetYaxis()->SetBinLabel(5,"700");
+ limits->GetYaxis()->SetBinLabel(6,"800");
 
  // setup canvas
  TCanvas * c = new TCanvas("c","");
@@ -127,9 +142,11 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  limits->Draw("COLZ TEXT"); 
 
  // save plot
- CMS_lumi(c,false,9);
+ CMS_lumi(c,false,7);
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM%s.png",outDir.Data(),typeQuantile.Data()));
+
+ delete c;
 
 }
 
@@ -156,7 +173,7 @@ void getLimits(TFile* file, Double_t & Limit, Double_t quantile){
       if (quantileExpected==quantile) Limit=limit;
     }
 
-  }// if valid tree
+  }// end valid tree
   else Limit = 0;
   //std::cout << "Limit    = " << Limit << std::endl;
   
