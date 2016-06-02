@@ -56,6 +56,10 @@ private:
   DblVecVec	Dbl_Errors;
   DblVecVec	Dbl_Efficiency;
   DblVecVec	Dbl_Efficiency_Errors;
+  DblVec	AnalyzerEff;
+  DblVec	AnalyzerEffErr;
+  DblVec	AnalyzerEff_unwgt;
+  DblVec	AnalyzerEffErr_unwgt;
 
   std::ofstream fOutResultsGrid;
   std::ofstream	fOutTxtFile;

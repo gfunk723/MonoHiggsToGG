@@ -41,12 +41,12 @@ void AllSignalComparisons(){
 
   cout << "Comparing Sample with mZp = " << mZp << endl;
 
-  makePlots("mgg",    26, 99., 151, inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("t1pfmet",75, 0.,  900, inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("pt1",    30, 0.,  300, inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("pt2",    30, 0.,  300, inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("ptgg",   60, 0.,  600, inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("nvtx",   40, 0.,  40,  inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("mgg",    26, 99., 151,  inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("t1pfmet",200, 0., 2000, inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("pt1",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("pt2",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("ptgg",   60, 0.,  600,  inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("nvtx",   40, 0.,  40,   inDir, outDir, nameFiles, nFiles, mZp);
 
 }
 

@@ -146,6 +146,11 @@ void CardMaker::MakeCards(){
   Dbl_Errors.resize(fNSamples); //store errors
   Dbl_Efficiency.resize(fNSamples);//store efficiency
   Dbl_Efficiency_Errors.resize(fNSamples); //store eff. errors
+  AnalyzerEff.resize(fNSamples);
+  AnalyzerEffErr.resize(fNSamples);
+  AnalyzerEff_unwgt.resize(fNSamples);
+  AnalyzerEffErr_unwgt.resize(fNSamples);
+  
   for (UInt_t iter = 0; iter < fNSamples; ++iter){ 
     Int_Results_NA[iter].resize(fNSig);
     Int_Results_ND[iter].resize(fNSig); 
@@ -219,6 +224,8 @@ void CardMaker::MakeCards(){
       Dbl_Errors_Sig.push_back(Dbl_Errors[SampleNumber]); 
       Dbl_Eff_Sig.push_back(Dbl_Efficiency[SampleNumber]);
       Dbl_Error_Eff_Sig.push_back(Dbl_Efficiency_Errors[SampleNumber]);
+      //Dbl_Eff_Sig.push_back(Dbl_Efficiency[SampleNumber]*AnalyzerEff_unwgt[SampleNumber]);
+      //Dbl_Error_Eff_Sig.push_back(TMath::Sqrt(Dbl_Efficiency_Errors[SampleNumber]*Dbl_Efficiency_Errors[SampleNumber]+AnalyzerEffErr_unwgt[SampleNumber]*AnalyzerEff_unwgt[SampleNumber]);
     }
     SampleNumber++;
   }
@@ -247,6 +254,29 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
   TString treeName = "DiPhotonTree";
   treeOrig = (TTree*)fileOrig->Get(treeName);
   CheckValidTree(treeOrig,treeName,fileName); 
+
+  // open h_selection
+  TH1D *fSel = (TH1D*)fileOrig->Get("h_selection");
+  TH1D *fSel_unwgt = (TH1D*)fileOrig->Get("h_selection_unwgt");
+  CheckValidTH1D(fSel,"h_selection",fileName);
+  CheckValidTH1D(fSel_unwgt,"h_selection_unwgt",fileName);
+ 
+  // store bin content for h_selection bins in vectors
+  std::vector<Double_t> fSelection;
+  std::vector<Double_t> fSelection_unwgt;
+  for (UInt_t i=0; i<8; i++){
+    fSelection.push_back(fSel->GetBinContent(i+1));
+    fSelection_unwgt.push_back(fSel_unwgt->GetBinContent(i+1));
+  }
+
+  // get efficiency to pass photon ID applied in analyzer
+  AnalyzerEff[sampleNumber]		= fSelection[7]/fSelection[0];
+  AnalyzerEffErr[sampleNumber]		= TMath::Sqrt(AnalyzerEff[sampleNumber]*(1-AnalyzerEff[sampleNumber])/fSelection[0]); 
+  AnalyzerEff_unwgt[sampleNumber]	= fSelection_unwgt[7]/fSelection_unwgt[0];
+  AnalyzerEffErr_unwgt[sampleNumber]	= TMath::Sqrt(AnalyzerEff_unwgt[sampleNumber]*(1-AnalyzerEff_unwgt[sampleNumber])/fSelection_unwgt[0]); 
+
+  //std::cout << "Analyzer Eff         = " << AnalyzerEff[sampleNumber] << " \\pm " << AnalyzerEffErr[sampleNumber] << std::endl;
+  //std::cout << "Analyzer Eff (unwgt) = " << AnalyzerEff_unwgt[sampleNumber] << " \\pm " << AnalyzerEffErr_unwgt[sampleNumber] << std::endl;
 
   // Initialize variables for the tree
   CardMaker::SetBranchAddresses( treeOrig );
@@ -395,8 +425,10 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
   for (UInt_t cut=0; cut < fNSig; cut++){
     Dbl_Errors[sampleNumber][cut] = TMath::Sqrt(Dbl_Errors[sampleNumber][cut]);// part2 of err calc.
-    Dbl_Efficiency[sampleNumber][cut] = (Double_t)Int_Results_ND[sampleNumber][cut]/(Double_t)Int_Starting[sampleNumber]; 
-    Dbl_Efficiency_Errors[sampleNumber][cut] = TMath::Sqrt(Dbl_Efficiency[sampleNumber][cut]*(1.0-Dbl_Efficiency[sampleNumber][cut])/(Double_t)Int_Starting[sampleNumber]); 
+    //Dbl_Efficiency[sampleNumber][cut] = (Double_t)Int_Results_ND[sampleNumber][cut]/(Double_t)Int_Starting[sampleNumber];
+    //Dbl_Efficiency_Errors[sampleNumber][cut] = TMath::Sqrt(Dbl_Efficiency[sampleNumber][cut]*(1.0-Dbl_Efficiency[sampleNumber][cut])/(Double_t)Int_Starting[sampleNumber]); 
+    Dbl_Efficiency[sampleNumber][cut] = AnalyzerEff_unwgt[sampleNumber]*((Double_t)Int_Results_ND[sampleNumber][cut]/(Double_t)Int_Starting[sampleNumber]); 
+    Dbl_Efficiency_Errors[sampleNumber][cut] = TMath::Sqrt(AnalyzerEffErr_unwgt[sampleNumber]*AnalyzerEffErr_unwgt[sampleNumber]+(Dbl_Efficiency[sampleNumber][cut]*(1.0-Dbl_Efficiency[sampleNumber][cut])/(Double_t)Int_Starting[sampleNumber])); 
   }
   
   for (UInt_t cut=0; cut < fNSig; cut++){
@@ -605,12 +637,12 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
   TString mZp = "";
   if (fSigName=="2HDM_mZP600" || fSigName=="2HDM_mZP600_mA0400") mZp="600";  
   if (fSigName=="2HDM_mZP800" || fSigName=="2HDM_mZP800_mA0400" || fSigName=="2HDM_mZP800_mA0500" || fSigName=="2HDM_mZP800_mA0600") mZp="800";  
-  if (fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HMD_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
-  if (fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HMD_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
-  if (fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HMD_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
-  if (fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HMD_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
-  if (fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HMD_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
-  if (fSigName=="2HDM_mZP2500" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HMD_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
+  if (fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HDM_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
+  if (fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HDM_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
+  if (fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HDM_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
+  if (fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HDM_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
+  if (fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HDM_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
+  if (fSigName=="2HDM_mZP2500" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HDM_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
 
 
   Bool_t A0300 = false;
