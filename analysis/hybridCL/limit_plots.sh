@@ -1,8 +1,8 @@
 #!/bin/bash
 
-path="~/private/HiggsCombine/CMSSW_7_1_5/src/diphotons/Analysis/macros/Cards_2HDM_76X_A0300/"
+path="/afs/cern.ch/user/m/mzientek/private/HiggsCombine/CMSSW_7_1_5/src/diphotons/Analysis/macros"
 
-./limit_plots.py --do-limits -M HybridNew --input-dir ${path} -O ~/www/Plots/HybridLimits/ --label MonoHgg --lumi 2.3 --use-fb --load lumi_limits.json
+./limit_plots.py --do-limits -M HybridNew --input-dir ${path} -O ~/www/Plots/HybridLimits/ --mA0 300 --label MonoHgg --lumi 2.3 --use-fb --load lumi_limits.json -U
 
 
 

@@ -70,6 +70,7 @@ class LimitPlot(PlotApp):
                             default=True),
                 make_option("--toys-expected",action="store_false", dest="asimov_expected", 
                             ),
+		make_option("--mA0",action="store",dest="mA0",default=""),
                 make_option("-n","--label",action="store", dest="label", 
                             default=""),                
                 make_option("-M","--method",action="store", dest="method", 
@@ -120,7 +121,9 @@ class LimitPlot(PlotApp):
         #if len(options.couplings) == 0:
         #    flist = glob.glob("%s/higgsCombine%s*.%s.root" % (options.input_dir, options.label, options.method) )
         #else:
+        #flist = ["%s/higgsCombineTest.%s.mA0300.root" %(options.input_dir, options.method)]
         flist = [ "%s/higgsCombine%sCombined.%s.mH125_2HDM.root" % (options.input_dir, options.label, options.method)]
+        #flist = [ "%s/higgsCombine%sCombined.%s.mH125_2HDM.root" % (options.input_dir, options.label, options.method)]
         print options.input_dir, flist
             
         tflist = {}
@@ -434,7 +437,7 @@ class LimitPlot(PlotApp):
         
         style_utils.apply(observed,[["SetName","observed_%s"%coup]]+observedStyle)
       
-        canv  = ROOT.TCanvas("limits_k%s"%coup,"limits_k%s"%coup)
+        canv  = ROOT.TCanvas("limits_k%s_mA0%s"%(coup,options.mA0),"limits_k%s_mA0%s"%(coup,options.mA0))
         canv.SetLogx()
         canv.SetLogy()
        
@@ -451,6 +454,7 @@ class LimitPlot(PlotApp):
         gz08.Draw("PL")
         #kappa = "0."+coup[1:]
         #legend.AddEntry(None,"#tilde{#kappa} = %s" % kappa,"")
+	legend.SetHeader("Limits for 2HDM with mA0 = %s GeV"%options.mA0)
         legend.AddEntry(theo,"2HDM - g_{Z} constrained","l") 
         legend.AddEntry(gz08,"2HDM - g_{Z} = 0.8","l") 
         legend.AddEntry(expected,"Expected limit","l")

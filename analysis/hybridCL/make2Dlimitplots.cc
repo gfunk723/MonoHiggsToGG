@@ -72,6 +72,7 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
  limits->SetTitle("");
+ limits->SetMaximum(10);
 
  // set the lables for the Xaxis (mZp)
  limits->GetXaxis()->SetBinLabel(1,"600");
