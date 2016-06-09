@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection){
+Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outdir, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection, const Bool_t mergeBkgs){
 
   if (doNmin1) addText = "_n-1";
   else addText="";
@@ -12,7 +12,7 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
 
   doQCDscale = doQCDrescale;
 
-  doMergeBkgs = true;
+  doMergeBkgs = mergeBkgs;
 
   fType = type;
   lumi	= inLumi;
@@ -47,15 +47,14 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   // define colorMap and title
   fColorMap = colorMap;
   
+  fSampleTitleMap["SMHiggs"]		= "SM H #rightarrow #gamma#gamma";
+  fSampleTitleMap["EWK1pho"]		= "EWK + #gamma";
+  fSampleTitleMap["EWK2pho"]		= "EWK + #gamma#gamma";
   fSampleTitleMap["DoubleEG"]		= "Data";
   fSampleTitleMap["QCD"] 		= "QCD";
   fSampleTitleMap["GJets"]		= "#gamma + Jets";
   fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
-  fSampleTitleMap["DiPhoton"]		= "#gamma + #gamma";
-  fSampleTitleMap["SMHiggs"]		= "SM H #rightarrow #gamma#gamma";
-  fSampleTitleMap["EWKg"]		= "EWK + #gamma";
-  fSampleTitleMap["EWKgg"]		= "EWK + #gamma#gamma";
-
+  fSampleTitleMap["DiPhoton"]		= "#gamma#gamma";
   fSampleTitleMap["GluGluHToGG"]	= "H #rightarrow #gamma#gamma (ggH)";
   fSampleTitleMap["VH"]			= "V + H";
   fSampleTitleMap["ttHJetToGG"]		= "tt + H #rightarrow #gamma#gamma";
@@ -163,6 +162,10 @@ void Combiner::DoComb(){
       }// end loop over bkg MC
     }// end doMergeBkgs 
 
+    fOutHiggsBkgTH1DHists[th1d]->SetFillColor(fColorMap["SMHiggs"]);
+    fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK1pho"]);
+    fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK2pho"]);
+
     // Because QCD has some events with very large weights
     // Copy the GJets histo, weight it by the QCD integral 
     // and use it for QCD distribution instead.
@@ -192,8 +195,8 @@ void Combiner::DoComb(){
 
     if (doMergeBkgs && fTH1DNames[th1d]!="mgg_forShape" && fTH1DNames[th1d]!="mgg_metCUT_forShape"){
       fOutBkgTH1DStacks[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
-      fOutBkgTH1DStacks[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
+      fOutBkgTH1DStacks[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
     }
 
     // bkg : copy histos and add to stacks
@@ -225,8 +228,8 @@ void Combiner::DoComb(){
 
    if (doMergeBkgs){
      fOutBkgTH1DHists[th1d] = (TH1D*)fOutHiggsBkgTH1DHists[th1d]->Clone();
-     fOutBkgTH1DHists[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
+     fOutBkgTH1DHists[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
      for (UInt_t mc = 0; mc < fNBkg; mc++){
        if (fBkgNames[mc]=="QCD"){
 	 if (doQCDscale) fOutBkgTH1DHists[th1d]->Add(GJetsClone[th1d]);
@@ -469,37 +472,64 @@ void Combiner::DoComb(){
     fOutBkgTH1DHists[th1d]->SetMarkerSize(0);
 
     // LEGEND 
-    // for sig and bkg 
-    UInt_t fNMaxMC = 0;
-    if (fNSig <= fNBkg) fNMaxMC = fNBkg;
-    else fNMaxMC = fNSig;
-    for (UInt_t mc = 0; mc < fNMaxMC; mc++){
-      if (mc < fNBkg){
-        if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
-        else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+    if (doMergeBkgs){
+      if (doStack){
+        fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"f");
+        fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"f");
+        fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"f");
       }
-      if (mc < fNSig) fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
-    } 
-    // add uncertainty in stack plot
-    fOutBkgTH1DStacksForUncer[th1d]->Add(fOutBkgTH1DHists[th1d],"E2");
-    if (doStack) fTH1DLegends[th1d]->AddEntry(fOutBkgTH1DHists[th1d],"MC Uncertainty (Stat)","F");
-    // add data to legend if int > 0
-    Double_t dataInt = fOutDataTH1DHists[th1d]->Integral();
-    if (fNData > 0 && doStack && dataInt > 0) fTH1DLegends[th1d]->AddEntry(fOutDataTH1DHists[th1d],"Data","pl");
+      else{
+        fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"l");
+        fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"l");
+        fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"l");
+      }
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+	if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
+          if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
+          else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+	}
+      }
+      // add uncertainty in stack plot
+      fOutBkgTH1DStacksForUncer[th1d]->Add(fOutBkgTH1DHists[th1d],"E2");
+      if (doStack) fTH1DLegends[th1d]->AddEntry(fOutBkgTH1DHists[th1d],"MC Uncertainty (Stat)","F");
+      for (UInt_t mc = 0; mc < fNSig; mc++){
+	fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
+      }
+      Double_t dataInt = fOutDataTH1DHists[th1d]->Integral();
+      if (fNData > 0 && doStack && dataInt > 0) fTH1DLegends[th1d]->AddEntry(fOutDataTH1DHists[th1d],"Data","pl");
+    }
+
+    else{
+      UInt_t fNMaxMC = 0;
+      if (fNSig <= fNBkg) fNMaxMC = fNBkg;
+      else fNMaxMC = fNSig;
+      for (UInt_t mc = 0; mc < fNMaxMC; mc++){
+        if (mc < fNBkg){
+          if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
+          else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+        }
+        if (mc < fNSig) fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
+      } 
+      // add uncertainty in stack plot
+      fOutBkgTH1DStacksForUncer[th1d]->Add(fOutBkgTH1DHists[th1d],"E2");
+      if (doStack) fTH1DLegends[th1d]->AddEntry(fOutBkgTH1DHists[th1d],"MC Uncertainty (Stat)","F");
+      // add data to legend if int > 0
+      Double_t dataInt = fOutDataTH1DHists[th1d]->Integral();
+      if (fNData > 0 && doStack && dataInt > 0) fTH1DLegends[th1d]->AddEntry(fOutDataTH1DHists[th1d],"Data","pl");
 
 
-    //// sig: just add to legend
-    //for (UInt_t mc = 0; mc < fNSig; mc++){
-    //  //fInSigTH1DHists[th1d][mc]->Scale(lumi);
-    //  fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
-    //}
-    //// bkg : copy histos and add to stacks
-    //for (UInt_t mc = 0; mc < fNBkg; mc++){
-    //  // draw bkg in legend as box for stack plots, and line for overlay plot
-    //  if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
-    //  else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
-    //}
-
+      //// sig: just add to legend
+      //for (UInt_t mc = 0; mc < fNSig; mc++){
+      //  //fInSigTH1DHists[th1d][mc]->Scale(lumi);
+      //  fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
+      //}
+      //// bkg : copy histos and add to stacks
+      //for (UInt_t mc = 0; mc < fNBkg; mc++){
+      //  // draw bkg in legend as box for stack plots, and line for overlay plot
+      //  if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
+      //  else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+      //}
+    }// not merged bkgs
 
 
   }// end loop over th1d histos
@@ -1254,6 +1284,20 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
       fInSigTH1DHists[th1d][mc]->Scale(1.0/fInSigTH1DHists[th1d][mc]->Integral());
     }
   }
+
+  fOutHiggsBkgTH1DHists[th1d]->Scale(1.0/fOutHiggsBkgTH1DHists[th1d]->Integral());
+  fOutHiggsBkgTH1DHists[th1d]->SetFillColor(0);
+  fOutHiggsBkgTH1DHists[th1d]->SetLineColor(fColorMap["SMHiggs"]);
+
+  fOutEWK1phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK1phoBkgTH1DHists[th1d]->Integral());
+  fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(0);
+  fOutEWK1phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK1pho"]);
+
+  fOutEWK2phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK2phoBkgTH1DHists[th1d]->Integral());
+  fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(0);
+  fOutEWK2phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK2pho"]);
+
+
   for (UInt_t mc = 0; mc < fNBkg; mc++){
     if (fInBkgTH1DHists[th1d][mc]->Integral() > 0 ){
       fInBkgTH1DHists[th1d][mc]->Scale(1.0/fInBkgTH1DHists[th1d][mc]->Integral());
@@ -1332,9 +1376,15 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->SetTitle("");
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
     fInSigTH1DHists[th1d][0]->Draw("hist");
+
+    fOutHiggsBkgTH1DHists[th1d]->Draw("HIST SAME");
+    fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
+    fOutEWK2phoBkgTH1DHists[th1d]->Draw("HIST SAME");
  
     for (UInt_t mc = 0; mc < fNBkg; mc++){
-      fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+      if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
+        fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+      }
     } 
     for (UInt_t mc = 0; mc < fNSig; mc++){
       fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
@@ -1677,6 +1727,7 @@ void Combiner::InitCanvAndHists(){
       fInSigTH1DHists[th1d][mc] = (TH1D*)fSigFiles[mc]->Get(Form("%s%s",fTH1DNames[th1d].Data(),addText.Data()));
       CheckValidTH1D(fInSigTH1DHists[th1d][mc],fTH1DNames[th1d],fSigFiles[mc]->GetName());
       fInSigTH1DHists[th1d][mc]->SetLineColor(fColorMap[fSigNames[mc]]);
+      fInSigTH1DHists[th1d][mc]->SetLineWidth(2);
     }
   }
 

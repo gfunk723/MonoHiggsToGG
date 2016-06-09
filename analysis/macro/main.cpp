@@ -66,14 +66,15 @@ int main(){
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = false;		// make plots for each sample individually
-  bool doComb = false;		// make stack/overlay plots
+  bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
-  bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
-  bool makeDataCards = true;    // make datacards for hybrid method
+  bool makeDataCards = false;	// make datacards for hybrid method
+  bool doMergeBkgs = true;      // merge the Higgs,EWK bkgs to make combined plots nicer
+  bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
-  bool doBlind = true;		// use to blind the analysis for Data (don't use distributions for met>100 & 115<mgg<135)
+  bool doBlind = false;		// use to blind the analysis for Data (don't use distributions for met>100 & 115<mgg<135)
   bool makePURWfiles = false;	// recompute PURW and make files (need also doReweightPU=true for this to run)
   bool doReweightPU = false;	// use PURW from old files if !makePURWfiles
   bool doCompare = false;	// call Comparer (not yet working) 
@@ -485,6 +486,9 @@ int main(){
   colorMap["2HDM_mZP2500"]		= kMagenta+2;
   colorMap["2HDM_mZP600_mA0400"]	= kRed;
   colorMap["2HDM_mZP800_mA0400"]	= kRed-4;
+  colorMap["SMHiggs"]			= kOrange-2;
+  colorMap["EWK1pho"]			= kAzure+8;
+  colorMap["EWK2pho"]			= kAzure+2;
 
   SamplePairVec Samples; // vector to also be used for stack plots
   //ordered to match Livia
@@ -509,15 +513,15 @@ int main(){
   Samples.push_back(SamplePair("DoubleEG",5));
   if (doFakeData) Samples.push_back(SamplePair("FakeData",5));
   Samples.push_back(SamplePair("2HDM_mZP600",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP800",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP800",0)); 
   Samples.push_back(SamplePair("2HDM_mZP1000",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP1200",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP1400",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP1700",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP2000",0));  
+  //Samples.push_back(SamplePair("2HDM_mZP1200",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1400",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1700",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP2000",0));  
   Samples.push_back(SamplePair("2HDM_mZP2500",0));  
-  Samples.push_back(SamplePair("2HDM_mZP600_mA0400",0));
-  Samples.push_back(SamplePair("2HDM_mZP800_mA0400",0));
+  //Samples.push_back(SamplePair("2HDM_mZP600_mA0400",0));
+  //Samples.push_back(SamplePair("2HDM_mZP800_mA0400",0));
 
   UInt_t nbkg = 0;
   UInt_t nsig = 0;
@@ -635,6 +639,8 @@ int main(){
   // 6th : bool do Stack plots (false = do overlay)
   // 7th : type of plots out 
   // 8th : bool do rescaling of GJets to replace QCD sample
+  // 9th : whichSelection (OrigSel/OptSel1..)
+  // 10th: bool doMergeBkgs (plots have some bkgs merged together) 
   //
   ////////////////////////////////////////////////////
 
@@ -642,11 +648,11 @@ int main(){
     // Combiner( Samples, lumi, colorMap , outDir, doNmin1plots, doStack)
     
     // do overlay plots for normal plots
-    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale,whichSelection);
+    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale,whichSelection,doMergeBkgs);
     combAll->DoComb();
     delete combAll;   
     // do stack plots for normal plots
-    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale,whichSelection);
+    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale,whichSelection,doMergeBkgs);
     stackAll->DoComb();
     delete stackAll;   
  

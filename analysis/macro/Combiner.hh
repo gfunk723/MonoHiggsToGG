@@ -37,7 +37,7 @@ typedef std::vector<TEfficiency*> 	TEffVec;
 
 class Combiner{
 public:
-  Combiner(const SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outname, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection);
+  Combiner(const SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outname, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection, const Bool_t mergeBkgs);
   void InitCanvAndHists();
   void InitTH1DNames();
   void DoComb();
