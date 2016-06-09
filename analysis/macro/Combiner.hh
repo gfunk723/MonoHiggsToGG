@@ -62,6 +62,7 @@ private:
   Double_t 	lumi;
   Bool_t	doStack;
   Bool_t	doQCDscale;
+  Bool_t	doMergeBkgs;
   TString	fType;
   Int_t		fWhichSel;
   Double_t	METcut;
@@ -111,6 +112,9 @@ private:
   TH1DVec	fOutBkgTH1DHists;
   TH1DVec	fOutSigTH1DHists;
   TH1DVec	fOutDataTH1DHists;
+  TH1DVec	fOutHiggsBkgTH1DHists;
+  TH1DVec	fOutEWK1phoBkgTH1DHists;
+  TH1DVec	fOutEWK2phoBkgTH1DHists;
 
   TH1DVec	fOutRatioTH1DHists;
   TH1DVec	fOutRatioTH1DHistsCopy;
