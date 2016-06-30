@@ -160,11 +160,13 @@ void Combiner::DoComb(){
 	  fOutEWK2phoBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
 	}
       }// end loop over bkg MC
-    }// end doMergeBkgs 
 
     fOutHiggsBkgTH1DHists[th1d]->SetFillColor(fColorMap["SMHiggs"]);
     fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK1pho"]);
     fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK2pho"]);
+
+    }// end doMergeBkgs 
+
 
     // Because QCD has some events with very large weights
     // Copy the GJets histo, weight it by the QCD integral 
@@ -1285,18 +1287,19 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     }
   }
 
-  fOutHiggsBkgTH1DHists[th1d]->Scale(1.0/fOutHiggsBkgTH1DHists[th1d]->Integral());
-  fOutHiggsBkgTH1DHists[th1d]->SetFillColor(0);
-  fOutHiggsBkgTH1DHists[th1d]->SetLineColor(fColorMap["SMHiggs"]);
+  if (doMergeBkgs){
+    fOutHiggsBkgTH1DHists[th1d]->Scale(1.0/fOutHiggsBkgTH1DHists[th1d]->Integral());
+    fOutHiggsBkgTH1DHists[th1d]->SetFillColor(0);
+    fOutHiggsBkgTH1DHists[th1d]->SetLineColor(fColorMap["SMHiggs"]);
 
-  fOutEWK1phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK1phoBkgTH1DHists[th1d]->Integral());
-  fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(0);
-  fOutEWK1phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK1pho"]);
+    fOutEWK1phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK1phoBkgTH1DHists[th1d]->Integral());
+    fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(0);
+    fOutEWK1phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK1pho"]);
 
-  fOutEWK2phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK2phoBkgTH1DHists[th1d]->Integral());
-  fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(0);
-  fOutEWK2phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK2pho"]);
-
+    fOutEWK2phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK2phoBkgTH1DHists[th1d]->Integral());
+    fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(0);
+    fOutEWK2phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK2pho"]);
+  }
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
     if (fInBkgTH1DHists[th1d][mc]->Integral() > 0 ){
@@ -1377,10 +1380,12 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
     fInSigTH1DHists[th1d][0]->Draw("hist");
 
-    fOutHiggsBkgTH1DHists[th1d]->Draw("HIST SAME");
-    fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
-    fOutEWK2phoBkgTH1DHists[th1d]->Draw("HIST SAME");
- 
+    if (doMergeBkgs){
+      fOutHiggsBkgTH1DHists[th1d]->Draw("HIST SAME");
+      fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
+      fOutEWK2phoBkgTH1DHists[th1d]->Draw("HIST SAME");
+    } 
+
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
         fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
@@ -1904,6 +1909,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("metCorr_aftergMETCut");
     fTH1DNames.push_back("met_afterJetMETPhiCut");
     fTH1DNames.push_back("metCorr_afterJetMETPhiCut");
+    fTH1DNames.push_back("met_womaxJetMET");
+    fTH1DNames.push_back("metCorr_womaxJetMET");
     fTH1DNames.push_back("met_maxJetMET");
     fTH1DNames.push_back("metCorr_maxJetMET");
     fTH1DNames.push_back("met_minJetMET");
