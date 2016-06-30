@@ -235,7 +235,11 @@ void CardMaker::MakeCards(){
 
   // Write out the datacard (one for each signal sample)
   for (UInt_t mc=0; mc < fNSig; mc++){
+    // optimal selection for each signal:
     CardMaker::WriteDataCard( fSigNames[mc] , Dbl_Results_ND_Sig[mc][mc], Int_Results_NA_Data[mc], Int_Results_ND_Data[mc], Dbl_Results_ND_Res[mc]);
+
+    // mass600 selection for each signal:
+    //CardMaker::WriteDataCard( fSigNames[mc] , Dbl_Results_ND_Sig[mc][0], Int_Results_NA_Data[0], Int_Results_ND_Data[0], Dbl_Results_ND_Res[0]);
   } 
 
 }// end CardMaker::MakeCards
@@ -339,7 +343,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     Double_t Weight = 1.0;
     if (sampleID==2) Weight = 1; // no weight for data
     else if (sampleID==0 || sampleID==1) Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
-    else Weight = (weight)*fPUWeights[nvtx];//*(1000);// reweighted to 1pb
+    else Weight = (weight)*fPUWeights[nvtx]*0.00227*1000;// reweighted to xsec*BR = 1pb*BR //*(1000);// reweighted to 1pb
 
     // check that data passes METfilters
     if (sampleID==2 && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
@@ -400,6 +404,8 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
       if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
       if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
+
+    //if (min_dphi_JetMET < 0.5) continue; 
     if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
 
     if (nMuons > 0 || nEle > 1) continue;
