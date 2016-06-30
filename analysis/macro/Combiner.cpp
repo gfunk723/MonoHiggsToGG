@@ -142,7 +142,7 @@ void Combiner::DoComb(){
 	if (fBkgNames[mc]=="ttHJetToGG"){
 	  fOutHiggsBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
 	}
-        else if (fBkgNames[mc]=="GluGluHToGG" || fBkgNames[mc]=="VBFHToGG" || fBkgNames[mc]=="VH"){
+        else if (fBkgNames[mc]=="GluGluHToGG" || fBkgNames[mc]=="VBFHToGG"){
 	  fOutHiggsBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
 	}
 	// add EWK + 1pho bkgs together
@@ -196,6 +196,7 @@ void Combiner::DoComb(){
     }
 
     if (doMergeBkgs && fTH1DNames[th1d]!="mgg_forShape" && fTH1DNames[th1d]!="mgg_metCUT_forShape"){
+      fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][i_vh]);
       fOutBkgTH1DStacks[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
@@ -229,7 +230,8 @@ void Combiner::DoComb(){
    }
 
    if (doMergeBkgs){
-     fOutBkgTH1DHists[th1d] = (TH1D*)fOutHiggsBkgTH1DHists[th1d]->Clone();
+     fOutBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][i_vh]->Clone();
+     fOutBkgTH1DHists[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
      for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -486,7 +488,7 @@ void Combiner::DoComb(){
         fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"l");
       }
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
+	if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="VH"){
           if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
           else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
 	}
@@ -1324,12 +1326,13 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
   //  //fInSigTH1DHists[th1d][0]->SetMinimum(0.001); 
   //  fInSigTH1DHists[th1d][0]->SetMaximum(10);
   //}
-  int i_gg, i_gj, i_hgg, i_vbf;
+  int i_gg, i_gj, i_hgg, i_vbf, i_vh;
   for (UInt_t mc = 0; mc < fNBkg; mc++){
     if (fBkgNames[mc] == "DiPhoton")	i_gg  = mc;
     if (fBkgNames[mc] == "GJets")	i_gj  = mc;
     if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
     if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
+    if (fBkgNames[mc] == "VH")		i_vh  = mc;
   }
 
   if (fTH1DNames[th1d]=="metCorr_forShape"){
@@ -1381,16 +1384,22 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->Draw("hist");
 
     if (doMergeBkgs){
+      fInBkgTH1DHists[th1d][i_vh]->Draw("HIST SAME");
       fOutHiggsBkgTH1DHists[th1d]->Draw("HIST SAME");
       fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
       fOutEWK2phoBkgTH1DHists[th1d]->Draw("HIST SAME");
-    } 
 
-    for (UInt_t mc = 0; mc < fNBkg; mc++){
-      if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
-        fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
-      }
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+        if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
+          fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+        }
+      } 
     } 
+    else{//not merging bkgs
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+        fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+      } 
+    }
     for (UInt_t mc = 0; mc < fNSig; mc++){
       fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
     }
