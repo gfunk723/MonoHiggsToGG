@@ -36,6 +36,8 @@ parser.add_option("","--rmax",type='float',help="rmax. [%default]",default=10000
 parser.add_option("","--onews",action='store_true',help="Only one ws. names do not depend on the higgs mass. [%default]",default=False)
 parser.add_option("","--nosyst",action='store_true',help="No Syst.. [%default]",default=False)
 parser.add_option("-M","--method" ,dest='method',type='string',help="Method [%default]",default="Asymptotic")
+parser.add_option("","--doquantile",action='store_true',help="Run grid for a specific quantile [%default]", default=False) 
+parser.add_option("","--quantile",dest='quantile',type='string',help="Choose a specific quantile [Default=%default]",default="0.5")
 
 (opts,args)=parser.parse_args()
 
@@ -138,7 +140,10 @@ for mass in drange(opts.begin,opts.end,opts.step):
 	sh.write('cp -v '+ basedir + "/"+  datacard + " ./ \n" )
 	##Write combine line
 	#combine -M Asymptotic -m 200 -S 0 --run=expected --expectSignal=1 --expectSignalMass=200  cms_datacard_chhiggs_taunu.txt
-	combine = "combine -M "+ opts.method +" -m "+ str(mass) + " --freq -s " + str(iJob*1000) +" --saveToys --saveHybridResult"
+        if opts.doquantile:
+		combine = "combine -M "+ opts.method +" -m "+ str(mass) + " --freq -s " + str(iJob*1000) +" --saveToys --saveHybridResult --expectedFromGrid=" + opts.quantile
+	else:
+		combine = "combine -M "+ opts.method +" -m "+ str(mass) + " --freq -s " + str(iJob*1000) +" --saveToys --saveHybridResult" 
 	if opts.nosyst: combine += " -S 0 "
 	combine += "  --cminDefaultMinimizerType=Minuit2 "
 	#combine += " -H ProfileLikelihood " ## hint, it's not working
