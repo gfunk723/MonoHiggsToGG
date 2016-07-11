@@ -50,6 +50,8 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["SMHiggs"]		= "SM H #rightarrow #gamma#gamma";
   fSampleTitleMap["EWK1pho"]		= "EWK + #gamma";
   fSampleTitleMap["EWK2pho"]		= "EWK + #gamma#gamma";
+  fSampleTitleMap["Jetspho"]		= "#gamma + jets";
+
   fSampleTitleMap["DoubleEG"]		= "Data";
   fSampleTitleMap["QCD"] 		= "QCD";
   fSampleTitleMap["GJets"]		= "#gamma + Jets";
@@ -105,6 +107,7 @@ Combiner::~Combiner(){
     delete fOutHiggsBkgTH1DHists[th1d];
     delete fOutEWK1phoBkgTH1DHists[th1d];
     delete fOutEWK2phoBkgTH1DHists[th1d];
+    delete fOutJetsphoBkgTH1DHists[th1d];
     delete fOutBkgTH1DStacks[th1d];
     delete fOutBkgTH1DStacksForUncer[th1d];
     delete fTH1DLegends[th1d];
@@ -136,6 +139,22 @@ void Combiner::DoComb(){
       }
     //}// end if ndata>0
 
+    // Because QCD has some events with very large weights
+    // Copy the GJets histo, weight it by the QCD integral 
+    // and use it for QCD distribution instead.
+    Double_t qcd_integral = 0;
+    Double_t gjets_integral = 0;
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (fBkgNames[mc] == "QCD") qcd_integral = fInBkgTH1DHists[th1d][mc]->Integral();  
+      if (fBkgNames[mc] == "GJets"){
+         GJetsClone[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+         GJetsClone[th1d]->SetFillColor(fColorMap["QCD"]);
+         gjets_integral = GJetsClone[th1d]->Integral();
+         if (gjets_integral > 0) GJetsClone[th1d]->Scale(qcd_integral/gjets_integral);
+      }
+    }
+
+    // Merge some of the bkgs to make plots cleaner
     if (doMergeBkgs){
       for (UInt_t mc = 0; mc < fNBkg; mc++){
 	// add SM Higgs bkgs together
@@ -154,39 +173,34 @@ void Combiner::DoComb(){
 	}
 	// add EWK + 2pho bkgs together
 	if (fBkgNames[mc]=="TTGG_0Jets"){
-	  fOutEWK2phoBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+		fOutEWK2phoBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
 	}
         else if (fBkgNames[mc]=="ZZTo2L2Nu"){
 	  fOutEWK2phoBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+	}
+	// add QCD + GJet bkgs togetehr
+	if (fBkgNames[mc]=="QCD"){
+	  if (doQCDscale){
+	    fOutJetsphoBkgTH1DHists[th1d] = (TH1D*)GJetsClone[th1d]->Clone();
+	  }
+	  else{
+	    fOutJetsphoBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+	  } 
+	}
+	else if (fBkgNames[mc]=="GJets"){
+	  fOutJetsphoBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
 	}
       }// end loop over bkg MC
 
     fOutHiggsBkgTH1DHists[th1d]->SetFillColor(fColorMap["SMHiggs"]);
     fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK1pho"]);
     fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK2pho"]);
+    fOutJetsphoBkgTH1DHists[th1d]->SetFillColor(fColorMap["Jetspho"]);
 
     }// end doMergeBkgs 
 
 
-    // Because QCD has some events with very large weights
-    // Copy the GJets histo, weight it by the QCD integral 
-    // and use it for QCD distribution instead.
-    Double_t qcd_integral = 0;
-    Double_t gjets_integral = 0;
-    Double_t qcd_integral_new = 0;
-    for (UInt_t mc = 0; mc < fNBkg; mc++){
-      if (fBkgNames[mc] == "QCD") qcd_integral = fInBkgTH1DHists[th1d][mc]->Integral();  
-      if (fBkgNames[mc] == "GJets"){
-         GJetsClone[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
-         GJetsClone[th1d]->SetFillColor(fColorMap["QCD"]);
-         gjets_integral = GJetsClone[th1d]->Integral();
-         if (gjets_integral > 0) GJetsClone[th1d]->Scale(qcd_integral/gjets_integral);
-      }
-    }
-    qcd_integral_new = GJetsClone[th1d]->Integral();
-    //if (qcd_integral_new != qcd_integral) std::cout << "New QCD is NOT the same: old = " << qcd_integral << " new = " << qcd_integral_new << " diff = " << qcd_integral_new-qcd_integral << std::endl;
-    //std::cout << "QCD_Integral     = " << qcd_integral << std::endl;
-    //std::cout << "QCD_Integral_New = " << qcd_integral_new << std::endl;
+
     int i_hgg, i_vbf, i_vh, i_tth;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
@@ -195,14 +209,15 @@ void Combiner::DoComb(){
       if (fBkgNames[mc] == "VH")	  i_vh  = mc;
     }
 
+    // bkg : copy histos and add to stacks (here *)
     if (doMergeBkgs && fTH1DNames[th1d]!="mgg_forShape" && fTH1DNames[th1d]!="mgg_metCUT_forShape"){
       fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][i_vh]);
       fOutBkgTH1DStacks[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
+      fOutBkgTH1DStacks[th1d]->Add(fOutJetsphoBkgTH1DHists[th1d]);
     }
 
-    // bkg : copy histos and add to stacks
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       //fInBkgTH1DHists[th1d][mc]->Scale(lumi);
       if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_metCUT_forShape"){
@@ -211,19 +226,26 @@ void Combiner::DoComb(){
           fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
         }
       }
-      if (doQCDscale && fBkgNames[mc] == "QCD"){
-        fOutBkgTH1DStacks[th1d]->Add(GJetsClone[th1d]);
+
+      // setup uncertainty stack (doesn't matter if the bkgs are merged or not since they are all merged here)
+      if (doQCDscale && fBkgNames[mc]=="QCD"){
         fOutBkgTH1DStacksForUncer[th1d]->Add(GJetsClone[th1d]);
       }
-      else{
-	if (doMergeBkgs){
-	  if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="DYJetsToLL") fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]); 
-	}
-	else{
-          if (fInBkgTH1DHists[th1d][mc]->Integral() >= 0) fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
-	}
-        if (fInBkgTH1DHists[th1d][mc]->Integral() >= 0) fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+      else if (fInBkgTH1DHists[th1d][mc]->Integral() >= 0) fOutBkgTH1DStacksForUncer[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+
+      // add other bkgs to the stack
+      if (doMergeBkgs){//merged bkgs have already been added to the stack (here *)
+        if (fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="DYJetsToLL"){
+          fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]); 
+        }
       }
+      else{
+	if (doQCDscale && fBkgNames[mc] == "QCD"){ 
+          fOutBkgTH1DStacks[th1d]->Add(GJetsClone[th1d]);
+	}
+        else if (fInBkgTH1DHists[th1d][mc]->Integral() >= 0) fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+      }
+
       // draw bkg in legend as box for stack plots, and line for overlay plot
       //if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
       //else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
@@ -234,12 +256,13 @@ void Combiner::DoComb(){
      fOutBkgTH1DHists[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
+     fOutBkgTH1DHists[th1d]->Add(fOutJetsphoBkgTH1DHists[th1d]);
      for (UInt_t mc = 0; mc < fNBkg; mc++){
-       if (fBkgNames[mc]=="QCD"){
-	 if (doQCDscale) fOutBkgTH1DHists[th1d]->Add(GJetsClone[th1d]);
-	 else fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
-       }
-       if (fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="DYJetsToLL") fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+       //if (fBkgNames[mc]=="QCD"){
+       //  if (doQCDscale) fOutBkgTH1DHists[th1d]->Add(GJetsClone[th1d]);
+       //  else fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+       //}
+       if (fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="DYJetsToLL") fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
      }
    }
    else{
@@ -481,14 +504,16 @@ void Combiner::DoComb(){
         fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"f");
         fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"f");
         fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"f");
+        fTH1DLegends[th1d]->AddEntry(fOutJetsphoBkgTH1DHists[th1d],fSampleTitleMap["Jetspho"],"f");
       }
       else{
         fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"l");
         fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"l");
         fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"l");
+        fTH1DLegends[th1d]->AddEntry(fOutJetsphoBkgTH1DHists[th1d],fSampleTitleMap["Jetspho"],"l");
       }
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="VH"){
+	if (fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="VH"){
           if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
           else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
 	}
@@ -1301,6 +1326,10 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fOutEWK2phoBkgTH1DHists[th1d]->Scale(1.0/fOutEWK2phoBkgTH1DHists[th1d]->Integral());
     fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(0);
     fOutEWK2phoBkgTH1DHists[th1d]->SetLineColor(fColorMap["EWK2pho"]);
+
+    fOutJetsphoBkgTH1DHists[th1d]->Scale(1.0/fOutJetsphoBkgTH1DHists[th1d]->Integral());
+    fOutJetsphoBkgTH1DHists[th1d]->SetFillColor(0);
+    fOutJetsphoBkgTH1DHists[th1d]->SetLineColor(fColorMap["Jetspho"]);
   }
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -1388,9 +1417,10 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
       fOutHiggsBkgTH1DHists[th1d]->Draw("HIST SAME");
       fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
       fOutEWK2phoBkgTH1DHists[th1d]->Draw("HIST SAME");
+      fOutJetsphoBkgTH1DHists[th1d]->Draw("HIST SAME");
 
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-        if (fBkgNames[mc]=="QCD" || fBkgNames[mc]=="GJets" || fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
+        if (fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
           fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
         }
       } 
@@ -1750,6 +1780,7 @@ void Combiner::InitCanvAndHists(){
   fOutHiggsBkgTH1DHists.resize(fNTH1D);
   fOutEWK1phoBkgTH1DHists.resize(fNTH1D);
   fOutEWK2phoBkgTH1DHists.resize(fNTH1D);
+  fOutJetsphoBkgTH1DHists.resize(fNTH1D);
   fOutBkgTH1DStacks.resize(fNTH1D);
   fOutBkgTH1DStacksForUncer.resize(fNTH1D);
   for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){

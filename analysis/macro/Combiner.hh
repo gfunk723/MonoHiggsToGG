@@ -115,6 +115,7 @@ private:
   TH1DVec	fOutHiggsBkgTH1DHists;
   TH1DVec	fOutEWK1phoBkgTH1DHists;
   TH1DVec	fOutEWK2phoBkgTH1DHists;
+  TH1DVec	fOutJetsphoBkgTH1DHists;
 
   TH1DVec	fOutRatioTH1DHists;
   TH1DVec	fOutRatioTH1DHistsCopy;
