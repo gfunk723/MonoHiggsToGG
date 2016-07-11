@@ -405,8 +405,8 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
       if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
 
-    //if (min_dphi_JetMET < 0.5) continue; 
-    if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
+    if (min_dphi_JetMET < 0.5) continue; 
+    //if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
 
     if (nMuons > 0 || nEle > 1) continue;
 
@@ -679,8 +679,9 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
     fOutTxtFile << "------------------------------------" << std::endl;
     fOutTxtFile << "#MC related" << std::endl;
     fOutTxtFile << "lumi_13TeV	    lnN	1.023	-	1.023	1.023	1.023	1.023" << std::endl;
-    fOutTxtFile << "CMS_MonoH_eff	    lnN	1.030   -       1.030   1.030   1.030   1.030" << std::endl;
-    fOutTxtFile << "CMS_MonoH_higg_BR     lnN	0.953/1.050	-	0.953/1.050	0.953/1.050	0.953/1.050	0.953/1.050" << std::endl;
+    fOutTxtFile << "CMS_MonoH_TrigEff	  lnN -		1.01      -   -   -   -" << std::endl;
+    fOutTxtFile << "CMS_MonoH_eff	  lnN 1.030   -       1.030   1.030   1.030   1.030" << std::endl;
+    fOutTxtFile << "CMS_MonoH_higg_BR     lnN 0.953/1.050	-	0.953/1.050	0.953/1.050	0.953/1.050	0.953/1.050" << std::endl;
     fOutTxtFile << "CMS_MonoH_higg_alphas lnN 0.940/0.965	-	0.940/0.965	0.940/0.965	0.940/0.965	0.940/0.965" << std::endl;
     fOutTxtFile << "CMS_MonoH_PDFs        lnN 1.05		-	1.05		1.05		1.05		1.05" << std::endl;
     fOutTxtFile << "CMS_MonoH_JetEnUp     lnN 1.005           -       -		-		1.005		-" << std::endl;
