@@ -145,9 +145,9 @@ for mass in drange(opts.begin,opts.end,opts.step):
 		##Write combine line
 	        #combine -M Asymptotic -m 200 -S 0 --run=expected --expectSignal=1 --expectSignalMass=200  cms_datacard_chhiggs_taunu.txt
 		if opts.doquantile:
-			combine= 'combine -M HybridNew --freq -m ' + str(mass) +' --fork 4 -T 500 --clsAcc 0 -v 0 -n 2HDM_mZP' + str(mass) +'_mA0300_' + str(ri)+' --saveHybridResult --expectedFromGrid=' +opts.quantile+'--saveToys -s ' + str(int(mass)) + ' -i 50 --singlePoint ' + str(ri)+' '
+			combine= 'combine -M HybridNew --freq -m ' + str(mass) +' --fork 4 -T 500 --clsAcc 0 -v 0 -n 2HDM_mZP' + str(mass) +'_mA0300_' + str(ri)+' --saveHybridResult --expectedFromGrid=' +opts.quantile+' -s ' + str(int(mass)) + ' -i 50 --singlePoint ' + str(ri)+' '
 		else:
-			combine= 'combine -M HybridNew --freq -m ' + str(mass) +' --fork 4 -T 500 --clsAcc 0 -v 0 -n 2HDM_mZP' + str(mass) +'_mA0300_' + str(ri)+' --saveHybridResult --saveToys -s ' + str(int(mass)) + ' -i 50 --singlePoint ' + str(ri)+' '
+			combine= 'combine -M HybridNew --freq -m ' + str(mass) +' --fork 4 -T 500 --clsAcc 0 -v 0 -n 2HDM_mZP' + str(mass) +'_mA0300_' + str(ri)+' --saveHybridResult -s ' + str(int(mass)) + ' -i 50 --singlePoint ' + str(ri)+' '
 		
 		combine += datacard
 		print combine
