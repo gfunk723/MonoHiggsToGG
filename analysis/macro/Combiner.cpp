@@ -154,6 +154,18 @@ void Combiner::DoComb(){
       }
     }
 
+    //Double_t METint = 0.; 
+    //// find the integral of MET above 450
+    //if (doStack && fTH1DNames[th1d]=="metCorr_IsolateALL"){
+    //  for (UInt_t mc=0; mc < fNBkg; mc++){
+    //    int BinToUse1 = fInBkgTH1DHists[th1d][mc]->GetBin(450);
+    //    int BinToUse2 = fInBkgTH1DHists[th1d][mc]->GetBin(1500);
+    //    METint += fInBkgTH1DHists[th1d][mc]->Integral(BinToUse1,BinToUse2);
+    //  }
+    //  std::cout << "-------- MET integral above 450 = " << METint << std::endl;
+    //}
+
+
     // Merge some of the bkgs to make plots cleaner
     if (doMergeBkgs){
       for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -1373,11 +1385,34 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     TLegend* ftempLegends = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
 
     for (UInt_t mc = 0; mc < fNBkg; mc++){
-      if (mc == i_gg || mc == i_gj || mc == i_hgg || mc == i_vbf ){
+      if (mc == i_hgg){
+        fInBkgTH1DHists[th1d][mc]->SetLineColor(kRed);
+        fInBkgTH1DHists[th1d][mc]->SetFillColor(kRed);
         fInBkgTH1DHists[th1d][mc]->SetLineWidth(2);
-        fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
-        ftempLegends->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
-      }
+        fInBkgTH1DHists[th1d][mc]->SetFillStyle(3004);
+        fInBkgTH1DHists[th1d][mc]->SetMarkerSize(0.);
+        fInBkgTH1DHists[th1d][mc]->Draw("HISTE SAME");
+        ftempLegends->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"LF");
+      }	
+      if (mc == i_gj){
+        fInBkgTH1DHists[th1d][mc]->SetLineColor(kGreen+2);
+        fInBkgTH1DHists[th1d][mc]->SetLineWidth(2);
+        fInBkgTH1DHists[th1d][mc]->SetMarkerSize(0.);
+        fInBkgTH1DHists[th1d][mc]->Draw("HISTE SAME");
+        ftempLegends->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"LF");
+      }	
+      if (mc == i_gg){
+        fInBkgTH1DHists[th1d][mc]->SetLineColor(kGreen+4);
+        fInBkgTH1DHists[th1d][mc]->SetLineWidth(2);
+        fInBkgTH1DHists[th1d][mc]->SetMarkerSize(0.);
+        fInBkgTH1DHists[th1d][mc]->Draw("HISTE SAME");
+        ftempLegends->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"LF");
+      }	
+      //if (mc == i_gg || mc == i_gj || mc == i_hgg ){
+      //  fInBkgTH1DHists[th1d][mc]->SetLineWidth(2);
+      //  fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
+      //  ftempLegends->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+      //}
     }
 
     ftempLegends->SetBorderSize(4);
