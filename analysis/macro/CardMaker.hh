@@ -22,7 +22,7 @@ typedef std::vector<DblVec>   DblVecVec;
 
 class CardMaker{
 public:
-  CardMaker(const Double_t scalefactor, const Double_t inLumi, const DblVec puweights, const TString inname, const TString outname, const Bool_t Blind, const TString type);
+  CardMaker(const Double_t scalefactor, const Double_t inLumi, const DblVec puweights, const TString inname, const TString outname, const Bool_t Blind, const Bool_t onesel, const TString type);
   void MakeCards();
   void SetupCutsToApply();
   void SetBranchAddresses( TTree * treeIn ); 
@@ -41,6 +41,7 @@ private:
   TString	fOut;
   Double_t	alpha;
   TString	mainCut;
+  Bool_t	useOneSel;
 
   DblVec	Cut_pt1mgg;
   DblVec	Cut_pt2mgg;
