@@ -49,6 +49,7 @@ public:
 
   void SetBranchAddresses();
   void SetUpPlots();
+  TH1D * MakeVariableTH1DPlot(const TString hname, const TString htitle, const Int_t numbins, Float_t bins[], const TString xtitle, const TString ytitle);
   TH1D * MakeTH1DPlot(const TString hname, const TString htitle, const Int_t nbins, const Double_t xlow, const Double_t xhigh, const TString xtitle, const TString ytitle);
   TH2D * MakeTH2DPlot(const TString hname, const TString htitle, const Int_t xnbins, const Double_t xlow, const Double_t xhigh, const Int_t ynbins, const Double_t ylow, const Double_t yhigh, const TString xtitle, const TString ytitle);
   void SavePlots(); 
