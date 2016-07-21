@@ -328,7 +328,8 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
     // met-phi correction
-    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE, t1pfmetCorr;
+    Bool_t doMETphiCorr = true;
+    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE, t1pfmetCorr, t1pfmetCorrPhi;
 
     if (sampleID==2){// data 
       t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
@@ -340,8 +341,14 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     }
     t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
     correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
-    t1pfmetCorr = correctedMet.Pt();
-    //t1pfmetCorr = t1pfmet; //use if don't want met-phi corr
+    if (doMETphiCorr){
+      t1pfmetCorr = correctedMet.Pt();
+      t1pfmetCorrPhi = correctedMet.Phi();
+    }
+    else{ //just take original met
+      t1pfmetCorr = t1pfmet; 
+      t1pfmetCorrPhi = t1pfmetPhi;
+    }
 
     // calculate the weight
     Double_t Weight = 1.0;
@@ -363,7 +370,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     Dbl_Starting[sampleNumber]+=Weight;
 
     // check if passing deltaPhi(gg,MET) cut
-    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),correctedMet.Phi()));
+    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetCorrPhi));
     if (dphi_ggMET < 2.1) continue;
 
     // look at deltaPhi(jet,MET)
@@ -380,20 +387,20 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
       Double_t dphiJet3METmax = 0;
       Double_t dphiJet4METmax = 0;
       if ( ptJetLead > 50 ){
-        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),correctedMet.Phi()));
-        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),correctedMet.Phi()));
+        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
+        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
       }
       if ( ptJetSubLead > 50 ){
-        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),correctedMet.Phi()));
-        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),correctedMet.Phi()));
+        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
+        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
       }
       if ( ptJet3 > 50 ){
-        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),correctedMet.Phi()));
-        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),correctedMet.Phi()));
+        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
+        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
       }
       if ( ptJet4 > 50 ){
-        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),correctedMet.Phi()));
-        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),correctedMet.Phi()));
+        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
+        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
       }
 
       // find the min_dphi_JetMET 
@@ -455,7 +462,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
 void CardMaker::MakeYieldAndEfficiencyTables( const DblVecVec ND_Sig, const DblVecVec Err_ND_Sig, const DblVecVec Eff_Sig, const DblVecVec Err_Eff_Sig){
 
-  TString OutputTableName = Form("%s/SignalYieldAndEffGrid.tex",fOutDir.Data());
+  TString OutputTableName = Form("%s/%s/SignalYieldAndEffGrid.tex",fOutDir.Data(),fOut.Data());
   std::cout << "Writing Yield and Efficiency Table in: " << OutputTableName.Data() << std::endl;
   fOutResultsGrid.open(OutputTableName);
   if (fOutResultsGrid.is_open()){
@@ -818,7 +825,7 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
     fOutTxtFile << "#MC related" << std::endl;
     fOutTxtFile << "lumi_13TeV	    lnN	1.023	-	1.023	1.023	1.023	1.023" << std::endl;
     fOutTxtFile << "CMS_MonoH_TrigEff	  lnN -		1.01      -   -   -   -" << std::endl;
-    fOutTxtFile << "CMS_MonoH_eff	  lnN 1.030   -       1.030   1.030   1.030   1.030" << std::endl;
+    fOutTxtFile << "CMS_MonoH_eff	  lnN 1.020   -       1.020   1.020   1.020   1.020" << std::endl;
     fOutTxtFile << "CMS_MonoH_higg_BR     lnN 0.953/1.050	-	0.953/1.050	0.953/1.050	0.953/1.050	0.953/1.050" << std::endl;
     fOutTxtFile << "CMS_MonoH_higg_alphas lnN 0.940/0.965	-	0.940/0.965	0.940/0.965	0.940/0.965	0.940/0.965" << std::endl;
     fOutTxtFile << "CMS_MonoH_PDFs        lnN 1.05		-	1.05		1.05		1.05		1.05" << std::endl;
@@ -828,7 +835,7 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
     fOutTxtFile << "CMS_MonoH_PhoEnDown   lnN 1.005           -       -		-		1.005		-" << std::endl;
     fOutTxtFile << "CMS_MonoH_UnclEnUp    lnN 1.005           -       -               -               1.005           -" << std::endl;
     fOutTxtFile << "CMS_MonoH_UnclEnDown  lnN 1.005           -       -               -               1.005           -" << std::endl;
-    fOutTxtFile << "CMS_MonoH_FakeMet     lnN -               0.6/1.4	0.6/1.4         0.6/1.4		-		0.6/1.4 " << std::endl;
+    fOutTxtFile << "CMS_MonoH_FakeMet     lnN -               -		0.1/1.9         0.1/1.9		-		0.1/1.9 " << std::endl;
     fOutTxtFile << "------------------------------------" << std::endl;
     fOutTxtFile << "#background related " << std::endl;
     fOutTxtFile << Form("bg_lept	    gmN	%i	-	%f	-	-	-	-",NA_Data,alpha) << std::endl;
