@@ -9,6 +9,14 @@
 ## 25ns samples from FLASHgg
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DoubleEG         		0 10001 pippo 1 1
 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-100To200		1 30  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 280.5 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-200To400		1 31  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 77.7 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-400To600		1 32  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 10.71 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-600To800		1 33  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 2.562 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-800To1200		1 34  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 1.183 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-1200To2500	1 35  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 0.286 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZJets_HT-2500ToInf		1 36  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 0.006976 	1 
+
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZZTo2L2Nu			1 28  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 0.564     1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py TTGG_0Jets			1 27  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 0.017     1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py TTGJets 			1 23  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 3.697     1 

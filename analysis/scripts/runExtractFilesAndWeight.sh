@@ -21,6 +21,14 @@ python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ttHJetToGG.json		-o t
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/VBFHToGG.json		-o VBFHToGG		-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZZTo2L2Nu.json		-o ZZTo2L2Nu		-d lists_25ns_v76X_vtx0
 
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-100To200.json		-o ZJets_HT-100To200	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-200To400.json		-o ZJets_HT-200To400	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-400To600.json		-o ZJets_HT-400To600	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-600To800.json		-o ZJets_HT-600To800	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-800To1200.json	-o ZJets_HT-800To1200	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-1200To2500.json	-o ZJets_HT-1200To2500	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/ZJetsToNuNu_HT-2500ToInf.json	-o ZJets_HT-2500ToInf	-d lists_25ns_v76X_vtx0
+
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZP600.json		-o 2HDM_MZP600		-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZP800.json		-o 2HDM_MZP800		-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZP1000.json		-o 2HDM_MZP1000		-d lists_25ns_v76X_vtx0

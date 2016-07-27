@@ -21,6 +21,14 @@ python extractJSONS.py -i datasets/datasets_76X_bkg_data_vtx0.json	-o GluGluHToG
 python extractJSONS.py -i datasets/datasets_76X_bkg_data_vtx0.json	-o VHToGG_M125		-d lists_25ns_v76X_vtx0/MC
 python extractJSONS.py -i datasets/datasets_76X_bkg_data_vtx0.json	-o ZZTo2L2Nu		-d lists_25ns_v76X_vtx0/MC
 
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-100To200	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-200To400	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-400To600	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-600To800	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-800To1200	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-1200To2500	-d lists_25ns_v76X_vtx0/MC
+python extractJSONS.py -i datasets/datasets_76X_ZJetsToNuNu.json	-o ZJetsToNuNu_HT-2500ToInf	-d lists_25ns_v76X_vtx0/MC
+
 python extractJSONS.py -i datasets/datasets_76X_sig_vtx0.json		-o 2HDM_MZP600		-d lists_25ns_v76X_vtx0/MC
 python extractJSONS.py -i datasets/datasets_76X_sig_vtx0.json		-o 2HDM_MZP800		-d lists_25ns_v76X_vtx0/MC
 python extractJSONS.py -i datasets/datasets_76X_sig_vtx0.json		-o 2HDM_MZP1000		-d lists_25ns_v76X_vtx0/MC
