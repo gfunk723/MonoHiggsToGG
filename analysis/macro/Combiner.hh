@@ -116,6 +116,7 @@ private:
   TH1DVec	fOutEWK1phoBkgTH1DHists;
   TH1DVec	fOutEWK2phoBkgTH1DHists;
   TH1DVec	fOutJetsphoBkgTH1DHists;
+  TH1DVec	fOutDYJetsBkgTH1DHists;
 
   TH1DVec	fOutRatioTH1DHists;
   TH1DVec	fOutRatioTH1DHistsCopy;
@@ -125,6 +126,7 @@ private:
   THStackVec    fOutBkgTH1DStacks;
   THStackVec	fOutBkgTH1DStacksForUncer;
   TLegVec	fTH1DLegends;
+  TLegVec	fTH1DLegendsSig;
   TCanvVec	fOutTH1DCanvases;
 
   TString	fOutDir;

@@ -55,7 +55,7 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["DoubleEG"]		= "Data";
   fSampleTitleMap["QCD"] 		= "QCD";
   fSampleTitleMap["GJets"]		= "#gamma + Jets";
-  fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
+  fSampleTitleMap["DYJetsToLL"]		= "DY + Jets";
   fSampleTitleMap["DiPhoton"]		= "#gamma#gamma";
   fSampleTitleMap["GluGluHToGG"]	= "H #rightarrow #gamma#gamma (ggH)";
   fSampleTitleMap["VH"]			= "V + H";
@@ -63,6 +63,7 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["VBFHToGG"]		= "VBF H #rightarrow #gamma#gamma";
   fSampleTitleMap["WGToLNuG"]		= "#gamma + W #rightarrow l #nu";
   fSampleTitleMap["ZGTo2LG"]		= "#gamma + Z #rightarrow ll";
+  fSampleTitleMap["ZJets"]		= "Z #rightarrow #nu#nu + Jets";
   fSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z #rightarrow ll#nu#nu";
   fSampleTitleMap["TTGJets"]		= "tt + #gamma + Jets";
   fSampleTitleMap["TTGG_0Jets"]		= "tt + #gamma#gamma";
@@ -108,9 +109,11 @@ Combiner::~Combiner(){
     delete fOutEWK1phoBkgTH1DHists[th1d];
     delete fOutEWK2phoBkgTH1DHists[th1d];
     delete fOutJetsphoBkgTH1DHists[th1d];
+    delete fOutDYJetsBkgTH1DHists[th1d];
     delete fOutBkgTH1DStacks[th1d];
     delete fOutBkgTH1DStacksForUncer[th1d];
     delete fTH1DLegends[th1d];
+    delete fTH1DLegendsSig[th1d];
     delete fOutTH1DStackPads[th1d];
     delete fOutTH1DCanvases[th1d];
     
@@ -190,6 +193,13 @@ void Combiner::DoComb(){
         else if (fBkgNames[mc]=="ZZTo2L2Nu"){
 	  fOutEWK2phoBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
 	}
+	// add DY + ZJets bkgs together
+	if (fBkgNames[mc]=="ZJets"){
+	  fOutDYJetsBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+        }
+	else if (fBkgNames[mc]=="DYJetsToLL"){
+	  fOutDYJetsBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+ 	}
 	// add QCD + GJet bkgs togetehr
 	if (fBkgNames[mc]=="QCD"){
 	  if (doQCDscale){
@@ -208,6 +218,7 @@ void Combiner::DoComb(){
     fOutEWK1phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK1pho"]);
     fOutEWK2phoBkgTH1DHists[th1d]->SetFillColor(fColorMap["EWK2pho"]);
     fOutJetsphoBkgTH1DHists[th1d]->SetFillColor(fColorMap["Jetspho"]);
+    fOutDYJetsBkgTH1DHists[th1d]->SetFillColor(fColorMap["DYJetsToLL"]);
 
     }// end doMergeBkgs 
 
@@ -226,6 +237,7 @@ void Combiner::DoComb(){
       fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][i_vh]);
       fOutBkgTH1DStacks[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
+      fOutBkgTH1DStacks[th1d]->Add(fOutDYJetsBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
       fOutBkgTH1DStacks[th1d]->Add(fOutJetsphoBkgTH1DHists[th1d]);
     }
@@ -247,7 +259,7 @@ void Combiner::DoComb(){
 
       // add other bkgs to the stack
       if (doMergeBkgs){//merged bkgs have already been added to the stack (here *)
-        if (fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="DYJetsToLL"){
+        if (fBkgNames[mc]=="DiPhoton"){
           fOutBkgTH1DStacks[th1d]->Add(fInBkgTH1DHists[th1d][mc]); 
         }
       }
@@ -267,6 +279,7 @@ void Combiner::DoComb(){
      fOutBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][i_vh]->Clone();
      fOutBkgTH1DHists[th1d]->Add(fOutHiggsBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK2phoBkgTH1DHists[th1d]);
+     fOutBkgTH1DHists[th1d]->Add(fOutDYJetsBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutEWK1phoBkgTH1DHists[th1d]);
      fOutBkgTH1DHists[th1d]->Add(fOutJetsphoBkgTH1DHists[th1d]);
      for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -274,7 +287,7 @@ void Combiner::DoComb(){
        //  if (doQCDscale) fOutBkgTH1DHists[th1d]->Add(GJetsClone[th1d]);
        //  else fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
        //}
-       if (fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="DYJetsToLL") fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+       if (fBkgNames[mc]=="DiPhoton") fOutBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
      }
    }
    else{
@@ -302,13 +315,14 @@ void Combiner::DoComb(){
       fLatexSampleTitleMap["QCD"] 		= "QCD";
       fLatexSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
       fLatexSampleTitleMap["VH"]		= "V + H";
-      fLatexSampleTitleMap["DYJetsToLL"]	= "Drell-Yan";
+      fLatexSampleTitleMap["DYJetsToLL"]	= "Drell-Yan + Jets";
       fLatexSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
       fLatexSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
       fLatexSampleTitleMap["ttHJetToGG"]	= "tt $+ H \\rightarrow \\gamma\\gamma$";
       fLatexSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
       fLatexSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
       fLatexSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+      fLatexSampleTitleMap["ZJets"]		= "Z $\\rightarrow \\nu \\nu$ + Jets";
       fLatexSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu \\nu$";
       fLatexSampleTitleMap["TTGG_0Jets"]	= "tt + $\\gamma \\gamma$";
       fLatexSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
@@ -512,29 +526,37 @@ void Combiner::DoComb(){
 
     // LEGEND 
     if (doMergeBkgs){
-      if (doStack){
-        fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"f");
-        fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"f");
-        fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"f");
-        fTH1DLegends[th1d]->AddEntry(fOutJetsphoBkgTH1DHists[th1d],fSampleTitleMap["Jetspho"],"f");
-      }
-      else{
-        fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"l");
-        fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"l");
-        fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"l");
-        fTH1DLegends[th1d]->AddEntry(fOutJetsphoBkgTH1DHists[th1d],fSampleTitleMap["Jetspho"],"l");
-      }
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	if (fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton" || fBkgNames[mc]=="VH"){
+	if (fBkgNames[mc]=="VH"){
           if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
           else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
 	}
       }
+      if (doStack){
+        fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"f");
+        fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"f");
+        fTH1DLegends[th1d]->AddEntry(fOutJetsphoBkgTH1DHists[th1d],fSampleTitleMap["Jetspho"],"f");
+        fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"f");
+      }
+      else{
+        fTH1DLegends[th1d]->AddEntry(fOutEWK1phoBkgTH1DHists[th1d],fSampleTitleMap["EWK1pho"],"l");
+        fTH1DLegends[th1d]->AddEntry(fOutHiggsBkgTH1DHists[th1d],fSampleTitleMap["SMHiggs"],"l");
+        fTH1DLegends[th1d]->AddEntry(fOutJetsphoBkgTH1DHists[th1d],fSampleTitleMap["Jetspho"],"l");
+        fTH1DLegends[th1d]->AddEntry(fOutEWK2phoBkgTH1DHists[th1d],fSampleTitleMap["EWK2pho"],"l");
+      }
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+	if (fBkgNames[mc]=="DiPhoton"){
+          if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
+          else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
+	}
+      }
+      if (doStack) fTH1DLegends[th1d]->AddEntry(fOutDYJetsBkgTH1DHists[th1d],fSampleTitleMap["DYJetsToLL"],"f");
+      else fTH1DLegends[th1d]->AddEntry(fOutDYJetsBkgTH1DHists[th1d],fSampleTitleMap["DYJetsToLL"],"l");
       // add uncertainty in stack plot
       fOutBkgTH1DStacksForUncer[th1d]->Add(fOutBkgTH1DHists[th1d],"E2");
       if (doStack) fTH1DLegends[th1d]->AddEntry(fOutBkgTH1DHists[th1d],"MC Uncertainty (Stat)","F");
       for (UInt_t mc = 0; mc < fNSig; mc++){
-	fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
+	fTH1DLegendsSig[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
       }
       Double_t dataInt = fOutDataTH1DHists[th1d]->Integral();
       if (fNData > 0 && doStack && dataInt > 0) fTH1DLegends[th1d]->AddEntry(fOutDataTH1DHists[th1d],"Data","pl");
@@ -549,7 +571,7 @@ void Combiner::DoComb(){
           if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
           else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
         }
-        if (mc < fNSig) fTH1DLegends[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
+        if (mc < fNSig) fTH1DLegendsSig[th1d]->AddEntry(fInSigTH1DHists[th1d][mc],fSampleTitleMap[fSigNames[mc]],"l");
       } 
       // add uncertainty in stack plot
       fOutBkgTH1DStacksForUncer[th1d]->Add(fOutBkgTH1DHists[th1d],"E2");
@@ -805,6 +827,7 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
   fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+  fSampleTitleMap["ZJets"]		= "Z $\\rightarrow \\nu \\nu$ + Jets";
   fSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu\\nu$";
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TTGG_0Jets"]		= "tt + $\\gamma\\gamma$";
@@ -1342,6 +1365,10 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fOutJetsphoBkgTH1DHists[th1d]->Scale(1.0/fOutJetsphoBkgTH1DHists[th1d]->Integral());
     fOutJetsphoBkgTH1DHists[th1d]->SetFillColor(0);
     fOutJetsphoBkgTH1DHists[th1d]->SetLineColor(fColorMap["Jetspho"]);
+
+    fOutDYJetsBkgTH1DHists[th1d]->Scale(1.0/fOutDYJetsBkgTH1DHists[th1d]->Integral());
+    fOutDYJetsBkgTH1DHists[th1d]->SetFillColor(0);
+    fOutDYJetsBkgTH1DHists[th1d]->SetLineColor(fColorMap["DYJetsToLL"]);
   }
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -1359,7 +1386,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
 
   // start by drawing the sig first
   if (isLogY) fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1E2);
-  else fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1.1);
+  else fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1.4);
 
   //fInSigTH1DHists[th1d][0]->SetMinimum(0.0);
   //if (fNData > 0) fInSigTH1DHists[th1d][0]->SetMinimum(minOverlay*0.9);
@@ -1450,12 +1477,12 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     if (doMergeBkgs){
       fInBkgTH1DHists[th1d][i_vh]->Draw("HIST SAME");
       fOutHiggsBkgTH1DHists[th1d]->Draw("HIST SAME");
-      fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
       fOutEWK2phoBkgTH1DHists[th1d]->Draw("HIST SAME");
+      fOutDYJetsBkgTH1DHists[th1d]->Draw("HIST SAME");
+      fOutEWK1phoBkgTH1DHists[th1d]->Draw("HIST SAME");
       fOutJetsphoBkgTH1DHists[th1d]->Draw("HIST SAME");
-
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-        if (fBkgNames[mc]=="DYJetsToLL" || fBkgNames[mc]=="DiPhoton"){
+        if (fBkgNames[mc]=="DiPhoton"){
           fInBkgTH1DHists[th1d][mc]->Draw("HIST SAME");
         }
       } 
@@ -1470,6 +1497,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     }
     //if (fNData > 0) fOutDataTH1DHists[th1d]->Draw("PE SAME");
     fTH1DLegends[th1d]->Draw("SAME"); 
+    fTH1DLegendsSig[th1d]->Draw("SAME"); 
   }
 
 
@@ -1530,7 +1558,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_metCUT_forShape"){
 
     THStack* mgg_Shape = new THStack();
-    TLegend* ftempLegend = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    TLegend* ftempLegend = new TLegend(0.32,0.8,0.9,0.934); // (x1,y1,x2,y2)
 
     fInSigTH1DHists[th1d][0]->SetTitle("");
     fInSigTH1DHists[th1d][0]->SetLineColor(kWhite);
@@ -1565,8 +1593,11 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
     fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
     if (isLogY){
-      fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E2);
-      fInSigTH1DHists[th1d][0]->SetMinimum(1E-3);
+      if (fTH1DNames[th1d]=="mgg_IsolateALL") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*2E1);
+      else if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E1);
+      else fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E2);
+      if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->SetMinimum(0.5E-2);
+      else fInSigTH1DHists[th1d][0]->SetMinimum(0.5E-1);
     }
     else {
       fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1.5);
@@ -1596,6 +1627,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
 
     fOutBkgTH1DHists[th1d]->Draw("E2 SAME");//E2 draws error as rectangle
     fTH1DLegends[th1d]->Draw("SAME"); 
+    fTH1DLegendsSig[th1d]->Draw("SAME"); 
   }
 
   TString suffix = "";
@@ -1628,6 +1660,22 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     fOutRatioTH1DHistsCopy[th1d]->Draw("E2 SAME");
     fOutRatioTH1DHists[th1d]->Draw("EP SAME");
   } 
+
+
+  if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg_IsolateALL_pt1" || fTH1DNames[th1d]=="mgg_IsolateALL_pt2" || fTH1DNames[th1d]=="mgg_IsolateALL_ptgg" || fTH1DNames[th1d]=="mgg_IsolateALL_woPtgg" || fTH1DNames[th1d]=="mgg_IsolateALL_wPtgg"){
+    std::cout << " ----------------------------------------------------- " << std::endl;
+    std::cout << "Histogram Name = " << fTH1DNames[th1d] << std::endl;
+    std::cout << "Data Total = " << fInDataTH1DHists[th1d][0]->Integral() << std::endl; 
+    Double_t BkgIntegral = 0.;
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      std::cout << fBkgNames[mc] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() << std::endl;
+      BkgIntegral += fInBkgTH1DHists[th1d][mc]->Integral();
+    }
+    std::cout << "QCD Reweight = " << GJetsClone[th1d]->Integral() << std::endl;
+    std::cout << "Bkg Total = " << BkgIntegral << std::endl;
+    std::cout << "Ratio Data/MC = " << fInDataTH1DHists[th1d][0]->Integral()/BkgIntegral << std::endl;
+    std::cout << " ----------------------------------------------------- " << std::endl;
+  }
 
   fOutTH1DCanvases[th1d]->Update();
 
@@ -1816,6 +1864,7 @@ void Combiner::InitCanvAndHists(){
   fOutEWK1phoBkgTH1DHists.resize(fNTH1D);
   fOutEWK2phoBkgTH1DHists.resize(fNTH1D);
   fOutJetsphoBkgTH1DHists.resize(fNTH1D);
+  fOutDYJetsBkgTH1DHists.resize(fNTH1D);
   fOutBkgTH1DStacks.resize(fNTH1D);
   fOutBkgTH1DStacksForUncer.resize(fNTH1D);
   for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
@@ -1824,14 +1873,23 @@ void Combiner::InitCanvAndHists(){
   }
 
   fTH1DLegends.resize(fNTH1D);
+  fTH1DLegendsSig.resize(fNTH1D);
   for (UInt_t th1d = 0; th1d < fNTH1D; th1d++){
     //fTH1DLegends[th1d] = new TLegend(0.6075,0.5,0.9,0.934); // (x1,y1,x2,y2)
-    fTH1DLegends[th1d] = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    fTH1DLegends[th1d] = new TLegend(0.32,0.76,0.9,0.934); // (x1,y1,x2,y2)
     fTH1DLegends[th1d]->SetNColumns(2);
     fTH1DLegends[th1d]->SetBorderSize(4);
     fTH1DLegends[th1d]->SetLineColor(kBlack);
     fTH1DLegends[th1d]->SetTextSize(0.03);//0.035
     fTH1DLegends[th1d]->SetLineWidth(2);
+
+    fTH1DLegendsSig[th1d] = new TLegend(0.32,0.65,0.9,0.75); // (x1,y1,x2,y2)
+    fTH1DLegendsSig[th1d]->SetHeader("2HDM Signals with #sigma*BR = 1fb");
+    fTH1DLegendsSig[th1d]->SetNColumns(2);
+    fTH1DLegendsSig[th1d]->SetBorderSize(4);
+    fTH1DLegendsSig[th1d]->SetLineColor(kBlack);
+    fTH1DLegendsSig[th1d]->SetTextSize(0.03);//0.035
+    fTH1DLegendsSig[th1d]->SetLineWidth(2);
   }
 
 
@@ -2013,7 +2071,13 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("mgg_forShape");
     fTH1DNames.push_back("mgg_metCUT_forShape");
     fTH1DNames.push_back("mgg_IsolateALL");
+    fTH1DNames.push_back("mgg_IsolateALL_pt1");
+    fTH1DNames.push_back("mgg_IsolateALL_pt2");
+    fTH1DNames.push_back("mgg_IsolateALL_ptgg");
+    fTH1DNames.push_back("mgg_IsolateALL_woPtgg");
+    fTH1DNames.push_back("mgg_IsolateALL_wPtgg");
     fTH1DNames.push_back("mgg_IsolateALLmetCUT");
+    fTH1DNames.push_back("mgg_IsolateALLUncorrmetCUT");
     fTH1DNames.push_back("ptgg_IsolateALL");
     fTH1DNames.push_back("ptgg_IsolateALLmetCUT");
     fTH1DNames.push_back("nvtx_IsolateALL");
@@ -2023,6 +2087,7 @@ void Combiner::InitTH1DNames(){
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
     fTH1DNames.push_back("t1pfmet_selmgg");
+    fTH1DNames.push_back("t1pfmetCorr_selmgg_Varbin");
     fTH1DNames.push_back("t1pfmetCorr_selmgg");
     fTH1DNames.push_back("phigg");
     fTH1DNames.push_back("dphi_ggmet");
