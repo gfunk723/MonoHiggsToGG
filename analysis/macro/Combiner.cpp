@@ -142,6 +142,20 @@ void Combiner::DoComb(){
       }
     //}// end if ndata>0
 
+    Double_t data_integral = fOutDataTH1DHists[th1d]->Integral();
+    TH1D *allBkgHisto;
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+      if (mc==0) allBkgHisto = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone(); 
+      else allBkgHisto->Add(fInBkgTH1DHists[th1d][mc]);
+    }
+    Double_t bkg_integral = allBkgHisto->Integral();
+    Double_t new_integral = data_integral/bkg_integral;
+    std::cout << fTH1DNames[th1d] << " Data = " << data_integral << " new = " <<  new_integral << std::endl;
+    for (UInt_t mc = 0; mc < fNBkg; mc++){
+     if (new_integral > 0) fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
+    }
+    delete allBkgHisto;
+ 
     // Because QCD has some events with very large weights
     // Copy the GJets histo, weight it by the QCD integral 
     // and use it for QCD distribution instead.
