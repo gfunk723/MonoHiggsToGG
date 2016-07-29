@@ -45,7 +45,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 0; // Choose which selection to apply
+  int whichSelection = 1; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -58,19 +58,20 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString inDir = "data/25ns_v76X_v2/"; 					// input directory of the samples
-  TString outDir = Form("./diPhoPlots/25ns_v76X_v2_%s/",selName.Data());	// output directory to send results
+  TString outDir = Form("./diPhoPlots/25ns_v76X_v2_%s_ScaleToData/",selName.Data());	// output directory to send results
   TString origDir = "./diPhoPlots/25ns_v76X_v2_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
 
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString type = "png";		// type of plots to be made
+  TString type = "pdf";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = false;		// make plots for each sample individually
   bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
   bool makeDataCards = false;	// make datacards for hybrid method
+  bool useOneSel = true;	// for datacards making: use m600 sel for all points (false uses optimized sel)
   bool doMergeBkgs = true;      // merge the Higgs,EWK bkgs to make combined plots nicer
-  bool doQCDrescale = false;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
+  bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
@@ -319,6 +320,12 @@ int main(){
     delete ZZTo2L2Nu;
     std::cout << "Finished ZZTo2L2Nu sample" << std::endl;
 
+    std::cout << "Working on ZJets sample" << std::endl;
+    Plotter * ZJets = new Plotter(inDir,outDir,"ZJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    ZJets->DoPlots(0);
+    delete ZJets;
+    std::cout << "Finished ZJets sample" << std::endl;
+
     std::cout << "Working on TGJets sample" << std::endl;
     Plotter * TGJets = new Plotter(inDir,outDir,"TGJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     TGJets->DoPlots(0);
@@ -385,29 +392,29 @@ int main(){
     delete DMH_mZP1000;
     std::cout << "Finished DMHgg 2HDM MZP1000 sample" << std::endl;
    
-    std::cout << "Working on DMHgg 2HDM MZP1200 sample" << std::endl;
-    Plotter * DMH_mZP1200 = new Plotter(inDir,outDir,"2HDM_mZP1200",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP1200->DoPlots(0);
-    delete DMH_mZP1200;
-    std::cout << "Finished DMHgg 2HDM MZP1200 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP1200 sample" << std::endl;
+    //Plotter * DMH_mZP1200 = new Plotter(inDir,outDir,"2HDM_mZP1200",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP1200->DoPlots(0);
+    //delete DMH_mZP1200;
+    //std::cout << "Finished DMHgg 2HDM MZP1200 sample" << std::endl;
 
-    std::cout << "Working on DMHgg 2HDM MZP1400 sample" << std::endl;
-    Plotter * DMH_mZP1400 = new Plotter(inDir,outDir,"2HDM_mZP1400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP1400->DoPlots(0);
-    delete DMH_mZP1400;
-    std::cout << "Finished DMHgg 2HDM MZP1400 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP1400 sample" << std::endl;
+    //Plotter * DMH_mZP1400 = new Plotter(inDir,outDir,"2HDM_mZP1400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP1400->DoPlots(0);
+    //delete DMH_mZP1400;
+    //std::cout << "Finished DMHgg 2HDM MZP1400 sample" << std::endl;
 
-    std::cout << "Working on DMHgg 2HDM MZP1700 sample" << std::endl;
-    Plotter * DMH_mZP1700 = new Plotter(inDir,outDir,"2HDM_mZP1700",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP1700->DoPlots(0);
-    delete DMH_mZP1700;
-    std::cout << "Finished DMHgg 2HDM MZP1700 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP1700 sample" << std::endl;
+    //Plotter * DMH_mZP1700 = new Plotter(inDir,outDir,"2HDM_mZP1700",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP1700->DoPlots(0);
+    //delete DMH_mZP1700;
+    //std::cout << "Finished DMHgg 2HDM MZP1700 sample" << std::endl;
 
-    std::cout << "Working on DMHgg 2HDM MZP2000 sample" << std::endl;
-    Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP2000->DoPlots(0);
-    delete DMH_mZP2000;
-    std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP2000 sample" << std::endl;
+    //Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP2000->DoPlots(0);
+    //delete DMH_mZP2000;
+    //std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
 
     std::cout << "Working on DMHgg 2HDM MZP2500 sample" << std::endl;
     Plotter * DMH_mZP2500 = new Plotter(inDir,outDir,"2HDM_mZP2500",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
@@ -415,17 +422,17 @@ int main(){
     delete DMH_mZP2500;
     std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
     
-    std::cout << "Working on DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
-    Plotter * DMH_mZP600_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP600_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP600_mA0400->DoPlots(0);
-    delete DMH_mZP600_mA0400;
-    std::cout << "Finished DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
+    //Plotter * DMH_mZP600_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP600_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP600_mA0400->DoPlots(0);
+    //delete DMH_mZP600_mA0400;
+    //std::cout << "Finished DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
    
-    std::cout << "Working on DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
-    Plotter * DMH_mZP800_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP800_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP800_mA0400->DoPlots(0);
-    delete DMH_mZP800_mA0400;
-    std::cout << "Finished DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
+    //Plotter * DMH_mZP800_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP800_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP800_mA0400->DoPlots(0);
+    //delete DMH_mZP800_mA0400;
+    //std::cout << "Finished DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
    
     //std::cout << "Working on DMHgg M1000 sample" << std::endl;
     //Plotter * DMH_M1000 = new Plotter(inDir,outDir,"DMHtoGG_M1000",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
@@ -459,6 +466,7 @@ int main(){
   colorMap["QCD"] 			= kYellow+8;
   colorMap["GJets"] 			= kGreen-9;
   colorMap["VH"]			= kOrange-3;
+  colorMap["ZJets"]			= kBlue;
   colorMap["GluGluHToGG"]		= kOrange-2;
   colorMap["ttHJetToGG"]		= kOrange-4;
   colorMap["VBFHToGG"]			= kYellow-7;
@@ -477,18 +485,20 @@ int main(){
   colorMap["DoubleEG"]			= kBlack;
   colorMap["FakeData"]			= kBlack;
   colorMap["2HDM_mZP600"]		= kPink-2;
-  colorMap["2HDM_mZP800"]		= kPink;
+  colorMap["2HDM_mZP800"]		= kMagenta+2;
   colorMap["2HDM_mZP1000"]		= kMagenta;
   colorMap["2HDM_mZP1200"]		= kPink-6;
   colorMap["2HDM_mZP1400"]		= kPink+4;
   colorMap["2HDM_mZP1700"]		= kMagenta-2;
   colorMap["2HDM_mZP2000"]		= kPink-1;
-  colorMap["2HDM_mZP2500"]		= kMagenta+2;
+  colorMap["2HDM_mZP2500"]		= kPink;
   colorMap["2HDM_mZP600_mA0400"]	= kRed;
   colorMap["2HDM_mZP800_mA0400"]	= kRed-4;
+
   colorMap["SMHiggs"]			= kOrange-2;
   colorMap["EWK1pho"]			= kAzure+8;
   colorMap["EWK2pho"]			= kAzure+2;
+  colorMap["Jetspho"]			= kGreen-9;
 
   SamplePairVec Samples; // vector to also be used for stack plots
   //ordered to match Livia
@@ -502,6 +512,7 @@ int main(){
   Samples.push_back(SamplePair("WGToLNuG",1));
   Samples.push_back(SamplePair("ZZTo2L2Nu",1));
   Samples.push_back(SamplePair("ZGTo2LG",1));
+  Samples.push_back(SamplePair("ZJets",1)); 
   Samples.push_back(SamplePair("DYJetsToLL",1));
   Samples.push_back(SamplePair("QCD",1)); 
   Samples.push_back(SamplePair("GJets",1)); 
@@ -513,13 +524,13 @@ int main(){
   Samples.push_back(SamplePair("DoubleEG",5));
   if (doFakeData) Samples.push_back(SamplePair("FakeData",5));
   Samples.push_back(SamplePair("2HDM_mZP600",0)); 
-  //Samples.push_back(SamplePair("2HDM_mZP800",0)); 
+  Samples.push_back(SamplePair("2HDM_mZP800",0)); 
   Samples.push_back(SamplePair("2HDM_mZP1000",0)); 
   //Samples.push_back(SamplePair("2HDM_mZP1200",0)); 
   //Samples.push_back(SamplePair("2HDM_mZP1400",0)); 
   //Samples.push_back(SamplePair("2HDM_mZP1700",0)); 
   //Samples.push_back(SamplePair("2HDM_mZP2000",0));  
-  Samples.push_back(SamplePair("2HDM_mZP2500",0));  
+  //Samples.push_back(SamplePair("2HDM_mZP2500",0));  
   //Samples.push_back(SamplePair("2HDM_mZP600_mA0400",0));
   //Samples.push_back(SamplePair("2HDM_mZP800_mA0400",0));
 
@@ -590,13 +601,15 @@ int main(){
   // 3rd : PU weight vector
   // 4th : input directory
   // 5th : output directory
-  // 6th : type of plots out 
+  // 6th : do Blind (blind the observed # events)
+  // 7th : use one sel for all points or use optimized one
+  // 8th : type of plots out 
   //
   /////////////////////////////////////////////////////
 
   if (makeDataCards){
     std::cout << "Making datacards using the hybrid method" << std::endl;
-    CardMaker *cards = new CardMaker(alpha,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    CardMaker *cards = new CardMaker(alpha,lumi,puweights_MC,inDir,outDir,doBlind,useOneSel,type);
     cards->MakeCards();
     delete cards;
     std::cout << "Finished making datacards" << std::endl; 

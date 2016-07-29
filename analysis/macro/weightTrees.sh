@@ -13,6 +13,7 @@ addWeights("data/25ns_v76X_v2/QCD_Pt-30toInf.root", $lumi);
 addWeights("data/25ns_v76X_v2/QCD_Pt-40toInf.root", $lumi);
 addWeights("data/25ns_v76X_v2/GluGluHToGG.root", $lumi);
 addWeights("data/25ns_v76X_v2/DiPhoton.root", $lumi);
+addWeights("data/25ns_v76X_v2/DiPhotonJetsSherpa.root", $lumi);
 addWeights("data/25ns_v76X_v2/VH.root", $lumi);
 addWeights("data/25ns_v76X_v2/DYJetsToLL.root", $lumi);
 addWeights("data/25ns_v76X_v2/ttHJetToGG.root", $lumi);
@@ -23,6 +24,14 @@ addWeights("data/25ns_v76X_v2/TTGG_0Jets.root", $lumi);
 addWeights("data/25ns_v76X_v2/WGToLNuG.root", $lumi);
 addWeights("data/25ns_v76X_v2/ZGTo2LG.root", $lumi);
 addWeights("data/25ns_v76X_v2/ZZTo2L2Nu.root", $lumi);
+
+addWeights("data/25ns_v76X_v2/ZJets_HT-100To200.root", $lumi);
+addWeights("data/25ns_v76X_v2/ZJets_HT-200To400.root", $lumi);
+addWeights("data/25ns_v76X_v2/ZJets_HT-400To600.root", $lumi);
+addWeights("data/25ns_v76X_v2/ZJets_HT-600To800.root", $lumi);
+addWeights("data/25ns_v76X_v2/ZJets_HT-800To1200.root", $lumi);
+addWeights("data/25ns_v76X_v2/ZJets_HT-1200To2500.root", $lumi);
+addWeights("data/25ns_v76X_v2/ZJets_HT-2500ToInf.root", $lumi);
 
 addWeights("data/25ns_v76X_v2/2HDM_mZP600.root", $lumi);
 addWeights("data/25ns_v76X_v2/2HDM_mZP800.root", $lumi);

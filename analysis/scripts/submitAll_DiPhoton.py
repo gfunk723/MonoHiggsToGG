@@ -24,6 +24,7 @@
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZGTo2LG			1 25  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 117.864   1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py WGToLNuG			1 26  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 405.271   1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhoton			1 15  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 135.1     1 # <- amcat@nlo # sherpa = 84.0      1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhotonJetSherpa		1 16  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 84.0      1  
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GJet_Pt-20to40     	1  1  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 218.6108  1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GJet_Pt-40toInf    	1  2  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 863.1088  1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py QCD_Pt-30to40      	1  3  /afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root 24300     1 

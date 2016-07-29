@@ -23,6 +23,16 @@ hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/TGJets.root			../../outpu
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/TTGJets.root			../../output/job_201643_15/TTGJets/TTGJets*.root
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/TTGG_0Jets.root			../../output/job_201643_15/TTGG_0Jets/TTGG_0Jets*.root
 
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/DiPhotonJetsSherpa.root		../../output/job_2016727_17/DiPhotonJetSherpa/DiPhoton*.root
+
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-100To200.root		../../output/job_2016727_10/ZJets_HT-100To200/ZJets_HT-100To200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-200To400.root		../../output/job_2016727_10/ZJets_HT-200To400/ZJets_HT-200To400*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-400To600.root		../../output/job_2016727_10/ZJets_HT-400To600/ZJets_HT-400To600*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-600To800.root		../../output/job_2016727_10/ZJets_HT-600To800/ZJets_HT-600To800*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-800To1200.root		../../output/job_2016727_10/ZJets_HT-800To1200/ZJets_HT-800To1200*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-1200To2500.root		../../output/job_2016727_10/ZJets_HT-1200To2500/ZJets_HT-1200To2500*.root
+hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/ZJets_HT-2500ToInf.root		../../output/job_2016727_10/ZJets_HT-2500ToInf/ZJets_HT-2500ToInf*.root
+
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP600.root			../../output/job_201643_15/2HDM_MZP600/2HDM_MZP600*.root
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP800.root			../../output/job_201643_15/2HDM_MZP800/2HDM_MZP800*.root
 hadd /afs/cern.ch/work/m/mzientek/private/25ns_v76X_v2/2HDM_mZP1000.root		../../output/job_201643_15/2HDM_MZP1000/2HDM_MZP1000*.root

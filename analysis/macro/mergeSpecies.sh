@@ -3,6 +3,6 @@
 
 #mkdir -p data/mergedFinal
 
-hadd data/25ns_v76X_v2/GJets.root	data/25ns_v76X_v2/GJet_Pt-20to40.root	data/25ns_v76X_v2/GJet_Pt-40toInf.root 
-hadd data/25ns_v76X_v2/QCD.root		data/25ns_v76X_v2/QCD_Pt-30to40.root	data/25ns_v76X_v2/QCD_Pt-40toInf.root	#data/25ns_v76X_v2/QCD_Pt-30toInf.root
-
+hadd data/25ns_v76X_v2/GJets.root	data/25ns_v76X_v2/GJet_Pt-20to40.root	 data/25ns_v76X_v2/GJet_Pt-40toInf.root 
+hadd data/25ns_v76X_v2/QCD.root		data/25ns_v76X_v2/QCD_Pt-30to40.root	 data/25ns_v76X_v2/QCD_Pt-40toInf.root	#data/25ns_v76X_v2/QCD_Pt-30toInf.root
+hadd data/25ns_v76X_v2/ZJets.root	data/25ns_v76X_v2/ZJets_HT-100To200.root data/25ns_v76X_v2/ZJets_HT-200To400.root   data/25ns_v76X_v2/ZJets_HT-400To600.root   data/25ns_v76X_v2/ZJets_HT-600To800.root   data/25ns_v76X_v2/ZJets_HT-800To1200.root   data/25ns_v76X_v2/ZJets_HT-1200To2500.root   data/25ns_v76X_v2/ZJets_HT-2500ToInf.root  
