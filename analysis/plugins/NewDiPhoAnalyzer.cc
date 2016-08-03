@@ -386,7 +386,8 @@ private:
   int passLooseNHisoCuts(float sceta, float nhiso, float pt);
   int passLoosePHisoCuts(float sceta, float phiso, float pt);
   int passLooseHoeCuts(float sceta, float hoe);
-
+  bool passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso);
+  
   float getSmearingValue(float sceta, float r9, int syst);
   float getScalingValue(int sampleID, float sceta, float r9, int runNumber, int syst);
   float getPtCorrected(float pt, float sceta,float r9, int run, int sampleID);
@@ -409,8 +410,8 @@ private:
   std::vector<edm::InputTag> inputTagJets_;     
   EDGetTokenT<View<Electron> > electronToken_;   
   EDGetTokenT<View<flashgg::Muon> > muonToken_;        
-
   EDGetTokenT<View<pat::MET> > METToken_;
+  EDGetTokenT<edm::View<reco::Candidate> > pfcandsToken_;
 
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlagsToken_;
@@ -507,6 +508,7 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ) ) ),
   muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ), 
   METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
+  pfcandsToken_( consumes<edm::View<reco::Candidate> > (iConfig.getParameter<edm::InputTag>("pfcands"))),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
   triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) ),
   mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
@@ -589,6 +591,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   Handle<double> objs_rho;
   iEvent.getByToken(rhoToken_, objs_rho);
   //iEvent.getByLabel("fixedGridRhoAll",objs_rho);
+
+  Handle<edm::View<reco::Candidate> > pfCands;
+  iEvent.getByToken(pfcandsToken_, pfCands);
 
   Handle<vector<flashgg::GenPhotonExtra> > genPhotonsHandle;
   edm::Handle<GenEventInfoProduct> genInfo;
@@ -1009,8 +1014,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  int passLooseSubLeadNHiso = passLooseNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
 	  int passLooseSubLeadPHiso = passLoosePHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
 	  int passLooseSubLeadHoe   = passLooseHoeCuts( subleadScEta, subleadHoE );
+	  // high pt selection (from high mass diphotn)
+	  float rawleadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso();
+	  float rawleadPhoIso = diphoPtr->leadingPhoton()->egPhotonIso();
+	  bool leadHighPtSel = passHighPtSelection(rho, leadPt, leadScEta, leadHoE, leadSieienoZS, rawleadChIso, rawleadPhoIso);
+	  float rawsubleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso();
+	  float rawsubleadPhoIso = diphoPtr->subLeadingPhoton()->egPhotonIso();
+	  bool subLeadHighPtSel = passHighPtSelection(rho, subleadPt, subleadScEta, subleadHoE, subleadSieienoZS, rawsubleadChIso, rawsubleadPhoIso);
 
-      
 	  //int passSubLeadElVeto = 0;
 	  //int numberpassingEV2 = 0;
 	  //if (diphoPtr->subLeadingPhoton()->passElectronVeto()) passSubLeadElVeto = 1;
@@ -1022,11 +1033,24 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  int numpassingmed = 0;
 	  int numpassing = 0;
 	  int numpassingloose = 0;
-	  if (leadSelel || subleadSelel) numpassingmed++;
-	  if (leadTightSelel || subleadTightSelel) numpassing++;
-	  if (leadLooseSelel || subleadLooseSelel) numpassingloose++;
+	  int numpassinghighptid = 0;
+	  if (leadSelel && subleadSelel) numpassingmed++;
+	  if (leadTightSelel && subleadTightSelel) numpassing++;
+	  if (leadLooseSelel &&  subleadLooseSelel) numpassingloose++;
+	  if (leadHighPtSel && subLeadHighPtSel) numpassinghighptid++; 
+
+	  // PF CANDIDATES NOT STORED IN microAOD
+	  //Double_t gaisoval = 0;
+	  //Double_t chisoval = 0;
+	  //for (size_t i = 0; i < pfCands->size(); i++){
+          //  const auto& thepfcand = pfCands->ptrAt(i);
+	    //std::cout << thepfcand->pt() << std::endl;
+            //if (    thepfcand->pdgId()  ==  22 && deltaR(photons_iter->eta(), rndphi, thepfcand->eta(), thepfcand->phi()) <= 0.3) gaisoval += thepfcand->pt();
+            //if (abs(thepfcand->pdgId()) == 211 && deltaR(photons_iter->eta(), rndphi, thepfcand->eta(), thepfcand->phi()) <= 0.3) chisoval += thepfcand->pt();
+          //}
 
 	  if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
+	  //if (!leadHighPtSel || !subLeadHighPtSel) continue; //high pt photon id
 	  selectedDipho.push_back(theDiphoton); 
 	
 	  //// ADDED MVA PHOTON SELECTION
@@ -3062,6 +3086,40 @@ bool NewDiPhoAnalyzer::testPhotonIsolation(int passSieie, int passCHiso, int pas
   else return false;
 }
 
+
+bool NewDiPhoAnalyzer::passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso){
+  bool passes = false;
+
+  // pick up effective area
+  float effarea = 0;
+  if (fabs(sceta) < 0.9)				effarea = 0.17; 
+  else if (fabs(sceta) >= 0.9 && fabs(sceta) <= 1.4442)	effarea = 0.14;
+  else if (fabs(sceta) >= 1.566 && fabs(sceta) < 2.0)	effarea = 0.11;
+  else if (fabs(sceta) >= 2.0 && fabs(sceta) < 2.2)	effarea = 0.14;
+  else if (fabs(sceta) >= 2.2 && fabs(sceta) < 2.5)	effarea = 0.22;
+
+  // pick up kappa value
+  float kappa = 0; 
+  if (fabs(sceta) < 1.4442) kappa = 0.0045;
+  else if (fabs(sceta) > 1.566 && fabs(sceta) < 2.5) kappa = 0.003;
+  // correct the incomming phoiso 
+  float corrphoiso = 2.5 + phoiso -rho*effarea -(kappa*pt);
+
+  // now check the selection
+  if (hoe < 0.05 && chiso < 5){
+    if (fabs(sceta) < 1.4442){
+      if (sieie < 0.0112 && corrphoiso < 2.75){
+        passes = true;
+      }
+    }
+    else if (fabs(sceta) > 1.566 && fabs(sceta) < 2.5){
+      if (sieie < 0.030 && corrphoiso < 2.0){
+        passes = true;
+      }
+    } 
+  }
+  return passes;
+}// end passHighPtSelection
 
 
 bool NewDiPhoAnalyzer::isGammaSelected( float rho, float pt, float sceta, float r9, float chiso, float nhiso, float phoiso, float hoe, float sieie, bool passElectronVeto) {
