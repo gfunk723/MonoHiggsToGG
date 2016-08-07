@@ -12,6 +12,7 @@
 
 void makePlots(TString, TString, UInt_t);
 void getLimits(TFile*, Double_t &, Double_t); 
+void getXsec(TFile*, UInt_t, UInt_t, Double_t &); 
 
 void make2Dlimitplots(){
  
@@ -76,7 +77,7 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
  limits->SetTitle("");
- limits->SetMaximum(10);
+ limits->SetMaximum(2);
 
  // set the lables for the Xaxis (mZp)
  limits->GetXaxis()->SetBinLabel(1,"600");
@@ -138,6 +139,20 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  std::vector< Double_t > limitval800_obs;
  limitval800_obs.resize(nMasses);
 
+ std::vector< Double_t > xsecA0300;
+ xsecA0300.resize(nMasses);
+ std::vector< Double_t > xsecA0400;
+ xsecA0400.resize(nMasses);
+ std::vector< Double_t > xsecA0500;
+ xsecA0500.resize(nMasses);
+ std::vector< Double_t > xsecA0600;
+ xsecA0600.resize(nMasses);
+ std::vector< Double_t > xsecA0700;
+ xsecA0700.resize(nMasses);
+ std::vector< Double_t > xsecA0800;
+ xsecA0800.resize(nMasses);
+
+
  for (UInt_t n=0; n<nMasses; n++){
    getLimits(higgsCombineFiles_MA0300[n],limitval300[n],0.5); 
    getLimits(higgsCombineFiles_MA0400[n],limitval400[n],0.5); 
@@ -154,22 +169,29 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
    getLimits(higgsCombineFiles_MA0700[n],limitval700_obs[n],-1); 
    getLimits(higgsCombineFiles_MA0800[n],limitval800_obs[n],-1); 
 
+   getXsec(theory_gz08,300,mass[n],xsecA0300[n]);
+   getXsec(theory_gz08,400,mass[n],xsecA0400[n]);
+   getXsec(theory_gz08,500,mass[n],xsecA0500[n]);
+   getXsec(theory_gz08,600,mass[n],xsecA0600[n]);
+   getXsec(theory_gz08,700,mass[n],xsecA0700[n]);
+   getXsec(theory_gz08,800,mass[n],xsecA0800[n]);
+
    // fill limit plot
    if (type==0){// expected
-     limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]*2);
-     limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]*2);
-     limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]*2);
-     limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]*2);
-     limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]*2);
-     limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]*2);
+     limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]*2*xsecA0300[n]);
+     limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]*2*xsecA0400[n]);
+     limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]*2*xsecA0500[n]);
+     limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]*2*xsecA0600[n]);
+     limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]*2*xsecA0700[n]);
+     limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]*2*xsecA0800[n]);
    }
    if (type==1){// observed
-     limits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]*2);
-     limits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]*2);
-     limits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]*2);
-     limits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]*2);
-     limits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]*2);
-     limits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2);
+     limits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]*2*xsecA0300[n]);
+     limits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]*2*xsecA0400[n]);
+     limits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]*2*xsecA0500[n]);
+     limits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]*2*xsecA0600[n]);
+     limits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]*2*xsecA0700[n]);
+     limits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2*xsecA0800[n]);
    }
  }
 
@@ -186,6 +208,21 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  delete c;
 
 }
+
+void getXsec(TFile* file, UInt_t mA0, UInt_t mZp, Double_t & xsec){
+
+  TH2F* xsecs = (TH2F*)file->Get("xsec1"); 
+  if (xsecs!=(TH2F*)NULL){
+     Int_t binX = xsecs->GetXaxis()->FindBin(mZp);
+     Int_t binY = xsecs->GetYaxis()->FindBin(mA0);
+     xsec = xsecs->GetBinContent(binX,binY); 
+  }
+  else{
+   xsec = 1;
+   std::cout << "Couldn't find xsec histogram" << std::endl;
+  }
+} 
+
 
 void getLimits(TFile* file, Double_t & Limit, Double_t quantile){
 
