@@ -271,7 +271,7 @@ void makePlots(TString inDir, TString outDir){
 
  //styling
  limit300_obs->GetXaxis()->SetTitle("m_{Z'} [GeV]");
- limit300_obs->GetYaxis()->SetTitle("UL [fb]");
+ limit300_obs->GetYaxis()->SetTitle("UL");
  limit300_obs->SetTitle("");
  limit300_obs->SetMaximum(3000);
  limit300_obs->SetMinimum(0.9);
@@ -330,6 +330,14 @@ void makePlots(TString inDir, TString outDir){
  leg->AddEntry(limit800,"m_{A0}=800GeV","pl");
  leg->SetTextSize(0.03);
 
+ TLine* line1 = new TLine();
+ line1->SetX1(limit300->GetXaxis()->GetXmin());
+ line1->SetY1(1.0);
+ line1->SetX2(limit300->GetXaxis()->GetXmax());
+ line1->SetY2(1.0);
+ line1->SetLineColor(kRed);
+ line1->SetLineWidth(2);
+
  // draw 1D comparisons --expected
  c->Clear();
  c->SetLogy(1);
@@ -340,6 +348,7 @@ void makePlots(TString inDir, TString outDir){
  limit700->Draw("PL SAME");
  limit800->Draw("PL SAME");
  leg->Draw("SAME");
+ line1->Draw("SAME");
  CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.png",outDir.Data()));
@@ -355,6 +364,7 @@ void makePlots(TString inDir, TString outDir){
  limit700_obs->Draw("PL SAME");
  limit800_obs->Draw("PL SAME");
  leg->Draw("SAME");
+ line1->Draw("SAME");
  CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));

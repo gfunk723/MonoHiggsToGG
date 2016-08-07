@@ -151,7 +151,7 @@ CMS_lumi( TPad* pad, bool isSIM, int iPosX )
     {
       if( iPosX==0) 
 	{
-	  posX_ =   l +  relPosX*(1-l-r)+0.05;
+	  posX_ =   l +  relPosX*(1-l-r)+0.1;// 0.05;
 	  posY_ =   1-t+lumiTextOffset*t;
 	}
       latex.SetTextFont(extraTextFont);
