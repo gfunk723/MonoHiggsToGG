@@ -200,12 +200,41 @@ void makePlots(TString inDir, TString outDir){
    obslimits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2*xsecA0800[n]);
  }
 
+ // only pick up the limits that are non-zero
+ Double_t mass_400[7] = {600,800,1000,1200,1400,1700,2000};
+ Double_t mass_500[7] = {800,1000,1200,1400,1700,2000,2500};
+ Double_t mass_600[5] = {1000,1400,1700,2000,2500};
+ Double_t mass_700[6] = {1000,1200,1400,1700,2000,2500};
+ Double_t mass_800[6] = {1000,1200,1400,1700,2000,2500};
+ Double_t limitval_exp_400[8] = {explimit400[0],explimit400[1],explimit400[2],explimit400[3],explimit400[4],explimit400[5],explimit400[6]};
+ Double_t limitval_obs_400[8] = {obslimit400[0],obslimit400[1],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5],obslimit400[6]};
+ 
+ Double_t limitval_exp_500[8] = {explimit500[1],explimit500[2],explimit500[3],explimit500[4],explimit500[5],explimit500[6],explimit500[7]};
+ Double_t limitval_obs_500[8] = {obslimit500[1],obslimit500[2],obslimit500[3],obslimit500[4],obslimit500[5],obslimit500[6],obslimit500[7]};
+
+ Double_t limitval_exp_600[8] = {explimit600[2],explimit600[4],explimit600[5],explimit600[6],explimit600[7]};
+ Double_t limitval_obs_600[8] = {obslimit600[2],obslimit600[4],obslimit600[5],obslimit600[6],obslimit600[7]};
+
+ Double_t limitval_exp_700[8] = {explimit700[2],explimit700[3],explimit700[4],explimit700[5],explimit700[6],explimit700[7]};
+ Double_t limitval_obs_700[8] = {obslimit700[2],obslimit700[3],obslimit700[4],obslimit700[5],obslimit700[6],obslimit700[7]};
+
+ Double_t limitval_exp_800[8] = {explimit800[2],explimit800[3],explimit800[4],explimit800[5],explimit800[6],explimit800[7]};
+ Double_t limitval_obs_800[8] = {obslimit800[2],obslimit800[3],obslimit800[4],obslimit800[5],obslimit800[6],obslimit800[7]};
+
  limit300 = new TGraph(nMasses,mass,explimit300);
- limit400 = new TGraph(nMasses,mass,explimit400);
- limit500 = new TGraph(nMasses,mass,explimit500);
- limit600 = new TGraph(nMasses,mass,explimit600);
- limit700 = new TGraph(nMasses,mass,explimit700);
- limit800 = new TGraph(nMasses,mass,explimit800);
+ limit400 = new TGraph(7,mass_400,limitval_exp_400);
+ limit500 = new TGraph(7,mass_500,limitval_exp_500);
+ limit600 = new TGraph(5,mass_600,limitval_exp_600);
+ limit700 = new TGraph(6,mass_700,limitval_exp_700);
+ limit800 = new TGraph(6,mass_800,limitval_exp_800);
+ 
+ limit300_obs = new TGraph(nMasses,mass,obslimit300);
+ limit400_obs = new TGraph(7,mass_400,limitval_obs_400);
+ limit500_obs = new TGraph(7,mass_500,limitval_obs_500);
+ limit600_obs = new TGraph(5,mass_600,limitval_obs_600);
+ limit700_obs = new TGraph(6,mass_700,limitval_obs_700);
+ limit800_obs = new TGraph(6,mass_800,limitval_obs_800);
+
 
  //styling
  limit300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
@@ -239,13 +268,6 @@ void makePlots(TString inDir, TString outDir){
  limit700->SetMarkerColor(kYellow);
  limit800->SetMarkerColor(kMagenta);
 
- 
- limit300_obs = new TGraph(nMasses,mass,obslimit300);
- limit400_obs = new TGraph(nMasses,mass,obslimit400);
- limit500_obs = new TGraph(nMasses,mass,obslimit500);
- limit600_obs = new TGraph(nMasses,mass,obslimit600);
- limit700_obs = new TGraph(nMasses,mass,obslimit700);
- limit800_obs = new TGraph(nMasses,mass,obslimit800);
 
  //styling
  limit300_obs->GetXaxis()->SetTitle("m_{Z'} [GeV]");
