@@ -232,6 +232,61 @@ void CardMaker::MakeCards(){
     SampleNumber++;
   }
 
+  // make a histogram to store eff. values for easy plotting
+  TFile* newFile = new TFile(Form("%s%s/output_eff.root",fOutDir.Data(),fOut.Data()),"RECREATE");
+  TH2D* effhisto = new TH2D("effhisto","effhisto",2300,400,2700,600,200,800); //x=Zp,y=A0,weight=eff
+  Double_t mA0[6] = {300,400,500,600,700,800};
+  Double_t mZp[8] = {600,800,1000,1200,1400,1700,2000,2500};
+  Double_t binX = 0;
+  Double_t binY = 0;
+  Double_t wght = 0;
+  Double_t erro = 0;
+  for (UInt_t a0=0; a0<6; a0++){
+     for (UInt_t zp=0; zp<8; zp++){
+       binY = mA0[a0];
+       binX = mZp[zp];
+       if (a0==0){
+         wght = Dbl_Eff_Sig[zp][0];    
+         erro = Dbl_Error_Eff_Sig[zp][0];
+       }
+       else if (a0==1 && zp!=7){//skip a0400,zp2500
+         wght = Dbl_Eff_Sig[8+zp][0];    
+         erro = Dbl_Error_Eff_Sig[8+zp][0];
+       }
+       else if (a0==2 && zp!=0 ){//skip a0500,zp600
+         wght = Dbl_Eff_Sig[14+zp][0];    
+         erro = Dbl_Error_Eff_Sig[14+zp][0];
+       }
+       else if (a0==3 && zp==2){//skip a0600,zp600 & zp800
+         wght = Dbl_Eff_Sig[22][0];    
+         erro = Dbl_Error_Eff_Sig[22][0];
+       }
+       else if (a0==3 && zp>=4){//skip a0600,zp1200
+         wght = Dbl_Eff_Sig[19+zp][0];    
+         erro = Dbl_Error_Eff_Sig[19+zp][0];
+       }
+       else if (a0==4 && zp!=0 && zp!=1){//skip a0700,zp600 * zp800
+         wght = Dbl_Eff_Sig[25+zp][0];    
+         erro = Dbl_Error_Eff_Sig[25+zp][0];
+       }
+       else if (a0==5 && zp!=0 && zp!=1){//skip a0800,zp600 * zp800
+         wght = Dbl_Eff_Sig[31+zp][0];    
+         erro = Dbl_Error_Eff_Sig[31+zp][0];
+       }
+       else{ //ones that were skipped
+	 wght = 0;
+	 erro = 0;
+       }
+	
+       effhisto->Fill(binX,binY,wght);
+       effhisto->SetBinError(binX,binY,erro);
+     }
+  }
+  newFile->cd();
+  TCanvas* c = new TCanvas();
+  c->cd();
+  effhisto->Write();
+
   // Write out signal yield and efficiency tables
   CardMaker::MakeYieldAndEfficiencyTables( Dbl_Results_ND_Sig , Dbl_Errors_Sig, Dbl_Eff_Sig, Dbl_Error_Eff_Sig);
 
@@ -618,6 +673,7 @@ void CardMaker::MakeYieldAndEfficiencyTables( const DblVecVec ND_Sig, const DblV
      fOutResultsGrid << "\\end{tabular}" <<std::endl;
      fOutResultsGrid << "\\end{table}" <<std::endl;
      // end yield table
+
 
      // setup efficiency table
      fOutResultsGrid << "\% Summary of Signal Efficiencies" << std::endl;
