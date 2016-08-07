@@ -17,8 +17,9 @@ void make2Dlimitplots(){
  
   cout << "Making 2D limit plots" << endl;
 
-  TString inDir = "~/private/HiggsCombine/CMSSW_7_1_5/src/diphotons/Analysis/macros/";
-  TString outDir = "~/www/Plots/25ns_Limits_76X/";
+  TString inDir = "~soffi/public/4Margaret/2Dinputs/";
+  //TString inDir = "~/private/HiggsCombine/CMSSW_7_1_5/src/diphotons/Analysis/macros/";
+  TString outDir = "~/www/Plots/25ns_Limits_76X_2DResults/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   // makePlots(inDir, outDir, type)
@@ -59,13 +60,16 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
   higgsCombineFiles_MA0800.resize(nMasses);
 
   for (UInt_t n=0; n<nMasses; n++){
-    higgsCombineFiles_MA0300[n] = new TFile(Form("%sCards_2HDM_76X_A0300/higgsCombineTest.HybridNew.mH%i.mA0300.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0400[n] = new TFile(Form("%sCards_2HDM_76X_A0400/higgsCombineTest.HybridNew.mH%i.mA0400.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0500[n] = new TFile(Form("%sCards_2HDM_76X_A0500/higgsCombineTest.HybridNew.mH%i.mA0500.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0600[n] = new TFile(Form("%sCards_2HDM_76X_A0600/higgsCombineTest.HybridNew.mH%i.mA0600.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0700[n] = new TFile(Form("%sCards_2HDM_76X_A0700/higgsCombineTest.HybridNew.mH%i.mA0700.root",inDir.Data(),mass[n]));
-    higgsCombineFiles_MA0800[n] = new TFile(Form("%sCards_2HDM_76X_A0800/higgsCombineTest.HybridNew.mH%i.mA0800.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0300[n] = new TFile(Form("%sMA300/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0400[n] = new TFile(Form("%sMA400/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0500[n] = new TFile(Form("%sMA500/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0600[n] = new TFile(Form("%sMA600/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0700[n] = new TFile(Form("%sMA700/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),mass[n]));
+    higgsCombineFiles_MA0800[n] = new TFile(Form("%sMA800/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),mass[n]));
   }
+
+ // pick up theory xsec
+ TFile* theory_gz08 = new TFile("ScanPlot_gz08.root");
 
  // setup output plot
  TH2D * limits = new TH2D("limits","limits",8,0,8,6,0,6);
@@ -121,21 +125,52 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  std::vector< Double_t > limitval800;
  limitval800.resize(nMasses);
 
+ std::vector< Double_t > limitval300_obs;
+ limitval300_obs.resize(nMasses);
+ std::vector< Double_t > limitval400_obs;
+ limitval400_obs.resize(nMasses);
+ std::vector< Double_t > limitval500_obs;
+ limitval500_obs.resize(nMasses);
+ std::vector< Double_t > limitval600_obs;
+ limitval600_obs.resize(nMasses);
+ std::vector< Double_t > limitval700_obs;
+ limitval700_obs.resize(nMasses);
+ std::vector< Double_t > limitval800_obs;
+ limitval800_obs.resize(nMasses);
+
  for (UInt_t n=0; n<nMasses; n++){
-   getLimits(higgsCombineFiles_MA0300[n],limitval300[n],quantile); 
-   getLimits(higgsCombineFiles_MA0400[n],limitval400[n],quantile); 
-   getLimits(higgsCombineFiles_MA0500[n],limitval500[n],quantile); 
-   getLimits(higgsCombineFiles_MA0600[n],limitval600[n],quantile); 
-   getLimits(higgsCombineFiles_MA0700[n],limitval700[n],quantile); 
-   getLimits(higgsCombineFiles_MA0800[n],limitval800[n],quantile); 
+   getLimits(higgsCombineFiles_MA0300[n],limitval300[n],0.5); 
+   getLimits(higgsCombineFiles_MA0400[n],limitval400[n],0.5); 
+   getLimits(higgsCombineFiles_MA0500[n],limitval500[n],0.5); 
+   getLimits(higgsCombineFiles_MA0600[n],limitval600[n],0.5); 
+   getLimits(higgsCombineFiles_MA0700[n],limitval700[n],0.5); 
+   getLimits(higgsCombineFiles_MA0800[n],limitval800[n],0.5); 
+   //std::cout<<n<<" "<<limitval300[n]<< " "<<limitval400[n]<<limitval500[n]<< " "<<limitval600[n] <<limitval700[n]<< " "<<limitval800[n]<<std::endl;
+
+   getLimits(higgsCombineFiles_MA0300[n],limitval300_obs[n],-1); 
+   getLimits(higgsCombineFiles_MA0400[n],limitval400_obs[n],-1); 
+   getLimits(higgsCombineFiles_MA0500[n],limitval500_obs[n],-1); 
+   getLimits(higgsCombineFiles_MA0600[n],limitval600_obs[n],-1); 
+   getLimits(higgsCombineFiles_MA0700[n],limitval700_obs[n],-1); 
+   getLimits(higgsCombineFiles_MA0800[n],limitval800_obs[n],-1); 
 
    // fill limit plot
-   limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]);
-   limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]);
-   limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]);
-   limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]);
-   limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]);
-   limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]);
+   if (type==0){// expected
+     limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]*2);
+     limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]*2);
+     limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]*2);
+     limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]*2);
+     limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]*2);
+     limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]*2);
+   }
+   if (type==1){// observed
+     limits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]*2);
+     limits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]*2);
+     limits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]*2);
+     limits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]*2);
+     limits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]*2);
+     limits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2);
+   }
  }
 
 
@@ -146,6 +181,7 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  CMS_lumi(c,false,7);
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM%s.png",outDir.Data(),typeQuantile.Data()));
+ c->SaveAs(Form("%s/limits2D_2HDM%s.pdf",outDir.Data(),typeQuantile.Data()));
 
  delete c;
 
