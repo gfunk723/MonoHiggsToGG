@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vector>
 
-void makePlots(TString, TString, UInt_t);
+void makePlots(TString, TString);
 void getLimits(TFile*, Double_t &, Double_t); 
 void getXsec(TFile*, UInt_t, UInt_t, Double_t &); 
 
@@ -23,15 +23,12 @@ void make2Dlimitplots(){
   TString outDir = "~/www/Plots/25ns_Limits_76X_2DResults/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
-  // makePlots(inDir, outDir, type)
-  // type of limit plot to make (expected or observed limits) 0=Exp,1=Obs
-  makePlots(inDir, outDir, 0);
-  makePlots(inDir, outDir, 1);
+  makePlots(inDir, outDir);
 
 }
 
 
-void makePlots(TString inDir, TString outDir, UInt_t type){
+void makePlots(TString inDir, TString outDir){
 
   // mZp masses 
   std::vector<UInt_t> mass;
@@ -78,6 +75,7 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
  limits->SetTitle("");
  limits->SetMaximum(2);
+ limits->SetMarkerSize(2);
 
  // set the lables for the Xaxis (mZp)
  limits->GetXaxis()->SetBinLabel(1,"600");
@@ -97,21 +95,14 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  limits->GetYaxis()->SetBinLabel(5,"700");
  limits->GetYaxis()->SetBinLabel(6,"800");
 
+ // setup output observed plot
+ TH2D * obslimits = (TH2D*) limits->Clone();
+
  // setup canvas
  TCanvas * c = new TCanvas("c","");
  c->cd();
  gStyle->SetOptStat(0);
-
- Double_t quantile=0;
- TString  typeQuantile="";
- if (type==0){
-   quantile=0.5;
-   typeQuantile="_exp";
- }
- if (type==1){
-   quantile=-1;
-   typeQuantile="_obs";
- }
+ gStyle->SetPaintTextFormat("2.4f");
 
  std::vector< Double_t > limitval300;
  limitval300.resize(nMasses);
@@ -177,24 +168,21 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
    getXsec(theory_gz08,800,mass[n],xsecA0800[n]);
 
    // fill limit plot
-   if (type==0){// expected
-     limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]*2*xsecA0300[n]);
-     limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]*2*xsecA0400[n]);
-     limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]*2*xsecA0500[n]);
-     limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]*2*xsecA0600[n]);
-     limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]*2*xsecA0700[n]);
-     limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]*2*xsecA0800[n]);
-   }
-   if (type==1){// observed
-     limits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]*2*xsecA0300[n]);
-     limits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]*2*xsecA0400[n]);
-     limits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]*2*xsecA0500[n]);
-     limits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]*2*xsecA0600[n]);
-     limits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]*2*xsecA0700[n]);
-     limits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2*xsecA0800[n]);
-   }
+   limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]*2*xsecA0300[n]);
+   limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]*2*xsecA0400[n]);
+   limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]*2*xsecA0500[n]);
+   limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]*2*xsecA0600[n]);
+   limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]*2*xsecA0700[n]);
+   limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]*2*xsecA0800[n]);
+   
+   obslimits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]*2*xsecA0300[n]);
+   obslimits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]*2*xsecA0400[n]);
+   obslimits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]*2*xsecA0500[n]);
+   obslimits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]*2*xsecA0600[n]);
+   obslimits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]*2*xsecA0700[n]);
+   obslimits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2*xsecA0800[n]);
+   
  }
-
 
  // draw plot
  limits->Draw("COLZ TEXT"); 
@@ -202,10 +190,69 @@ void makePlots(TString inDir, TString outDir, UInt_t type){
  // save plot
  CMS_lumi(c,false,7);
  c->cd();
- c->SaveAs(Form("%s/limits2D_2HDM%s.png",outDir.Data(),typeQuantile.Data()));
- c->SaveAs(Form("%s/limits2D_2HDM%s.pdf",outDir.Data(),typeQuantile.Data()));
+ c->SaveAs(Form("%s/limits2D_2HDM_exp.png",outDir.Data()));
+ c->SaveAs(Form("%s/limits2D_2HDM_exp.pdf",outDir.Data()));
+
+ obslimits->Draw("COLZ TEXT"); 
+
+ // save plot
+ CMS_lumi(c,false,7);
+ c->cd();
+ c->SaveAs(Form("%s/limits2D_2HDM_obs.png",outDir.Data()));
+ c->SaveAs(Form("%s/limits2D_2HDM_obs.pdf",outDir.Data()));
 
  delete c;
+
+ TCanvas* cboth = new TCanvas("cboth","");
+ cboth->cd();
+ gStyle->SetOptStat(0);
+ gStyle->SetPaintTextFormat("2.4f");
+
+ TPad* p1 = new TPad("p1","",0,0.12,1,0.98);
+ p1->Draw();
+ p1->cd();
+
+ limits->SetMarkerSize(2);
+ limits->Draw("TEXT SAME"); 
+ p1->Update();
+
+ Double_t x1,y1,x2,y2;
+ p1->GetRange(x1,y1,x2,y2);
+
+ cboth->cd();
+ TPad* p2 = new TPad("p2","",0,0.09,1,0.95);
+ p2->SetFillStyle(0);
+ p2->SetFillColor(0);
+ p2->Draw();
+ p2->cd();
+ p2->Range(x1,y1,x2,y2);
+
+ obslimits->GetXaxis()->SetTitle("");
+ obslimits->GetYaxis()->SetTitle("");
+ obslimits->SetTitle("");
+ obslimits->GetXaxis()->SetBinLabel(1,"");
+ obslimits->GetXaxis()->SetBinLabel(2,"");
+ obslimits->GetXaxis()->SetBinLabel(3,"");
+ obslimits->GetXaxis()->SetBinLabel(4,"");
+ obslimits->GetXaxis()->SetBinLabel(5,"");
+ obslimits->GetXaxis()->SetBinLabel(6,"");
+ obslimits->GetXaxis()->SetBinLabel(7,"");
+ obslimits->GetXaxis()->SetBinLabel(8,"");
+ obslimits->GetYaxis()->SetBinLabel(1,"");
+ obslimits->GetYaxis()->SetBinLabel(2,"");
+ obslimits->GetYaxis()->SetBinLabel(3,"");
+ obslimits->GetYaxis()->SetBinLabel(4,"");
+ obslimits->GetYaxis()->SetBinLabel(5,"");
+ obslimits->GetYaxis()->SetBinLabel(6,"");
+
+ obslimits->Draw("TEXT SAME");
+ p2->Update();
+
+ CMS_lumi(cboth,false,7);
+ cboth->cd();
+ c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
+ c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
+ delete cboth;
 
 }
 
