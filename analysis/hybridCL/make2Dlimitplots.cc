@@ -82,7 +82,7 @@ void makePlots(TString inDir, TString outDir){
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
  limits->SetTitle("");
- limits->SetMaximum(2);
+ limits->SetMaximum(3000);
  limits->SetMarkerSize(2);
 
  // set the lables for the Xaxis (mZp)
@@ -110,7 +110,7 @@ void makePlots(TString inDir, TString outDir){
  TCanvas * c = new TCanvas("c","");
  c->cd();
  gStyle->SetOptStat(0);
- gStyle->SetPaintTextFormat("2.4f");
+ gStyle->SetPaintTextFormat("2.1f");
 
  Double_t limitval300[nMasses];
  Double_t limitval400[nMasses];
@@ -170,34 +170,34 @@ void makePlots(TString inDir, TString outDir){
    getXsec(theory_gz08,700,(Int_t)mass[n],xsecA0700[n]);
    getXsec(theory_gz08,800,(Int_t)mass[n],xsecA0800[n]);
 
-   explimit300[n] = limitval300[n]*2*xsecA0300[n];
-   explimit400[n] = limitval400[n]*2*xsecA0400[n];
-   explimit500[n] = limitval500[n]*2*xsecA0500[n];
-   explimit600[n] = limitval600[n]*2*xsecA0600[n];
-   explimit700[n] = limitval700[n]*2*xsecA0700[n];
-   explimit800[n] = limitval800[n]*2*xsecA0800[n];
+   explimit300[n] = limitval300[n]/xsecA0300[n];
+   explimit400[n] = limitval400[n]/xsecA0400[n];
+   explimit500[n] = limitval500[n]/xsecA0500[n];
+   explimit600[n] = limitval600[n]/xsecA0600[n];
+   explimit700[n] = limitval700[n]/xsecA0700[n];
+   explimit800[n] = limitval800[n]/xsecA0800[n];
 
-   obslimit300[n] = limitval300_obs[n]*2*xsecA0300[n];
-   obslimit400[n] = limitval400_obs[n]*2*xsecA0400[n];
-   obslimit500[n] = limitval500_obs[n]*2*xsecA0500[n];
-   obslimit600[n] = limitval600_obs[n]*2*xsecA0600[n];
-   obslimit700[n] = limitval700_obs[n]*2*xsecA0700[n];
-   obslimit800[n] = limitval800_obs[n]*2*xsecA0800[n];
+   obslimit300[n] = limitval300_obs[n]/xsecA0300[n];
+   obslimit400[n] = limitval400_obs[n]/xsecA0400[n];
+   obslimit500[n] = limitval500_obs[n]/xsecA0500[n];
+   obslimit600[n] = limitval600_obs[n]/xsecA0600[n];
+   obslimit700[n] = limitval700_obs[n]/xsecA0700[n];
+   obslimit800[n] = limitval800_obs[n]/xsecA0800[n];
 
    // fill limit plot
-   limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]*2*xsecA0300[n]);
-   limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]*2*xsecA0400[n]);
-   limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]*2*xsecA0500[n]);
-   limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]*2*xsecA0600[n]);
-   limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]*2*xsecA0700[n]);
-   limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]*2*xsecA0800[n]);
+   limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]/xsecA0300[n]);
+   limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]/xsecA0400[n]);
+   limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]/xsecA0500[n]);
+   limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]/xsecA0600[n]);
+   limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]/xsecA0700[n]);
+   limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]/xsecA0800[n]);
 
-   obslimits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]*2*xsecA0300[n]);
-   obslimits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]*2*xsecA0400[n]);
-   obslimits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]*2*xsecA0500[n]);
-   obslimits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]*2*xsecA0600[n]);
-   obslimits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]*2*xsecA0700[n]);
-   obslimits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]*2*xsecA0800[n]);
+   obslimits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]/xsecA0300[n]);
+   obslimits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]/xsecA0400[n]);
+   obslimits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]/xsecA0500[n]);
+   obslimits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]/xsecA0600[n]);
+   obslimits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]/xsecA0700[n]);
+   obslimits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]/xsecA0800[n]);
  }
 
  // only pick up the limits that are non-zero
@@ -238,10 +238,10 @@ void makePlots(TString inDir, TString outDir){
 
  //styling
  limit300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
- limit300->GetYaxis()->SetTitle("UL [fb]");
+ limit300->GetYaxis()->SetTitle("UL");
  limit300->SetTitle("");
- limit300->SetMaximum(2);
- limit300->SetMinimum(0.001);
+ limit300->SetMaximum(3000);
+ limit300->SetMinimum(0.9);
  limit300->SetLineWidth(2);
  limit400->SetLineWidth(2);
  limit500->SetLineWidth(2);
@@ -273,8 +273,8 @@ void makePlots(TString inDir, TString outDir){
  limit300_obs->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limit300_obs->GetYaxis()->SetTitle("UL [fb]");
  limit300_obs->SetTitle("");
- limit300_obs->SetMaximum(2);
- limit300_obs->SetMinimum(0.001);
+ limit300_obs->SetMaximum(3000);
+ limit300_obs->SetMinimum(0.9);
  limit300_obs->SetLineWidth(2);
  limit400_obs->SetLineWidth(2);
  limit500_obs->SetLineWidth(2);
@@ -304,7 +304,7 @@ void makePlots(TString inDir, TString outDir){
  // draw expected limits plot
  limits->Draw("COLZ TEXT"); 
  // save plot
- CMS_lumi(c,false,7);
+ CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_exp.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_exp.pdf",outDir.Data()));
@@ -312,12 +312,12 @@ void makePlots(TString inDir, TString outDir){
  // draw observed limits plot
  obslimits->Draw("COLZ TEXT"); 
  // save plot
- CMS_lumi(c,false,7);
+ CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_obs.pdf",outDir.Data()));
 
- TLegend* leg = new TLegend(0.7,0.65,0.9,0.85); // (x1,y1,x2,y2)
+ TLegend* leg = new TLegend(0.7,0.2,0.9,0.4); // (x1,y1,x2,y2)
  leg->SetBorderSize(4);
  leg->SetLineWidth(2);
  //leg->SetFillColor(0);
@@ -340,7 +340,7 @@ void makePlots(TString inDir, TString outDir){
  limit700->Draw("PL SAME");
  limit800->Draw("PL SAME");
  leg->Draw("SAME");
- CMS_lumi(c,false,7);
+ CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.pdf",outDir.Data()));
@@ -355,7 +355,7 @@ void makePlots(TString inDir, TString outDir){
  limit700_obs->Draw("PL SAME");
  limit800_obs->Draw("PL SAME");
  leg->Draw("SAME");
- CMS_lumi(c,false,7);
+ CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.pdf",outDir.Data()));
@@ -367,14 +367,14 @@ void makePlots(TString inDir, TString outDir){
  TCanvas* cboth = new TCanvas("cboth","");
  cboth->cd();
  gStyle->SetOptStat(0);
- gStyle->SetPaintTextFormat("2.4f");
+ gStyle->SetPaintTextFormat("2.1f");
 
  TPad* p1 = new TPad("p1","",0,0.12,1,0.98);
  p1->Draw();
  p1->cd();
 
  limits->SetMarkerSize(2);
- limits->Draw("TEXT SAME"); 
+ limits->Draw("TEXT COLZ SAME"); 
  p1->Update();
 
  Double_t x1,y1,x2,y2;
@@ -409,7 +409,7 @@ void makePlots(TString inDir, TString outDir){
  obslimits->Draw("TEXT SAME");
  p2->Update();
 
- CMS_lumi(cboth,false,7);
+ CMS_lumi(cboth,false,0);
  cboth->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
