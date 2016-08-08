@@ -13,6 +13,7 @@
 void makePlots(TString, TString);
 void getLimits(TFile*, Double_t &, Double_t); 
 void getXsec(TFile*, UInt_t, UInt_t, Double_t &); 
+void getEff(TFile*, UInt_t, UInt_t, Double_t &, Double_t &); 
 
 void make2Dlimitplots(){
  
@@ -60,6 +61,9 @@ void makePlots(TString inDir, TString outDir){
 
  // pick up theory xsec
  TFile* theory_gz08 = new TFile("ScanPlot_gz08.root");
+
+ // pick up efficiencies 
+ TFile* eff_file = new TFile("output_eff.root");
 
  // setup 1D plots - expected
  TGraph* limit300;
@@ -147,6 +151,19 @@ void makePlots(TString inDir, TString outDir){
  Double_t obslimit700[nMasses];
  Double_t obslimit800[nMasses];
 
+ Double_t eff_A0300[nMasses];
+ Double_t eff_A0400[nMasses];
+ Double_t eff_A0500[nMasses];
+ Double_t eff_A0600[nMasses];
+ Double_t eff_A0700[nMasses];
+ Double_t eff_A0800[nMasses];
+ Double_t efferr_A0300[nMasses];
+ Double_t efferr_A0400[nMasses];
+ Double_t efferr_A0500[nMasses];
+ Double_t efferr_A0600[nMasses];
+ Double_t efferr_A0700[nMasses];
+ Double_t efferr_A0800[nMasses];
+
  for (Int_t n=0; n<nMasses; n++){
    getLimits(higgsCombineFiles_MA0300[n],limitval300[n],0.5); 
    getLimits(higgsCombineFiles_MA0400[n],limitval400[n],0.5); 
@@ -169,6 +186,13 @@ void makePlots(TString inDir, TString outDir){
    getXsec(theory_gz08,600,(Int_t)mass[n],xsecA0600[n]);
    getXsec(theory_gz08,700,(Int_t)mass[n],xsecA0700[n]);
    getXsec(theory_gz08,800,(Int_t)mass[n],xsecA0800[n]);
+
+   getEff(eff_file,300,(Int_t)mass[n],eff_A0300[n],efferr_A0300[n]);
+   getEff(eff_file,400,(Int_t)mass[n],eff_A0400[n],efferr_A0400[n]);
+   getEff(eff_file,500,(Int_t)mass[n],eff_A0500[n],efferr_A0500[n]);
+   getEff(eff_file,600,(Int_t)mass[n],eff_A0600[n],efferr_A0600[n]);
+   getEff(eff_file,700,(Int_t)mass[n],eff_A0700[n],efferr_A0700[n]);
+   getEff(eff_file,800,(Int_t)mass[n],eff_A0800[n],efferr_A0800[n]);
 
    explimit300[n] = limitval300[n]/xsecA0300[n];
    explimit400[n] = limitval400[n]/xsecA0400[n];
@@ -206,20 +230,31 @@ void makePlots(TString inDir, TString outDir){
  Double_t mass_600[5] = {1000,1400,1700,2000,2500};
  Double_t mass_700[6] = {1000,1200,1400,1700,2000,2500};
  Double_t mass_800[6] = {1000,1200,1400,1700,2000,2500};
- Double_t limitval_exp_400[8] = {explimit400[0],explimit400[1],explimit400[2],explimit400[3],explimit400[4],explimit400[5],explimit400[6]};
- Double_t limitval_obs_400[8] = {obslimit400[0],obslimit400[1],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5],obslimit400[6]};
- 
- Double_t limitval_exp_500[8] = {explimit500[1],explimit500[2],explimit500[3],explimit500[4],explimit500[5],explimit500[6],explimit500[7]};
- Double_t limitval_obs_500[8] = {obslimit500[1],obslimit500[2],obslimit500[3],obslimit500[4],obslimit500[5],obslimit500[6],obslimit500[7]};
-
- Double_t limitval_exp_600[8] = {explimit600[2],explimit600[4],explimit600[5],explimit600[6],explimit600[7]};
- Double_t limitval_obs_600[8] = {obslimit600[2],obslimit600[4],obslimit600[5],obslimit600[6],obslimit600[7]};
-
- Double_t limitval_exp_700[8] = {explimit700[2],explimit700[3],explimit700[4],explimit700[5],explimit700[6],explimit700[7]};
- Double_t limitval_obs_700[8] = {obslimit700[2],obslimit700[3],obslimit700[4],obslimit700[5],obslimit700[6],obslimit700[7]};
-
- Double_t limitval_exp_800[8] = {explimit800[2],explimit800[3],explimit800[4],explimit800[5],explimit800[6],explimit800[7]};
- Double_t limitval_obs_800[8] = {obslimit800[2],obslimit800[3],obslimit800[4],obslimit800[5],obslimit800[6],obslimit800[7]};
+ // mA0 400
+ Double_t limitval_exp_400[7] = {explimit400[0],explimit400[1],explimit400[2],explimit400[3],explimit400[4],explimit400[5],explimit400[6]};
+ Double_t limitval_obs_400[7] = {obslimit400[0],obslimit400[1],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5],obslimit400[6]};
+ Double_t effval_400[7] = {eff_A0400[0],eff_A0400[1],eff_A0400[2],eff_A0400[3],eff_A0400[4],eff_A0400[5],eff_A0400[6]};
+ Double_t efferr_400[7] = {efferr_A0400[0],efferr_A0400[1],efferr_A0400[2],efferr_A0400[3],efferr_A0400[4],efferr_A0400[5],efferr_A0400[6]};
+ // mA0 500
+ Double_t limitval_exp_500[7] = {explimit500[1],explimit500[2],explimit500[3],explimit500[4],explimit500[5],explimit500[6],explimit500[7]};
+ Double_t limitval_obs_500[7] = {obslimit500[1],obslimit500[2],obslimit500[3],obslimit500[4],obslimit500[5],obslimit500[6],obslimit500[7]};
+ Double_t effval_500[7] = {eff_A0500[1],eff_A0500[2],eff_A0500[3],eff_A0500[4],eff_A0500[5],eff_A0500[6],eff_A0500[7]};
+ Double_t efferr_500[7] = {efferr_A0500[1],efferr_A0500[2],efferr_A0500[3],efferr_A0500[4],efferr_A0500[5],efferr_A0500[6],efferr_A0500[7]};
+ // mA0 600
+ Double_t limitval_exp_600[5] = {explimit600[2],explimit600[4],explimit600[5],explimit600[6],explimit600[7]};
+ Double_t limitval_obs_600[5] = {obslimit600[2],obslimit600[4],obslimit600[5],obslimit600[6],obslimit600[7]};
+ Double_t effval_600[5] = {eff_A0600[2],eff_A0600[4],eff_A0600[5],eff_A0600[6],eff_A0600[7]};
+ Double_t efferr_600[5] = {efferr_A0600[2],efferr_A0600[4],efferr_A0600[5],efferr_A0600[6],efferr_A0600[7]};
+ // mA0 700
+ Double_t limitval_exp_700[6] = {explimit700[2],explimit700[3],explimit700[4],explimit700[5],explimit700[6],explimit700[7]};
+ Double_t limitval_obs_700[6] = {obslimit700[2],obslimit700[3],obslimit700[4],obslimit700[5],obslimit700[6],obslimit700[7]};
+ Double_t effval_700[6] = {eff_A0700[2],eff_A0700[3],eff_A0700[4],eff_A0700[5],eff_A0700[6],eff_A0700[7]};
+ Double_t efferr_700[6] = {efferr_A0700[2],efferr_A0700[3],efferr_A0700[4],efferr_A0700[5],efferr_A0700[6],efferr_A0700[7]};
+ // mA0 800
+ Double_t limitval_exp_800[6] = {explimit800[2],explimit800[3],explimit800[4],explimit800[5],explimit800[6],explimit800[7]};
+ Double_t limitval_obs_800[6] = {obslimit800[2],obslimit800[3],obslimit800[4],obslimit800[5],obslimit800[6],obslimit800[7]};
+ Double_t effval_800[6] = {eff_A0800[2],eff_A0800[3],eff_A0800[4],eff_A0800[5],eff_A0800[6],eff_A0800[7]};
+ Double_t efferr_800[6] = {efferr_A0800[2],efferr_A0800[3],efferr_A0800[4],efferr_A0800[5],efferr_A0800[6],efferr_A0800[7]};
 
  limit300 = new TGraph(nMasses,mass,explimit300);
  limit400 = new TGraph(7,mass_400,limitval_exp_400);
@@ -235,6 +270,18 @@ void makePlots(TString inDir, TString outDir){
  limit700_obs = new TGraph(6,mass_700,limitval_obs_700);
  limit800_obs = new TGraph(6,mass_800,limitval_obs_800);
 
+ //TGraphErrors* eff300 = new TGraphErrors(nMasses,mass,eff_A0300,0,efferr_A0300);
+ //TGraphErrors* eff400 = new TGraphErrors(7,mass_400,effval_400,0,efferr_400);
+ //TGraphErrors* eff500 = new TGraphErrors(7,mass_500,effval_500,0,efferr_500);
+ //TGraphErrors* eff600 = new TGraphErrors(5,mass_600,effval_600,0,efferr_600);
+ //TGraphErrors* eff700 = new TGraphErrors(6,mass_700,effval_700,0,efferr_700);
+ //TGraphErrors* eff800 = new TGraphErrors(6,mass_800,effval_800,0,efferr_800);
+ TGraph* eff300 = new TGraph(nMasses,mass,eff_A0300);
+ TGraph* eff400 = new TGraph(7,mass_400,effval_400);
+ TGraph* eff500 = new TGraph(7,mass_500,effval_500);
+ TGraph* eff600 = new TGraph(5,mass_600,effval_600);
+ TGraph* eff700 = new TGraph(6,mass_700,effval_700);
+ TGraph* eff800 = new TGraph(6,mass_800,effval_800);
 
  //styling
  limit300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
@@ -301,6 +348,39 @@ void makePlots(TString inDir, TString outDir){
  limit700_obs->SetLineColor(kYellow);
  limit800_obs->SetLineColor(kMagenta);
  
+ //styling
+ eff300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
+ eff300->GetYaxis()->SetTitle("Efficiency");
+ eff300->SetTitle("");
+ eff300->SetMaximum(1.0);
+ eff300->SetMinimum(0.0);
+ eff300->SetLineWidth(2);
+ eff400->SetLineWidth(2);
+ eff500->SetLineWidth(2);
+ eff600->SetLineWidth(2);
+ eff700->SetLineWidth(2);
+ eff800->SetLineWidth(2);
+ eff300->SetMarkerStyle(8);
+ eff400->SetMarkerStyle(8);
+ eff500->SetMarkerStyle(8);
+ eff600->SetMarkerStyle(8);
+ eff700->SetMarkerStyle(8);
+ eff800->SetMarkerStyle(8);
+ // set up colors to match Hbb
+ eff300->SetLineColor(kBlack);
+ eff400->SetLineColor(kCyan);
+ eff500->SetLineColor(kGreen);
+ eff600->SetLineColor(kBlue);
+ eff700->SetLineColor(kYellow);
+ eff800->SetLineColor(kMagenta);
+ eff300->SetMarkerColor(kBlack);
+ eff400->SetMarkerColor(kCyan);
+ eff500->SetMarkerColor(kGreen);
+ eff600->SetMarkerColor(kBlue);
+ eff700->SetMarkerColor(kYellow);
+ eff800->SetMarkerColor(kMagenta);
+
+
  // draw expected limits plot
  limits->Draw("COLZ TEXT"); 
  // save plot
@@ -322,12 +402,12 @@ void makePlots(TString inDir, TString outDir){
  leg->SetLineWidth(2);
  //leg->SetFillColor(0);
  //leg->SetFillStyle(0);
- leg->AddEntry(limit300,"m_{A0}=300GeV","pl");
- leg->AddEntry(limit400,"m_{A0}=400GeV","pl");
- leg->AddEntry(limit500,"m_{A0}=500GeV","pl");
- leg->AddEntry(limit600,"m_{A0}=600GeV","pl");
- leg->AddEntry(limit700,"m_{A0}=700GeV","pl");
- leg->AddEntry(limit800,"m_{A0}=800GeV","pl");
+ leg->AddEntry(limit300,"m_{A0} = 300 GeV","pl");
+ leg->AddEntry(limit400,"m_{A0} = 400 GeV","pl");
+ leg->AddEntry(limit500,"m_{A0} = 500 GeV","pl");
+ leg->AddEntry(limit600,"m_{A0} = 600 GeV","pl");
+ leg->AddEntry(limit700,"m_{A0} = 700 GeV","pl");
+ leg->AddEntry(limit800,"m_{A0} = 800 GeV","pl");
  leg->SetTextSize(0.03);
 
  TLine* line1 = new TLine();
@@ -369,6 +449,32 @@ void makePlots(TString inDir, TString outDir){
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.pdf",outDir.Data()));
+
+ TLegend* effleg = new TLegend(0.7,0.6,0.9,0.8); // (x1,y1,x2,y2)
+ effleg->SetBorderSize(4);
+ effleg->SetLineWidth(2);
+ effleg->AddEntry(eff300,"m_{A0} = 300 GeV","pl");
+ effleg->AddEntry(eff400,"m_{A0} = 400 GeV","pl");
+ effleg->AddEntry(eff500,"m_{A0} = 500 GeV","pl");
+ effleg->AddEntry(eff600,"m_{A0} = 600 GeV","pl");
+ effleg->AddEntry(eff700,"m_{A0} = 700 GeV","pl");
+ effleg->AddEntry(eff800,"m_{A0} = 800 GeV","pl");
+ effleg->SetTextSize(0.03);
+
+ // draw 1D efficiency comparisons
+ c->Clear();
+ c->SetLogy(0);
+ eff300->Draw("APL");
+ eff400->Draw("PL SAME");
+ eff500->Draw("PL SAME");
+ eff600->Draw("PL SAME");
+ eff700->Draw("PL SAME");
+ eff800->Draw("PL SAME");
+ effleg->Draw("SAME");
+ CMS_lumi(c,false,0);
+ c->cd();
+ c->SaveAs(Form("%s/signal_eff_comparisons.png",outDir.Data()));
+ c->SaveAs(Form("%s/signal_eff_comparisons.pdf",outDir.Data()));
 
  delete c;
 
@@ -427,6 +533,22 @@ void makePlots(TString inDir, TString outDir){
 
 
 }
+
+void getEff(TFile* file, UInt_t mA0, UInt_t mZp, Double_t & eff, Double_t & eff_err){
+  TH2F* sigeff = (TH2F*)file->Get("effhisto");
+  if (sigeff!=(TH2F*)NULL){
+    Int_t binX = sigeff->GetXaxis()->FindBin(mZp);
+    Int_t binY = sigeff->GetYaxis()->FindBin(mA0);  
+    eff = sigeff->GetBinContent(binX,binY);
+    eff_err = sigeff->GetBinError(binX,binY);
+  }
+  else{
+    eff = 0;
+    eff_err = 0;
+    std::cout << " No eff for mA0 = " << mA0 << " and mZp = " << mZp << std::endl;
+  }
+}
+
 
 void getXsec(TFile* file, UInt_t mA0, UInt_t mZp, Double_t & xsec){
 
