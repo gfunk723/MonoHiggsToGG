@@ -6,6 +6,7 @@
 #include <TCanvas.h>
 #include <TLegend.h>
 #include <TMath.h>
+#include <TLatex.h>
 #include "../macro/mkPlotsLivia/CMS_lumi.C"
 #include <iostream>
 #include <vector>
@@ -65,6 +66,12 @@ void makePlots(TString inDir, TString outDir){
  // pick up efficiencies 
  TFile* eff_file = new TFile("output_eff.root");
 
+ // make TLatex label
+ TLatex latex;
+ latex.SetTextSize(0.035);
+ latex.SetTextAlign(12); // centered
+ const char *thestring = "Z'#rightarrow DM + H(#rightarrow#gamma#gamma)";
+
  // setup 1D plots - expected
  TGraph* limit300;
  TGraph* limit400;
@@ -85,6 +92,7 @@ void makePlots(TString inDir, TString outDir){
  TH2D * limits = new TH2D("limits","limits",8,0,8,6,0,6);
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
+ limits->GetZaxis()->SetTitle("UL");
  limits->SetTitle("");
  limits->SetMaximum(3000);
  limits->SetMarkerSize(2);
@@ -383,6 +391,7 @@ void makePlots(TString inDir, TString outDir){
 
  // draw expected limits plot
  limits->Draw("COLZ TEXT"); 
+ latex.DrawLatex(0.08,5.7,thestring);
  // save plot
  CMS_lumi(c,false,0);
  c->cd();
@@ -391,13 +400,14 @@ void makePlots(TString inDir, TString outDir){
 
  // draw observed limits plot
  obslimits->Draw("COLZ TEXT"); 
+ latex.DrawLatex(0.08,5.7,thestring);
  // save plot
  CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_obs.pdf",outDir.Data()));
 
- TLegend* leg = new TLegend(0.7,0.2,0.9,0.4); // (x1,y1,x2,y2)
+ TLegend* leg = new TLegend(0.65,0.2,0.85,0.4); // (x1,y1,x2,y2)
  leg->SetBorderSize(4);
  leg->SetLineWidth(2);
  //leg->SetFillColor(0);
@@ -429,6 +439,7 @@ void makePlots(TString inDir, TString outDir){
  limit800->Draw("PL SAME");
  leg->Draw("SAME");
  line1->Draw("SAME");
+ latex.DrawLatex(500,2100,thestring);
  CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.png",outDir.Data()));
@@ -445,12 +456,13 @@ void makePlots(TString inDir, TString outDir){
  limit800_obs->Draw("PL SAME");
  leg->Draw("SAME");
  line1->Draw("SAME");
+ latex.DrawLatex(500,2100,thestring);
  CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.pdf",outDir.Data()));
 
- TLegend* effleg = new TLegend(0.7,0.6,0.9,0.8); // (x1,y1,x2,y2)
+ TLegend* effleg = new TLegend(0.65,0.6,0.85,0.8); // (x1,y1,x2,y2)
  effleg->SetBorderSize(4);
  effleg->SetLineWidth(2);
  effleg->AddEntry(eff300,"m_{A0} = 300 GeV","pl");
@@ -471,6 +483,7 @@ void makePlots(TString inDir, TString outDir){
  eff700->Draw("PL SAME");
  eff800->Draw("PL SAME");
  effleg->Draw("SAME");
+ latex.DrawLatex(500,0.95,thestring);
  CMS_lumi(c,false,0);
  c->cd();
  c->SaveAs(Form("%s/signal_eff_comparisons.png",outDir.Data()));
@@ -491,6 +504,7 @@ void makePlots(TString inDir, TString outDir){
 
  limits->SetMarkerSize(2);
  limits->Draw("TEXT COLZ SAME"); 
+ latex.DrawLatex(0.08,5.7,thestring);
  p1->Update();
 
  Double_t x1,y1,x2,y2;
