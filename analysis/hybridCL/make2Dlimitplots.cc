@@ -94,6 +94,7 @@ void makePlots(TString inDir, TString outDir){
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
  limits->GetZaxis()->SetTitle("UL");
  limits->SetTitle("");
+ limits->GetZaxis()->SetLabelSize(0.03);
  limits->SetMaximum(3000);
  limits->SetMarkerSize(2);
 
@@ -123,6 +124,8 @@ void makePlots(TString inDir, TString outDir){
  c->cd();
  gStyle->SetOptStat(0);
  gStyle->SetPaintTextFormat("2.1f");
+ c->SetLeftMargin(0.1);
+ c->SetRightMargin(0.1);
 
  Double_t limitval300[nMasses];
  Double_t limitval400[nMasses];
@@ -540,8 +543,10 @@ void makePlots(TString inDir, TString outDir){
  cboth->cd();
  gStyle->SetOptStat(0);
  gStyle->SetPaintTextFormat("2.1f");
+ //cboth->SetLeftMargin(0.1);
+ //cboth->SetRightMargin(0.1);
 
- TPad* p1 = new TPad("p1","",0,0.12,1,0.98);
+ TPad* p1 = new TPad("p1","",0,0.12,0.95,0.98);
  p1->Draw();
  p1->cd();
 
@@ -554,7 +559,7 @@ void makePlots(TString inDir, TString outDir){
  p1->GetRange(x1,y1,x2,y2);
 
  cboth->cd();
- TPad* p2 = new TPad("p2","",0,0.09,1,0.95);
+ TPad* p2 = new TPad("p2","",0,0.09,0.95,0.95);
  p2->SetFillStyle(0);
  p2->SetFillColor(0);
  p2->Draw();
