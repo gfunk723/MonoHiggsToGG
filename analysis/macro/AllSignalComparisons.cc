@@ -20,7 +20,7 @@ void AllSignalComparisons(){
   cout << "Signal Comparison" << endl;
 
   TString inDir = "data/25ns_v76X_v2/";
-  TString mZp = "2000";
+  TString mZp = "1000";
   TString nameFileSig1 = Form("2HDM_mZP%s",mZp.Data()); 
   TString nameFileSig2 = Form("2HDM_mZP%s_mA0400",mZp.Data()); 
   TString nameFileSig3 = Form("2HDM_mZP%s_mA0500",mZp.Data()); 
@@ -36,17 +36,17 @@ void AllSignalComparisons(){
   nameFiles.push_back(nameFileSig6);
   UInt_t nFiles = nameFiles.size();
   
-  TString outDir = "~/www/Plots/CompareZpForSignal";
+  TString outDir = "~/www/Plots/25ns_Limits_76X_2DResults";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   cout << "Comparing Sample with mZp = " << mZp << endl;
 
-  makePlots("mgg",    26, 99., 151,  inDir, outDir, nameFiles, nFiles, mZp);
+  //makePlots("mgg",    26, 99., 151,  inDir, outDir, nameFiles, nFiles, mZp);
   makePlots("t1pfmet",200, 0., 2000, inDir, outDir, nameFiles, nFiles, mZp);
   makePlots("pt1",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
   makePlots("pt2",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
   makePlots("ptgg",   60, 0.,  600,  inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("nvtx",   40, 0.,  40,   inDir, outDir, nameFiles, nFiles, mZp);
+  //makePlots("nvtx",   40, 0.,  40,   inDir, outDir, nameFiles, nFiles, mZp);
 
 }
 
@@ -95,16 +95,17 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
 
   for (UInt_t n=0; n<nFiles; n++){
     histoSig[n]->SetFillColor(kWhite);
+    histoSig[n]->SetLineWidth(2);
     histoSig[n]->SetMarkerSize(0.6);
     histoSig[n]->Sumw2();
   }
 
   if (nFiles >= 1) histoSig[0]->SetLineColor(kBlack);
-  if (nFiles >= 2) histoSig[1]->SetLineColor(kBlue);
+  if (nFiles >= 2) histoSig[1]->SetLineColor(kCyan);
   if (nFiles >= 3) histoSig[2]->SetLineColor(kGreen);
-  if (nFiles >= 4) histoSig[3]->SetLineColor(kCyan);
-  if (nFiles >= 5) histoSig[4]->SetLineColor(kMagenta);
-  if (nFiles >= 6) histoSig[5]->SetLineColor(kRed);
+  if (nFiles >= 4) histoSig[3]->SetLineColor(kBlue);
+  if (nFiles >= 5) histoSig[4]->SetLineColor(kYellow);
+  if (nFiles >= 6) histoSig[5]->SetLineColor(kMagenta);
 
   double integral = 0;
   for (UInt_t n=0; n<nFiles; n++){
@@ -117,7 +118,8 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
       histoSig[n]->Draw("HE");
       histoSig[n]->GetYaxis()->SetTitle(TString::Format("Events/%.2f",double((MAX-MIN))/BINS));
       histoSig[n]->GetXaxis()->SetTitle((var).c_str());
-      histoSig[n]->SetMaximum(histoSig[n]->GetMaximum()*10);
+      if (var=="t1pfmet") histoSig[n]->SetMaximum(histoSig[n]->GetMaximum()*5);
+      else histoSig[n]->SetMaximum(histoSig[n]->GetMaximum()*100);
       histoSig[n]->Draw("HE");
     }
     else histoSig[n]->Draw("HE SAME");  
@@ -125,7 +127,7 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
   }
 
   TLegend *leg1;
-  leg1 = new TLegend(0.58,0.60,0.82,0.85,"", "brNDC");// x1,y1,x2,y2
+  leg1 = new TLegend(0.58,0.65,0.82,0.9,"", "brNDC");// x1,y1,x2,y2
   for (UInt_t n=0; n<nFiles; n++){
      if (n==0) leg1->AddEntry(histoSig[n],nameFiles[n]+"_mA0300","L");
      else leg1->AddEntry(histoSig[n],nameFiles[n],"L");
@@ -142,7 +144,7 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
 
   ctmp->cd();
   
-  CMS_lumi(ctmp,false,11);
+  CMS_lumi(ctmp,false,0);
   ctmp->cd();
   ctmp->SaveAs(Form("%s/sig_mZp%s_%s_log.png",outDir.Data(),mZp.Data(),var.c_str()));
   ctmp->SaveAs(Form("%s/sig_mZp%s_%s_log.pdf",outDir.Data(),mZp.Data(),var.c_str()));
