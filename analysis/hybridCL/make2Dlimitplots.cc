@@ -462,6 +462,49 @@ void makePlots(TString inDir, TString outDir){
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.pdf",outDir.Data()));
 
+ // draw 1D comparisons --expected & observed
+ c->Clear();
+ c->SetLogy(1);
+ limit300->SetLineStyle(9);
+ limit400->SetLineStyle(9);
+ limit500->SetLineStyle(9);
+ limit600->SetLineStyle(9);
+ limit700->SetLineStyle(9);
+ limit800->SetLineStyle(9);
+ limit300->Draw("APL");
+ limit400->Draw("PL SAME");
+ limit500->Draw("PL SAME");
+ limit600->Draw("PL SAME");
+ limit700->Draw("PL SAME");
+ limit800->Draw("PL SAME");
+ limit300_obs->Draw("PL SAME");
+ limit400_obs->Draw("PL SAME");
+ limit500_obs->Draw("PL SAME");
+ limit600_obs->Draw("PL SAME");
+ limit700_obs->Draw("PL SAME");
+ limit800_obs->Draw("PL SAME");
+ //leg->AddEntry(limit300,"Expected, m_{A0} = 300 GeV","pl");
+ //leg->AddEntry(limit300_obs,"Observed, m_{A0} = 300 GeV","pl");
+ //leg->AddEntry(limit400,"Expected, m_{A0} = 400 GeV","pl");
+ //leg->AddEntry(limit400_obs,"Observed, m_{A0} = 300 GeV","pl");
+ //leg->AddEntry(limit500,"Expected, m_{A0} = 500 GeV","pl");
+ //leg->AddEntry(limit500_obs,"Observed, m_{A0} = 300 GeV","pl");
+ //leg->AddEntry(limit600,"Expected, m_{A0} = 600 GeV","pl");
+ //leg->AddEntry(limit600_obs,"Observed, m_{A0} = 300 GeV","pl");
+ //leg->AddEntry(limit700,"Expected, m_{A0} = 700 GeV","pl");
+ //leg->AddEntry(limit700_obs,"Observed, m_{A0} = 300 GeV","pl");
+ //leg->AddEntry(limit800,"Expected, m_{A0} = 800 GeV","pl");
+ //leg->AddEntry(limit800_obs,"Observed, m_{A0} = 300 GeV","pl");
+ leg->Draw("SAME");
+ line1->Draw("SAME");
+ latex.DrawLatex(500,2100,thestring);
+ CMS_lumi(c,false,0);
+ c->cd();
+ c->SaveAs(Form("%s/limits_comparison.png",outDir.Data()));
+ c->SaveAs(Form("%s/limits_comparison.pdf",outDir.Data()));
+
+
+ // make new leg for the eff. plots
  TLegend* effleg = new TLegend(0.65,0.6,0.85,0.8); // (x1,y1,x2,y2)
  effleg->SetBorderSize(4);
  effleg->SetLineWidth(2);
