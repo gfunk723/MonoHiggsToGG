@@ -158,6 +158,7 @@ for i in range(0,maxJetCollections):
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
+				  pfcands		= cms.InputTag("packedPFCandidates"),
                                   JetCorrectorTag = cms.InputTag("ak4PFCHSL1FastjetCorrector"),
                                   inputTagJets= UnpackedJetCollectionVInputTag,  
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),
