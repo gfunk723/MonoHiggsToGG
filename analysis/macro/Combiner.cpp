@@ -1982,6 +1982,7 @@ void Combiner::InitTH1DNames(){
   fTH1DNames.push_back("chiso2");
   fTH1DNames.push_back("neuiso1");
   fTH1DNames.push_back("neuiso2");
+  fTH1DNames.push_back("deltaRphotons");
 
   if (addText!="_n-1"){ // plots that don't have n-1 versions 
     //fTH1DNames.push_back("eleveto1");

@@ -477,6 +477,11 @@ void Plotter::DoPlots(int prompt){
 
           }
 
+	  double delta_eta = eta1-eta2;
+	  double delta_phi = deltaPhi(phi1,phi2);
+          double deltaR = TMath::Sqrt(delta_eta*delta_eta + delta_phi*delta_phi);
+	  fTH1DMap["deltaRphotons"]->Fill(deltaR,Weight);
+
           fTH1DMap["nvtx"]->Fill(nvtx,Weight);
           fTH1DMap["pt1"]->Fill(pt1,Weight);
           fTH1DMap["pt2"]->Fill(pt2,Weight);
@@ -1278,6 +1283,7 @@ void Plotter::SetUpPlots(){
   fTH1DMap["absdphiJet1MET"]		= Plotter::MakeTH1DPlot("absdphiJet1MET","",20,-4.,4.,"|#Delta#phi(Jet1,E_{T}^{miss})|","");
   fTH1DMap["absdphiJet2MET"]		= Plotter::MakeTH1DPlot("absdphiJet2MET","",20,-4.,4.,"|#Delta#phi(Jet2,E_{T}^{miss})|","");
   fTH1DMap["absdphi_ggJet1"]		= Plotter::MakeTH1DPlot("absdphi_ggJet1","",20,-4,4.,"|#Delta#phi(Jet1,E_{T}^{miss})|","");
+  fTH1DMap["deltaRphotons"]		= Plotter::MakeTH1DPlot("deltaRphotons","",20,0,4.,"#Delta R(#gamma1,#gamma2)","");
 
   fTH1DMap["absdphi_g1MET"]		= Plotter::MakeTH1DPlot("absdphi_g1MET","",10,0.,4.,"|#Delta#phi(Pho1,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxgMET"]		= Plotter::MakeTH1DPlot("absdphi_maxgMET","",10,0.,4.,"Max|#Delta#phi(Pho,E_{T}^{miss})|","");
