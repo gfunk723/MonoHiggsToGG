@@ -76,15 +76,25 @@ void makePlots(TString inDir, TString outDir){
  l1->SetTextAlign(12);
  l1->SetNDC(kTRUE);
  l1->SetTextFont(62);
+ TLatex *l1b = new TLatex(0.115,0.83,latexCMSname);
+ l1b->SetTextSize(0.036);
+ l1b->SetTextAlign(12);
+ l1b->SetNDC(kTRUE);
+ l1b->SetTextFont(62);
 
  TString latexlumi = Form("%1.1f fb^{-1}",lumi);
  TString latexenergy = " (13 TeV)";
  TString latexname = latexlumi+latexenergy;
- TLatex *l2 = new TLatex(0.65,0.95,latexname);
+ TLatex *l2 = new TLatex(0.65,0.93,latexname);
  l2->SetTextSize(0.034);
  l2->SetTextAlign(12);
  l2->SetNDC(kTRUE);
  l2->SetTextFont(62);
+ TLatex *l2b = new TLatex(0.75,0.90,latexname);
+ l2b->SetTextSize(0.034);
+ l2b->SetTextAlign(12);
+ l2b->SetNDC(kTRUE);
+ l2b->SetTextFont(62);
 
  TString thestring = "Z'#rightarrow DM+H(#gamma#gamma)";
  //latex.SetTextSize(0.036);
@@ -95,6 +105,12 @@ void makePlots(TString inDir, TString outDir){
  l3->SetTextAlign(12);
  l3->SetNDC(kTRUE);
  l3->SetTextFont(62);
+ TLatex *l3b = new TLatex(0.115,0.78,thestring);
+ l3b->SetTextSize(0.036);
+ l3b->SetTextAlign(12);
+ l3b->SetNDC(kTRUE);
+ l3b->SetTextFont(62);
+
 
  // setup 1D plots - expected
  TGraph* limit300;
@@ -592,7 +608,8 @@ void makePlots(TString inDir, TString outDir){
  //cboth->SetLeftMargin(0.1);
  //cboth->SetRightMargin(0.1);
 
- TPad* p1 = new TPad("p1","",0,0.12,0.95,0.98);
+ //TPad* p1 = new TPad("p1","",0,0.12,0.95,0.98);
+ TPad* p1 = new TPad("p1","",0,0.09,1.0,0.89);
  p1->Draw();
  p1->cd();
 
@@ -605,7 +622,8 @@ void makePlots(TString inDir, TString outDir){
  p1->GetRange(x1,y1,x2,y2);
 
  cboth->cd();
- TPad* p2 = new TPad("p2","",0,0.09,0.95,0.95);
+ //TPad* p2 = new TPad("p2","",0,0.09,0.95,0.95);
+ TPad* p2 = new TPad("p2","",0,0.12,1.0,0.92);
  p2->SetFillStyle(0);
  p2->SetFillColor(0);
  p2->Draw();
@@ -634,9 +652,9 @@ void makePlots(TString inDir, TString outDir){
  p2->Update();
 
  //CMS_lumi(cboth,false,0);
- l1->Draw("same");
- l2->Draw("same");
- l3->Draw("same");
+ l1b->Draw("same");
+ l2b->Draw("same");
+ l3b->Draw("same");
  cboth->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
