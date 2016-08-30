@@ -32,6 +32,9 @@ void make2Dlimitplots(){
 
 void makePlots(TString inDir, TString outDir){
 
+  // lumi
+  Float_t lumi = 2.3;
+
   // mZp masses 
   Double_t mass[8] = {600,800,1000,1200,1400,1700,2000,2500};
   Int_t nMasses = 8;
@@ -67,10 +70,31 @@ void makePlots(TString inDir, TString outDir){
  TFile* eff_file = new TFile("output_eff.root");
 
  // make TLatex label
- TLatex latex;
- latex.SetTextSize(0.035);
- latex.SetTextAlign(12); // centered
- const char *thestring = "Z'#rightarrow DM + H(#rightarrow#gamma#gamma)";
+ TString latexCMSname = "CMS";
+ TLatex *l1 = new TLatex(0.11,0.87,latexCMSname);
+ l1->SetTextSize(0.036);
+ l1->SetTextAlign(12);
+ l1->SetNDC(kTRUE);
+ l1->SetTextFont(62);
+
+ TString latexlumi = Form("%1.1f fb^{-1}",lumi);
+ TString latexenergy = " (13 TeV)";
+ TString latexname = latexlumi+latexenergy;
+ TLatex *l2 = new TLatex(0.65,0.95,latexname);
+ l2->SetTextSize(0.034);
+ l2->SetTextAlign(12);
+ l2->SetNDC(kTRUE);
+ l2->SetTextFont(62);
+
+ TString thestring = "Z'#rightarrow DM+H(#gamma#gamma)";
+ //latex.SetTextSize(0.036);
+ //latex.SetTextAlign(12); // centered
+ //const char *thestring = "Z'#rightarrow DM+H(#gamma#gamma)";
+ TLatex *l3 = new TLatex(0.11,0.82,thestring);
+ l3->SetTextSize(0.036);
+ l3->SetTextAlign(12);
+ l3->SetNDC(kTRUE);
+ l3->SetTextFont(62);
 
  // setup 1D plots - expected
  TGraph* limit300;
@@ -120,12 +144,12 @@ void makePlots(TString inDir, TString outDir){
  TH2D * obslimits = (TH2D*) limits->Clone();
 
  // setup canvas
- TCanvas * c = new TCanvas("c","");
+ TCanvas * c = new TCanvas("c","",889,768);
  c->cd();
  gStyle->SetOptStat(0);
  gStyle->SetPaintTextFormat("2.1f");
  c->SetLeftMargin(0.1);
- c->SetRightMargin(0.1);
+ c->SetRightMargin(0.11);
 
  Double_t limitval300[nMasses];
  Double_t limitval400[nMasses];
@@ -361,7 +385,7 @@ void makePlots(TString inDir, TString outDir){
  
  //styling
  eff300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
- eff300->GetYaxis()->SetTitle("Efficiency");
+ eff300->GetYaxis()->SetTitle("A #times #epsilon");
  eff300->SetTitle("");
  eff300->SetMaximum(1.0);
  eff300->SetMinimum(0.0);
@@ -394,27 +418,37 @@ void makePlots(TString inDir, TString outDir){
 
  // draw expected limits plot
  limits->Draw("COLZ TEXT"); 
- latex.DrawLatex(0.08,5.7,thestring);
+ //latex.DrawLatex(0.08,5.7,thestring);
  // save plot
- CMS_lumi(c,false,0);
+ //CMS_lumi(c,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_exp.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_exp.pdf",outDir.Data()));
 
  // draw observed limits plot
  obslimits->Draw("COLZ TEXT"); 
- latex.DrawLatex(0.08,5.7,thestring);
+ //latex.DrawLatex(0.08,5.7,thestring);
  // save plot
- CMS_lumi(c,false,0);
+ //CMS_lumi(c,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_obs.pdf",outDir.Data()));
 
- TLegend* leg = new TLegend(0.65,0.2,0.85,0.4); // (x1,y1,x2,y2)
- leg->SetBorderSize(4);
- leg->SetLineWidth(2);
- //leg->SetFillColor(0);
- //leg->SetFillStyle(0);
+ TLegend* leg = new TLegend(0.65,0.2,0.85,0.4,NULL,"brNDC"); // (x1,y1,x2,y2)
+ leg->SetTextSize(0.046);
+ leg->SetBorderSize(0);
+ leg->SetLineColor(1);
+ leg->SetLineWidth(1);
+ leg->SetLineStyle(1);
+ leg->SetFillColor(0);
+ leg->SetFillStyle(0);
+ leg->SetTextFont(62);
  leg->AddEntry(limit300,"m_{A0} = 300 GeV","pl");
  leg->AddEntry(limit400,"m_{A0} = 400 GeV","pl");
  leg->AddEntry(limit500,"m_{A0} = 500 GeV","pl");
@@ -442,8 +476,11 @@ void makePlots(TString inDir, TString outDir){
  limit800->Draw("PL SAME");
  leg->Draw("SAME");
  line1->Draw("SAME");
- latex.DrawLatex(500,2100,thestring);
- CMS_lumi(c,false,0);
+ //latex.DrawLatex(500,2100,thestring);
+ //CMS_lumi(c,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.pdf",outDir.Data()));
@@ -459,8 +496,11 @@ void makePlots(TString inDir, TString outDir){
  limit800_obs->Draw("PL SAME");
  leg->Draw("SAME");
  line1->Draw("SAME");
- latex.DrawLatex(500,2100,thestring);
- CMS_lumi(c,false,0);
+ //latex.DrawLatex(500,2100,thestring);
+ //CMS_lumi(c,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.pdf",outDir.Data()));
@@ -500,8 +540,11 @@ void makePlots(TString inDir, TString outDir){
  //leg->AddEntry(limit800_obs,"Observed, m_{A0} = 300 GeV","pl");
  leg->Draw("SAME");
  line1->Draw("SAME");
- latex.DrawLatex(500,2100,thestring);
- CMS_lumi(c,false,0);
+ //latex.DrawLatex(500,2100,thestring);
+ //CMS_lumi(c,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits_comparison.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison.pdf",outDir.Data()));
@@ -529,8 +572,11 @@ void makePlots(TString inDir, TString outDir){
  eff700->Draw("PL SAME");
  eff800->Draw("PL SAME");
  effleg->Draw("SAME");
- latex.DrawLatex(500,0.95,thestring);
- CMS_lumi(c,false,0);
+ //latex.DrawLatex(500,0.95,thestring);
+ //CMS_lumi(c,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/signal_eff_comparisons.png",outDir.Data()));
  c->SaveAs(Form("%s/signal_eff_comparisons.pdf",outDir.Data()));
@@ -539,7 +585,7 @@ void makePlots(TString inDir, TString outDir){
 
 
  // make plot with both expected and observed on same graph
- TCanvas* cboth = new TCanvas("cboth","");
+ TCanvas* cboth = new TCanvas("cboth","",889,768);
  cboth->cd();
  gStyle->SetOptStat(0);
  gStyle->SetPaintTextFormat("2.1f");
@@ -552,7 +598,7 @@ void makePlots(TString inDir, TString outDir){
 
  limits->SetMarkerSize(2);
  limits->Draw("TEXT COLZ SAME"); 
- latex.DrawLatex(0.08,5.7,thestring);
+ //latex.DrawLatex(0.08,5.7,thestring);
  p1->Update();
 
  Double_t x1,y1,x2,y2;
@@ -587,7 +633,10 @@ void makePlots(TString inDir, TString outDir){
  obslimits->Draw("TEXT SAME");
  p2->Update();
 
- CMS_lumi(cboth,false,0);
+ //CMS_lumi(cboth,false,0);
+ l1->Draw("same");
+ l2->Draw("same");
+ l3->Draw("same");
  cboth->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
