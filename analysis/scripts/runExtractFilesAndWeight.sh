@@ -41,6 +41,10 @@ python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZP2500.json		-o
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-600.json		-o 2HDM_MZp-600		-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-800.json		-o 2HDM_MZp-800		-d lists_25ns_v76X_vtx0
 
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-800_MA0-600.json	-o 2HDM_MZp-800_MA0-600		-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1200_MA0-600.json	-o 2HDM_MZp-1200_MA0-600	-d lists_25ns_v76X_vtx0
+python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-2500_MA0-400.json	-o 2HDM_MZp-2500_MA0-400	-d lists_25ns_v76X_vtx0
+
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-800_MA0-500.json	-o 2HDM_MZp-800_MA0-500		-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1000_MA0-400.json	-o 2HDM_MZp-1000_MA0-400	-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1000_MA0-500.json	-o 2HDM_MZp-1000_MA0-500	-d lists_25ns_v76X_vtx0
@@ -49,7 +53,6 @@ python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1000_MA0-700
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1000_MA0-800.json	-o 2HDM_MZp-1000_MA0-800	-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1200_MA0-400.json	-o 2HDM_MZp-1200_MA0-400	-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1200_MA0-500.json	-o 2HDM_MZp-1200_MA0-500	-d lists_25ns_v76X_vtx0
-python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1200_MA0-600.json	-o 2HDM_MZp-1200_MA0-600	-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1200_MA0-700.json	-o 2HDM_MZp-1200_MA0-700	-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1200_MA0-800.json	-o 2HDM_MZp-1200_MA0-800	-d lists_25ns_v76X_vtx0
 python extractFilesAndWeight.py -i lists_25ns_v76X_vtx0/MC/2HDM_MZp-1400_MA0-400.json	-o 2HDM_MZp-1400_MA0-400	-d lists_25ns_v76X_vtx0
