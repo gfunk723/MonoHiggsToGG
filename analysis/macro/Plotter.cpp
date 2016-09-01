@@ -1322,11 +1322,11 @@ void Plotter::SetUpPlots(){
   fTH1DMap["metCor_IsolateALL"]		= Plotter::MakeVariableTH1DPlot("metCorr_IsolateALL","",numbins,METbins,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmet_selmgg"]		= Plotter::MakeVariableTH1DPlot("t1pfmet_selmgg","",numbins,METbins,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_selmgg_Varbin"]	= Plotter::MakeVariableTH1DPlot("t1pfmetCorr_selmgg_Varbin","",numbins,METbins,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["t1pfmetCorr_selmgg"]	= Plotter::MakeTH1DPlot("t1pfmetCorr_selmgg","",70,0.,350.,"E_{T}^{miss} (GeV)","Events/(5.0 GeV)");
+  fTH1DMap["t1pfmetCorr_selmgg"]	= Plotter::MakeTH1DPlot("t1pfmetCorr_selmgg","",70,0.,350.,"E_{T}^{miss} [GeV]","Events");
  
   fTH1DMap["met_Isolategg"]		= Plotter::MakeTH1DPlot("met_Isolategg","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["metCor_Isolategg"]		= Plotter::MakeTH1DPlot("metCorr_Isolategg","",60,0.,300.,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["mgg_IsolateALL"]		= Plotter::MakeTH1DPlot("mgg_IsolateALL","",38,105.,181.,"m_{#gamma#gamma} (GeV)","Events/(2.0 GeV)");  
+  fTH1DMap["mgg_IsolateALL"]		= Plotter::MakeTH1DPlot("mgg_IsolateALL","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
   fTH1DMap["mgg_IsolateALL_woPtgg"]	= Plotter::MakeTH1DPlot("mgg_IsolateALL_woPtgg","",38,105.,181.,"m_{#gamma#gamma} (GeV)","");  
   fTH1DMap["mgg_IsolateALL_wPtgg"]	= Plotter::MakeTH1DPlot("mgg_IsolateALL_wPtgg","",38,105.,181.,"m_{#gamma#gamma} (GeV)","");  
   fTH1DMap["mgg_IsolateALL_pt1"]	= Plotter::MakeTH1DPlot("mgg_IsolateALL_pt1","",38,105.,181.,"m_{#gamma#gamma} (GeV)","");  
