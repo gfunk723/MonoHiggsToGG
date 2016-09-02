@@ -29,7 +29,7 @@ public:
   void ApplyCommonSelection(const TString sampleName, const UInt_t sampleID, const UInt_t sampleNumber);
   void MakeYieldAndEfficiencyTables(const DblVecVec ND_Sig, const DblVecVec Err_ND_Sig, const DblVecVec Eff_Sig, const DblVecVec Err_Eff_Sig);
   void WriteDataCard(const TString fSigName, const Double_t ND_Sig, const UInt_t NA_Data, const UInt_t ND_Data, const DblVec ND_Res);
-
+  Double_t GetXsec(const UInt_t mA0, const UInt_t mZp);
   ~CardMaker();
 
 private:

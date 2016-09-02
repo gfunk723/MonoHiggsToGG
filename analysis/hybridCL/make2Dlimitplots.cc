@@ -20,9 +20,9 @@ void make2Dlimitplots(){
  
   cout << "Making 2D limit plots" << endl;
 
-  TString inDir = "~soffi/public/4Margaret/2Dinputs/";
-  //TString inDir = "~/private/HiggsCombine/CMSSW_7_1_5/src/diphotons/Analysis/macros/";
-  TString outDir = "~/www/Plots/25ns_Limits_76X_2DResults/";
+  //TString inDir	= "~soffi/public/4Margaret/2Dinputs/";
+  TString inDir		= "~mzientek/public/2Dlimitfiles/";
+  TString outDir	= "~/www/Plots/25ns_Limits_76X_2DResults/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   makePlots(inDir, outDir);
@@ -276,26 +276,26 @@ void makePlots(TString inDir, TString outDir){
  }
 
  // only pick up the limits that are non-zero
- Double_t mass_400[7] = {600,800,1000,1200,1400,1700,2000};
+ Double_t mass_400[8] = {600,800,1000,1200,1400,1700,2000,2500};
  Double_t mass_500[7] = {800,1000,1200,1400,1700,2000,2500};
- Double_t mass_600[5] = {1000,1400,1700,2000,2500};
+ Double_t mass_600[7] = {800,1000,1200,1400,1700,2000,2500};
  Double_t mass_700[6] = {1000,1200,1400,1700,2000,2500};
  Double_t mass_800[6] = {1000,1200,1400,1700,2000,2500};
  // mA0 400
- Double_t limitval_exp_400[7] = {explimit400[0],explimit400[1],explimit400[2],explimit400[3],explimit400[4],explimit400[5],explimit400[6]};
- Double_t limitval_obs_400[7] = {obslimit400[0],obslimit400[1],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5],obslimit400[6]};
- Double_t effval_400[7] = {eff_A0400[0],eff_A0400[1],eff_A0400[2],eff_A0400[3],eff_A0400[4],eff_A0400[5],eff_A0400[6]};
- Double_t efferr_400[7] = {efferr_A0400[0],efferr_A0400[1],efferr_A0400[2],efferr_A0400[3],efferr_A0400[4],efferr_A0400[5],efferr_A0400[6]};
+ Double_t limitval_exp_400[8] = {explimit400[0],explimit400[1],explimit400[2],explimit400[3],explimit400[4],explimit400[5],explimit400[6],explimit400[7]};
+ Double_t limitval_obs_400[8] = {obslimit400[0],obslimit400[1],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5],obslimit400[6],obslimit400[7]};
+ Double_t effval_400[8] = {eff_A0400[0],eff_A0400[1],eff_A0400[2],eff_A0400[3],eff_A0400[4],eff_A0400[5],eff_A0400[6],eff_A0400[7]};
+ Double_t efferr_400[8] = {efferr_A0400[0],efferr_A0400[1],efferr_A0400[2],efferr_A0400[3],efferr_A0400[4],efferr_A0400[5],efferr_A0400[6],efferr_A0400[7]};
  // mA0 500
  Double_t limitval_exp_500[7] = {explimit500[1],explimit500[2],explimit500[3],explimit500[4],explimit500[5],explimit500[6],explimit500[7]};
  Double_t limitval_obs_500[7] = {obslimit500[1],obslimit500[2],obslimit500[3],obslimit500[4],obslimit500[5],obslimit500[6],obslimit500[7]};
  Double_t effval_500[7] = {eff_A0500[1],eff_A0500[2],eff_A0500[3],eff_A0500[4],eff_A0500[5],eff_A0500[6],eff_A0500[7]};
  Double_t efferr_500[7] = {efferr_A0500[1],efferr_A0500[2],efferr_A0500[3],efferr_A0500[4],efferr_A0500[5],efferr_A0500[6],efferr_A0500[7]};
  // mA0 600
- Double_t limitval_exp_600[5] = {explimit600[2],explimit600[4],explimit600[5],explimit600[6],explimit600[7]};
- Double_t limitval_obs_600[5] = {obslimit600[2],obslimit600[4],obslimit600[5],obslimit600[6],obslimit600[7]};
- Double_t effval_600[5] = {eff_A0600[2],eff_A0600[4],eff_A0600[5],eff_A0600[6],eff_A0600[7]};
- Double_t efferr_600[5] = {efferr_A0600[2],efferr_A0600[4],efferr_A0600[5],efferr_A0600[6],efferr_A0600[7]};
+ Double_t limitval_exp_600[7] = {explimit600[1],explimit600[2],explimit600[3],explimit600[4],explimit600[5],explimit600[6],explimit600[7]};
+ Double_t limitval_obs_600[7] = {obslimit600[1],obslimit600[2],obslimit600[3],obslimit600[4],obslimit600[5],obslimit600[6],obslimit600[7]};
+ Double_t effval_600[7] = {eff_A0600[1],eff_A0600[2],eff_A0600[3],eff_A0600[4],eff_A0600[5],eff_A0600[6],eff_A0600[7]};
+ Double_t efferr_600[7] = {efferr_A0600[1],efferr_A0600[2],efferr_A0600[3],efferr_A0600[4],efferr_A0600[5],efferr_A0600[6],efferr_A0600[7]};
  // mA0 700
  Double_t limitval_exp_700[6] = {explimit700[2],explimit700[3],explimit700[4],explimit700[5],explimit700[6],explimit700[7]};
  Double_t limitval_obs_700[6] = {obslimit700[2],obslimit700[3],obslimit700[4],obslimit700[5],obslimit700[6],obslimit700[7]};
@@ -308,16 +308,16 @@ void makePlots(TString inDir, TString outDir){
  Double_t efferr_800[6] = {efferr_A0800[2],efferr_A0800[3],efferr_A0800[4],efferr_A0800[5],efferr_A0800[6],efferr_A0800[7]};
 
  limit300 = new TGraph(nMasses,mass,explimit300);
- limit400 = new TGraph(7,mass_400,limitval_exp_400);
+ limit400 = new TGraph(nMasses,mass_400,limitval_exp_400);
  limit500 = new TGraph(7,mass_500,limitval_exp_500);
- limit600 = new TGraph(5,mass_600,limitval_exp_600);
+ limit600 = new TGraph(7,mass_600,limitval_exp_600);
  limit700 = new TGraph(6,mass_700,limitval_exp_700);
  limit800 = new TGraph(6,mass_800,limitval_exp_800);
  
  limit300_obs = new TGraph(nMasses,mass,obslimit300);
- limit400_obs = new TGraph(7,mass_400,limitval_obs_400);
+ limit400_obs = new TGraph(nMasses,mass_400,limitval_obs_400);
  limit500_obs = new TGraph(7,mass_500,limitval_obs_500);
- limit600_obs = new TGraph(5,mass_600,limitval_obs_600);
+ limit600_obs = new TGraph(7,mass_600,limitval_obs_600);
  limit700_obs = new TGraph(6,mass_700,limitval_obs_700);
  limit800_obs = new TGraph(6,mass_800,limitval_obs_800);
 
@@ -328,9 +328,9 @@ void makePlots(TString inDir, TString outDir){
  //TGraphErrors* eff700 = new TGraphErrors(6,mass_700,effval_700,0,efferr_700);
  //TGraphErrors* eff800 = new TGraphErrors(6,mass_800,effval_800,0,efferr_800);
  TGraph* eff300 = new TGraph(nMasses,mass,eff_A0300);
- TGraph* eff400 = new TGraph(7,mass_400,effval_400);
+ TGraph* eff400 = new TGraph(nMasses,mass_400,effval_400);
  TGraph* eff500 = new TGraph(7,mass_500,effval_500);
- TGraph* eff600 = new TGraph(5,mass_600,effval_600);
+ TGraph* eff600 = new TGraph(7,mass_600,effval_600);
  TGraph* eff700 = new TGraph(6,mass_700,effval_700);
  TGraph* eff800 = new TGraph(6,mass_800,effval_800);
 
