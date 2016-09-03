@@ -234,54 +234,46 @@ void CardMaker::MakeCards(){
 
   // make a histogram to store eff. values for easy plotting
   TFile* newFile = new TFile(Form("%s%s/output_eff.root",fOutDir.Data(),fOut.Data()),"RECREATE");
+  std::cout << "Writing efficiency for plots in " << Form("%s%s/output_eff.root",fOutDir.Data(),fOut.Data()) << std::endl; 
+
   TH2D* effhisto = new TH2D("effhisto","effhisto",2300,400,2700,600,200,800); //x=Zp,y=A0,weight=eff
-  Double_t mA0[6] = {300,400,500,600,700,800};
-  Double_t mZp[8] = {600,800,1000,1200,1400,1700,2000,2500};
-  Double_t binX = 0;
-  Double_t binY = 0;
-  Double_t wght = 0;
-  Double_t erro = 0;
-  for (UInt_t a0=0; a0<6; a0++){
-     for (UInt_t zp=0; zp<8; zp++){
-       binY = mA0[a0];
-       binX = mZp[zp];
-       if (a0==0){
-         wght = Dbl_Eff_Sig[zp][0];    
-         erro = Dbl_Error_Eff_Sig[zp][0];
-       }
-       else if (a0==1 && zp!=7){//skip a0400,zp2500
-         wght = Dbl_Eff_Sig[8+zp][0];    
-         erro = Dbl_Error_Eff_Sig[8+zp][0];
-       }
-       else if (a0==2 && zp!=0 ){//skip a0500,zp600
-         wght = Dbl_Eff_Sig[14+zp][0];    
-         erro = Dbl_Error_Eff_Sig[14+zp][0];
-       }
-       else if (a0==3 && zp==2){//skip a0600,zp600 & zp800
-         wght = Dbl_Eff_Sig[22][0];    
-         erro = Dbl_Error_Eff_Sig[22][0];
-       }
-       else if (a0==3 && zp>=4){//skip a0600,zp1200
-         wght = Dbl_Eff_Sig[19+zp][0];    
-         erro = Dbl_Error_Eff_Sig[19+zp][0];
-       }
-       else if (a0==4 && zp!=0 && zp!=1){//skip a0700,zp600 * zp800
-         wght = Dbl_Eff_Sig[25+zp][0];    
-         erro = Dbl_Error_Eff_Sig[25+zp][0];
-       }
-       else if (a0==5 && zp!=0 && zp!=1){//skip a0800,zp600 * zp800
-         wght = Dbl_Eff_Sig[31+zp][0];    
-         erro = Dbl_Error_Eff_Sig[31+zp][0];
-       }
-       else{ //ones that were skipped
-	 wght = 0;
-	 erro = 0;
-       }
-	
-       effhisto->Fill(binX,binY,wght);
-       effhisto->SetBinError(binX,binY,erro);
-     }
+  Double_t mA0[6] = {300.,400.,500.,600.,700.,800.};
+  Double_t mZp[8] = {600.,800.,1000.,1200.,1400.,1700.,2000.,2500.};
+  Double_t binX = 0.0;
+  Double_t binY = 0.0;
+  Double_t wght = 0.0;
+  Double_t erro = 0.0;
+
+  for (UInt_t n=0; n<fNSig; n++){
+    wght = Dbl_Eff_Sig[n][0];
+    erro = Dbl_Error_Eff_Sig[n][0];
+
+    UInt_t a0 = 0;
+    if (n<8)  a0=0;	 //a0300
+    else if (n<16) a0=1; //a0400
+    else if (n<23) a0=2; //a0500 
+    else if (n<30) a0=3; //a0600 
+    else if (n<36) a0=4; //a0700 
+    else a0=5; 		 //a0800 
+    binY = mA0[a0];
+
+    UInt_t zp = 0;
+    if (n==0 || n==8) zp=0;					 //zp600
+    if (n==1 || n==9 || n==16 || n==23) zp=1;			 //zp800
+    if (n==2 || n==10 || n==17 || n==24 || n==30 || n==36) zp=2; //zp1000
+    if (n==3 || n==11 || n==18 || n==25 || n==31 || n==37) zp=3; //zp1200
+    if (n==4 || n==12 || n==19 || n==26 || n==32 || n==38) zp=4; //zp1400
+    if (n==5 || n==13 || n==20 || n==27 || n==33 || n==39) zp=5; //zp1700
+    if (n==6 || n==14 || n==21 || n==28 || n==34 || n==40) zp=6; //zp2000
+    if (n==7 || n==15 || n==22 || n==29 || n==35 || n==41) zp=7; //zp2500
+    binX = mZp[zp];
+
+    UInt_t numbinx = effhisto->GetXaxis()->FindBin(binX);
+    UInt_t numbiny = effhisto->GetYaxis()->FindBin(binY);
+    effhisto->SetBinContent(numbinx,numbiny,wght);
+    effhisto->SetBinError(numbinx,numbiny,erro);
   }
+
   newFile->cd();
   TCanvas* c = new TCanvas();
   c->cd();
