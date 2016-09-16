@@ -8,44 +8,46 @@
 #include <TMath.h>
 #include "Style.hh"
 #include "Style.cpp"
+#include "../../../DataFormats/Math/interface/deltaPhi.h"
 #include "mkPlotsLivia/CMS_lumi.C"
 #include <iostream>
 
 using namespace std;
 
-void makePlots(std::string, int, double, double, TString, TString, TString, TString);
+void makePlots(std::string, int, double, double, TString, TString, TString, TString, bool);
 
 void SigComparison(){
  
   cout << "Signal Comparison" << endl;
 
-  TString inDir = "data/25ns_v76X_v2/";
-  TString nameFileSig1 = "2HDM_mZP1200_mA0800"; 
-  TString nameFileSig2 = "2HDM_mZP1700_mA0800"; 
-  TString outDir = "~/www/Plots/CompareSignal";
+  //TString inDir = "data/25ns_v76X_v2/";
+  TString inDir = "";
+  TString nameFileSig1 = "mA0300"; 
+  TString nameFileSig2 = "mA0800"; 
+  TString outDir = "~/www/Plots/25ns_Limits_76X_2DResults/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   cout << "Comparing Sample " << nameFileSig1 << " and " << nameFileSig2 << endl;
 
-  makePlots("mgg",    26, 99., 151, inDir, outDir, nameFileSig1, nameFileSig2);
-  makePlots("t1pfmet",75, 0.,  900, inDir, outDir, nameFileSig1, nameFileSig2);
-  //makePlots("pt1",    30, 0.,  300, inDir, outDir, nameFileSig1, nameFileSig2);
-  //makePlots("pt2",    30, 0.,  300, inDir, outDir, nameFileSig1, nameFileSig2);
-  //makePlots("ptgg",   60, 0.,  600, inDir, outDir, nameFileSig1, nameFileSig2);
+  //makePlots("mgg",    26, 99., 151, inDir, outDir, nameFileSig1, nameFileSig2);
+  //makePlots("t1pfmet",75, 0.,  900, inDir, outDir, nameFileSig1, nameFileSig2, 0);
+  //makePlots("pt1",    30, 0.,  300, inDir, outDir, nameFileSig1, nameFileSig2, 0);
+  //makePlots("pt2",    30, 0.,  300, inDir, outDir, nameFileSig1, nameFileSig2, 0);
+  //makePlots("ptgg",   60, 0.,  600, inDir, outDir, nameFileSig1, nameFileSig2, 0);
+  makePlots("deltaR", 20, 0.,    4, inDir, outDir, nameFileSig1, nameFileSig2, 1);
   //makePlots("nvtx",   40, 0.,  40,  inDir, outDir, nameFileSig1, nameFileSig2);
-
 
 }
 
 
-void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir, TString outDir, TString nameFileSig1, TString nameFileSig2){
+void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir, TString outDir, TString nameFileSig1, TString nameFileSig2, bool special){
   
   TString mainCut = "(mgg>=100 && mgg<180)";
 
   TFile* fileSig1;
   TFile* fileSig2;
-  fileSig1 = new TFile(inDir+nameFileSig1+".root"); 
-  fileSig2 = new TFile(inDir+nameFileSig2+".root"); 
+  fileSig1 = new TFile(inDir+"diPhotons_"+nameFileSig1+"_mZp2000_woPhoID.root"); 
+  fileSig2 = new TFile(inDir+"diPhotons_"+nameFileSig2+"_mZp2000_woPhoID.root"); 
   
   TTree* treeSig1 = (TTree*)fileSig1->Get("DiPhotonTree");
   TTree* treeSig2 = (TTree*)fileSig2->Get("DiPhotonTree");
@@ -66,9 +68,52 @@ void makePlots(std::string var, int BINS, double MIN, double MAX, TString inDir,
   pad1->SetLogy(1);
   pad1->Draw();
   pad1->cd();
-  
-  treeSig1->Draw((var+">>h_Sig1").c_str(), "("+mainCut+")*1");
-  treeSig2->Draw((var+">>h_Sig2").c_str(), "("+mainCut+")*1");
+ 
+  if (!special){  
+    treeSig1->Draw((var+">>h_Sig1").c_str(), "("+mainCut+")*1");
+    treeSig2->Draw((var+">>h_Sig2").c_str(), "("+mainCut+")*1");
+  }
+
+  if (special){
+    Float_t eta1;
+    Float_t eta2;
+    Float_t phi1;
+    Float_t phi2;
+    TBranch *b_eta1;
+    TBranch *b_eta2;
+    TBranch *b_phi1;
+    TBranch *b_phi2;
+    treeSig1->SetBranchAddress("eta1", &eta1, &b_eta1);
+    treeSig1->SetBranchAddress("eta2", &eta2, &b_eta2);
+    treeSig1->SetBranchAddress("phi1", &phi1, &b_phi1);
+    treeSig1->SetBranchAddress("phi2", &phi2, &b_phi2);
+    UInt_t nentries1 = treeSig1->GetEntries();
+    for (UInt_t entry = 0; entry < nentries1; entry++){
+      treeSig1->GetEntry(entry);
+      double delta_eta = eta1-eta2;
+      double delta_phi = deltaPhi(phi1,phi2);
+      double deltaR = TMath::Sqrt(delta_eta*delta_eta + delta_phi*delta_phi);
+      h_Sig1->Fill(deltaR);
+    }
+
+    TBranch *b_eta2_1;
+    TBranch *b_eta2_2;
+    TBranch *b_phi2_1;
+    TBranch *b_phi2_2;
+    treeSig2->SetBranchAddress("eta1", &eta1, &b_eta2_1);
+    treeSig2->SetBranchAddress("eta2", &eta2, &b_eta2_2);
+    treeSig2->SetBranchAddress("phi1", &phi1, &b_phi2_1);
+    treeSig2->SetBranchAddress("phi2", &phi2, &b_phi2_2);
+    UInt_t nentries2 = treeSig2->GetEntries();
+    for (UInt_t entry = 0; entry < nentries1; entry++){
+      treeSig2->GetEntry(entry);
+      double delta_eta = eta1-eta2;
+      double delta_phi = deltaPhi(phi1,phi2);
+      double deltaR = TMath::Sqrt(delta_eta*delta_eta + delta_phi*delta_phi);
+      h_Sig2->Fill(deltaR);
+    }
+    
+  }
 
   h_Sig1->SetLineColor(kRed);
   h_Sig1->SetFillColor(kWhite);
