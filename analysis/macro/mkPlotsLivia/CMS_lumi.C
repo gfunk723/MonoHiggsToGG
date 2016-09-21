@@ -8,7 +8,7 @@ CMS_lumi( TPad* pad, bool isSIM, int iPosX )
   lumi_13TeV="2.3 fb^{-1}";
   if(isSIM==true) extraText="Simulation";
   if(isSIM==false)extraText="Preliminary";
-  writeExtraText=true;         
+  writeExtraText=false;         
   bool outOfFrame    = false;
   if( iPosX/10==0 ) 
     {
