@@ -1,0 +1,8 @@
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-400_13TeV-madgraph/mzientek-RunIIFall15DR76-1_3_0-25ns_MZp-800_MA0-400-362343ba549764a7a588ba7bc4581584/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "name": "/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_Sig/1_3_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-400_13TeV-madgraph/RunIIFall15DR76-1_3_0-25ns_MZp-800_MA0-400/160331_145242/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0

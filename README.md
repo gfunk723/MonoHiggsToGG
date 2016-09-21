@@ -20,12 +20,35 @@ This package depends on [flashgg](https://github.com/cms-analysis/flashgg).
 (Follow what is done here from P. Musella: https://github.com/cms-analysis/flashgg/tree/master/MetaData 
  and here from C. Rovelli: https://github.com/musella/diphotons/tree/master/fullAnalysisRoma )
 
-## Step 1) Produce catalogue of MicroAODs
+## Step 1) Produce catalogue of MicroAODs and Extract JSON & PU Weights File
 Once MicroAOD files are produced run these scripts to create the json file (catalogue) and  compute the weights:
 
-- `fggManageSamples.py -C MonoHgg -V VERSION import`
-- `fggManageSamples.py -C MonoHgg review`
-- `fggManageSamples.py -C MonoHgg check`
+- `fggManageSamples.py -C CAMPAIGN -V VERSION import`
+- `fggManageSamples.py -C CAMPAIGN review`
+- `fggManageSamples.py -C CAMPAIGN check`
+
+NB: This searches for datasets matching the form: *CAMPAIGN-VERSION*
+
+### a) Extract JSON
+Extract the processed json (used as an input in the analyzer) and used to compute the PU weight file: 
+- `fggManageSamples.py -C CAMPAIGN getlumi <full dataset name>` 
+
+This json corresponds to the processed (through FLASHgg) dataset. We are interested in the the AND of this json and the golden json. 
+The convolution json is applyed in the analyzer to make sure we are restricted to the right portion of the data.
+This is specified in the diPhoAna.py (and diPhoAnaBATCH.py) in `JSONfile`.
+To get this convolution of these jsons use brilcalc:
+- `compareJSON.py --and processed.json golden.json >> processedANDgolden.json`
+ 
+### b) Get PU Weights File
+To get pileup in data, only need to specify MyAnalysisJSON.txt:
+
+```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50  MyDataPileupHistogram.root```
+
+To get the PU weights file, next run the macro `pileupWeights.C` (found in macro dir.)
+which uses MyDataPileupHistogram.root and compares it with a MC pileup histogram found in: 
+/afs/cern.ch/user/c/crovelli/public/json2015/rereco76x/mcPUhisto___25ns_FallMC_matchData_PoissonOOTPU.root
+
+This produces the `pileupWeights.root` file which is used in the analyzer.
 
 ## Step 2) Copy json to the scripts/list* directory
 - Copy directly from FLASHgg catalogue or list as produced in Step 1.
@@ -43,9 +66,10 @@ OR run `./runExtractFilesAndWeights.sh` does the same thing (takes input list of
 
 ## Step 4) Run in local the diphoton analyzer (from python directory):
 - Write by hand one microAOD file that can be taken from the json file
-- Fix by hand xsec and sumDataSet that can be found from the json file corresponding
+- Fix by hand xsec and sumDataSet that can be found from the corresponding json file
+- For data, specify the `JSONfile` as mentioned earlier
 - Specify the bool isMC = true or false
-- Optional: put in PU reweighting file
+- Optional: put in PU reweighting file (`puWFileName`) 
 - called by `cmsRun diPhoAna.py`
    
 ## Step 5) Run in batch the diphoton analyzer (from script directory):
@@ -78,8 +102,8 @@ NB. The structure of how to use these scripts can be seen in `doAll.sh`
 If you add additional variables to the ntuples in the analyzer, you need to modify addWeightsToTree.cc to include these variables.
 
 ## Step 7) Produce plots 
-The analysis is done in CMSSW_7_4_15
-- `make` (to compile)  
+The analysis is done in CMSSW_7_6_3_patch2
+- `make` (to compile) 
 - `./main` (to run)
 Can use `make clean` to clean.
 
@@ -137,7 +161,7 @@ Additional categories can be applied by adding the selection in fitterFormatting
 # Copy the Framework from Github
 -----------------------------------------------------------
 ```
-cmsrel CMSSW_7_4_15
+cmsrel CMSSW_7_6_3_patch2
 cmsenv 
 
 cd ${CMSSW_BASE}/src
@@ -148,8 +172,11 @@ cd ${CMSSW_BASE}/src
 git clone https://github.com/cms-analysis/flashgg.git
 cd flashgg
 
-# get latest version of FLASHgg
-git checkout 1_1_0
+ADD LEPTON INFO from Chiara to FLASHgg:
+https://github.com/crovelli/flashgg/blob/dec2015/Taggers/interface/LeptonSelection.h
+
+https://github.com/crovelli/flashgg/blob/dec2015/Taggers/src/LeptonSelection.cc
+
 
 cd ${CMSSW_BASE}/src
 bash flashgg/setup.sh | tee setup.log
@@ -166,6 +193,5 @@ cd ${CMSSW_BASE}/src
 scram b -j 16
 ```
 
-
 ###MicroAOD file to test the dumper:
-root://eoscms//eos/cms/store/group/phys_higgs/soffi/MonoX/MonoH/MicroAOD/test/MicroAOD_GluGluToHToGG_M-125_13TeV.root
+root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_1/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_1-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160130_032602/0000/myMicroAODOutputFile_1.root

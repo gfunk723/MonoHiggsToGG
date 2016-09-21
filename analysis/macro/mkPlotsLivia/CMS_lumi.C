@@ -5,10 +5,10 @@ CMS_lumi( TPad* pad, bool isSIM, int iPosX )
 {   
   int iPeriod=4;
   lumi_8TeV="19.7 fb^{-1}";
-  lumi_13TeV="2.2 fb^{-1}";
+  lumi_13TeV="2.3 fb^{-1}";
   if(isSIM==true) extraText="Simulation";
   if(isSIM==false)extraText="Preliminary";
-  writeExtraText=true;         
+  writeExtraText=false;         
   bool outOfFrame    = false;
   if( iPosX/10==0 ) 
     {
@@ -151,7 +151,7 @@ CMS_lumi( TPad* pad, bool isSIM, int iPosX )
     {
       if( iPosX==0) 
 	{
-	  posX_ =   l +  relPosX*(1-l-r)+0.05;
+	  posX_ =   l +  relPosX*(1-l-r)+0.1;// 0.05;
 	  posY_ =   1-t+lumiTextOffset*t;
 	}
       latex.SetTextFont(extraTextFont);

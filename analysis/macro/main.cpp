@@ -12,6 +12,7 @@
 
 #include "Plotter.hh"
 #include "Combiner.hh"
+#include "CardMaker.hh"
 #include "Comparer.hh"
 #include "ReweightPU.hh"
 #include "METCorr2016.hh"
@@ -44,7 +45,7 @@ int main(){
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  int whichSelection = 2; // Choose which selection to apply
+  int whichSelection = 1; // Choose which selection to apply
   TString selName = "";   
   if (whichSelection == 0) selName = "OrigSel";// no additional selection & MET > 70  
   if (whichSelection == 1) selName = "OptSel1";// for Data/MC plot using m600 cuts: pt1/m > 0.5,  pt2/m > 0.25, ptgg > 90, MET > 105  
@@ -52,29 +53,34 @@ int main(){
   if (whichSelection == 3) selName = "OptSel3";// pt1/m > 0.55, pt2/m > 0.25, ptgg > 85, MET > 50 (using ptgg w/ requirement on #events) 
   if (whichSelection == 4) selName = "OptSel4";// pt1/m > 0.45, pt2/m > 0.25, ptgg/MET > 0.2, MET > 70 (using ptgg/MET w/ requirement on #events)
 
-  //////////////////////////////////////////////////////////////////////////////////////
-
-  TString inDir = "data/25ns_v74X_v2/"; 					// input directory of the samples
-  TString outDir = Form("./diPhoPlots/25ns_v74X_v2_%s/",selName.Data());	// output directory to send results
-  TString origDir = "./diPhoPlots/25ns_v74X_v2_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
+  Double_t alpha = 0.19; // Scale factor for C&C 
 
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString type = "png";		// type of plots to be made
+  TString inDir = "data/25ns_v76X_v2/"; 					// input directory of the samples
+  TString outDir = Form("./diPhoPlots/25ns_v76X_v2_%s_ScaleToData/",selName.Data());	// output directory to send results
+  TString origDir = "./diPhoPlots/25ns_v76X_v2_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
+
+  //////////////////////////////////////////////////////////////////////////////////////
+
+  TString type = "pdf";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = false;		// make plots for each sample individually
   bool doComb = false;		// make stack/overlay plots
-  bool doABCD = true;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
+  bool makeDataCards = false;	// make datacards for hybrid method
+  bool useOneSel = true;	// for datacards making: use m600 sel for all points (false uses optimized sel)
+  bool doMergeBkgs = true;      // merge the Higgs,EWK bkgs to make combined plots nicer
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
-  bool doBlind = true;		// use to blind the analysis for Data (don't use distributions for met>100 & 115<mgg<135)
+  bool doBlind = false;		// use to blind the analysis for Data (don't use distributions for met>100 & 115<mgg<135)
   bool makePURWfiles = false;	// recompute PURW and make files (need also doReweightPU=true for this to run)
   bool doReweightPU = false;	// use PURW from old files if !makePURWfiles
   bool doCompare = false;	// call Comparer (not yet working) 
 
-  Double_t lumi =  2.2;  // in fb^-1  
+  Double_t lumi =  2.3;  // in fb^-1  
   UInt_t nBins_vtx = 60; // number of bins for PURW 
   
   //////////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +100,7 @@ int main(){
       doPlots = false;
       doComb = false;
       doABCD = false;
+      makeDataCards = false;
       doCompare = false;
       doReweightPU = false;
       makePURWfiles = false;
@@ -307,6 +314,18 @@ int main(){
     delete ZGTo2LG;
     std::cout << "Finished ZGTo2LG sample" << std::endl;
 
+    std::cout << "Working on ZZTo2L2Nu sample" << std::endl;
+    Plotter * ZZTo2L2Nu = new Plotter(inDir,outDir,"ZZTo2L2Nu",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    ZZTo2L2Nu->DoPlots(0);
+    delete ZZTo2L2Nu;
+    std::cout << "Finished ZZTo2L2Nu sample" << std::endl;
+
+    std::cout << "Working on ZJets sample" << std::endl;
+    Plotter * ZJets = new Plotter(inDir,outDir,"ZJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    ZJets->DoPlots(0);
+    delete ZJets;
+    std::cout << "Finished ZJets sample" << std::endl;
+
     std::cout << "Working on TGJets sample" << std::endl;
     Plotter * TGJets = new Plotter(inDir,outDir,"TGJets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     TGJets->DoPlots(0);
@@ -318,6 +337,12 @@ int main(){
     TTGJets->DoPlots(0);
     delete TTGJets;
     std::cout << "Finished TTGJets sample" << std::endl;
+
+    std::cout << "Working on TTGG_0Jets sample" << std::endl;
+    Plotter * TTGG0Jets = new Plotter(inDir,outDir,"TTGG_0Jets",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    TTGG0Jets->DoPlots(0);
+    delete TTGG0Jets;
+    std::cout << "Finished TTGG_0Jets sample" << std::endl;
 
     std::cout << "Working on GluGluH sample" << std::endl;
     Plotter * GGHGG = new Plotter(inDir,outDir,"GluGluHToGG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
@@ -367,23 +392,23 @@ int main(){
     delete DMH_mZP1000;
     std::cout << "Finished DMHgg 2HDM MZP1000 sample" << std::endl;
    
-    std::cout << "Working on DMHgg 2HDM MZP1200 sample" << std::endl;
-    Plotter * DMH_mZP1200 = new Plotter(inDir,outDir,"2HDM_mZP1200",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP1200->DoPlots(0);
-    delete DMH_mZP1200;
-    std::cout << "Finished DMHgg 2HDM MZP1200 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP1200 sample" << std::endl;
+    //Plotter * DMH_mZP1200 = new Plotter(inDir,outDir,"2HDM_mZP1200",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP1200->DoPlots(0);
+    //delete DMH_mZP1200;
+    //std::cout << "Finished DMHgg 2HDM MZP1200 sample" << std::endl;
 
-    std::cout << "Working on DMHgg 2HDM MZP1400 sample" << std::endl;
-    Plotter * DMH_mZP1400 = new Plotter(inDir,outDir,"2HDM_mZP1400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP1400->DoPlots(0);
-    delete DMH_mZP1400;
-    std::cout << "Finished DMHgg 2HDM MZP1400 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP1400 sample" << std::endl;
+    //Plotter * DMH_mZP1400 = new Plotter(inDir,outDir,"2HDM_mZP1400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP1400->DoPlots(0);
+    //delete DMH_mZP1400;
+    //std::cout << "Finished DMHgg 2HDM MZP1400 sample" << std::endl;
 
-    std::cout << "Working on DMHgg 2HDM MZP1700 sample" << std::endl;
-    Plotter * DMH_mZP1700 = new Plotter(inDir,outDir,"2HDM_mZP1700",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP1700->DoPlots(0);
-    delete DMH_mZP1700;
-    std::cout << "Finished DMHgg 2HDM MZP1700 sample" << std::endl;
+    //std::cout << "Working on DMHgg 2HDM MZP1700 sample" << std::endl;
+    //Plotter * DMH_mZP1700 = new Plotter(inDir,outDir,"2HDM_mZP1700",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP1700->DoPlots(0);
+    //delete DMH_mZP1700;
+    //std::cout << "Finished DMHgg 2HDM MZP1700 sample" << std::endl;
 
     //std::cout << "Working on DMHgg 2HDM MZP2000 sample" << std::endl;
     //Plotter * DMH_mZP2000 = new Plotter(inDir,outDir,"2HDM_mZP2000",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
@@ -397,6 +422,18 @@ int main(){
     delete DMH_mZP2500;
     std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
     
+    //std::cout << "Working on DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
+    //Plotter * DMH_mZP600_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP600_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP600_mA0400->DoPlots(0);
+    //delete DMH_mZP600_mA0400;
+    //std::cout << "Finished DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
+   
+    //std::cout << "Working on DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
+    //Plotter * DMH_mZP800_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP800_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP800_mA0400->DoPlots(0);
+    //delete DMH_mZP800_mA0400;
+    //std::cout << "Finished DMHgg 2HDM MZP800 MA0-400 sample" << std::endl;
+   
     //std::cout << "Working on DMHgg M1000 sample" << std::endl;
     //Plotter * DMH_M1000 = new Plotter(inDir,outDir,"DMHtoGG_M1000",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_M1000->DoPlots(0);
@@ -429,6 +466,7 @@ int main(){
   colorMap["QCD"] 			= kYellow+8;
   colorMap["GJets"] 			= kGreen-9;
   colorMap["VH"]			= kOrange-3;
+  colorMap["ZJets"]			= kBlue;
   colorMap["GluGluHToGG"]		= kOrange-2;
   colorMap["ttHJetToGG"]		= kOrange-4;
   colorMap["VBFHToGG"]			= kYellow-7;
@@ -436,7 +474,9 @@ int main(){
   colorMap["DYJetsToLL"]		= kTeal-7;
   colorMap["TGJets"]			= kAzure+3;
   colorMap["TTGJets"]			= kAzure+2;
+  colorMap["TTGG_0Jets"]		= kBlue-9;
   colorMap["ZGTo2LG"]			= kCyan;
+  colorMap["ZZTo2L2Nu"]			= kTeal+1;
   colorMap["WGToLNuG"]			= kAzure+8;
   colorMap["DMHtoGG_M1"]		= kPink-2;
   colorMap["DMHtoGG_M10"]		= kPink-6;
@@ -445,13 +485,20 @@ int main(){
   colorMap["DoubleEG"]			= kBlack;
   colorMap["FakeData"]			= kBlack;
   colorMap["2HDM_mZP600"]		= kPink-2;
-  colorMap["2HDM_mZP800"]		= kPink;
+  colorMap["2HDM_mZP800"]		= kMagenta+2;
   colorMap["2HDM_mZP1000"]		= kMagenta;
   colorMap["2HDM_mZP1200"]		= kPink-6;
   colorMap["2HDM_mZP1400"]		= kPink+4;
   colorMap["2HDM_mZP1700"]		= kMagenta-2;
-  //colorMap["2HDM_mZP2000"]		= kPink-1;
-  colorMap["2HDM_mZP2500"]		= kMagenta+2;
+  colorMap["2HDM_mZP2000"]		= kPink-1;
+  colorMap["2HDM_mZP2500"]		= kPink;
+  colorMap["2HDM_mZP600_mA0400"]	= kRed;
+  colorMap["2HDM_mZP800_mA0400"]	= kRed-4;
+
+  colorMap["SMHiggs"]			= kOrange-2;
+  colorMap["EWK1pho"]			= kAzure+8;
+  colorMap["EWK2pho"]			= kAzure+2;
+  colorMap["Jetspho"]			= kGreen-9;
 
   SamplePairVec Samples; // vector to also be used for stack plots
   //ordered to match Livia
@@ -459,10 +506,13 @@ int main(){
   Samples.push_back(SamplePair("VH",1));
   Samples.push_back(SamplePair("VBFHToGG",1)); 
   Samples.push_back(SamplePair("GluGluHToGG",1)); 
+  Samples.push_back(SamplePair("TTGG_0Jets",1));
   Samples.push_back(SamplePair("TGJets",1));
   Samples.push_back(SamplePair("TTGJets",1));
   Samples.push_back(SamplePair("WGToLNuG",1));
+  Samples.push_back(SamplePair("ZZTo2L2Nu",1));
   Samples.push_back(SamplePair("ZGTo2LG",1));
+  Samples.push_back(SamplePair("ZJets",1)); 
   Samples.push_back(SamplePair("DYJetsToLL",1));
   Samples.push_back(SamplePair("QCD",1)); 
   Samples.push_back(SamplePair("GJets",1)); 
@@ -476,11 +526,13 @@ int main(){
   Samples.push_back(SamplePair("2HDM_mZP600",0)); 
   Samples.push_back(SamplePair("2HDM_mZP800",0)); 
   Samples.push_back(SamplePair("2HDM_mZP1000",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP1200",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP1400",0)); 
-  Samples.push_back(SamplePair("2HDM_mZP1700",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1200",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1400",0)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1700",0)); 
   //Samples.push_back(SamplePair("2HDM_mZP2000",0));  
-  Samples.push_back(SamplePair("2HDM_mZP2500",0));  
+  //Samples.push_back(SamplePair("2HDM_mZP2500",0));  
+  //Samples.push_back(SamplePair("2HDM_mZP600_mA0400",0));
+  //Samples.push_back(SamplePair("2HDM_mZP800_mA0400",0));
 
   UInt_t nbkg = 0;
   UInt_t nsig = 0;
@@ -540,6 +592,32 @@ int main(){
 
   /////////////////////////////////////////////////////
   //
+  // Make data cards using hybrid method
+  //
+  // Arguements to CardMaker:
+  //
+  // 1st : alpha (scale factor)
+  // 2nd : lumi
+  // 3rd : PU weight vector
+  // 4th : input directory
+  // 5th : output directory
+  // 6th : do Blind (blind the observed # events)
+  // 7th : use one sel for all points or use optimized one
+  // 8th : type of plots out 
+  //
+  /////////////////////////////////////////////////////
+
+  if (makeDataCards){
+    std::cout << "Making datacards using the hybrid method" << std::endl;
+    CardMaker *cards = new CardMaker(alpha,lumi,puweights_MC,inDir,outDir,doBlind,useOneSel,type);
+    cards->MakeCards();
+    delete cards;
+    std::cout << "Finished making datacards" << std::endl; 
+  }
+
+
+  /////////////////////////////////////////////////////
+  //
   // Make comparison plots for all samples
   //
   // Arguments to Plotter:
@@ -548,17 +626,17 @@ int main(){
   // 3rd : lumi
   // 4th : PU weight vector
   // 5th : input directory
-  // 5th : output directory
-  // 6th : type of plots out 
+  // 6th : output directory
+  // 7th : type of plots out 
   //
   /////////////////////////////////////////////////////
 
   if (doCompare){
     std::cout << "Working on Comparing All Samples" << std::endl;
-    Comparer *comp = new Comparer(Samples,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
-    comp->DoComparison();
-    delete comp;
-    std::cout << "Finished Comparing Samples" << std::endl;
+    //Comparer *comp = new Comparer(Samples,colorMap,lumi,puweights_MC,inDir,outDir,doBlind,type);
+    //comp->DoComparison();
+    //delete comp;
+    //std::cout << "Finished Comparing Samples" << std::endl;
   }
 
   ////////////////////////////////////////////////////
@@ -574,6 +652,8 @@ int main(){
   // 6th : bool do Stack plots (false = do overlay)
   // 7th : type of plots out 
   // 8th : bool do rescaling of GJets to replace QCD sample
+  // 9th : whichSelection (OrigSel/OptSel1..)
+  // 10th: bool doMergeBkgs (plots have some bkgs merged together) 
   //
   ////////////////////////////////////////////////////
 
@@ -581,11 +661,11 @@ int main(){
     // Combiner( Samples, lumi, colorMap , outDir, doNmin1plots, doStack)
     
     // do overlay plots for normal plots
-    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale,whichSelection);
+    Combiner *combAll = new Combiner(Samples,lumi,colorMap,outDir,false,false,type,doQCDrescale,whichSelection,doMergeBkgs);
     combAll->DoComb();
     delete combAll;   
     // do stack plots for normal plots
-    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale,whichSelection);
+    Combiner *stackAll = new Combiner(Samples,lumi,colorMap,outDir,false,true,type,doQCDrescale,whichSelection,doMergeBkgs);
     stackAll->DoComb();
     delete stackAll;   
  
@@ -624,7 +704,7 @@ int main(){
       for (UInt_t mass = 1; mass < NumMasses; mass++){
         ABCDMethod *abcd = new ABCDMethod(Samples,lumi,origDir,outDir,doBlind,doQCDrescale,whichSelection,mass);
         abcd->DoAnalysis(mass);
-        delete abcd; 
+        delete abcd;
       }
     }
   }// end doABCD

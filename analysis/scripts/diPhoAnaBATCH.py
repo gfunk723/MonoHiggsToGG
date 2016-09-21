@@ -5,9 +5,9 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = False;
-is76X = False; #CANNOT RUN ON 76X in 74X
-isFLASHgg_1_1_0 = True;
+isMC = True;
+is76X = True;
+isFLASHgg_1_1_0 = False;
 ######################
 
 process = cms.Process("diPhoAna")
@@ -19,26 +19,25 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag.globaltag = 'MCRUN2_74_V9A' 		#50ns
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All' 	#Phys14
+#process.GlobalTag.globaltag = 'MCRUN2_74_V9A' 		#50ns
 
 # Pick up GlobalTag
 if (isMC):
     if (is76X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '') 
+        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '')
         print "76X_mcRun2_asymptotic_v12"
     else:
-        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '') 
+        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '')
         print "74X_mcRun2_asymptotic_v2"
-         
+     
 else:
     if (is76X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '') 
+        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '')
         print "76X_dataRun2_v15"
     else:
-        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '') 
+        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
         print "74X_dataRun2_Prompt_v2"
-
 
 if (isMC and isFLASHgg_1_1_0):
     flag = 'TriggerResults::PAT'
@@ -59,7 +58,7 @@ process.source = cms.Source("PoolSource",
 if (isMC==False):
     print "applying 2015D json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/goldenAndProcessed.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_76X_vtx0.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)  
 
@@ -82,7 +81,7 @@ if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
 
-    era = "Summer15_25nsV7"
+    era = "Fall15_25nsV2"
     if isMC : 
         era += "_MC"
     else :
@@ -159,16 +158,18 @@ for i in range(0,maxJetCollections):
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag=cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),
+				  pfcands		= cms.InputTag("packedPFCandidates"),
                                   JetCorrectorTag = cms.InputTag("ak4PFCHSL1FastjetCorrector"),
                                   inputTagJets= UnpackedJetCollectionVInputTag,  
                                   ElectronTag=cms.InputTag('flashggSelectedElectrons'),
                                   MuonTag=cms.InputTag('flashggSelectedMuons'), 
                                   bTag = cms.untracked.string(flashggBTag),      
+				  RhoTag = cms.InputTag('fixedGridRhoAll'),
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),   
                                   DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons0vtx'),
                                   DiPhotonBDTVtxTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
-                                  generatorInfo = cms.InputTag("generator"),
+                                  generatorInfo = cms.InputTag('generator'),
 				  bits	        = cms.InputTag('TriggerResults::HLT'),
                                   flags        = cms.InputTag(flag),
                                   dopureweight = PU, 

@@ -37,7 +37,7 @@ typedef std::vector<TEfficiency*> 	TEffVec;
 
 class Combiner{
 public:
-  Combiner(const SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outname, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection);
+  Combiner(const SamplePairVec Samples, const Double_t inLumi, const ColorMap colorMap, const TString outname, const Bool_t doNmin1, const Bool_t do_stack, const TString type, const Bool_t doQCDrescale, const Int_t whichSelection, const Bool_t mergeBkgs);
   void InitCanvAndHists();
   void InitTH1DNames();
   void DoComb();
@@ -62,6 +62,7 @@ private:
   Double_t 	lumi;
   Bool_t	doStack;
   Bool_t	doQCDscale;
+  Bool_t	doMergeBkgs;
   TString	fType;
   Int_t		fWhichSel;
   Double_t	METcut;
@@ -111,6 +112,11 @@ private:
   TH1DVec	fOutBkgTH1DHists;
   TH1DVec	fOutSigTH1DHists;
   TH1DVec	fOutDataTH1DHists;
+  TH1DVec	fOutHiggsBkgTH1DHists;
+  TH1DVec	fOutEWK1phoBkgTH1DHists;
+  TH1DVec	fOutEWK2phoBkgTH1DHists;
+  TH1DVec	fOutJetsphoBkgTH1DHists;
+  TH1DVec	fOutDYJetsBkgTH1DHists;
 
   TH1DVec	fOutRatioTH1DHists;
   TH1DVec	fOutRatioTH1DHistsCopy;
@@ -120,6 +126,7 @@ private:
   THStackVec    fOutBkgTH1DStacks;
   THStackVec	fOutBkgTH1DStacksForUncer;
   TLegVec	fTH1DLegends;
+  TLegVec	fTH1DLegendsSig;
   TCanvVec	fOutTH1DCanvases;
 
   TString	fOutDir;

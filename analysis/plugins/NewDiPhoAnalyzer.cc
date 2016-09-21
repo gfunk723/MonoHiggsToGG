@@ -107,6 +107,36 @@ struct diphoTree_struc_ {
   float pu_n;
   float sumDataset;
   float perEveW;
+  float perEveW1;
+  float perEveW2;
+  float perEveW3;
+  float perEveW4;
+  float perEveW5;
+  float perEveW6;
+  float perEveW7;
+  float perEveW8;
+  float perEveW9;
+  float perEveW10;
+  float perEveW11;
+  float perEveW12;
+  float perEveW13;
+  float perEveW14;
+  float perEveW15;
+  float perEveW16;
+  float perEveW17;
+  float perEveW18;
+  float perEveW19;
+  float perEveW20;
+  float perEveW21;
+  float perEveW22;
+  float perEveW23;
+  float perEveW24;
+  float perEveW25;
+  float perEveW26;
+  float perEveW27;
+  float perEveW28;
+  float perEveW29;
+  float perEveW30;
   float calomet;
   float calometPhi;
   float calometSumEt;
@@ -356,7 +386,8 @@ private:
   int passLooseNHisoCuts(float sceta, float nhiso, float pt);
   int passLoosePHisoCuts(float sceta, float phiso, float pt);
   int passLooseHoeCuts(float sceta, float hoe);
-
+  bool passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso);
+  
   float getSmearingValue(float sceta, float r9, int syst);
   float getScalingValue(int sampleID, float sceta, float r9, int runNumber, int syst);
   float getPtCorrected(float pt, float sceta,float r9, int run, int sampleID);
@@ -371,16 +402,16 @@ private:
   EDGetTokenT<View<reco::Vertex> > vertexToken_;
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonToken_; 
   EDGetTokenT<edm::View<flashgg::DiPhotonCandidate> > diPhotonBDTVtxToken_; 
-  EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_; 
-  edm::InputTag rhoFixedGrid_;
+  EDGetTokenT<edm::View<PileupSummaryInfo> > PileUpToken_;
+  EDGetTokenT<double> rhoToken_;
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
-  edm::InputTag genInfo_;
+  EDGetTokenT<GenEventInfoProduct> genInfoToken_;
   EDGetTokenT<View<reco::GenParticle> > genPartToken_;
   std::vector<edm::InputTag> inputTagJets_;     
   EDGetTokenT<View<Electron> > electronToken_;   
   EDGetTokenT<View<flashgg::Muon> > muonToken_;        
-
   EDGetTokenT<View<pat::MET> > METToken_;
+  EDGetTokenT<edm::View<reco::Candidate> > pfcandsToken_;
 
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlagsToken_;
@@ -453,7 +484,7 @@ private:
   Int_t BDTVtxMargaret = 0;
 
   // 74X only: met filters lists
-  EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
+  //EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
 
   // vtx studies
   TH1F *H_goodVtx;
@@ -469,13 +500,15 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   diPhotonToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonTag"))),
   diPhotonBDTVtxToken_(consumes<View<flashgg::DiPhotonCandidate> >(iConfig.getUntrackedParameter<InputTag> ("DiPhotonBDTVtxTag"))),
   PileUpToken_(consumes<View<PileupSummaryInfo> >(iConfig.getUntrackedParameter<InputTag> ("PileUpTag"))),
+  rhoToken_(consumes<double>(iConfig.getParameter<InputTag>("RhoTag"))),
   genPhotonExtraToken_(mayConsume<vector<flashgg::GenPhotonExtra> >(iConfig.getParameter<InputTag>("genPhotonExtraTag"))),
+  genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<InputTag>("generatorInfo"))),
   genPartToken_(consumes<View<reco::GenParticle> >(iConfig.getUntrackedParameter<InputTag> ("GenParticlesTag", InputTag("flashggPrunedGenParticles")))),
   inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" ) ),   
   electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ) ) ),
   muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ), 
   METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
-  //METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag", InputTag( "slimmedMETs::FLASHggMicroAOD" ) ) ) ),
+  pfcandsToken_( consumes<edm::View<reco::Candidate> > (iConfig.getParameter<edm::InputTag>("pfcands"))),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
   triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) ),
   mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
@@ -489,7 +522,6 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   xsec_         = iConfig.getUntrackedParameter<double>("xsec",1.); 
   kfac_         = iConfig.getUntrackedParameter<double>("kfac",1.); 
   sumDataset_   = iConfig.getUntrackedParameter<double>("sumDataset",-999.);
-  genInfo_      = iConfig.getParameter<edm::InputTag>("generatorInfo"); 
 
   for ( unsigned i = 0 ; i < inputTagJets_.size() ; i++) {
     auto token = consumes<View<flashgg::Jet> >(inputTagJets_[i]);
@@ -557,7 +589,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByToken(PileUpToken_,PileupInfos);
   
   Handle<double> objs_rho;
-  iEvent.getByLabel("fixedGridRhoAll",objs_rho);
+  iEvent.getByToken(rhoToken_, objs_rho);
+  //iEvent.getByLabel("fixedGridRhoAll",objs_rho);
+
+  Handle<edm::View<reco::Candidate> > pfCands;
+  iEvent.getByToken(pfcandsToken_, pfCands);
 
   Handle<vector<flashgg::GenPhotonExtra> > genPhotonsHandle;
   edm::Handle<GenEventInfoProduct> genInfo;
@@ -565,7 +601,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
  
   if (sampleID>0 && sampleID<10000) {     // MC
     iEvent.getByToken(genPhotonExtraToken_,genPhotonsHandle);
-    iEvent.getByLabel(genInfo_,genInfo);   
+    iEvent.getByToken(genInfoToken_,genInfo);   
     iEvent.getByToken( genPartToken_, genParticles );
   }
 
@@ -666,47 +702,47 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
   for( unsigned index = 0; index < flagsNames.size(); ++index ) {
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_goodVertices" && !triggerFlags->accept( index )) metF_GV = 0;
-    //Flag_HBHENoiseFilter 
-    //Flag_HBHENoiseIsoFilter
-    //Flag_CSCTightHalo2015Filter 
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilter" && !triggerFlags->accept( index )) metF_HBHENoise = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilterIso" && !triggerFlags->accept( index )) metF_HBHENoiseIso = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter" && !triggerFlags->accept( index )) metF_eeBadSC = 0;
   }
 
-  // 74X: partially to be read from external lists
-  EventList::iterator rItrCSC;
-  rItrCSC = listCSC.find(run);
-  if (rItrCSC != listCSC.end()) {     
-    set<unsigned> eventSetCSC = rItrCSC->second;
-    set<unsigned>::iterator eItrCSC;
-    eItrCSC = eventSetCSC.find(event);
-    if (eItrCSC != eventSetCSC.end()) metF_CSC = 0;     
-  }
-  //
-  EventList::iterator rItrEEbadSC;         // this is to kill the 4th bad SC which is not included in the flags in trigger results
-  rItrEEbadSC = listEEbadSC.find(run);
-  if (rItrEEbadSC != listEEbadSC.end()) {     
-    set<unsigned> eventSetEEbadSC = rItrEEbadSC->second;
-    set<unsigned>::iterator eItrEEbadSC;
-    eItrEEbadSC = eventSetEEbadSC.find(event);
-    if (eItrEEbadSC != eventSetEEbadSC.end()) metF_eeBadSC = 0;     
-  }
-  //two new additional filters 74X
-  EventList::iterator rItrHadronTrackRes;         
-  rItrHadronTrackRes = listHadronTrackRes.find(run);
-  if (rItrHadronTrackRes != listHadronTrackRes.end()) {     
-    set<unsigned> eventSetHadronTrackRes = rItrHadronTrackRes->second;
-    set<unsigned>::iterator eItrHadronTrackRes;
-    eItrHadronTrackRes = eventSetHadronTrackRes.find(event);
-    if (eItrHadronTrackRes != eventSetHadronTrackRes.end()) metF_HadronTrackRes = 0;     
-  }
-  EventList::iterator rItrMuonBadTrack;        
-  rItrMuonBadTrack = listMuonBadTrack.find(run);
-  if (rItrMuonBadTrack != listMuonBadTrack.end()) {     
-    set<unsigned> eventSetMuonBadTrack = rItrMuonBadTrack->second;
-    set<unsigned>::iterator eItrMuonBadTrack;
-    eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
-    if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
-  }
+  //// 74X: partially to be read from external lists
+  //EventList::iterator rItrCSC;
+  //rItrCSC = listCSC.find(run);
+  //if (rItrCSC != listCSC.end()) {     
+  //  set<unsigned> eventSetCSC = rItrCSC->second;
+  //  set<unsigned>::iterator eItrCSC;
+  //  eItrCSC = eventSetCSC.find(event);
+  //  if (eItrCSC != eventSetCSC.end()) metF_CSC = 0;     
+  //}
+  ////
+  //EventList::iterator rItrEEbadSC;         // this is to kill the 4th bad SC which is not included in the flags in trigger results
+  //rItrEEbadSC = listEEbadSC.find(run);
+  //if (rItrEEbadSC != listEEbadSC.end()) {     
+  //  set<unsigned> eventSetEEbadSC = rItrEEbadSC->second;
+  //  set<unsigned>::iterator eItrEEbadSC;
+  //  eItrEEbadSC = eventSetEEbadSC.find(event);
+  //  if (eItrEEbadSC != eventSetEEbadSC.end()) metF_eeBadSC = 0;     
+  //}
+  ////two new additional filters 74X
+  //EventList::iterator rItrHadronTrackRes;         
+  //rItrHadronTrackRes = listHadronTrackRes.find(run);
+  //if (rItrHadronTrackRes != listHadronTrackRes.end()) {     
+  //  set<unsigned> eventSetHadronTrackRes = rItrHadronTrackRes->second;
+  //  set<unsigned>::iterator eItrHadronTrackRes;
+  //  eItrHadronTrackRes = eventSetHadronTrackRes.find(event);
+  //  if (eItrHadronTrackRes != eventSetHadronTrackRes.end()) metF_HadronTrackRes = 0;     
+  //}
+  //EventList::iterator rItrMuonBadTrack;        
+  //rItrMuonBadTrack = listMuonBadTrack.find(run);
+  //if (rItrMuonBadTrack != listMuonBadTrack.end()) {     
+  //  set<unsigned> eventSetMuonBadTrack = rItrMuonBadTrack->second;
+  //  set<unsigned>::iterator eItrMuonBadTrack;
+  //  eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
+  //  if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
+  //}
 
   //if ( metF_CSC == 0) std::cout << "FAILS MET FILTER : CSC " << std::endl;
   //if ( metF_eeBadSC == 0) std::cout << "FAILS MET FILTER : eeBadSC " << std::endl;
@@ -746,10 +782,17 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   // other weights for the dataset
   float sumDataset = 1.;  
   float perEveW    = 1.;
+  std::vector <float> perEveWeights;
   if (sampleID>0 && sampleID<10000) { 
     sumDataset = sumDataset_;
     const auto & eveWeights = genInfo->weights();
     if(!eveWeights.empty()) perEveW = eveWeights[0];
+    if(!eveWeights.empty()){
+       //std::cout << "EveWeightsSize = " << eveWeights.size() << std::endl;
+       for (UInt_t i=0; i<eveWeights.size(); i++){
+         perEveWeights.push_back(eveWeights[i]);
+       }
+    } 
   }
  
   // To keep track of the sum of weights
@@ -890,7 +933,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	preselHLTLivia++;
 	h_selection->Fill(1.,perEveW);
 	numPassingCuts[1]++;
-     
+
+
+        //if (sampleID>0 && sampleID<10000) {     // MC
+        //  for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
+	//    int thePdgId = fabs(genParticles->ptrAt( genLoop )->pdgId()); 
+	//    std::cout << thePdgId << std::endl;
+	//  }
+        //}
+ 
 	// Diphoton candidates: Id/isolation selection
 	vector<int> selectedDipho;
 	for( size_t diphotonlooper = 0; diphotonlooper < preselHLTDipho.size(); diphotonlooper++ ) {
@@ -963,8 +1014,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  int passLooseSubLeadNHiso = passLooseNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
 	  int passLooseSubLeadPHiso = passLoosePHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
 	  int passLooseSubLeadHoe   = passLooseHoeCuts( subleadScEta, subleadHoE );
+	  // high pt selection (from high mass diphotn)
+	  float rawleadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso();
+	  float rawleadPhoIso = diphoPtr->leadingPhoton()->egPhotonIso();
+	  bool leadHighPtSel = passHighPtSelection(rho, leadPt, leadScEta, leadHoE, leadSieienoZS, rawleadChIso, rawleadPhoIso);
+	  float rawsubleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso();
+	  float rawsubleadPhoIso = diphoPtr->subLeadingPhoton()->egPhotonIso();
+	  bool subLeadHighPtSel = passHighPtSelection(rho, subleadPt, subleadScEta, subleadHoE, subleadSieienoZS, rawsubleadChIso, rawsubleadPhoIso);
 
-      
 	  //int passSubLeadElVeto = 0;
 	  //int numberpassingEV2 = 0;
 	  //if (diphoPtr->subLeadingPhoton()->passElectronVeto()) passSubLeadElVeto = 1;
@@ -976,11 +1033,24 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  int numpassingmed = 0;
 	  int numpassing = 0;
 	  int numpassingloose = 0;
-	  if (leadSelel || subleadSelel) numpassingmed++;
-	  if (leadTightSelel || subleadTightSelel) numpassing++;
-	  if (leadLooseSelel || subleadLooseSelel) numpassingloose++;
+	  int numpassinghighptid = 0;
+	  if (leadSelel && subleadSelel) numpassingmed++;
+	  if (leadTightSelel && subleadTightSelel) numpassing++;
+	  if (leadLooseSelel &&  subleadLooseSelel) numpassingloose++;
+	  if (leadHighPtSel && subLeadHighPtSel) numpassinghighptid++; 
+
+	  // PF CANDIDATES NOT STORED IN microAOD
+	  //Double_t gaisoval = 0;
+	  //Double_t chisoval = 0;
+	  //for (size_t i = 0; i < pfCands->size(); i++){
+          //  const auto& thepfcand = pfCands->ptrAt(i);
+	    //std::cout << thepfcand->pt() << std::endl;
+            //if (    thepfcand->pdgId()  ==  22 && deltaR(photons_iter->eta(), rndphi, thepfcand->eta(), thepfcand->phi()) <= 0.3) gaisoval += thepfcand->pt();
+            //if (abs(thepfcand->pdgId()) == 211 && deltaR(photons_iter->eta(), rndphi, thepfcand->eta(), thepfcand->phi()) <= 0.3) chisoval += thepfcand->pt();
+          //}
 
 	  if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
+	  //if (!leadHighPtSel || !subLeadHighPtSel) continue; //high pt photon id
 	  selectedDipho.push_back(theDiphoton); 
 	
 	  //// ADDED MVA PHOTON SELECTION
@@ -1679,6 +1749,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 		      // make sure jets are sorted by pT after applying JEC
 		      for( unsigned int jetIndex = 0; jetIndex < Jets[jetCollectionIndex]->size() ; jetIndex++) {
+			//tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 			//apply JEC
 			Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 			double scale = applyJetCorrection(*thejet);
@@ -1900,6 +1971,36 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.pu_n = pu_n;
 		      treeDipho_.sumDataset = sumDataset;
 		      treeDipho_.perEveW = perEveW;
+		      treeDipho_.perEveW1 = perEveWeights[1];
+		      treeDipho_.perEveW2 = perEveWeights[2];
+		      treeDipho_.perEveW3 = perEveWeights[3];
+		      treeDipho_.perEveW4 = perEveWeights[4];
+		      treeDipho_.perEveW5 = perEveWeights[5];
+		      treeDipho_.perEveW6 = perEveWeights[6];
+		      treeDipho_.perEveW7 = perEveWeights[7];
+		      treeDipho_.perEveW8 = perEveWeights[8];
+		      treeDipho_.perEveW9 = perEveWeights[9];
+		      treeDipho_.perEveW10 = perEveWeights[10];
+		      treeDipho_.perEveW11 = perEveWeights[11];
+		      treeDipho_.perEveW12 = perEveWeights[12];
+		      treeDipho_.perEveW13 = perEveWeights[13];
+		      treeDipho_.perEveW14 = perEveWeights[14];
+		      treeDipho_.perEveW15 = perEveWeights[15];
+		      treeDipho_.perEveW16 = perEveWeights[16];
+		      treeDipho_.perEveW17 = perEveWeights[17];
+		      treeDipho_.perEveW18 = perEveWeights[18];
+		      treeDipho_.perEveW19 = perEveWeights[19];
+		      treeDipho_.perEveW20 = perEveWeights[20];
+		      treeDipho_.perEveW21 = perEveWeights[21];
+		      treeDipho_.perEveW22 = perEveWeights[22];
+		      treeDipho_.perEveW23 = perEveWeights[23];
+		      treeDipho_.perEveW24 = perEveWeights[24];
+		      treeDipho_.perEveW25 = perEveWeights[25];
+		      treeDipho_.perEveW26 = perEveWeights[26];
+		      treeDipho_.perEveW27 = perEveWeights[27];
+		      treeDipho_.perEveW28 = perEveWeights[28];
+		      treeDipho_.perEveW29 = perEveWeights[29];
+		      treeDipho_.perEveW30 = perEveWeights[30];
 		      treeDipho_.pfmet = pfmet;
 		      treeDipho_.pfmet = pfmetPhi;
 		      treeDipho_.pfmet = pfmetSumEt;
@@ -2184,12 +2285,12 @@ void NewDiPhoAnalyzer::beginJob() {
   h_selection->Sumw2();
 
   // For 74X only: met filters event lists 
-  cout << "now reading met filters lists" << endl;
-  listCSC     = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/csc2015_Dec01.txt");
-  listEEbadSC = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/ecalscn1043093_Dec01.txt");
-  listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
-  listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
-  cout << "met filters lists read" << endl;
+  //cout << "now reading met filters lists" << endl;
+  //listCSC     = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/csc2015_Dec01.txt");
+  //listEEbadSC = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/ecalscn1043093_Dec01.txt");
+  //listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
+  //listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
+  //cout << "met filters lists read" << endl;
 
   // For vtx studies
   if (wantVtxStudies) {
@@ -2227,6 +2328,36 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("pu_n",&(treeDipho_.pu_n),"pu_n/F");
   DiPhotonTree->Branch("sumDataset",&(treeDipho_.sumDataset),"sumDataset/F");
   DiPhotonTree->Branch("perEveW",&(treeDipho_.perEveW),"perEveW/F");
+  DiPhotonTree->Branch("perEveW1",&(treeDipho_.perEveW1),"perEveW1/F");
+  DiPhotonTree->Branch("perEveW2",&(treeDipho_.perEveW2),"perEveW2/F");
+  DiPhotonTree->Branch("perEveW3",&(treeDipho_.perEveW3),"perEveW3/F");
+  DiPhotonTree->Branch("perEveW4",&(treeDipho_.perEveW4),"perEveW4/F");
+  DiPhotonTree->Branch("perEveW5",&(treeDipho_.perEveW5),"perEveW5/F");
+  DiPhotonTree->Branch("perEveW6",&(treeDipho_.perEveW6),"perEveW6/F");
+  DiPhotonTree->Branch("perEveW7",&(treeDipho_.perEveW7),"perEveW7/F");
+  DiPhotonTree->Branch("perEveW8",&(treeDipho_.perEveW8),"perEveW8/F");
+  DiPhotonTree->Branch("perEveW9",&(treeDipho_.perEveW9),"perEveW9/F");
+  DiPhotonTree->Branch("perEveW10",&(treeDipho_.perEveW10),"perEveW10/F");
+  DiPhotonTree->Branch("perEveW11",&(treeDipho_.perEveW11),"perEveW11/F");
+  DiPhotonTree->Branch("perEveW12",&(treeDipho_.perEveW12),"perEveW12/F");
+  DiPhotonTree->Branch("perEveW13",&(treeDipho_.perEveW13),"perEveW13/F");
+  DiPhotonTree->Branch("perEveW14",&(treeDipho_.perEveW14),"perEveW14/F");
+  DiPhotonTree->Branch("perEveW15",&(treeDipho_.perEveW15),"perEveW15/F");
+  DiPhotonTree->Branch("perEveW16",&(treeDipho_.perEveW16),"perEveW16/F");
+  DiPhotonTree->Branch("perEveW17",&(treeDipho_.perEveW17),"perEveW17/F");
+  DiPhotonTree->Branch("perEveW18",&(treeDipho_.perEveW18),"perEveW18/F");
+  DiPhotonTree->Branch("perEveW19",&(treeDipho_.perEveW19),"perEveW19/F");
+  DiPhotonTree->Branch("perEveW20",&(treeDipho_.perEveW20),"perEveW20/F");
+  DiPhotonTree->Branch("perEveW21",&(treeDipho_.perEveW21),"perEveW21/F");
+  DiPhotonTree->Branch("perEveW22",&(treeDipho_.perEveW22),"perEveW22/F");
+  DiPhotonTree->Branch("perEveW23",&(treeDipho_.perEveW23),"perEveW23/F");
+  DiPhotonTree->Branch("perEveW24",&(treeDipho_.perEveW24),"perEveW24/F");
+  DiPhotonTree->Branch("perEveW25",&(treeDipho_.perEveW25),"perEveW25/F");
+  DiPhotonTree->Branch("perEveW26",&(treeDipho_.perEveW26),"perEveW26/F");
+  DiPhotonTree->Branch("perEveW27",&(treeDipho_.perEveW27),"perEveW27/F");
+  DiPhotonTree->Branch("perEveW28",&(treeDipho_.perEveW28),"perEveW28/F");
+  DiPhotonTree->Branch("perEveW29",&(treeDipho_.perEveW29),"perEveW29/F");
+  DiPhotonTree->Branch("perEveW30",&(treeDipho_.perEveW30),"perEveW30/F");
   DiPhotonTree->Branch("pfmet",&(treeDipho_.pfmet),"pfmet/F");
   DiPhotonTree->Branch("pfmetPhi",&(treeDipho_.pfmetPhi),"pfmetPhi/F");
   DiPhotonTree->Branch("pfmetSumEt",&(treeDipho_.pfmetSumEt),"pfmetSumEt/F");
@@ -2426,7 +2557,6 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("phiZ",&(treeDipho_.phiZ),"phiZ/F");
   DiPhotonTree->Branch("mva1",&(treeDipho_.mva1),"mva1/F");
   DiPhotonTree->Branch("mva2",&(treeDipho_.mva2),"mva2/F");
-
   DiPhotonTree->Branch("BDTptgg",&(treeDipho_.BDTptgg),"BDTptgg/F");
   DiPhotonTree->Branch("BDTmassRaw",&(treeDipho_.BDTmassRaw),"BDTmassRaw/F");
   DiPhotonTree->Branch("BDTr91",&(treeDipho_.BDTr91),"BDTr91/F");
@@ -2474,6 +2604,36 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.pu_n = -500.;
   treeDipho_.sumDataset = -500.;
   treeDipho_.perEveW = -500.;
+  treeDipho_.perEveW1 = -500.;
+  treeDipho_.perEveW2 = -500.;
+  treeDipho_.perEveW3 = -500.;
+  treeDipho_.perEveW4 = -500.;
+  treeDipho_.perEveW5 = -500.;
+  treeDipho_.perEveW6 = -500.;
+  treeDipho_.perEveW7 = -500.;
+  treeDipho_.perEveW8 = -500.;
+  treeDipho_.perEveW9 = -500.;
+  treeDipho_.perEveW10 = -500.;
+  treeDipho_.perEveW11 = -500.;
+  treeDipho_.perEveW12 = -500.;
+  treeDipho_.perEveW13 = -500.;
+  treeDipho_.perEveW14 = -500.;
+  treeDipho_.perEveW15 = -500.;
+  treeDipho_.perEveW16 = -500.;
+  treeDipho_.perEveW17 = -500.;
+  treeDipho_.perEveW18 = -500.;
+  treeDipho_.perEveW19 = -500.;
+  treeDipho_.perEveW20 = -500.;
+  treeDipho_.perEveW21 = -500.;
+  treeDipho_.perEveW22 = -500.;
+  treeDipho_.perEveW23 = -500.;
+  treeDipho_.perEveW24 = -500.;
+  treeDipho_.perEveW25 = -500.;
+  treeDipho_.perEveW26 = -500.;
+  treeDipho_.perEveW27 = -500.;
+  treeDipho_.perEveW28 = -500.;
+  treeDipho_.perEveW29 = -500.;
+  treeDipho_.perEveW30 = -500.;
   treeDipho_.pfmet = -500.;
   treeDipho_.pfmetPhi = -500.;
   treeDipho_.pfmetSumEt = -500.;
@@ -2926,6 +3086,40 @@ bool NewDiPhoAnalyzer::testPhotonIsolation(int passSieie, int passCHiso, int pas
   else return false;
 }
 
+
+bool NewDiPhoAnalyzer::passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso){
+  bool passes = false;
+
+  // pick up effective area
+  float effarea = 0;
+  if (fabs(sceta) < 0.9)				effarea = 0.17; 
+  else if (fabs(sceta) >= 0.9 && fabs(sceta) <= 1.4442)	effarea = 0.14;
+  else if (fabs(sceta) >= 1.566 && fabs(sceta) < 2.0)	effarea = 0.11;
+  else if (fabs(sceta) >= 2.0 && fabs(sceta) < 2.2)	effarea = 0.14;
+  else if (fabs(sceta) >= 2.2 && fabs(sceta) < 2.5)	effarea = 0.22;
+
+  // pick up kappa value
+  float kappa = 0; 
+  if (fabs(sceta) < 1.4442) kappa = 0.0045;
+  else if (fabs(sceta) > 1.566 && fabs(sceta) < 2.5) kappa = 0.003;
+  // correct the incomming phoiso 
+  float corrphoiso = 2.5 + phoiso -rho*effarea -(kappa*pt);
+
+  // now check the selection
+  if (hoe < 0.05 && chiso < 5){
+    if (fabs(sceta) < 1.4442){
+      if (sieie < 0.0112 && corrphoiso < 2.75){
+        passes = true;
+      }
+    }
+    else if (fabs(sceta) > 1.566 && fabs(sceta) < 2.5){
+      if (sieie < 0.030 && corrphoiso < 2.0){
+        passes = true;
+      }
+    } 
+  }
+  return passes;
+}// end passHighPtSelection
 
 
 bool NewDiPhoAnalyzer::isGammaSelected( float rho, float pt, float sceta, float r9, float chiso, float nhiso, float phoiso, float hoe, float sieie, bool passElectronVeto) {

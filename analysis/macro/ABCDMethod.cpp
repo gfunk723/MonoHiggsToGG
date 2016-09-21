@@ -72,10 +72,12 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
   fSampleTitleMap["ttHJetToGG"]		= "tt $\\rightarrow H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["TTGG_0Jets"]		= "tt + $\\gamma \\gamma$";
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l + \\nu$";
   fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+  fSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu \\nu$";
   //fSampleTitleMap["DMHtoGG_M1"]	= "$\\bar{\\chi}\\chi HH, m_{\\chi}$ = 1 GeV (10 fb)";
   //fSampleTitleMap["DMHtoGG_M10"]	= "$\\bar{\\chi}\\chi HH, m_{\\chi}$ = 10 GeV (10 fb)";
   //fSampleTitleMap["DMHtoGG_M100"]	= "$\\bar{\\chi}\\chi HH, m_{\\chi}$ = 100 GeV (10 fb)";
@@ -88,6 +90,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
+  fSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
 
 
   // make output root file
@@ -153,7 +157,7 @@ ABCDMethod::~ABCDMethod(){
 }
 
 
-void ABCDMethod::DoAnalysis( UInt_t mass ){
+void ABCDMethod::DoAnalysis(UInt_t mass){
 
   // add all data files together
   // data : copy first histogram & add all others too it 
@@ -179,10 +183,12 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
   fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
   fSampleTitleMap["ttHJetToGG"]		= "tt + $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
+  fSampleTitleMap["TTGG_0Jets"]		= "tt + $\\gamma \\gamma$";
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l + \\nu$";
   fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
+  fSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu \\nu$";
 
   // find indices for the different bkg samples
   for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -196,8 +202,10 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
     if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
     if (fBkgNames[mc] == "TGJets")	i_tgj = mc;
     if (fBkgNames[mc] == "TTGJets")	i_ttgj= mc;
+    if (fBkgNames[mc] == "TTGG_0Jets")	i_ttgg= mc;
     if (fBkgNames[mc] == "WGToLNuG")	i_wg  = mc;
     if (fBkgNames[mc] == "ZGTo2LG")	i_zg  = mc;
+    if (fBkgNames[mc] == "ZZTo2L2Nu")	i_zz  = mc;
   }
 
   // Because QCD has some events with very large weights
@@ -223,6 +231,8 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
   fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_ttgj]); 
   fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_wg]); 
   fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_zg]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_zz]); 
+  fOutSelBkgTH2DHists[0]->Add(fInBkgTH2DHists[0][i_ttgg]); 
 
   // sum over nonresonant bkgs only
   fOutSelBkgTH1DHists[0] = (TH1D*)fInBkgTH1DHists[0][i_dy]->Clone();
@@ -234,6 +244,8 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
   fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_ttgj]); 
   fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_wg]); 
   fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_zg]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_zz]); 
+  fOutSelBkgTH1DHists[0]->Add(fInBkgTH1DHists[0][i_ttgg]); 
 
   for (UInt_t mc = 0; mc < fNBkg; mc++){
     //fInBkgTH2DHists[0][mc]->Scale(3000./1260.);// in order to scale to 3fb-1
@@ -386,7 +398,7 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
       } 
     }
 
-    std::cout << fBkgNames[i_gg] << " in " << cat << " int = " << Bkg_Int[cat][i_gg] << " pm " << Bkg_IntErr[cat][i_gg] << std::endl;
+    //std::cout << fBkgNames[i_gg] << " in " << cat << " int = " << Bkg_Int[cat][i_gg] << " pm " << Bkg_IntErr[cat][i_gg] << std::endl;
     //for (UInt_t mc = 0; mc < fNBkg+1; mc++){ std::cout << fBkgNames[mc] << " in " << cat << " reg "<< Bkg_Int[cat][mc] << " " << Bkg_IntErr[cat][mc] << std::endl; }
     //for (UInt_t mc = 0; mc < fNSig; mc++){   std::cout << fSigNames[mc] << " in " << cat << " reg "<< Sig_Int[cat][mc] << " " << Sig_IntErr[cat][mc] << std::endl; }
 
@@ -394,7 +406,7 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
 
   ABCDMethod::GetFinalValuesForABCDReg(); // merge A1&A2->A and B1&B2->B
   for (UInt_t reg=0; reg <4; reg++){// print out A,B,D,C values
-    std::cout << fBkgNames[i_gg] << " in " << reg << " int = " << fBkg_Int[reg][i_gg] << " pm " << fBkg_IntErr[reg][i_gg] << std::endl;
+    //std::cout << fBkgNames[i_gg] << " in " << reg << " int = " << fBkg_Int[reg][i_gg] << " pm " << fBkg_IntErr[reg][i_gg] << std::endl;
   //  for (UInt_t mc = 0; mc < fNBkg+1; mc++){ std::cout << fBkgNames[mc] << " " << reg << " has int " << fBkg_Int[reg][mc] << " pm " << fBkg_IntErr[reg][mc] << std::endl; }
   //  for (UInt_t mc = 0; mc < fNSig; mc++){   std::cout << fSigNames[mc] << " " << reg << " has int " << fSig_Int[reg][mc] << " pm " << fSig_IntErr[reg][mc] << std::endl; }
   }
@@ -413,10 +425,10 @@ void ABCDMethod::DoAnalysis( UInt_t mass ){
   //std::cout << "Data: Exp D = " << fExpData[0] << " Exp D err " << fExpErrData[0] << std::endl;
   for (UInt_t mc = 0; mc < fNBkg+2; mc++){
     fExpBkg[mc]=ABCDMethod::FindExpectedValuesInD(fBkg_Int[0][mc],fBkg_Int[1][mc],fBkg_Int[3][mc],fBkg_IntErr[0][mc],fBkg_IntErr[1][mc],fBkg_IntErr[3][mc],fExpErrBkg[mc]);
-    if (mc == i_gg){
-      std::cout << fBkgNames[mc] << ": nA = " << fBkg_Int[0][mc] << " nB = " << fBkg_Int[1][mc] << " nC = " << fBkg_Int[3][mc] << std::endl;
-      std::cout << fBkgNames[mc] << ": Exp D = " << fExpBkg[mc] << " Exp D err " << fExpErrBkg[mc] << std::endl;
-    }
+    //if (mc == i_gg){
+    //  std::cout << fBkgNames[mc] << ": nA = " << fBkg_Int[0][mc] << " nB = " << fBkg_Int[1][mc] << " nC = " << fBkg_Int[3][mc] << std::endl;
+    //  std::cout << fBkgNames[mc] << ": Exp D = " << fExpBkg[mc] << " Exp D err " << fExpErrBkg[mc] << std::endl;
+    //}
   }
   for (UInt_t mc = 0; mc < fNSig; mc++){
     fExpSig[mc]=ABCDMethod::FindExpectedValuesInD(fSig_Int[0][mc],fSig_Int[1][mc],fSig_Int[3][mc],fSig_IntErr[0][mc],fSig_IntErr[1][mc],fSig_IntErr[3][mc],fExpErrSig[mc]);
@@ -519,7 +531,7 @@ Double_t ABCDMethod::FindDiff(const Double_t NA, const Double_t NB, const Double
 Double_t ABCDMethod::FindExpectedValuesInD(const Double_t NA, const Double_t NB, const Double_t NC, const Double_t NAerr, const Double_t NBerr, const Double_t NCerr, Double_t & NDerr){ // find expected values in the D (signal) region
   Double_t ExpND = 0.;
   NDerr = 0.;
-  if (NB > 0 && NA > 0 && NC > 0){ 
+  if (NB > 0 && NA > 0 && NC > 0 ){ 
     ExpND = NC*NA/NB;                                                                                                                                
     NDerr = std::sqrt((NCerr*NCerr*NA*NA/(NB*NB))+(NAerr*NAerr*NC*NC/(NB*NB))+(NBerr*NBerr*NC*NC*NA*NA/(std::pow(NB,4))));
   }
@@ -575,8 +587,8 @@ void ABCDMethod::FillTable(const UInt_t mass){
      fOutTableTxtFile << Form("$m_{\\gamma \\gamma}$ in $[%3.f-%3.f]$ GeV and MET $>$ %3.f GeV",mgg_minCD,mgg_maxCD,met_minD)<<" \\\\" <<std::endl;
      fOutTableTxtFile << "\\hline" <<std::endl;
 
-     ABCDMethod::SetRooVariables();
-     fOutTableTxtFile << "Data &  " << *(fRooData[2][0]->format(2,"EXPF")) <<  " \\\\" << std::endl;
+     //ABCDMethod::SetRooVariables();
+     if (!doBlind) fOutTableTxtFile << "Data &  " << *(fRooData[2][0]->format(2,"EXPF")) <<  " \\\\" << std::endl;
      //std::cout << "Data &  " << *(fRooData[2][0]->format(2,"EXPF")) << std::endl;
      fOutTableTxtFile << "\\hline" << std::endl;
 
@@ -610,15 +622,28 @@ void ABCDMethod::FillTable(const UInt_t mass){
      fOutTableTxtFile << "Sample & Corr($m_{\\gamma\\gamma}$,MET) & $N_A$ & $N_B$ & $N_C$ & $N_D$ & Expected D & Diff  \\\\" << std::endl;
      fOutTableTxtFile << "\\hline" <<std::endl;
 
+     if (!doBlind){
      fOutTableTxtFile << "Data &  " << 
-	*(fRooData[5][0]->format(2,"XPF")) << " &  " <<
+        *(fRooData[5][0]->format(2,"XPF")) << " &  " <<
         *(fRooData[0][0]->format(2,"EXPF")) << " &  " << 
         *(fRooData[1][0]->format(2,"EXPF")) << " &  " << 
         *(fRooData[3][0]->format(2,"EXPF")) << " &  " <<  
         *(fRooData[2][0]->format(2,"EXPF")) << " &  " << 
-	*(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
+        *(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
         Form("%f",fDiffData[0]) <<"$ \\\\" << std::endl;
      fOutTableTxtFile << "\\hline" << std::endl;
+     }
+     else{
+       fOutTableTxtFile << "Data &  " << 
+          *(fRooData[5][0]->format(2,"XPF")) << " &  " <<
+          *(fRooData[0][0]->format(2,"EXPF")) << " &  " << 
+          *(fRooData[1][0]->format(2,"EXPF")) << " &  " << 
+          *(fRooData[3][0]->format(2,"EXPF")) << " &  " << 
+	  " - " << " &  " << // remove the N_D from printout
+          *(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
+          " - " << " &  " << // remove the Diff from printout
+       fOutTableTxtFile << "\\hline" << std::endl;
+     }	
 
      for (UInt_t mc = 0; mc < fNBkg; mc++){
        fOutTableTxtFile << fSampleTitleMap[fBkgNames[mc]] << " &  " << 
@@ -640,16 +665,16 @@ void ABCDMethod::FillTable(const UInt_t mass){
          *(fRooBkg[7][fNBkg+1]->format(2,"EXPF")) << " &  $" << 
          Form("%f",fDiffBkg[fNBkg+1]) <<"$ \\\\" << std::endl;
      fOutTableTxtFile << "\\hline" << std::endl;
-     for (UInt_t mc = 0; mc < fNSig; mc++){
-       fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << " &  " << 
-         *(fRooSig[5][mc]->format(2,"XPF")) << " &  " << 
-         *(fRooSig[0][mc]->format(2,"EXPF")) << " &  " << 
-         *(fRooSig[1][mc]->format(2,"EXPF")) << " &  " << 
-         *(fRooSig[3][mc]->format(2,"EXPF")) << " &  " <<  
-         *(fRooSig[2][mc]->format(2,"EXPF")) << " &  " << 
-         *(fRooSig[7][mc]->format(2,"EXPF")) << " &  $" << 
-         Form("%f",fDiffSig[mc]) <<"$ \\\\" << std::endl;
-     }
+     //for (UInt_t mc = 0; mc < fNSig; mc++){
+     //  fOutTableTxtFile << fSampleTitleMap[fSigNames[mc]] << " &  " << 
+     //    *(fRooSig[5][mc]->format(2,"XPF")) << " &  " << 
+     //    *(fRooSig[0][mc]->format(2,"EXPF")) << " &  " << 
+     //    *(fRooSig[1][mc]->format(2,"EXPF")) << " &  " << 
+     //    *(fRooSig[3][mc]->format(2,"EXPF")) << " &  " <<  
+     //    *(fRooSig[2][mc]->format(2,"EXPF")) << " &  " << 
+     //    *(fRooSig[7][mc]->format(2,"EXPF")) << " &  $" << 
+     //    Form("%f",fDiffSig[mc]) <<"$ \\\\" << std::endl;
+     //}
  
      fOutTableTxtFile << "\\hline \\hline" <<std::endl;
      fOutTableTxtFile << "\\end{tabular}" <<std::endl;
@@ -810,6 +835,8 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   TString tgj = *bkgrate[7][i_tgj]->format(2,"");
   TString wg  = *bkgrate[7][i_wg]->format(2,"");
   TString zg  = *bkgrate[7][i_zg]->format(2,"");
+  TString ttgg= *bkgrate[7][i_ttgg]->format(2,"");
+  TString zz  = *bkgrate[7][i_zz]->format(2,"");
   //std::cout << "sig = " << sig << " vh " << vh << " hgg " << hgg << " dy " << dy << " gg " << gg << " qcd " << qcd << " gj " << gj << std::endl; 
 
   TStrVec N_C;
@@ -830,8 +857,10 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
   TString fac_tth = *bkgrate[6][i_tth]->format(2,"");
   TString fac_tgj = *bkgrate[6][i_tgj]->format(2,"");
   TString fac_ttgj= *bkgrate[6][i_ttgj]->format(2,"");
+  TString fac_ttgg= *bkgrate[6][i_ttgg]->format(2,"");
   TString fac_wg  = *bkgrate[6][i_wg]->format(2,"");
   TString fac_zg  = *bkgrate[6][i_zg]->format(2,"");
+  TString fac_zz  = *bkgrate[6][i_zz]->format(2,"");
 
   DblVec N_A,N_B,mult; // N_C,mult;
   N_A.resize(fNBkg);
@@ -866,36 +895,38 @@ void ABCDMethod::WriteDataCard( const TString fSigName, const RooRealVar* sigrat
     fOutTxtFile << "bin 1"<< std::endl;
     fOutTxtFile << "observation 0 "  << std::endl;
     fOutTxtFile << "------------------------------" << std::endl;
-    fOutTxtFile << "bin		1		1	1	1	1	1		1		1		1		1	1	1	1"<< std::endl;
-    fOutTxtFile << "process		DM		gg	dy	qcd	gj	hgg		vh		vbf		tth		ttgj	tgj	wg	zg" << std::endl;
-    fOutTxtFile << "process		0		1	2	3	4	5 		6 		7		8		9	10	11	12" << std::endl;
-    fOutTxtFile << Form("rate		%s	       %s       %s      %s	%s	%s		%s		%s		%s		%s	%s	%s	%s",
-         sig.Data(),gg.Data(),dy.Data(),qcd.Data(),gj.Data(),hgg.Data(),vh.Data(),vbf.Data(),tth.Data(),ttgj.Data(),tgj.Data(),wg.Data(),zg.Data()) << std::endl; 
+    fOutTxtFile << "bin		1		1	1	1	1	1		1		1		1		1	1	1	1	1	1"<< std::endl;
+    fOutTxtFile << "process		DM		gg	dy	qcd	gj	hgg		vh		vbf		tth		ttgj	tgj	wg	zg	zz	ttgg" << std::endl;
+    fOutTxtFile << "process		0		1	2	3	4	5 		6 		7		8		9	10	11	12	13	14" << std::endl;
+    fOutTxtFile << Form("rate		%s	       %s       %s      %s	%s	%s		%s		%s		%s		%s	%s	%s	%s	%s	%s",
+         sig.Data(),gg.Data(),dy.Data(),qcd.Data(),gj.Data(),hgg.Data(),vh.Data(),vbf.Data(),tth.Data(),ttgj.Data(),tgj.Data(),wg.Data(),zg.Data(),zz.Data(),ttgg.Data()) << std::endl; 
     fOutTxtFile << "--------------------------------" << std::endl;
     fOutTxtFile << "#signal related" << std::endl;
-    fOutTxtFile << "lumi        lnN	1.023		-	-	-	-	1.023   	1.023		1.023		1.023		-	-	-	- " << std::endl;
-    fOutTxtFile << "eff         lnN	1.030000 	-	-	-	-	1.030		1.030		1.030		1.030		-	-	-	- " << std::endl;
-    fOutTxtFile << "higg_BR     lnN	0.953/1.050	-	-	-	-	0.953/1.05	0.953/1.05	0.953/1.05	0.953/1.05	-	-	-	- " << std::endl;
-    fOutTxtFile << "higg_alphas lnN	0.940/0.965	-	-	-	-	0.940/0.965	0.940/0.965	0.940/0.964	0.940/0.964	-	-	-	- " << std::endl;
-    fOutTxtFile << "PDFs        lnN	1.05		-	-	-	-	1.05		1.05		1.05		1.05		-	-	-	- " << std::endl;
-    fOutTxtFile << "JetEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
-    fOutTxtFile << "JetEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
-    fOutTxtFile << "PhoEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
-    fOutTxtFile << "PhoEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
-    fOutTxtFile << "UnclEnUp    lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
-    fOutTxtFile << "UnclEnDown  lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	- " << std::endl;
-    fOutTxtFile << "FakeMet     lnN	-		-	-	-	-	0.6/1.4		-		0.6/1.4		0.6/1.4		-	-	-	- " << std::endl;
+    fOutTxtFile << "lumi        lnN	1.023		-	-	-	-	1.023   	1.023		1.023		1.023		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "eff         lnN	1.030000 	-	-	-	-	1.030		1.030		1.030		1.030		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "higg_BR     lnN	0.953/1.050	-	-	-	-	0.953/1.05	0.953/1.05	0.953/1.05	0.953/1.05	-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "higg_alphas lnN	0.940/0.965	-	-	-	-	0.940/0.965	0.940/0.965	0.940/0.964	0.940/0.964	-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "PDFs        lnN	1.05		-	-	-	-	1.05		1.05		1.05		1.05		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "JetEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "JetEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "PhoEnUp     lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "PhoEnDown   lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "UnclEnUp    lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "UnclEnDown  lnN	1.005		-	-	-	-	-		1.005		-		-		-	-	-	-	-	- " << std::endl;
+    fOutTxtFile << "FakeMet     lnN	-		-	-	-	-	0.6/1.4		-		0.6/1.4		0.6/1.4		-	-	-	-	-	- " << std::endl;
    
     fOutTxtFile << "#background related" << std::endl;
     //fOutTxtFile << "abcd_estimate lnN	-	1.27000		1.27000	   1.27000	1.27000		-	-	-  " << std::endl;
-    fOutTxtFile << Form("gg_norm   gmN 	%s	-	%s	-	-	-	-		-  		-		-		-	-	-	- ",N_C[i_gg].Data(),fac_gg.Data()) << std::endl;
-    fOutTxtFile << Form("dy_norm   gmN 	%s	-	- 	%s	-	-	-		-  		-		-		-	-	-	- ",N_C[i_dy].Data(),fac_dy.Data()) << std::endl;
-    fOutTxtFile << Form("qcd_norm  gmN 	%s	-	- 	-	%s	-	-		-  		-		-		-	-	-	- ",N_C[i_qcd].Data(),fac_qcd.Data()) << std::endl;
-    fOutTxtFile << Form("gj_norm   gmN 	%s	-	- 	-	-	%s	-		-  		-		-		-	-	-	- ",N_C[i_gj].Data(),fac_gj.Data()) << std::endl;
-    fOutTxtFile << Form("ttgj_norm gmN 	%s	-	- 	-	-	-	-		-  		-		-		%s	-	-	- ",N_C[i_ttgj].Data(),fac_ttgj.Data()) << std::endl;
-    fOutTxtFile << Form("tgj_norm  gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	%s	-	- ",N_C[i_tgj].Data(),fac_tgj.Data()) << std::endl;
-    fOutTxtFile << Form("wg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	%s	- ",N_C[i_wg].Data(),fac_wg.Data()) << std::endl;
-    fOutTxtFile << Form("zg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	-	%s",N_C[i_zg].Data(),fac_zg.Data()) << std::endl;
+    fOutTxtFile << Form("gg_norm   gmN 	%s	-	%s	-	-	-	-		-  		-		-		-	-	-	- 	-	- ",N_C[i_gg].Data(),fac_gg.Data()) << std::endl;
+    fOutTxtFile << Form("dy_norm   gmN 	%s	-	- 	%s	-	-	-		-  		-		-		-	-	-	- 	-	- ",N_C[i_dy].Data(),fac_dy.Data()) << std::endl;
+    fOutTxtFile << Form("qcd_norm  gmN 	%s	-	- 	-	%s	-	-		-  		-		-		-	-	-	- 	-	- ",N_C[i_qcd].Data(),fac_qcd.Data()) << std::endl;
+    fOutTxtFile << Form("gj_norm   gmN 	%s	-	- 	-	-	%s	-		-  		-		-		-	-	-	- 	-	- ",N_C[i_gj].Data(),fac_gj.Data()) << std::endl;
+    fOutTxtFile << Form("ttgj_norm gmN 	%s	-	- 	-	-	-	-		-  		-		-		%s	-	-	- 	-	- ",N_C[i_ttgj].Data(),fac_ttgj.Data()) << std::endl;
+    fOutTxtFile << Form("tgj_norm  gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	%s	-	- 	-	- ",N_C[i_tgj].Data(),fac_tgj.Data()) << std::endl;
+    fOutTxtFile << Form("wg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	%s	- 	-	- ",N_C[i_wg].Data(),fac_wg.Data()) << std::endl;
+    fOutTxtFile << Form("zg_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	-	%s	-	- ",N_C[i_zg].Data(),fac_zg.Data()) << std::endl;
+    fOutTxtFile << Form("zz_norm   gmN 	%s	-	- 	-	-	-	-		-  		-		-  		-	-	-	-	%s	- ",N_C[i_zz].Data(),fac_zz.Data()) << std::endl;
+    fOutTxtFile << Form("ttgg_norm gmN 	%s	-	- 	-	-	-	-		-  		-		-		-	-	-	- 	-	%s ",N_C[i_ttgg].Data(),fac_ttgg.Data()) << std::endl;
 
   }
   else std::cout << "Unable to open DataCard Output File" << std::endl;
@@ -1010,10 +1041,8 @@ void ABCDMethod::InitVariables(UInt_t mass){
   //fTH1DNames.push_back("nvtx_IsolateALL");
 
   // 2D histograms of interest
-  if (fWhichSel != 1 && fWhichSel != 2){
-    fTH2DNames.push_back("t1pfmet_mgg");
-    fTH2DNames.push_back("t1pfmet_mgg_unwgt");
-  }
+  if (fWhichSel != 1 && fWhichSel != 2) fTH2DNames.push_back("t1pfmet_mgg");
+  if (fWhichSel != 1 && fWhichSel != 2) fTH2DNames.push_back("t1pfmet_mgg_unwgt");
 
   if (fWhichSel == 1){
     if (mass==1) fTH2DNames.push_back("Sel1_M1_met_mgg");
