@@ -4,10 +4,11 @@
 #include <TBranch.h>
 #include <TH2.h>
 #include <TCanvas.h>
+#include <TColor.h>
 #include <TLegend.h>
 #include <TMath.h>
 #include <TLatex.h>
-#include "../macro/mkPlotsLivia/CMS_lumi.C"
+//#include "../macro/mkPlotsLivia/CMS_lumi.C"
 #include <iostream>
 #include <vector>
 
@@ -89,14 +90,15 @@ void makePlots(TString inDir, TString outDir){
  l2->SetTextSize(0.034);
  l2->SetTextAlign(12);
  l2->SetNDC(kTRUE);
- l2->SetTextFont(62);
- TLatex *l2b = new TLatex(0.75,0.90,latexname);
+ l2->SetTextFont(42);
+ TLatex *l2b = new TLatex(0.74,0.90,latexname);
  l2b->SetTextSize(0.034);
  l2b->SetTextAlign(12);
  l2b->SetNDC(kTRUE);
- l2b->SetTextFont(62);
+ l2b->SetTextFont(42);
 
  TString thestring = "Z'#rightarrow DM+H(#gamma#gamma)";
+ TString add2hdm   = "(2HDM)";
  //latex.SetTextSize(0.036);
  //latex.SetTextAlign(12); // centered
  //const char *thestring = "Z'#rightarrow DM+H(#gamma#gamma)";
@@ -104,12 +106,22 @@ void makePlots(TString inDir, TString outDir){
  l3->SetTextSize(0.036);
  l3->SetTextAlign(12);
  l3->SetNDC(kTRUE);
- l3->SetTextFont(62);
+ l3->SetTextFont(42);
  TLatex *l3b = new TLatex(0.115,0.78,thestring);
  l3b->SetTextSize(0.036);
  l3b->SetTextAlign(12);
  l3b->SetNDC(kTRUE);
- l3b->SetTextFont(62);
+ l3b->SetTextFont(42);
+ TLatex *l4 = new TLatex(0.115,0.78,add2hdm);
+ l4->SetTextSize(0.036);
+ l4->SetTextAlign(12);
+ l4->SetNDC(kTRUE);
+ l4->SetTextFont(42);
+ TLatex *l4b = new TLatex(0.13,0.74,add2hdm);
+ l4b->SetTextSize(0.036);
+ l4b->SetTextAlign(12);
+ l4b->SetNDC(kTRUE);
+ l4b->SetTextFont(42);
 
 
  // setup 1D plots - expected
@@ -132,11 +144,18 @@ void makePlots(TString inDir, TString outDir){
  TH2D * limits = new TH2D("limits","limits",8,0,8,6,0,6);
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
- limits->GetZaxis()->SetTitle("UL");
+ limits->GetZaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
  limits->SetTitle("");
- limits->GetZaxis()->SetLabelSize(0.03);
  limits->SetMaximum(3000);
  limits->SetMarkerSize(2);
+
+ // size of axis labels
+ limits->GetXaxis()->SetTitleSize(0.04);
+ limits->GetYaxis()->SetTitleSize(0.04);
+ limits->GetZaxis()->SetTitleSize(0.04);
+ limits->GetXaxis()->SetLabelSize(0.05);
+ limits->GetYaxis()->SetLabelSize(0.05); 
+ limits->GetZaxis()->SetLabelSize(0.03);
 
  // set the lables for the Xaxis (mZp)
  limits->GetXaxis()->SetBinLabel(1,"600");
@@ -164,8 +183,8 @@ void makePlots(TString inDir, TString outDir){
  c->cd();
  gStyle->SetOptStat(0);
  gStyle->SetPaintTextFormat("2.1f");
- c->SetLeftMargin(0.1);
- c->SetRightMargin(0.11);
+ //c->SetLeftMargin(0.1);
+ //c->SetRightMargin(0.102);
 
  Double_t limitval300[nMasses];
  Double_t limitval400[nMasses];
@@ -336,7 +355,7 @@ void makePlots(TString inDir, TString outDir){
 
  //styling
  limit300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
- limit300->GetYaxis()->SetTitle("UL");
+ limit300->GetYaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
  limit300->SetTitle("");
  limit300->SetMaximum(3000);
  limit300->SetMinimum(0.9);
@@ -369,7 +388,7 @@ void makePlots(TString inDir, TString outDir){
 
  //styling
  limit300_obs->GetXaxis()->SetTitle("m_{Z'} [GeV]");
- limit300_obs->GetYaxis()->SetTitle("UL");
+ limit300_obs->GetYaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
  limit300_obs->SetTitle("");
  limit300_obs->SetMaximum(3000);
  limit300_obs->SetMinimum(0.9);
@@ -440,6 +459,7 @@ void makePlots(TString inDir, TString outDir){
  l1->Draw("same");
  l2->Draw("same");
  l3->Draw("same");
+ l4->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_exp.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_exp.pdf",outDir.Data()));
@@ -452,6 +472,7 @@ void makePlots(TString inDir, TString outDir){
  l1->Draw("same");
  l2->Draw("same");
  l3->Draw("same");
+ l4->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_obs.pdf",outDir.Data()));
@@ -464,7 +485,7 @@ void makePlots(TString inDir, TString outDir){
  leg->SetLineStyle(1);
  leg->SetFillColor(0);
  leg->SetFillStyle(0);
- leg->SetTextFont(62);
+ leg->SetTextFont(42);
  leg->AddEntry(limit300,"m_{A0} = 300 GeV","pl");
  leg->AddEntry(limit400,"m_{A0} = 400 GeV","pl");
  leg->AddEntry(limit500,"m_{A0} = 500 GeV","pl");
@@ -497,6 +518,7 @@ void makePlots(TString inDir, TString outDir){
  l1->Draw("same");
  l2->Draw("same");
  l3->Draw("same");
+ l4->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_exp.pdf",outDir.Data()));
@@ -517,6 +539,7 @@ void makePlots(TString inDir, TString outDir){
  l1->Draw("same");
  l2->Draw("same");
  l3->Draw("same");
+ l4->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison_2HDM_obs.pdf",outDir.Data()));
@@ -561,6 +584,7 @@ void makePlots(TString inDir, TString outDir){
  l1->Draw("same");
  l2->Draw("same");
  l3->Draw("same");
+ l4->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/limits_comparison.png",outDir.Data()));
  c->SaveAs(Form("%s/limits_comparison.pdf",outDir.Data()));
@@ -593,25 +617,30 @@ void makePlots(TString inDir, TString outDir){
  l1->Draw("same");
  l2->Draw("same");
  l3->Draw("same");
+ l4->Draw("same");
  c->cd();
  c->SaveAs(Form("%s/signal_eff_comparisons.png",outDir.Data()));
  c->SaveAs(Form("%s/signal_eff_comparisons.pdf",outDir.Data()));
 
  delete c;
 
-
  // make plot with both expected and observed on same graph
- TCanvas* cboth = new TCanvas("cboth","",889,768);
+ //TCanvas* cboth = new TCanvas("cboth","",889,768);
+ TCanvas* cboth = new TCanvas("cboth","",1000,768);
  cboth->cd();
  gStyle->SetOptStat(0);
  gStyle->SetPaintTextFormat("2.1f");
+ gStyle->SetPalette(57); //only works in Root 6.04 or later
+ gStyle->SetFrameLineWidth(3);
+ gStyle->SetPadRightMargin(0.17);
  //cboth->SetLeftMargin(0.1);
  //cboth->SetRightMargin(0.1);
 
- //TPad* p1 = new TPad("p1","",0,0.12,0.95,0.98);
- TPad* p1 = new TPad("p1","",0,0.09,1.0,0.89);
+ TPad* p1 = new TPad("p1","",0,0.09,1,0.89);
+ //TPad* p1 = new TPad("p1","",0,0.09,0.93,0.89);
  p1->Draw();
  p1->cd();
+ p1->SetLogz();
 
  limits->SetMarkerSize(2);
  limits->Draw("TEXT COLZ SAME"); 
@@ -621,9 +650,17 @@ void makePlots(TString inDir, TString outDir){
  Double_t x1,y1,x2,y2;
  p1->GetRange(x1,y1,x2,y2);
 
+ //the following lines move the palette
+ TPaletteAxis *palette = (TPaletteAxis*)limits->GetListOfFunctions()->FindObject("palette");
+ palette->SetX1NDC(0.833);
+ palette->SetX2NDC(0.875);
+ p1->Modified();
+ p1->Update();
+
  cboth->cd();
- //TPad* p2 = new TPad("p2","",0,0.09,0.95,0.95);
- TPad* p2 = new TPad("p2","",0,0.12,1.0,0.92);
+ //gStyle->SetFrameLineWidth(3);
+ TPad* p2 = new TPad("p2","",0,0.12,1,0.92);
+ //TPad* p2 = new TPad("p2","",0,0.12,0.93,0.92);
  p2->SetFillStyle(0);
  p2->SetFillColor(0);
  p2->Draw();
@@ -655,6 +692,14 @@ void makePlots(TString inDir, TString outDir){
  l1b->Draw("same");
  l2b->Draw("same");
  l3b->Draw("same");
+ l4b->Draw("same");
+ gStyle->SetFrameLineWidth(3);
+ p1->Update();
+ p1->RedrawAxis();
+ TLine l;
+ l.DrawLine(p1->GetUxmin(), p1->GetUymax(), p1->GetUxmax(), p1->GetUymax());
+ l.DrawLine(p1->GetUxmax(), p1->GetUymin(), p1->GetUxmax(), p1->GetUymax());
+
  cboth->cd();
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
