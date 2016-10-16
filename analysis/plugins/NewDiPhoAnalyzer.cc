@@ -21,6 +21,7 @@
 #include "flashgg/DataFormats/interface/DiPhotonCandidate.h"
 #include "flashgg/DataFormats/interface/GenPhotonExtra.h"
 #include "flashgg/DataFormats/interface/Electron.h"
+#include "flashgg/DataFormats/interface/Met.h"
 #include "flashgg/DataFormats/interface/Muon.h"
 #include "flashgg/DataFormats/interface/Jet.h"
 #include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
@@ -410,7 +411,7 @@ private:
   std::vector<edm::InputTag> inputTagJets_;     
   EDGetTokenT<View<Electron> > electronToken_;   
   EDGetTokenT<View<flashgg::Muon> > muonToken_;        
-  EDGetTokenT<View<pat::MET> > METToken_;
+  EDGetTokenT<View<flashgg::Met> > METToken_;
   EDGetTokenT<edm::View<reco::Candidate> > pfcandsToken_;
 
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
@@ -507,7 +508,7 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" ) ),   
   electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ) ) ),
   muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ), 
-  METToken_( consumes<View<pat::MET> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
+  METToken_( consumes<View<flashgg::Met> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
   pfcandsToken_( consumes<edm::View<reco::Candidate> > (iConfig.getParameter<edm::InputTag>("pfcands"))),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
   triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) ),
@@ -611,7 +612,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   totLivia++;
   eff_start++;
 
-  Handle<View<pat::MET> > METs;
+  Handle<View<flashgg::Met> > METs;
   iEvent.getByToken( METToken_, METs );
 
   Handle<edm::TriggerResults> triggerBits;
@@ -670,14 +671,18 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT") ) cout << index << " " << triggerNames.triggerName( index ) << " " << triggerBits->accept( index ) << endl;
 
     // store trigger bits of interest
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon26") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon16")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass60")  )hltPhoton26Photon16Mass60 = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon36") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon22")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass15")  )hltPhoton36Photon22Mass15 = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon42") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon25")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass15")  )hltPhoton42Photon25Mass15 = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass95")  )hltDiphoton30Mass95 = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass70")  )hltDiphoton30Mass70 = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30PV") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("DoublePixelVeto_Mass55")  )hltDiphoton30Mass55PV = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("R9Id_Mass55")  )hltDiphoton30Mass55 = triggerBits->accept( index );
-    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30EB") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("DoublePixelVeto_Mass55")  )hltDiphoton30Mass55EB = triggerBits->accept( index );
+    // 2016 triggers
+    if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass90")  )hltDiphoton30Mass95 = triggerBits->accept( index );
+
+    // 2015 triggers
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon26") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon16")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass60")  )hltPhoton26Photon16Mass60 = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon36") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon22")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass15")  )hltPhoton36Photon22Mass15 = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon42") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon25")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass15")  )hltPhoton42Photon25Mass15 = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass95")  )hltDiphoton30Mass95 = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass70")  )hltDiphoton30Mass70 = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30PV") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("DoublePixelVeto_Mass55")  )hltDiphoton30Mass55PV = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("R9Id_Mass55")  )hltDiphoton30Mass55 = triggerBits->accept( index );
+    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30EB") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("DoublePixelVeto_Mass55")  )hltDiphoton30Mass55EB = triggerBits->accept( index );
 
   }
 
@@ -814,7 +819,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     // Get MET
     if( METs->size() != 1 )
       { std::cout << "WARNING number of MET is not equal to 1" << std::endl; }
-    Ptr<pat::MET> theMET = METs->ptrAt( 0 );
+    Ptr<flashgg::Met> theMET = METs->ptrAt( 0 );
 
     // Compare BDT and Vtx0
     //std::cout << "Vtx0dipho size = " << diPhotons->size() << " BDTVtxdipho size = " << diPhotonsBDTVtx->size() << std::endl;
@@ -1308,23 +1313,23 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      t1pfmetSumEt = theMET->sumEt();
 
 		      //add MET systematic variables Livia
-		      t1pfmetJetEnUp		= theMET->shiftedPt(pat::MET::JetEnUp);
-		      t1pfmetJetEnDown	= theMET->shiftedPt(pat::MET::JetEnDown);
-		      t1pfmetJetResUp		= theMET->shiftedPt(pat::MET::JetResUp);
-		      t1pfmetJetResDown	= theMET->shiftedPt(pat::MET::JetResDown);
-		      t1pfmetMuonEnUp		= theMET->shiftedPt(pat::MET::MuonEnUp);
-		      t1pfmetMuonEnDown	= theMET->shiftedPt(pat::MET::MuonEnDown);
-		      t1pfmetElectronEnUp	= theMET->shiftedPt(pat::MET::ElectronEnUp);
-		      t1pfmetElectronEnDown	= theMET->shiftedPt(pat::MET::ElectronEnDown);
-		      t1pfmetTauEnUp		= theMET->shiftedPt(pat::MET::TauEnUp);
-		      t1pfmetTauEnDown	= theMET->shiftedPt(pat::MET::TauEnDown);
-		      t1pfmetPhotonEnUp	= theMET->shiftedPt(pat::MET::PhotonEnUp);
-		      t1pfmetPhotonEnDown	= theMET->shiftedPt(pat::MET::PhotonEnDown);
-		      t1pfmetUnclusteredEnUp	= theMET->shiftedPt(pat::MET::UnclusteredEnUp);
-		      t1pfmetUnclusteredEnDown= theMET->shiftedPt(pat::MET::UnclusteredEnDown);
+		      t1pfmetJetEnUp		= theMET->shiftedPt(flashgg::Met::JetEnUp);
+		      t1pfmetJetEnDown	= theMET->shiftedPt(flashgg::Met::JetEnDown);
+		      t1pfmetJetResUp		= theMET->shiftedPt(flashgg::Met::JetResUp);
+		      t1pfmetJetResDown	= theMET->shiftedPt(flashgg::Met::JetResDown);
+		      t1pfmetMuonEnUp		= theMET->shiftedPt(flashgg::Met::MuonEnUp);
+		      t1pfmetMuonEnDown	= theMET->shiftedPt(flashgg::Met::MuonEnDown);
+		      t1pfmetElectronEnUp	= theMET->shiftedPt(flashgg::Met::ElectronEnUp);
+		      t1pfmetElectronEnDown	= theMET->shiftedPt(flashgg::Met::ElectronEnDown);
+		      t1pfmetTauEnUp		= theMET->shiftedPt(flashgg::Met::TauEnUp);
+		      t1pfmetTauEnDown	= theMET->shiftedPt(flashgg::Met::TauEnDown);
+		      t1pfmetPhotonEnUp	= theMET->shiftedPt(flashgg::Met::PhotonEnUp);
+		      t1pfmetPhotonEnDown	= theMET->shiftedPt(flashgg::Met::PhotonEnDown);
+		      t1pfmetUnclusteredEnUp	= theMET->shiftedPt(flashgg::Met::UnclusteredEnUp);
+		      t1pfmetUnclusteredEnDown= theMET->shiftedPt(flashgg::Met::UnclusteredEnDown);
 
 		      //met correction type 1+2
-		      t1p2pfmet = theMET->corPt(pat::MET::Type1XY);
+		      t1p2pfmet = theMET->corPt(flashgg::Met::Type1XY);
 
 		      //uncorrected met
 		      pfmet = theMET->uncorPt();

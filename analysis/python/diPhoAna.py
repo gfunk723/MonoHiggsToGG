@@ -6,7 +6,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
 isMC = True; 
-is76X = True;
+is80X = True;
+is76X = False;
 isFLASHgg_1_1_0 = False;
 ######################
 
@@ -24,7 +25,10 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 
 # Pick up GlobalTag
 if (isMC):
-    if (is76X):
+    if (is80X):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_v3', '')
+        print "80X_mcRun2_asymptotic_2016_v3"
+    elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '')
         print "76X_mcRun2_asymptotic_v12"
     else:
@@ -32,7 +36,10 @@ if (isMC):
         print "74X_mcRun2_asymptotic_v2"
      
 else:
-    if (is76X):
+    if (is80X):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8', '')
+        print "80X_dataRun2_Prompt_v8"
+    elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '')
         print "76X_dataRun2_v15"
     else:
@@ -48,16 +55,21 @@ else:
     print "Using name RECO"
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 5000 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 10 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	#"file:myMicroAODOutputFile.root"
-	# 76X
 
-	"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_1.root", 
-	"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_10.root",
-	"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_2.root",
+	# 80X
+	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161010_141021/0000/myMicroAODOutputFile_1.root"
+	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_4.root",
+
+
+	# 76X
+	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_1.root", 
+	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_10.root",
+	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_2.root",
 
 	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2000_MA0-300/160331_204956/0000/myMicroAODOutputFile_1.root",
 	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2000_MA0-300/160331_204956/0000/myMicroAODOutputFile_10.root",
@@ -127,7 +139,7 @@ if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
 
-    era = "Fall15_25nsV2"
+    era = "Spring16_25nsV6"
     if isMC : 
         era += "_MC"
     else :
@@ -203,7 +215,7 @@ for i in range(0,maxJetCollections):
 
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag 		= cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
-				  METTag		= cms.untracked.InputTag('slimmedMETs::FLASHggMicroAOD'),#
+				  METTag		= cms.untracked.InputTag('flashggMets::FLASHggMicroAOD'),#
 				  pfcands		= cms.InputTag("packedPFCandidates"),
                                   JetCorrectorTag	= cms.InputTag("ak4PFCHSL1FastjetCorrector"),
                                   inputTagJets		= UnpackedJetCollectionVInputTag,            
@@ -218,7 +230,7 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   PileUpTag 		= cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo 	= cms.InputTag('generator'),
                                   dopureweight 		= cms.untracked.int32(1),
-                                  bits         		= cms.InputTag('TriggerResults::HLT'),
+                                  bits         		= cms.InputTag('TriggerResults::HLT2'),
                                   flags        		= cms.InputTag(flag),
 				  sampleIndex  		= cms.untracked.int32(100),
                                   puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root'),  
