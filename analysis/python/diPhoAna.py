@@ -6,6 +6,7 @@ import FWCore.ParameterSet.Types as CfgTypes
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
 isMC = True; 
+isSig = True;
 is80X = True;
 is76X = False;
 isFLASHgg_1_1_0 = False;
@@ -23,6 +24,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag.globaltag = 'POSTLS170_V5::All'     # Phys14 samples
 #process.GlobalTag.globaltag = 'MCRUN2_74_V9A'         # 50ns
 
+#-----------------------------------
 # Pick up GlobalTag
 if (isMC):
     if (is80X):
@@ -45,6 +47,20 @@ else:
     else:
         process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
         print "74X_dataRun2_Prompt_v2"
+#-----------------------------------
+
+#-----------------------------------
+# Pick up Trigger Info
+if (is80X):
+    if (isSig):
+        bit = 'TriggerResults::HLT'
+        print "Using HLT"
+    else:
+        bit = 'TriggerResults::HLT2'
+        print "Using HLT2" 
+else:
+    bit = 'TriggerResults::HLT'
+    print "Using HLT"
 
 
 if (isMC and isFLASHgg_1_1_0):
@@ -53,17 +69,18 @@ if (isMC and isFLASHgg_1_1_0):
 else: 
     flag = 'TriggerResults::RECO'
     print "Using name RECO"
+#-----------------------------------
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 10 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 100 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	#"file:myMicroAODOutputFile.root"
 
 	# 80X
-	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161010_141021/0000/myMicroAODOutputFile_1.root"
-	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_4.root",
+	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161010_141021/0000/myMicroAODOutputFile_1.root"
+	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root",
 
 
 	# 76X
@@ -230,10 +247,10 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   PileUpTag 		= cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo 	= cms.InputTag('generator'),
                                   dopureweight 		= cms.untracked.int32(1),
-                                  bits         		= cms.InputTag('TriggerResults::HLT2'),
+                                  bits         		= cms.InputTag(bit),
                                   flags        		= cms.InputTag(flag),
 				  sampleIndex  		= cms.untracked.int32(100),
-                                  puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_76X_vtx0.root'),  
+                                  puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root'),  
                                   xsec         		= cms.untracked.double(1), #pb
                                   kfac         		= cms.untracked.double(1.),
                                   sumDataset   		= cms.untracked.double(1.0),   # chiara

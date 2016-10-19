@@ -1,0 +1,8 @@
+    "/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161010_143657/0000/myMicroAODOutputFile_20.root", 
+                "nevents": 46826, 
+                "totEvents": 46826, 
+                "weights": 13182291.0
