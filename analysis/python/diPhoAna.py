@@ -5,8 +5,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC = True; 
-isSig = True;
+isMC  = True; 
+isSMh = False;
 is80X = True;
 is76X = False;
 isFLASHgg_1_1_0 = False;
@@ -52,12 +52,12 @@ else:
 #-----------------------------------
 # Pick up Trigger Info
 if (is80X):
-    if (isSig):
-        bit = 'TriggerResults::HLT'
-        print "Using HLT"
-    else:
+    if (isSMh):
         bit = 'TriggerResults::HLT2'
-        print "Using HLT2" 
+        print "Using HLT2"
+    else:
+        bit = 'TriggerResults::HLT'
+        print "Using HLT" 
 else:
     bit = 'TriggerResults::HLT'
     print "Using HLT"
@@ -81,46 +81,12 @@ process.source = cms.Source("PoolSource",
 	# 80X
 	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161010_141021/0000/myMicroAODOutputFile_1.root"
 	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root",
+	#"/store/user/soffi/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/DoubleEG/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016E-PromptReco-v2/161014_134303/0000/myMicroAODOutputFile_1.root",
+      	)
+    )
 
-
-	# 76X
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_1.root", 
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_10.root",
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP600_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-600_MA0-300/160331_203427/0000/myMicroAODOutputFile_2.root",
-
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2000_MA0-300/160331_204956/0000/myMicroAODOutputFile_1.root",
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2000_MA0-300/160331_204956/0000/myMicroAODOutputFile_10.root",
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2000_MA0-300/160331_204956/0000/myMicroAODOutputFile_2.root",
-
-
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2500_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2500_MA0-300/160331_205121/0000/myMicroAODOutputFile_1.root",
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2500_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2500_MA0-300/160331_205121/0000/myMicroAODOutputFile_10.root",
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP2500_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-2500_MA0-300/160331_205121/0000/myMicroAODOutputFile_2.root",
-
-
-
-
-	# vtx0:
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_PrivSig/1_3_0/MonoHgg_Zp2HDM_MZP1000_13TeV_76X/RunIIFall15DR76-1_3_0-25ns_MZp-1000_MA0-300/160331_204112/0000/myMicroAODOutputFile_1.root", 
-	#"/store/user/soffi/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_0/GluGluHToGG_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_0-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160330_084906/0000/myMicroAODOutputFile_1.root" 
-	#"/store/user/mzientek/flashgg/RunIIFall15DR76-1_3_0-25ns_Sig/1_3_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph/RunIIFall15DR76-1_3_0-25ns_MZp-1200_MA0-300_v2/160401_091523/0000/myMicroAODOutputFile_2.root"
-	#"/store/user/soffi/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_0/GluGluHToGG_M125_13TeV_amcatnloFXFX_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_0-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160225_095156/0000/myMicroAODOutputFile_1.root",
-	#"/store/user/soffi/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_0/DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_0-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160225_094833/0000/myMicroAODOutputFile_1.root", 
-	# 74X sample for comparison
-	# vtx0:
-	#"/store/user/mzientek/flashgg/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_1/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_1-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160314_221441/0000/myMicroAODOutputFile_116.root",
-	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC/1_1_0/DoubleEG/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_MC-1_1_0-v0-Run2015D-04Dec2015-v2/160310_213242/0000/myMicroAODOutputFile_1.root",
-	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal/1_1_0/MonoHgg_2HDM_MZP600_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal-1_1_0-v0-soffi-2HDM_MZP600_A0300_Hgg_miniAODv2/160310_222132/0000/myMicroAODOutputFile_1.root",
-	#"/store/user/mzientek/flashgg/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns/1_1_1/GluGluHToGG_M-125_13TeV_powheg_pythia8/vtx0-RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_1-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160314_221930/0000/myMicroAODOutputFile_1.root",
-	#"/store/user/soffi/flashgg/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal/1_1_0/MonoHgg_2HDM_MZP600_MA0300_13TeV/RunIISpring15-ReMiniAOD-1_1_0-25ns_vtx0_signal-1_1_0-v0-soffi-2HDM_MZP600_A0300_Hgg_miniAODv2/160310_222132/0000/myMicroAODOutputFile_1.root",
- 	#metSyst: 
-	#"/store/group/soffi/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162339/0000/myMicroAODOutputFile_1.root",
-	#"/store/group/soffi/QCD_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_163000/0000/myMicroAODOutputFile_1.root", 
-	#"/store/group/soffi/GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8/RunIISpring15-ReMiniAOD-1_1_0-25ns-1_1_0-v0-RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/160211_162546/0000/myMicroAODOutputFile_1.root", 
-      )
-                            )
 if (isMC==False):
-    print "applying 2015D json"                                
+    print "applying 2016 json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
     JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_76X_vtx0.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
