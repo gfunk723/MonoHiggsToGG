@@ -1,0 +1,306 @@
+{
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 8884, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164512/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 8884, 
+                "totEvents": 8884, 
+                "weights": 8884.0
+            }, 
+            {
+                "bad": false, 
+                "events": 31206, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164512/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 31206, 
+                "totEvents": 31206, 
+                "weights": 31206.0
+            }, 
+            {
+                "bad": false, 
+                "events": 38810, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164512/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 38810, 
+                "totEvents": 38810, 
+                "weights": 38810.0
+            }, 
+            {
+                "bad": false, 
+                "events": 1266, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164512/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 1266, 
+                "totEvents": 1266, 
+                "weights": 1266.0
+            }, 
+            {
+                "bad": false, 
+                "events": 19834, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164512/0000/myMicroAODOutputFile_5.root", 
+                "nevents": 19834, 
+                "totEvents": 19834, 
+                "weights": 19834.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 2380, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164736/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 2380, 
+                "totEvents": 2380, 
+                "weights": 2380.0
+            }, 
+            {
+                "bad": false, 
+                "events": 50540, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164736/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 50540, 
+                "totEvents": 50540, 
+                "weights": 50540.0
+            }, 
+            {
+                "bad": false, 
+                "events": 44100, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164736/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 44100, 
+                "totEvents": 44100, 
+                "weights": 44100.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 378, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164910/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 378, 
+                "totEvents": 378, 
+                "weights": 378.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 36576, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165146/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 36576, 
+                "totEvents": 36576, 
+                "weights": 36576.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2304, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165146/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 2304, 
+                "totEvents": 2304, 
+                "weights": 2304.0
+            }, 
+            {
+                "bad": false, 
+                "events": 288, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165146/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 288, 
+                "totEvents": 288, 
+                "weights": 288.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 7830, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165417/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 7830, 
+                "totEvents": 7830, 
+                "weights": 7830.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2430, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165417/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 2430, 
+                "totEvents": 2430, 
+                "weights": 2430.0
+            }, 
+            {
+                "bad": false, 
+                "events": 270, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165417/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 270, 
+                "totEvents": 270, 
+                "weights": 270.0
+            }, 
+            {
+                "bad": false, 
+                "events": 810, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165417/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 810, 
+                "totEvents": 810, 
+                "weights": 810.0
+            }, 
+            {
+                "bad": false, 
+                "events": 18830, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165417/0000/myMicroAODOutputFile_5.root", 
+                "nevents": 18830, 
+                "totEvents": 18830, 
+                "weights": 18830.0
+            }, 
+            {
+                "bad": false, 
+                "events": 66590, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_165417/0000/myMicroAODOutputFile_6.root", 
+                "nevents": 66590, 
+                "totEvents": 66590, 
+                "weights": 66590.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 36232, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_170048/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 36232, 
+                "totEvents": 36232, 
+                "weights": 36232.0
+            }, 
+            {
+                "bad": false, 
+                "events": 54138, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_170048/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 54138, 
+                "totEvents": 54138, 
+                "weights": 54138.0
+            }, 
+            {
+                "bad": false, 
+                "events": 9630, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_170048/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 9630, 
+                "totEvents": 9630, 
+                "weights": 9630.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-b0b6046380d8038dfdeebaad02e778af/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 5500, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 5500, 
+                "totEvents": 5500, 
+                "weights": 5500.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2500, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 2500, 
+                "totEvents": 2500, 
+                "weights": 2500.0
+            }, 
+            {
+                "bad": false, 
+                "events": 66500, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 66500, 
+                "totEvents": 66500, 
+                "weights": 66500.0
+            }, 
+            {
+                "bad": false, 
+                "events": 24500, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 24500, 
+                "totEvents": 24500, 
+                "weights": 24500.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1-63e5dd0056da89a630ede54c0631b273/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 20136, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 20136, 
+                "totEvents": 20136, 
+                "weights": 20136.0
+            }, 
+            {
+                "bad": false, 
+                "events": 1696, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 1696, 
+                "totEvents": 1696, 
+                "weights": 1696.0
+            }, 
+            {
+                "bad": false, 
+                "events": 5936, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 5936, 
+                "totEvents": 5936, 
+                "weights": 5936.0
+            }, 
+            {
+                "bad": false, 
+                "events": 424, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 424, 
+                "totEvents": 424, 
+                "weights": 424.0
+            }, 
+            {
+                "bad": false, 
+                "events": 3816, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_5.root", 
+                "nevents": 3816, 
+                "totEvents": 3816, 
+                "weights": 3816.0
+            }, 
+            {
+                "bad": false, 
+                "events": 64176, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_6.root", 
+                "nevents": 64176, 
+                "totEvents": 64176, 
+                "weights": 64176.0
+            }, 
+            {
+                "bad": false, 
+                "events": 848, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_7.root", 
+                "nevents": 848, 
+                "totEvents": 848, 
+                "weights": 848.0
+            }, 
+            {
+                "bad": false, 
+                "events": 424, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161016_164247/0000/myMicroAODOutputFile_8.root", 
+                "nevents": 424, 
+                "totEvents": 424, 
+                "weights": 424.0
+            }
+        ], 
+        "vetted": true
+    }
+}
