@@ -15,9 +15,17 @@
 # -------------------------------------------------------------------------------
 # 2016 Samples 
 # -------------------------------------------------------------------------------
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-600_MA0-300 	1 140 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GluGluHToGG	 	1 10  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.0952946	1 
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhoton		 	1 1   /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 135.1	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-600_MA0-300 	0 140 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-800_MA0-300 	0 141 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1000_MA0-300 	0 142 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1200_MA0-300 	0 143 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1400_MA0-300 	0 144 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1700_MA0-300 	0 145 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-2000_MA0-300 	0 146 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-2500_MA0-300 	0 147 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.001	1 
+
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GluGluHToGG	 	0 10  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 0.0952946	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhoton		 	0 1   /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root 135.1	1 
 
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DoubleEG         		0 10001 pippo 1 1
 
