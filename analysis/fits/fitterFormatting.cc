@@ -4,7 +4,7 @@
 #include <TLorentzVector.h>
 #include <TBranch.h>
 #include <iostream>
-#include <../../../DataFormats/Math/interface/deltaPhi.h>
+#include "../../../DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 
@@ -503,7 +503,8 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
       if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
       if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
-    if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
+    //if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
+    if (min_dphi_JetMET < 0.5) continue; 
 
     if (nMuons > 0 || nEle > 1) continue;
 

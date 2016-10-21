@@ -31,8 +31,8 @@
 #
 #############################################
 
-categType="4";
-indir="../macro/data/25ns_v76X_v2/"
+categType="1";
+indir="../macro/data/25ns_v80X_v0/"
 outdir="ntuples4fit_vtx0_OptSel$categType"
 
 mkdir -p $outdir
@@ -40,33 +40,19 @@ mkdir -p $outdir
 root -l -b << EOF
 .L fitterFormatting.cc++
 
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP600.root",		"sig_2HDM_mZP600_mA0300",	"2HDM_mZP600_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP800.root",		"sig_2HDM_mZP800_mA0300",	"2HDM_mZP800_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1000.root",	"sig_2HDM_mZP1000_mA0300",	"2HDM_mZP1000_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1200.root",	"sig_2HDM_mZP1200_mA0300",	"2HDM_mZP1200_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1400.root",	"sig_2HDM_mZP1400_mA0300",	"2HDM_mZP1400_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1700.root",	"sig_2HDM_mZP1700_mA0300",	"2HDM_mZP1700_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP2000.root",	"sig_2HDM_mZP2000_mA0300",	"2HDM_mZP2000_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP2500.root",	"sig_2HDM_mZP2500_mA0300",	"2HDM_mZP2500_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP600_mA0400.root",	"sig_2HDM_mZP600_mA0400",	"2HDM_mZP600_mA0400_new.root",$categType)
-fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP800_mA0400.root",	"sig_2HDM_mZP800_mA0400",	"2HDM_mZP800_mA0400_new.root",$categType)
+fitterFormatting("$indir","$outdir","data",0,"DoubleEG.root",	"DoubleEG",	"Output_Data.root",$categType)
+
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP600_mA0300.root",  "sig_2HDM_mZP600_mA0300",	"2HDM_mZP600_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP800_mA0300.root",  "sig_2HDM_mZP800_mA0300",	"2HDM_mZP800_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1000_mA0300.root", "sig_2HDM_mZP1000_mA0300",	"2HDM_mZP1000_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1200_mA0300.root", "sig_2HDM_mZP1200_mA0300",	"2HDM_mZP1200_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1400_mA0300.root", "sig_2HDM_mZP1400_mA0300",	"2HDM_mZP1400_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1700_mA0300.root", "sig_2HDM_mZP1700_mA0300",	"2HDM_mZP1700_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP2000_mA0300.root", "sig_2HDM_mZP2000_mA0300",	"2HDM_mZP2000_mA0300_new.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP2500_mA0300.root", "sig_2HDM_mZP2500_mA0300",	"2HDM_mZP2500_mA0300_new.root",$categType)
 
 fitterFormatting("$indir","$outdir","bkg",0,"GluGluHToGG.root",	"GluGluHToGG",	"GluGluHToGG_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"VH.root",		"VH",		"VH_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"TTGJets.root",	"TTGJets",	"TTGJets_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"TTGG_0Jets.root",	"TTGG_0Jets",	"TTGG_0Jets_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"TGJets.root",	"TGJets",	"TGJets_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"WGToLNuG.root",	"WGToLNuG",	"WGToLNuG_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"ZGTo2LG.root",	"ZGTo2LG",	"ZGTo2LG_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"ZZTo2L2Nu.root",	"ZZTo2L2Nu",	"ZZTo2L2Nu_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"ttHJetToGG.root",	"ttHJetToGG",	"ttHJetToGG_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"VBFHToGG.root",	"VBFHToGG",	"VBFHToGG_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",2,"QCD.root",		"QCD",		"QCD_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",1,"GJets.root",	"GJets",	"GJets_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",0,"DiPhoton.root",	"DiPhoton",	"DiPhoton_new.root",$categType)
-fitterFormatting("$indir","$outdir","bkg",0,"DYJetsToLL.root",	"DYJetsToLL",	"DYJetsToLL_new.root",$categType)
-
-fitterFormatting("$indir","$outdir","data",0,"DoubleEG.root",	"DoubleEG",	"Output_Data.root",$categType)
 
 .q
 
@@ -75,5 +61,24 @@ echo "Done"
 
 echo "Adding MC Files Together"
 
-hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/VH_new.root $outdir/QCD_new.root $outdir/GJets_new.root $outdir/DiPhoton_new.root $outdir/DYJetsToLL_new.root $outdir/VBFHToGG_new.root $outdir/ttHJetToGG_new.root $outdir/TGJets_new.root $outdir/TTGJets_new.root $outdir/WGToLNuG_new.root $outdir/ZGTo2LG_new.root $outdir/TTGG_0Jets_new.root $outdir/ZZTo2L2Nu_new.root 
+hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/DiPhoton_new.root 
+
+#hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/VH_new.root $outdir/QCD_new.root $outdir/GJets_new.root $outdir/DiPhoton_new.root $outdir/DYJetsToLL_new.root $outdir/VBFHToGG_new.root $outdir/ttHJetToGG_new.root $outdir/TGJets_new.root $outdir/TTGJets_new.root $outdir/WGToLNuG_new.root $outdir/ZGTo2LG_new.root $outdir/TTGG_0Jets_new.root $outdir/ZZTo2L2Nu_new.root 
+
+#fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP600_mA0400.root",	"sig_2HDM_mZP600_mA0400",	"2HDM_mZP600_mA0400_new.root",$categType)
+#fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP800_mA0400.root",	"sig_2HDM_mZP800_mA0400",	"2HDM_mZP800_mA0400_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"VH.root",		"VH",		"VH_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"TTGJets.root",	"TTGJets",	"TTGJets_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"TTGG_0Jets.root",	"TTGG_0Jets",	"TTGG_0Jets_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"TGJets.root",	"TGJets",	"TGJets_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"WGToLNuG.root",	"WGToLNuG",	"WGToLNuG_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"ZGTo2LG.root",	"ZGTo2LG",	"ZGTo2LG_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"ZZTo2L2Nu.root",	"ZZTo2L2Nu",	"ZZTo2L2Nu_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"ttHJetToGG.root",	"ttHJetToGG",	"ttHJetToGG_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"VBFHToGG.root",	"VBFHToGG",	"VBFHToGG_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",2,"QCD.root",		"QCD",		"QCD_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",1,"GJets.root",	"GJets",	"GJets_new.root",$categType)
+#fitterFormatting("$indir","$outdir","bkg",0,"DYJetsToLL.root",	"DYJetsToLL",	"DYJetsToLL_new.root",$categType)
+
+
 

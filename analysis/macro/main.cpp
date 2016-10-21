@@ -57,14 +57,14 @@ int main(){
 
   //////////////////////////////////////////////////////////////////////////////////////
 
-  TString inDir = "data/25ns_v76X_v2/"; 					// input directory of the samples
-  TString outDir = Form("./diPhoPlots/25ns_v76X_v2_%s_ScaleToData/",selName.Data());	// output directory to send results
-  TString origDir = "./diPhoPlots/25ns_v76X_v2_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
+  TString inDir = "data/25ns_v80X_v0/"; 					// input directory of the samples
+  TString outDir = Form("./diPhoPlots/25ns_v80X_v0_%s_ScaleToData/",selName.Data());	// output directory to send results
+  TString origDir = "./diPhoPlots/25ns_v80X_v0_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
 
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString type = "pdf";		// type of plots to be made
-  bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
+  bool doMETCorr = true;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = false;		// make plots for each sample individually
   bool doComb = false;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
@@ -75,7 +75,7 @@ int main(){
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
-  bool doBlind = false;		// use to blind the analysis for Data (don't use distributions for met>100 & 115<mgg<135)
+  bool doBlind = true;		// use to blind the analysis for Data (don't use distributions for met>100 & 115<mgg<135)
   bool makePURWfiles = false;	// recompute PURW and make files (need also doReweightPU=true for this to run)
   bool doReweightPU = false;	// use PURW from old files if !makePURWfiles
   bool doCompare = false;	// call Comparer (not yet working) 
