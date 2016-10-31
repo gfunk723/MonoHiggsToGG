@@ -42,11 +42,12 @@ To get this convolution of these jsons use brilcalc:
 ### b) Get PU Weights File
 To get pileup in data, only need to specify MyAnalysisJSON.txt:
 
-```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50  MyDataPileupHistogram.root```
+```pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 70 --numPileupBins 70  MyDataPileupHistogram.root```
 
 To get the PU weights file, next run the macro `pileupWeights.C` (found in macro dir.)
 which uses MyDataPileupHistogram.root and compares it with a MC pileup histogram found in: 
-/afs/cern.ch/user/c/crovelli/public/json2015/rereco76x/mcPUhisto___25ns_FallMC_matchData_PoissonOOTPU.root
+/afs/cern.ch/user/c/crovelli/public/json2016/prompt/mcPUhisto___25ns_Spring16MC_PUScenarioV1_PoissonOOTPU.root 
+
 
 This produces the `pileupWeights.root` file which is used in the analyzer.
 
@@ -102,7 +103,7 @@ NB. The structure of how to use these scripts can be seen in `doAll.sh`
 If you add additional variables to the ntuples in the analyzer, you need to modify addWeightsToTree.cc to include these variables.
 
 ## Step 7) Produce plots 
-The analysis is done in CMSSW_7_6_3_patch2
+The analysis is done in CMSSW_8_0_8_patch1
 - `make` (to compile) 
 - `./main` (to run)
 Can use `make clean` to clean.
@@ -161,7 +162,7 @@ Additional categories can be applied by adding the selection in fitterFormatting
 # Copy the Framework from Github
 -----------------------------------------------------------
 ```
-cmsrel CMSSW_7_6_3_patch2
+cmsrel CMSSW_8_0_8_patch1
 cmsenv 
 
 cd ${CMSSW_BASE}/src
