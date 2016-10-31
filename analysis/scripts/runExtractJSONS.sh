@@ -4,8 +4,10 @@
 
 # FLASHgg version 80X: 
 python extractJSONS.py -i datasets/datasets_80X_data_v0.json		-o DoubleEG			-d lists_25ns_v80X_v0/Data
+
 python extractJSONS.py -i datasets/datasets_80X_start_v0.json		-o DiPhoton			-d lists_25ns_v80X_v0/MC
 python extractJSONS.py -i datasets/datasets_80X_start_v0.json		-o GluGluHToGG			-d lists_25ns_v80X_v0/MC
+
 python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-600_MA0-300		-d lists_25ns_v80X_v0/MC
 python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-800_MA0-300		-d lists_25ns_v80X_v0/MC
 python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-1000_MA0-300	-d lists_25ns_v80X_v0/MC
@@ -14,6 +16,17 @@ python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-1400_MA
 python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-1700_MA0-300	-d lists_25ns_v80X_v0/MC
 python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-2000_MA0-300	-d lists_25ns_v80X_v0/MC
 python extractJSONS.py -i datasets/datasets_80X_sig_v0.json		-o 2HDM_MZp-2500_MA0-300	-d lists_25ns_v80X_v0/MC
+
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10000_MChi-1000_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10000_MChi-150_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10000_MChi-10_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10000_MChi-1_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10000_MChi-500_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10000_MChi-50_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-1000_MChi-1000_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-1000_MChi-150_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-1000_MChi-1_13TeV	-d lists_25ns_v80X_v0/MC
+python extractJSONS.py -i datasets/datasets_80X_baryonicZpSig_v0.json	-o ZpBaryonic_MZp-10_MChi-1_13TeV	-d lists_25ns_v80X_v0/MC
 
 
 
