@@ -28,8 +28,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 # Pick up GlobalTag
 if (isMC):
     if (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_v3', '')
-        print "80X_mcRun2_asymptotic_2016_v3"
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_v14', '')
+        print "80X_mcRun2_asymptotic_v14"
     elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '')
         print "76X_mcRun2_asymptotic_v12"
@@ -39,8 +39,8 @@ if (isMC):
      
 else:
     if (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8', '')
-        print "80X_dataRun2_Prompt_v8"
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '')
+        print "80X_dataRun2_2016SeptRepro_v4"
     elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '')
         print "76X_dataRun2_v15"
@@ -77,18 +77,17 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 100 ) )
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	#"file:myMicroAODOutputFile.root"
-
-	# 80X
-	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161010_141021/0000/myMicroAODOutputFile_1.root"
-	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root",
-	#"/store/user/soffi/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/DoubleEG/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016E-PromptReco-v2/161014_134303/0000/myMicroAODOutputFile_1.root",
+	# 80X_v1
+	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_3_0/MonoHaa_ZpBaryonic_MZp-100_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0/161117_092117/0000/myMicroAODOutputFile_1.root", 
+	# 80X_v0
+	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root",
       	)
     )
 
 if (isMC==False):
     print "applying 2016 json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_76X_vtx0.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v1.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)                              
     print myLumis 
@@ -216,7 +215,7 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   bits         		= cms.InputTag(bit),
                                   flags        		= cms.InputTag(flag),
 				  sampleIndex  		= cms.untracked.int32(100),
-                                  puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v0.root'),  
+                                  puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root'),  
                                   xsec         		= cms.untracked.double(1), #pb
                                   kfac         		= cms.untracked.double(1.),
                                   sumDataset   		= cms.untracked.double(1.0),   # chiara
