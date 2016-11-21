@@ -1,0 +1,1236 @@
+    "/TT_TuneCUETP8M1_13TeV-powheg-pythia8/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1-3c5009bb8548b62cae01f28abf458411/USER": {
+        "files": [
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_10.root", 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_10.root", 
+                "nevents": 215306
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_100.root", 
+                "nevents": 223804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_101.root", 
+                "nevents": 214863
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_102.root", 
+                "nevents": 129451
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_103.root", 
+                "nevents": 227569
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_104.root", 
+                "nevents": 222004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_105.root", 
+                "nevents": 222157
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_106.root", 
+                "nevents": 221855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_108.root", 
+                "nevents": 215051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_109.root", 
+                "nevents": 228702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_11.root", 
+                "nevents": 226004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_110.root", 
+                "nevents": 215404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_111.root", 
+                "nevents": 218318
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_112.root", 
+                "nevents": 214757
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_114.root", 
+                "nevents": 220506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_115.root", 
+                "nevents": 222804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_116.root", 
+                "nevents": 228016
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_117.root", 
+                "nevents": 193055
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_118.root", 
+                "nevents": 212953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_119.root", 
+                "nevents": 221651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_12.root", 
+                "nevents": 213557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_120.root", 
+                "nevents": 227153
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_121.root", 
+                "nevents": 214553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_122.root", 
+                "nevents": 224259
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_123.root", 
+                "nevents": 217702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_124.root", 
+                "nevents": 188906
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_125.root", 
+                "nevents": 201157
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_126.root", 
+                "nevents": 174910
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_127.root", 
+                "nevents": 218102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_128.root", 
+                "nevents": 226051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_129.root", 
+                "nevents": 224008
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_13.root", 
+                "nevents": 217902
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_130.root", 
+                "nevents": 211000
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_131.root", 
+                "nevents": 217608
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_132.root", 
+                "nevents": 222953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_133.root", 
+                "nevents": 230557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_134.root", 
+                "nevents": 222365
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_135.root", 
+                "nevents": 218706
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_137.root", 
+                "nevents": 222106
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_138.root", 
+                "nevents": 203804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_139.root", 
+                "nevents": 192506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_14.root", 
+                "nevents": 225902
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_140.root", 
+                "nevents": 220420
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_141.root", 
+                "nevents": 231204
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_142.root", 
+                "nevents": 221251
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_143.root", 
+                "nevents": 217412
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_144.root", 
+                "nevents": 200553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_145.root", 
+                "nevents": 219553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_146.root", 
+                "nevents": 228004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_147.root", 
+                "nevents": 225553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_148.root", 
+                "nevents": 220102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_149.root", 
+                "nevents": 184318
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_15.root", 
+                "nevents": 221561
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_151.root", 
+                "nevents": 187455
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_152.root", 
+                "nevents": 220506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_153.root", 
+                "nevents": 217259
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_154.root", 
+                "nevents": 219208
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_155.root", 
+                "nevents": 218702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_156.root", 
+                "nevents": 222757
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_157.root", 
+                "nevents": 196659
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_158.root", 
+                "nevents": 205208
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_159.root", 
+                "nevents": 221855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_16.root", 
+                "nevents": 227753
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_160.root", 
+                "nevents": 218102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_161.root", 
+                "nevents": 207812
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_162.root", 
+                "nevents": 217953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_163.root", 
+                "nevents": 203055
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_164.root", 
+                "nevents": 219710
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_165.root", 
+                "nevents": 223557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_166.root", 
+                "nevents": 217604
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_167.root", 
+                "nevents": 219451
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_168.root", 
+                "nevents": 219055
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_169.root", 
+                "nevents": 211608
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_17.root", 
+                "nevents": 218106
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_170.root", 
+                "nevents": 199502
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_171.root", 
+                "nevents": 194353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_172.root", 
+                "nevents": 206106
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_173.root", 
+                "nevents": 211804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_174.root", 
+                "nevents": 225153
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_175.root", 
+                "nevents": 217302
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_176.root", 
+                "nevents": 212506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_178.root", 
+                "nevents": 217263
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_18.root", 
+                "nevents": 223106
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_181.root", 
+                "nevents": 185608
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_182.root", 
+                "nevents": 209051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_183.root", 
+                "nevents": 213455
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_184.root", 
+                "nevents": 216451
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_185.root", 
+                "nevents": 228000
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_186.root", 
+                "nevents": 224953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_187.root", 
+                "nevents": 222753
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_188.root", 
+                "nevents": 218553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_189.root", 
+                "nevents": 215255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_19.root", 
+                "nevents": 223710
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_190.root", 
+                "nevents": 222200
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_191.root", 
+                "nevents": 216204
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_192.root", 
+                "nevents": 222255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_193.root", 
+                "nevents": 212600
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_194.root", 
+                "nevents": 221506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_195.root", 
+                "nevents": 218804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_196.root", 
+                "nevents": 222353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_198.root", 
+                "nevents": 187753
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_20.root", 
+                "nevents": 222102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_200.root", 
+                "nevents": 218914
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_201.root", 
+                "nevents": 184651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_202.root", 
+                "nevents": 230051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_203.root", 
+                "nevents": 184557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_204.root", 
+                "nevents": 191302
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_205.root", 
+                "nevents": 226255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_206.root", 
+                "nevents": 236953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_207.root", 
+                "nevents": 175600
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_208.root", 
+                "nevents": 220553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_209.root", 
+                "nevents": 220259
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_21.root", 
+                "nevents": 213557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_210.root", 
+                "nevents": 215306
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_211.root", 
+                "nevents": 226353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_212.root", 
+                "nevents": 223106
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_215.root", 
+                "nevents": 221702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_216.root", 
+                "nevents": 191357
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_219.root", 
+                "nevents": 223255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_22.root", 
+                "nevents": 229157
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_220.root", 
+                "nevents": 223153
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_223.root", 
+                "nevents": 226157
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_224.root", 
+                "nevents": 229706
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_226.root", 
+                "nevents": 219051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_227.root", 
+                "nevents": 221302
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_228.root", 
+                "nevents": 224259
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_23.root", 
+                "nevents": 226655
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_230.root", 
+                "nevents": 218855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_232.root", 
+                "nevents": 223051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_234.root", 
+                "nevents": 231255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_235.root", 
+                "nevents": 214302
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_236.root", 
+                "nevents": 219702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_237.root", 
+                "nevents": 222455
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_239.root", 
+                "nevents": 203000
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_24.root", 
+                "nevents": 210204
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_240.root", 
+                "nevents": 227455
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_241.root", 
+                "nevents": 219055
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_242.root", 
+                "nevents": 187553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_243.root", 
+                "nevents": 216267
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_244.root", 
+                "nevents": 226459
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_245.root", 
+                "nevents": 213510
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_248.root", 
+                "nevents": 202200
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_249.root", 
+                "nevents": 220255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_25.root", 
+                "nevents": 226608
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_251.root", 
+                "nevents": 224502
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_252.root", 
+                "nevents": 236357
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_253.root", 
+                "nevents": 198655
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_26.root", 
+                "nevents": 226851
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_261.root", 
+                "nevents": 218553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_262.root", 
+                "nevents": 225553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_264.root", 
+                "nevents": 224251
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_266.root", 
+                "nevents": 229906
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_267.root", 
+                "nevents": 220604
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_268.root", 
+                "nevents": 224757
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_27.root", 
+                "nevents": 219557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_274.root", 
+                "nevents": 222255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_275.root", 
+                "nevents": 225855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_277.root", 
+                "nevents": 229200
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_278.root", 
+                "nevents": 226102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_279.root", 
+                "nevents": 219953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_28.root", 
+                "nevents": 222859
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_281.root", 
+                "nevents": 230216
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_282.root", 
+                "nevents": 221651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_284.root", 
+                "nevents": 229753
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_29.root", 
+                "nevents": 224000
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_298.root", 
+                "nevents": 225804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_303.root", 
+                "nevents": 227306
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_304.root", 
+                "nevents": 220910
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_305.root", 
+                "nevents": 222553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_306.root", 
+                "nevents": 222110
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_308.root", 
+                "nevents": 211200
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_309.root", 
+                "nevents": 229718
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_31.root", 
+                "nevents": 189659
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_313.root", 
+                "nevents": 225357
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_315.root", 
+                "nevents": 235855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_316.root", 
+                "nevents": 229004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_319.root", 
+                "nevents": 222404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_32.root", 
+                "nevents": 218553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_321.root", 
+                "nevents": 225463
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_322.root", 
+                "nevents": 232204
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_323.root", 
+                "nevents": 231059
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_324.root", 
+                "nevents": 228404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_326.root", 
+                "nevents": 228212
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_327.root", 
+                "nevents": 218902
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_328.root", 
+                "nevents": 223400
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_329.root", 
+                "nevents": 231655
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_33.root", 
+                "nevents": 226208
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_330.root", 
+                "nevents": 224506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_332.root", 
+                "nevents": 219408
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_333.root", 
+                "nevents": 226812
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_338.root", 
+                "nevents": 223906
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_339.root", 
+                "nevents": 220859
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_34.root", 
+                "nevents": 216808
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_340.root", 
+                "nevents": 201102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_341.root", 
+                "nevents": 211251
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_342.root", 
+                "nevents": 222918
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_343.root", 
+                "nevents": 231412
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_345.root", 
+                "nevents": 226608
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_346.root", 
+                "nevents": 224506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_347.root", 
+                "nevents": 217404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_348.root", 
+                "nevents": 227651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_349.root", 
+                "nevents": 222863
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_35.root", 
+                "nevents": 223769
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_350.root", 
+                "nevents": 231553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_351.root", 
+                "nevents": 228408
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_353.root", 
+                "nevents": 219906
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_356.root", 
+                "nevents": 227255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_357.root", 
+                "nevents": 218702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_358.root", 
+                "nevents": 223153
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_360.root", 
+                "nevents": 228957
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_361.root", 
+                "nevents": 235165
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_363.root", 
+                "nevents": 221232
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_364.root", 
+                "nevents": 227110
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_366.root", 
+                "nevents": 226506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_367.root", 
+                "nevents": 221004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_368.root", 
+                "nevents": 205753
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_369.root", 
+                "nevents": 226263
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_37.root", 
+                "nevents": 222804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_370.root", 
+                "nevents": 220432
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_371.root", 
+                "nevents": 198800
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_372.root", 
+                "nevents": 227612
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_373.root", 
+                "nevents": 214455
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_374.root", 
+                "nevents": 226306
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_376.root", 
+                "nevents": 216804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_38.root", 
+                "nevents": 223808
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_380.root", 
+                "nevents": 209051
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_383.root", 
+                "nevents": 221808
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_384.root", 
+                "nevents": 210302
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_385.root", 
+                "nevents": 222820
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_386.root", 
+                "nevents": 221655
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_388.root", 
+                "nevents": 225353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_39.root", 
+                "nevents": 220855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_391.root", 
+                "nevents": 216663
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_396.root", 
+                "nevents": 218502
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_397.root", 
+                "nevents": 230004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_40.root", 
+                "nevents": 223510
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_403.root", 
+                "nevents": 222655
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_404.root", 
+                "nevents": 230114
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_406.root", 
+                "nevents": 227412
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_407.root", 
+                "nevents": 221557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_409.root", 
+                "nevents": 214251
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_410.root", 
+                "nevents": 205506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_411.root", 
+                "nevents": 226004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_412.root", 
+                "nevents": 219957
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_413.root", 
+                "nevents": 230651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_414.root", 
+                "nevents": 225565
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_415.root", 
+                "nevents": 224451
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_416.root", 
+                "nevents": 224761
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_419.root", 
+                "nevents": 221157
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_420.root", 
+                "nevents": 215114
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_423.root", 
+                "nevents": 220153
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_43.root", 
+                "nevents": 226153
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_44.root", 
+                "nevents": 220353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_45.root", 
+                "nevents": 217408
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_47.root", 
+                "nevents": 189702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_48.root", 
+                "nevents": 228404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_50.root", 
+                "nevents": 216408
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_51.root", 
+                "nevents": 219702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_52.root", 
+                "nevents": 220306
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_54.root", 
+                "nevents": 224063
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_55.root", 
+                "nevents": 219102
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_56.root", 
+                "nevents": 186902
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_57.root", 
+                "nevents": 187122
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_58.root", 
+                "nevents": 186651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_59.root", 
+                "nevents": 225204
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_6.root", 
+                "nevents": 216804
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_60.root", 
+                "nevents": 221361
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_61.root", 
+                "nevents": 189600
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_62.root", 
+                "nevents": 217255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_63.root", 
+                "nevents": 228506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_64.root", 
+                "nevents": 217702
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_65.root", 
+                "nevents": 220055
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_67.root", 
+                "nevents": 222502
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_68.root", 
+                "nevents": 220306
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_69.root", 
+                "nevents": 217353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_7.root", 
+                "nevents": 223910
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_70.root", 
+                "nevents": 146753
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_71.root", 
+                "nevents": 223714
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_72.root", 
+                "nevents": 223055
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_73.root", 
+                "nevents": 221714
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_74.root", 
+                "nevents": 227369
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_75.root", 
+                "nevents": 214302
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_76.root", 
+                "nevents": 220706
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_77.root", 
+                "nevents": 215412
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_78.root", 
+                "nevents": 216553
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_79.root", 
+                "nevents": 223255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_8.root", 
+                "nevents": 211353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_80.root", 
+                "nevents": 221404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_81.root", 
+                "nevents": 229208
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_82.root", 
+                "nevents": 225404
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_83.root", 
+                "nevents": 234255
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_84.root", 
+                "nevents": 217761
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_85.root", 
+                "nevents": 231855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_86.root", 
+                "nevents": 194651
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_87.root", 
+                "nevents": 216557
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_88.root", 
+                "nevents": 206008
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_89.root", 
+                "nevents": 226004
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_9.root", 
+                "nevents": 185855
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_90.root", 
+                "nevents": 213400
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_91.root", 
+                "nevents": 223353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_92.root", 
+                "nevents": 223259
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_93.root", 
+                "nevents": 220310
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_94.root", 
+                "nevents": 226353
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_95.root", 
+                "nevents": 196953
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_96.root", 
+                "nevents": 182659
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_97.root", 
+                "nevents": 225506
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_98.root", 
+                "nevents": 224459
+            }, 
+            {
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/161116_142108/0000/myMicroAODOutputFile_99.root", 
+                "nevents": 230102
+            }
+        ]

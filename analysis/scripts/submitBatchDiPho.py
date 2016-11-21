@@ -43,8 +43,8 @@ def main():
     xsection = args[4]
     kfactor = args[5]
 
-    inputlist="lists_25ns_v80X_v0/"+dataset+".list"
-    inputweights="lists_25ns_v80X_v0/"+dataset+".weight"
+    inputlist="lists_25ns_v80X_v1/"+dataset+".list"
+    inputweights="lists_25ns_v80X_v1/"+dataset+".weight"
     output = dataset
 
     print "the outputs will be in the directory: "+opt.prefix
@@ -53,7 +53,7 @@ def main():
         diskoutputdir = "" 
 
     #else: diskoutputdir = '/afs/cern.ch/user/m/mzientek/private/MonoHggCMSSW80X/CMSSW_8_0_8_patch1/src/MonoHiggsToGG/output'
-    else: diskoutputdir = '/afs/cern.ch/work/m/mzientek/private/25ns_v80X_v0'
+    else: diskoutputdir = '/afs/cern.ch/work/m/mzientek/private/25ns_v80X_v1'
     diskoutputmain = diskoutputdir+"/"+opt.prefix+"/"+output
 
     os.system("mkdir -p "+opt.prefix+"/"+output)

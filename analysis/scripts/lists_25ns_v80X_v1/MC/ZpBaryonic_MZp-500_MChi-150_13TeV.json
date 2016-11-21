@@ -1,0 +1,12 @@
+    "/MonoHaa_ZpBaryonic_MZp-500_MChi-150_13TeV-madgraph/mzientek-RunIISpring16DR80X-2_3_0-543b524954f38d3aa0454a4d8dbe9f07/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_3_0/MonoHaa_ZpBaryonic_MZp-500_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0/161116_094424/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 29480, 
+                "totEvents": 29480, 
+                "weights": 29480.0
+                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_3_0/MonoHaa_ZpBaryonic_MZp-500_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0/161116_094424/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 70520, 
+                "totEvents": 70520, 
+                "weights": 70520.0

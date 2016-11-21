@@ -29,8 +29,8 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 # Pick up GlobalTag
 if (isMC):
     if (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_v3', '') 
-        print "80X_mcRun2_asymptotic_2016_v3"
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_v14', '') 
+        print "80X_mcRun2_asymptotic_2016_v14"
     elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '') 
         print "76X_mcRun2_asymptotic_v12"
@@ -40,8 +40,8 @@ if (isMC):
     
 else:
     if (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v8', '') 
-        print "80X_dataRun2_Prompt_v8"
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
+        print "80X_dataRun2_2016SeptRepro_v4"
     elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '') 
         print "76X_dataRun2_v15"
@@ -83,7 +83,7 @@ process.source = cms.Source("PoolSource",
 if (isMC==False):
     print "applying 2016D json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v0.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v1.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)  
 
