@@ -47,7 +47,7 @@ python extractJSONS.py -i datasets/datasets_80X_sig_v1.json		-o ZpBaryonic_MZp-5
 python extractJSONS.py -i datasets/datasets_80X_sig_v1.json		-o ZpBaryonic_MZp-500_MChi-150_13TeV	-d lists_25ns_v80X_v1/MC
 python extractJSONS.py -i datasets/datasets_80X_sig_v1.json		-o ZpBaryonic_MZp-500_MChi-1_13TeV	-d lists_25ns_v80X_v1/MC
 python extractJSONS.py -i datasets/datasets_80X_sig_v1.json		-o ZpBaryonic_MZp-100_MChi-10_13TeV	-d lists_25ns_v80X_v1/MC
-python extractJSONS.py -i datasets/datasets_80X_sig_v1.json		-o ZpBaryonic_MZp-10_MChi-1_13TeV	-d lists_25ns_v80X_v1/MC
+python extractJSONS.py -i datasets/datasets_80X_sig_v1.json		-o ZpBaryonic_MZp-10_MChi-10_13TeV	-d lists_25ns_v80X_v1/MC
 
 
 

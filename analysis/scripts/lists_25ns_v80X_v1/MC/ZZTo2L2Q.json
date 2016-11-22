@@ -1,308 +1,308 @@
     "/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1-5479e19cb05692d35246fcaaeee1d67e/USER": {
         "files": [
             {
+                "bad": false, 
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_1.root", 
-                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_1.root", 
-                "nevents": 194733
-            }, 
-            {
+                "nevents": 194733, 
+                "totEvents": 194733, 
+                "weights": 991253.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_10.root", 
-                "nevents": 195404
-            }, 
-            {
+                "nevents": 195404, 
+                "totEvents": 195404, 
+                "weights": 987839.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_11.root", 
-                "nevents": 219747
-            }, 
-            {
+                "nevents": 219747, 
+                "totEvents": 219747, 
+                "weights": 1115872.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_12.root", 
-                "nevents": 203266
-            }, 
-            {
+                "nevents": 203266, 
+                "totEvents": 203266, 
+                "weights": 1034253.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_13.root", 
-                "nevents": 191239
-            }, 
-            {
+                "nevents": 191239, 
+                "totEvents": 191239, 
+                "weights": 966342.4375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_14.root", 
-                "nevents": 216856
-            }, 
-            {
+                "nevents": 216856, 
+                "totEvents": 216856, 
+                "weights": 1098893.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_15.root", 
-                "nevents": 197423
-            }, 
-            {
+                "nevents": 197423, 
+                "totEvents": 197423, 
+                "weights": 997103.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_16.root", 
-                "nevents": 191915
-            }, 
-            {
+                "nevents": 191915, 
+                "totEvents": 191915, 
+                "weights": 970086.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_17.root", 
-                "nevents": 211675
-            }, 
-            {
+                "nevents": 211675, 
+                "totEvents": 211675, 
+                "weights": 1074520.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_18.root", 
-                "nevents": 215655
-            }, 
-            {
+                "nevents": 215655, 
+                "totEvents": 215655, 
+                "weights": 1095910.875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_19.root", 
-                "nevents": 226858
-            }, 
-            {
+                "nevents": 226858, 
+                "totEvents": 226858, 
+                "weights": 1152265.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_2.root", 
-                "nevents": 202773
-            }, 
-            {
+                "nevents": 202773, 
+                "totEvents": 202773, 
+                "weights": 1033810.6875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_20.root", 
-                "nevents": 206566
-            }, 
-            {
+                "nevents": 206566, 
+                "totEvents": 206566, 
+                "weights": 1050372.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_21.root", 
-                "nevents": 183120
-            }, 
-            {
+                "nevents": 183120, 
+                "totEvents": 183120, 
+                "weights": 924580.125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_22.root", 
-                "nevents": 196226
-            }, 
-            {
+                "nevents": 196226, 
+                "totEvents": 196226, 
+                "weights": 990602.875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_23.root", 
-                "nevents": 210278
-            }, 
-            {
+                "nevents": 210278, 
+                "totEvents": 210278, 
+                "weights": 1066508.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_24.root", 
-                "nevents": 216334
-            }, 
-            {
+                "nevents": 216334, 
+                "totEvents": 216334, 
+                "weights": 1101094.875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_25.root", 
-                "nevents": 213530
-            }, 
-            {
+                "nevents": 213530, 
+                "totEvents": 213530, 
+                "weights": 1083881.25
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_26.root", 
-                "nevents": 213927
-            }, 
-            {
+                "nevents": 213927, 
+                "totEvents": 213927, 
+                "weights": 1086091.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_27.root", 
-                "nevents": 195359
-            }, 
-            {
+                "nevents": 195359, 
+                "totEvents": 195359, 
+                "weights": 988264.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_28.root", 
-                "nevents": 225838
-            }, 
-            {
+                "nevents": 225838, 
+                "totEvents": 225838, 
+                "weights": 1147396.25
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_29.root", 
-                "nevents": 184592
-            }, 
-            {
+                "nevents": 184592, 
+                "totEvents": 184592, 
+                "weights": 931282.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_3.root", 
-                "nevents": 191567
-            }, 
-            {
+                "nevents": 191567, 
+                "totEvents": 191567, 
+                "weights": 967194.6875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_30.root", 
-                "nevents": 200087
-            }, 
-            {
+                "nevents": 200087, 
+                "totEvents": 200087, 
+                "weights": 1010313.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_31.root", 
-                "nevents": 200186
-            }, 
-            {
+                "nevents": 200186, 
+                "totEvents": 200186, 
+                "weights": 1017329.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_32.root", 
-                "nevents": 198953
-            }, 
-            {
+                "nevents": 198953, 
+                "totEvents": 198953, 
+                "weights": 1011440.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_33.root", 
-                "nevents": 220891
-            }, 
-            {
+                "nevents": 220891, 
+                "totEvents": 220891, 
+                "weights": 1121979.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_34.root", 
-                "nevents": 189612
-            }, 
-            {
+                "nevents": 189612, 
+                "totEvents": 189612, 
+                "weights": 960644.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_35.root", 
-                "nevents": 206015
-            }, 
-            {
+                "nevents": 206015, 
+                "totEvents": 206015, 
+                "weights": 1049963.125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_36.root", 
-                "nevents": 207580
-            }, 
-            {
+                "nevents": 207580, 
+                "totEvents": 207580, 
+                "weights": 1055130.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_37.root", 
-                "nevents": 189594
-            }, 
-            {
+                "nevents": 189594, 
+                "totEvents": 189594, 
+                "weights": 957415.3125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_38.root", 
-                "nevents": 197050
-            }, 
-            {
+                "nevents": 197050, 
+                "totEvents": 197050, 
+                "weights": 998959.9375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_39.root", 
-                "nevents": 197203
-            }, 
-            {
+                "nevents": 197203, 
+                "totEvents": 197203, 
+                "weights": 1000895.9375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_4.root", 
-                "nevents": 206749
-            }, 
-            {
+                "nevents": 206749, 
+                "totEvents": 206749, 
+                "weights": 1047664.875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_40.root", 
-                "nevents": 213170
-            }, 
-            {
+                "nevents": 213170, 
+                "totEvents": 213170, 
+                "weights": 1080040.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_41.root", 
-                "nevents": 213264
-            }, 
-            {
+                "nevents": 213264, 
+                "totEvents": 213264, 
+                "weights": 1082371.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_42.root", 
-                "nevents": 225111
-            }, 
-            {
+                "nevents": 225111, 
+                "totEvents": 225111, 
+                "weights": 1144029.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_43.root", 
-                "nevents": 195867
-            }, 
-            {
+                "nevents": 195867, 
+                "totEvents": 195867, 
+                "weights": 991847.6875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_44.root", 
-                "nevents": 203649
-            }, 
-            {
+                "nevents": 203649, 
+                "totEvents": 203649, 
+                "weights": 1034052.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_45.root", 
-                "nevents": 214438
-            }, 
-            {
+                "nevents": 214438, 
+                "totEvents": 214438, 
+                "weights": 1089603.25
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_46.root", 
-                "nevents": 202740
-            }, 
-            {
+                "nevents": 202740, 
+                "totEvents": 202740, 
+                "weights": 1027887.9375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_47.root", 
-                "nevents": 213405
-            }, 
-            {
+                "nevents": 213405, 
+                "totEvents": 213405, 
+                "weights": 1083857.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_48.root", 
-                "nevents": 194230
-            }, 
-            {
+                "nevents": 194230, 
+                "totEvents": 194230, 
+                "weights": 982743.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_49.root", 
-                "nevents": 200176
-            }, 
-            {
+                "nevents": 200176, 
+                "totEvents": 200176, 
+                "weights": 1013375.5625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_5.root", 
-                "nevents": 203700
-            }, 
-            {
+                "nevents": 203700, 
+                "totEvents": 203700, 
+                "weights": 1034156.9375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_50.root", 
-                "nevents": 183114
-            }, 
-            {
+                "nevents": 183114, 
+                "totEvents": 183114, 
+                "weights": 929932.875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_51.root", 
-                "nevents": 207501
-            }, 
-            {
+                "nevents": 207501, 
+                "totEvents": 207501, 
+                "weights": 1054864.625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_52.root", 
-                "nevents": 195740
-            }, 
-            {
+                "nevents": 195740, 
+                "totEvents": 195740, 
+                "weights": 994331.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_53.root", 
-                "nevents": 221386
-            }, 
-            {
+                "nevents": 221386, 
+                "totEvents": 221386, 
+                "weights": 1124140.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_54.root", 
-                "nevents": 201273
-            }, 
-            {
+                "nevents": 201273, 
+                "totEvents": 201273, 
+                "weights": 1022640.9375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_55.root", 
-                "nevents": 204189
-            }, 
-            {
+                "nevents": 204189, 
+                "totEvents": 204189, 
+                "weights": 1035835.5625
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_56.root", 
-                "nevents": 214557
-            }, 
-            {
+                "nevents": 214557, 
+                "totEvents": 214557, 
+                "weights": 1087923.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_57.root", 
-                "nevents": 221940
-            }, 
-            {
+                "nevents": 221940, 
+                "totEvents": 221940, 
+                "weights": 1128431.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_58.root", 
-                "nevents": 196363
-            }, 
-            {
+                "nevents": 196363, 
+                "totEvents": 196363, 
+                "weights": 999948.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_59.root", 
-                "nevents": 200943
-            }, 
-            {
+                "nevents": 200943, 
+                "totEvents": 200943, 
+                "weights": 1020069.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_6.root", 
-                "nevents": 227801
-            }, 
-            {
+                "nevents": 227801, 
+                "totEvents": 227801, 
+                "weights": 1159458.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_60.root", 
-                "nevents": 209993
-            }, 
-            {
+                "nevents": 209993, 
+                "totEvents": 209993, 
+                "weights": 1070037.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_61.root", 
-                "nevents": 198919
-            }, 
-            {
+                "nevents": 198919, 
+                "totEvents": 198919, 
+                "weights": 1010828.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_62.root", 
-                "nevents": 200762
-            }, 
-            {
+                "nevents": 200762, 
+                "totEvents": 200762, 
+                "weights": 1017667.3125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_63.root", 
-                "nevents": 182124
-            }, 
-            {
+                "nevents": 182124, 
+                "totEvents": 182124, 
+                "weights": 922410.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_64.root", 
-                "nevents": 191050
-            }, 
-            {
+                "nevents": 191050, 
+                "totEvents": 191050, 
+                "weights": 966592.3125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_65.root", 
-                "nevents": 202163
-            }, 
-            {
+                "nevents": 202163, 
+                "totEvents": 202163, 
+                "weights": 1021565.0
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_66.root", 
-                "nevents": 219678
-            }, 
-            {
+                "nevents": 219678, 
+                "totEvents": 219678, 
+                "weights": 1112215.375
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_67.root", 
-                "nevents": 217486
-            }, 
-            {
+                "nevents": 217486, 
+                "totEvents": 217486, 
+                "weights": 1104437.125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_68.root", 
-                "nevents": 212833
-            }, 
-            {
+                "nevents": 212833, 
+                "totEvents": 212833, 
+                "weights": 1079839.875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_69.root", 
-                "nevents": 194256
-            }, 
-            {
+                "nevents": 194256, 
+                "totEvents": 194256, 
+                "weights": 987146.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_7.root", 
-                "nevents": 173919
-            }, 
-            {
+                "nevents": 173919, 
+                "totEvents": 173919, 
+                "weights": 888138.3125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_70.root", 
-                "nevents": 195363
-            }, 
-            {
+                "nevents": 195363, 
+                "totEvents": 195363, 
+                "weights": 991542.8125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_71.root", 
-                "nevents": 205622
-            }, 
-            {
+                "nevents": 205622, 
+                "totEvents": 205622, 
+                "weights": 1041244.3125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_72.root", 
-                "nevents": 200732
-            }, 
-            {
+                "nevents": 200732, 
+                "totEvents": 200732, 
+                "weights": 1019403.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_73.root", 
-                "nevents": 191072
-            }, 
-            {
+                "nevents": 191072, 
+                "totEvents": 191072, 
+                "weights": 969757.8125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_74.root", 
-                "nevents": 201067
-            }, 
-            {
+                "nevents": 201067, 
+                "totEvents": 201067, 
+                "weights": 1016726.6875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_75.root", 
-                "nevents": 212406
-            }, 
-            {
+                "nevents": 212406, 
+                "totEvents": 212406, 
+                "weights": 1076987.5
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_76.root", 
-                "nevents": 193280
-            }, 
-            {
+                "nevents": 193280, 
+                "totEvents": 193280, 
+                "weights": 979866.6875
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_8.root", 
-                "nevents": 217046
-            }, 
-            {
+                "nevents": 217046, 
+                "totEvents": 217046, 
+                "weights": 1098459.125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161120_090657/0000/myMicroAODOutputFile_9.root", 
-                "nevents": 205452
-            }
-        ]
+                "nevents": 205452, 
+                "totEvents": 205452, 
+                "weights": 1045197.625

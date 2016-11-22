@@ -1,20 +1,20 @@
     "/VBFHToGG_M-125_13TeV_powheg_pythia8/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1-a78115531d8fd61bb1a3175dd4220f0e/USER": {
         "files": [
             {
+                "bad": false, 
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161116_143112/0000/myMicroAODOutputFile_1.root", 
-                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161116_143112/0000/myMicroAODOutputFile_1.root", 
-                "nevents": 162295
-            }, 
-            {
+                "nevents": 162295, 
+                "totEvents": 162295, 
+                "weights": 606704.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161116_143112/0000/myMicroAODOutputFile_4.root", 
-                "nevents": 195145
-            }, 
-            {
+                "nevents": 195145, 
+                "totEvents": 195145, 
+                "weights": 729519.75
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161116_143112/0000/myMicroAODOutputFile_5.root", 
-                "nevents": 203065
-            }, 
-            {
+                "nevents": 203065, 
+                "totEvents": 203065, 
+                "weights": 758972.8125
                 "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161116_143112/0000/myMicroAODOutputFile_6.root", 
-                "nevents": 46925
-            }
-        ]
+                "nevents": 46925, 
+                "totEvents": 46925, 
+                "weights": 175423.96875

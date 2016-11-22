@@ -5,8 +5,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC  = False;
-isSMh = False;
+isMC  = True;
+isSMh = True;
 is80X = True;
 is76X = False;
 isFLASHgg_1_1_0 = False;
@@ -52,17 +52,12 @@ else:
 
 #-----------------------------------
 # Pick up Trigger Info
-if (is80X):
-    if (isSMh):
-        bit = 'TriggerResults::HLT2'
-        print "Using HLT2"
-    else:
-        bit = 'TriggerResults::HLT'
-        print "Using HLT" 
+if (is80X and isSMh):
+    bit = 'TriggerResults::HLT2'
+    print "Using HLT2"
 else:
     bit = 'TriggerResults::HLT'
     print "Using HLT"
-
 
 if (isMC and isFLASHgg_1_1_0):
     flag = 'TriggerResults::PAT'
