@@ -1,5 +1,5 @@
 #! /bin/sh
-#run extractJSONS.py for all samples in file
+#run extractFilesAndWeight.py for all samples in file
 
 ## FLASHgg version 80X for 25ns
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/DoubleEG.json		-o DoubleEG			-d lists_25ns_v80X_v1
@@ -38,6 +38,40 @@ python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-300.j
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-300.json	-o 2HDM_MZp-1700_MA0-300	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-300.json	-o 2HDM_MZp-2000_MA0-300	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-300.json	-o 2HDM_MZp-2500_MA0-300	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-600_MA0-400.json	-o 2HDM_MZp-600_MA0-400		-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-800_MA0-400.json	-o 2HDM_MZp-800_MA0-400		-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1000_MA0-400.json	-o 2HDM_MZp-1000_MA0-400	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1200_MA0-400.json	-o 2HDM_MZp-1200_MA0-400	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-400.json	-o 2HDM_MZp-1400_MA0-400	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-400.json	-o 2HDM_MZp-1700_MA0-400	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-400.json	-o 2HDM_MZp-2000_MA0-400	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-400.json	-o 2HDM_MZp-2500_MA0-400	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-800_MA0-500.json  	-o 2HDM_MZp-800_MA0-500		-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1000_MA0-500.json	-o 2HDM_MZp-1000_MA0-500	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1200_MA0-500.json	-o 2HDM_MZp-1200_MA0-500	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-500.json	-o 2HDM_MZp-1400_MA0-500	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-500.json	-o 2HDM_MZp-1700_MA0-500	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-500.json	-o 2HDM_MZp-2000_MA0-500	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-500.json	-o 2HDM_MZp-2500_MA0-500	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-800_MA0-600 .json  	-o 2HDM_MZp-800_MA0-600		-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1000_MA0-600.json	-o 2HDM_MZp-1000_MA0-600	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1200_MA0-600.json	-o 2HDM_MZp-1200_MA0-600	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-600.json	-o 2HDM_MZp-1400_MA0-600	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-600.json	-o 2HDM_MZp-1700_MA0-600	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-600.json	-o 2HDM_MZp-2000_MA0-600	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-600.json	-o 2HDM_MZp-2500_MA0-600	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1000_MA0-700.json	-o 2HDM_MZp-1000_MA0-700	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1200_MA0-700.json	-o 2HDM_MZp-1200_MA0-700	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-700.json	-o 2HDM_MZp-1400_MA0-700	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-700.json	-o 2HDM_MZp-1700_MA0-700	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-700.json	-o 2HDM_MZp-2000_MA0-700	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-700.json	-o 2HDM_MZp-2500_MA0-700	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1000_MA0-800.json	-o 2HDM_MZp-1000_MA0-800	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1200_MA0-800.json	-o 2HDM_MZp-1200_MA0-800	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-800.json	-o 2HDM_MZp-1400_MA0-800	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-800.json	-o 2HDM_MZp-1700_MA0-800	-d lists_25ns_v80X_v1
+#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-800.json	-o 2HDM_MZp-2000_MA0-800	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-800.json	-o 2HDM_MZp-2500_MA0-800	-d lists_25ns_v80X_v1
 
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-1000_MChi-1000_13TeV.json	-o ZpBaryonic_MZp-1000_MChi-1000_13TeV	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-1000_MChi-150_13TeV.json	-o ZpBaryonic_MZp-1000_MChi-150_13TeV	-d lists_25ns_v80X_v1
