@@ -58,7 +58,7 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["DYJetsToLL"]		= "DY + jets";
   fSampleTitleMap["DiPhoton"]		= "#gamma#gamma";
   fSampleTitleMap["GluGluHToGG"]	= "H #rightarrow #gamma#gamma (ggH)";
-  fSampleTitleMap["VH"]			= "V + H";
+  fSampleTitleMap["VHToGG"]		= "VH";
   fSampleTitleMap["ttHJetToGG"]		= "tt + H #rightarrow #gamma#gamma";
   fSampleTitleMap["VBFHToGG"]		= "VBF H #rightarrow #gamma#gamma";
   fSampleTitleMap["WGToLNuG"]		= "#gamma + W #rightarrow l #nu";
@@ -74,14 +74,14 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   //fSampleTitleMap["DMHtoGG_M1000"]	= "m_{#chi} = 1000 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1000 GeV";
   fSampleTitleMap["FakeData"]		= "FakeData";  
   fSampleTitleMap["FakeDataII"]		= "Test";
-  fSampleTitleMap["2HDM_mZP600"]	= "m_{Z'} = 600";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
-  fSampleTitleMap["2HDM_mZP800"]	= "m_{Z'} = 800";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
-  fSampleTitleMap["2HDM_mZP1000"]	= "m_{Z'} = 1000";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
-  fSampleTitleMap["2HDM_mZP1200"]	= "m_{Z'}=1200 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 10 GeV";
-  fSampleTitleMap["2HDM_mZP1400"]	= "m_{Z'}=1400 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 10 GeV";
-  fSampleTitleMap["2HDM_mZP1700"]	= "m_{Z'}=1700 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 100 GeV";
-  fSampleTitleMap["2HDM_mZP2000"]	= "m_{Z'}=2000 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1000 GeV";
-  fSampleTitleMap["2HDM_mZP2500"]	= "m_{Z'}=2500 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1000 GeV";
+  fSampleTitleMap["2HDM_mZP600_mA0300"]	= "m_{Z'} = 600";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
+  fSampleTitleMap["2HDM_mZP800_mA0300"]	= "m_{Z'} = 800";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
+  fSampleTitleMap["2HDM_mZP1000_mA0300"]= "m_{Z'} = 1000";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
+  fSampleTitleMap["2HDM_mZP1200_mA0300"]= "m_{Z'}=1200 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 10 GeV";
+  fSampleTitleMap["2HDM_mZP1400_mA0300"]= "m_{Z'}=1400 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 10 GeV";
+  fSampleTitleMap["2HDM_mZP1700_mA0300"]= "m_{Z'}=1700 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 100 GeV";
+  fSampleTitleMap["2HDM_mZP2000_mA0300"]= "m_{Z'}=2000 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1000 GeV";
+  fSampleTitleMap["2HDM_mZP2500_mA0300"]= "m_{Z'}=2500 GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1000 GeV";
   fSampleTitleMap["2HDM_mZP600_mA0400"]	= "m_{Z'}=600 (m_{A0}=400) GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
   fSampleTitleMap["2HDM_mZP800_mA0400"]	= "m_{Z'}=800 (m_{A0}=400) GeV";//#bar{#chi}#chi HH ,m_{#chi} = 1 GeV";
 
@@ -142,7 +142,11 @@ void Combiner::DoComb(){
       }
     //}// end if ndata>0
 
+    // ---------------------------------
+    // scale to the integral of the data
+    // ---------------------------------
     Double_t data_integral = fOutDataTH1DHists[th1d]->Integral();
+    if (fTH1DNames[th1d]=="mgg_IsolateALL") data_integral += (10*100); // temp hack FIXME
     TH1D *allBkgHisto;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       if (mc==0) allBkgHisto = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone(); 
@@ -150,15 +154,17 @@ void Combiner::DoComb(){
     }
     Double_t bkg_integral = allBkgHisto->Integral();
     Double_t new_integral = data_integral/bkg_integral;
-    std::cout << fTH1DNames[th1d] << " Data = " << data_integral << " new = " <<  new_integral << std::endl;
+    //std::cout << fTH1DNames[th1d] << " Data = " << data_integral << " new = " <<  new_integral << std::endl;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
      if (new_integral > 0) fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
     }
     delete allBkgHisto;
  
+    // ---------------------------------
     // Because QCD has some events with very large weights
     // Copy the GJets histo, weight it by the QCD integral 
     // and use it for QCD distribution instead.
+    // ---------------------------------
     Double_t qcd_integral = 0;
     Double_t gjets_integral = 0;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -208,11 +214,12 @@ void Combiner::DoComb(){
 	  fOutEWK2phoBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
 	}
 	// add DY + ZJets bkgs together
-	if (fBkgNames[mc]=="ZJets"){
-	  fOutDYJetsBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
-        }
+	//if (fBkgNames[mc]=="ZJets"){
+	//  fOutDYJetsBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+        //}
 	else if (fBkgNames[mc]=="DYJetsToLL"){
-	  fOutDYJetsBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
+	  fOutDYJetsBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
+	//  fOutDYJetsBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
  	}
 	// add QCD + GJet bkgs togetehr
 	if (fBkgNames[mc]=="QCD"){
@@ -243,7 +250,7 @@ void Combiner::DoComb(){
       if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
       if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
       if (fBkgNames[mc] == "ttHJetToGG")  i_tth = mc;
-      if (fBkgNames[mc] == "VH")	  i_vh  = mc;
+      if (fBkgNames[mc] == "VHToGG")	  i_vh  = mc;
     }
 
     // bkg : copy histos and add to stacks (here *)
@@ -326,31 +333,31 @@ void Combiner::DoComb(){
       fOutTableTxtFile2.open(Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()));
 
       TStrMap fLatexSampleTitleMap;
-      fLatexSampleTitleMap["QCD"] 		= "QCD";
-      fLatexSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
-      fLatexSampleTitleMap["VH"]		= "V + H";
-      fLatexSampleTitleMap["DYJetsToLL"]	= "Drell-Yan + Jets";
-      fLatexSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
-      fLatexSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
-      fLatexSampleTitleMap["ttHJetToGG"]	= "tt $+ H \\rightarrow \\gamma\\gamma$";
-      fLatexSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
-      fLatexSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
-      fLatexSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
-      fLatexSampleTitleMap["ZJets"]		= "Z $\\rightarrow \\nu \\nu$ + Jets";
-      fLatexSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu \\nu$";
-      fLatexSampleTitleMap["TTGG_0Jets"]	= "tt + $\\gamma \\gamma$";
-      fLatexSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
-      fLatexSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
-      fLatexSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP1000"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP1200"]	= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP1400"]	= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP600_mA0400"]= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
-      fLatexSampleTitleMap["2HDM_mZP800_mA0400"]= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
+      fLatexSampleTitleMap["QCD"] 			= "QCD";
+      fLatexSampleTitleMap["GJets"]			= "$\\gamma$ + Jets";
+      fLatexSampleTitleMap["VHToGG"]			= "V + H";
+      fLatexSampleTitleMap["DYJetsToLL"]		= "Drell-Yan + Jets";
+      fLatexSampleTitleMap["GluGluHToGG"]		= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
+      fLatexSampleTitleMap["DiPhoton"]			= "$\\gamma\\gamma$";
+      fLatexSampleTitleMap["ttHJetToGG"]		= "tt $+ H \\rightarrow \\gamma\\gamma$";
+      fLatexSampleTitleMap["VBFHToGG"]			= "VBF $H \\rightarrow \\gamma\\gamma$";
+      fLatexSampleTitleMap["WGToLNuG"]			= "$\\gamma$ + W $\\rightarrow l \\nu$";
+      fLatexSampleTitleMap["ZGTo2LG"]			= "$\\gamma$ + Z $\\rightarrow ll$";
+      fLatexSampleTitleMap["ZJets"]			= "Z $\\rightarrow \\nu \\nu$ + Jets";
+      fLatexSampleTitleMap["ZZTo2L2Nu"]			= "Z + Z $\\rightarrow ll \\nu \\nu$";
+      fLatexSampleTitleMap["TTGG_0Jets"]		= "tt + $\\gamma \\gamma$";
+      fLatexSampleTitleMap["TTGJets"]			= "tt + $\\gamma$ + Jets";
+      fLatexSampleTitleMap["TGJets"]			= "t + $\\gamma$ + Jets";
+      fLatexSampleTitleMap["2HDM_mZP600_mA0300"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP800_mA0300"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1000_mA0300"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1200_mA0300"]	= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1400_mA0300"]	= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP1700_mA0300"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP2000_mA0300"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP2500_mA0300"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
+      fLatexSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
 
       UInt_t sbbin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
       UInt_t sbbin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(120.);
@@ -476,36 +483,36 @@ void Combiner::DoComb(){
       Float_t fTotalBkgEfficiency = 0.;
       for (UInt_t mc = 0; mc < fNBkg; mc++){
         if (addText!="_n-1"){
-	  std::cout << " *** " << fBkgNames[mc] << " *** " << std::endl;
-          //std::cout << "Events in MET tail of CorrMET + ALL Iso = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
-          //std::cout << "Events in all MET  of CorrMET + ALL Iso = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
-          //std::cout << "Efficiency                              = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi
-	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) >= 0 && fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) >= 0){
-	    std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
-	    std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
-	    std::cout << "Efficiency 				= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
-	  }
-	  else std::cout << "Events in distributions is less than 0." << std::endl;
-	  // sum all backgrounds to get overall efficiency 
+	  //std::cout << " *** " << fBkgNames[mc] << " *** " << std::endl;
+          ////std::cout << "Events in MET tail of CorrMET + ALL Iso = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
+          ////std::cout << "Events in all MET  of CorrMET + ALL Iso = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+          ////std::cout << "Efficiency                              = " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi
+	  //if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) >= 0 && fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) >= 0){
+	  //  std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) << std::endl;
+	  //  std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+	  //  std::cout << "Efficiency 				= " << fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi)/fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) << std::endl;
+	  //}
+	  //else std::cout << "Events in distributions is less than 0." << std::endl;
+	  //// sum all backgrounds to get overall efficiency 
 	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi) > 0) fTotalBkgInt_metCUT  += fInBkgTH1DHists[th1d][mc]->Integral(binMETlo,binMEThi); 
 	  if (fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi) > 0) fTotalBkgInt_metall += fInBkgTH1DHists[th1d][mc]->Integral(binMETze,binMEThi); 
 	}
       }
 
-      // efficiency for data
-      Float_t fDataEfficiency = fOutDataTH1DHists[th1d]->Integral(binMETlo,binMEThi)/fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi); 
-      std::cout << " *** Data *** " << std::endl; 
-      std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETlo,binMEThi) << std::endl;
-      std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi) << std::endl;
-      std::cout << "Efficiency 					= " << fDataEfficiency << std::endl; 
-      // efficiency for total bkg MC
-      fTotalBkgEfficiency = fTotalBkgInt_metCUT/fTotalBkgInt_metall;
-      std::cout << " *** Total Bkg *** " << std::endl;
-      std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fTotalBkgInt_metCUT  << std::endl;
-      std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fTotalBkgInt_metall << std::endl;
-      std::cout << "Efficiency 				= " << fTotalBkgEfficiency << std::endl; 
-      // ratio of eff data/ eff bkg MC 
-      std::cout << " *** Scale Factor = " << fDataEfficiency/fTotalBkgEfficiency << " *** " << std::endl; 
+      //// efficiency for data
+      //Float_t fDataEfficiency = fOutDataTH1DHists[th1d]->Integral(binMETlo,binMEThi)/fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi); 
+      //std::cout << " *** Data *** " << std::endl; 
+      //std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETlo,binMEThi) << std::endl;
+      //std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fOutDataTH1DHists[th1d]->Integral(binMETze,binMEThi) << std::endl;
+      //std::cout << "Efficiency 					= " << fDataEfficiency << std::endl; 
+      //// efficiency for total bkg MC
+      //fTotalBkgEfficiency = fTotalBkgInt_metCUT/fTotalBkgInt_metall;
+      //std::cout << " *** Total Bkg *** " << std::endl;
+      //std::cout << "Events in MET tail of CorrMET + ALL Iso	= " << fTotalBkgInt_metCUT  << std::endl;
+      //std::cout << "Events in all MET  of CorrMET + ALL Iso	= " << fTotalBkgInt_metall << std::endl;
+      //std::cout << "Efficiency 				= " << fTotalBkgEfficiency << std::endl; 
+      //// ratio of eff data/ eff bkg MC 
+      //std::cout << " *** Scale Factor = " << fDataEfficiency/fTotalBkgEfficiency << " *** " << std::endl; 
 
     }
 
@@ -557,7 +564,7 @@ void Combiner::DoComb(){
       else fTH1DLegends[th1d]->AddEntry(fOutDYJetsBkgTH1DHists[th1d],fSampleTitleMap["DYJetsToLL"],"l");
 
       for (UInt_t mc = 0; mc < fNBkg; mc++){
-	if (fBkgNames[mc]=="VH"){
+	if (fBkgNames[mc]=="VHToGG"){
           if (doStack) fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"f");
           else fTH1DLegends[th1d]->AddEntry(fInBkgTH1DHists[th1d][mc],fSampleTitleMap[fBkgNames[mc]],"l");
 	}
@@ -635,7 +642,7 @@ void Combiner::DoComb(){
   //  if (addText!="_n-1") Combiner::PhotonIDEfficiencies(mc,1);
   //}
 
-  if (addText!="_n-1") Combiner::VtxEfficiencies();
+  //if (addText!="_n-1") Combiner::VtxEfficiencies();
  
   // look at the MET efficiencies after different corrections
   if (addText!="_n-1") Combiner::FindMETEfficiencies();
@@ -847,7 +854,7 @@ void Combiner::FindMETEfficiencies(){
   TStrMap fSampleTitleMap;
   fSampleTitleMap["QCD"] 		= "QCD";
   fSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
-  fSampleTitleMap["VH"]			= "V + H";
+  fSampleTitleMap["VHToGG"]		= "V + H";
   fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
   fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
   fSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
@@ -860,14 +867,14 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["TTGJets"]		= "tt + $\\gamma$ + Jets";
   fSampleTitleMap["TTGG_0Jets"]		= "tt + $\\gamma\\gamma$";
   fSampleTitleMap["TGJets"]		= "t + $\\gamma$ + Jets";
-  fSampleTitleMap["2HDM_mZP600"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP800"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP1000"]	= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP1200"]	= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP1400"]	= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP600_mA0300"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP800_mA0300"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1000_mA0300"]= "2HDM, $m_{Z'} = 1000 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1200_mA0300"]= "2HDM, $m_{Z'} = 1200 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1400_mA0300"]= "2HDM, $m_{Z'} = 1400 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP1700_mA0300"]= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP2000_mA0300"]= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
+  fSampleTitleMap["2HDM_mZP2500_mA0300"]= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
   fSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
 
@@ -1413,7 +1420,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
   //minOverlay = Combiner::GetMinimum(th1d, false);  
 
   // start by drawing the sig first
-  if (isLogY) fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1E2);
+  if (isLogY) fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1E3);
   else fInSigTH1DHists[th1d][0]->SetMaximum(maxOverlay*1.4);
 
   //fInSigTH1DHists[th1d][0]->SetMinimum(0.0);
@@ -1428,7 +1435,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     if (fBkgNames[mc] == "GJets")	i_gj  = mc;
     if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
     if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
-    if (fBkgNames[mc] == "VH")		i_vh  = mc;
+    if (fBkgNames[mc] == "VHToGG")	i_vh  = mc;
   }
 
   if (fTH1DNames[th1d]=="metCorr_forShape"){
@@ -1577,7 +1584,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     if (fBkgNames[mc] == "GluGluHToGG") i_hgg = mc;
     if (fBkgNames[mc] == "VBFHToGG")    i_vbf = mc;
     if (fBkgNames[mc] == "ttHJetToGG")	i_tth = mc;
-    if (fBkgNames[mc] == "VH")		i_vh  = mc;
+    if (fBkgNames[mc] == "VHToGG")	i_vh  = mc;
   }
   Double_t dataInt = 0;
 
@@ -1619,7 +1626,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
     fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
     if (isLogY){
-      if (fTH1DNames[th1d]=="mgg_IsolateALL") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*4E1);
+      if (fTH1DNames[th1d]=="mgg_IsolateALL") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*9E1);
       else if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E1);
       else fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E2);
       if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->SetMinimum(0.5E-2);
@@ -1631,8 +1638,10 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     }
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitleSize(0.07);
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitleOffset(0.8);
-    fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitleFont(22);
-    fInSigTH1DHists[th1d][0]->GetYaxis()->SetLabelFont(22);
+    if (fTH1DNames[th1d]=="mgg_IsolateALL")     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("Events/[2 GeV]");
+    if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("Events/[5 GeV]");
+    fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitleFont(42);
+    fInSigTH1DHists[th1d][0]->GetYaxis()->SetLabelFont(42);
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetLabelSize(0.07);
 
     fInSigTH1DHists[th1d][0]->Draw("HIST");
@@ -1649,6 +1658,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     }
 
     for (UInt_t mc = 0; mc < fNSig; mc++){
+      fInSigTH1DHists[th1d][mc]->SetLineStyle(8); 
       fInSigTH1DHists[th1d][mc]->Draw("HIST SAME");
       if ( mc == fNSig-1 ){ // on last draw redraw axis because they are overwritten by stack
         fInSigTH1DHists[th1d][mc]->Draw("AXIS SAME");
@@ -1682,18 +1692,18 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   l1->SetNDC(kTRUE);
   l1->SetTextFont(62);
  
-  //TLatex *l2 = new TLatex(0.72,0.98,latexname); // to have right aligned
-  TLatex *l2 = new TLatex(0.65,0.98,latexname);   // to match Hbb
+  TLatex *l2 = new TLatex(0.73,0.98,latexname); // to have right aligned
+  //TLatex *l2 = new TLatex(0.65,0.98,latexname);   // to match Hbb
   l2->SetTextSize(0.034);
   l2->SetTextAlign(12);
   l2->SetNDC(kTRUE);
-  l2->SetTextFont(62);
+  l2->SetTextFont(42);
 
   TLatex *l3 = new TLatex(0.17,0.88,latexHgg);
   l3->SetTextSize(0.036);
   l3->SetTextAlign(12);
   l3->SetNDC(kTRUE);
-  l3->SetTextFont(62);
+  l3->SetTextFont(42);
 
   l1->Draw("same");
   l2->Draw("same");
@@ -1721,10 +1731,10 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetLabelSize(0.157);
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetTitleSize(0.16);
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetTitleOffset(1.02);;
-    fOutRatioTH1DHists[th1d]->GetXaxis()->SetTitleFont(22);
+    fOutRatioTH1DHists[th1d]->GetXaxis()->SetTitleFont(42);
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetTickLength(0.07);
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetTickSize(0.11);
-    fOutRatioTH1DHists[th1d]->GetXaxis()->SetLabelFont(22);
+    fOutRatioTH1DHists[th1d]->GetXaxis()->SetLabelFont(42);
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetMoreLogLabels(); 
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetNoExponent();
     fOutRatioTH1DHists[th1d]->GetXaxis()->SetNdivisions(508);
@@ -1732,9 +1742,9 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     fOutRatioTH1DHists[th1d]->GetYaxis()->SetLabelSize(0.15);
     fOutRatioTH1DHists[th1d]->GetYaxis()->SetTitleSize(0.14);
     fOutRatioTH1DHists[th1d]->GetYaxis()->SetTitleOffset(0.38);
-    fOutRatioTH1DHists[th1d]->GetYaxis()->SetTitleFont(22);
+    fOutRatioTH1DHists[th1d]->GetYaxis()->SetTitleFont(42);
     fOutRatioTH1DHists[th1d]->GetYaxis()->CenterTitle();
-    fOutRatioTH1DHists[th1d]->GetYaxis()->SetLabelFont(22);
+    fOutRatioTH1DHists[th1d]->GetYaxis()->SetLabelFont(42);
 
     fOutRatioTH1DHistsCopy[th1d]->Draw("E2 SAME");
     fOutRatioTH1DHists[th1d]->Draw("EP SAME");
@@ -1745,7 +1755,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   ratioleg->SetFillColor(0);
   ratioleg->SetLineColor(0);
   ratioleg->SetShadowColor(0);
-  ratioleg->SetTextFont(62);
+  ratioleg->SetTextFont(42);
   ratioleg->SetTextSize(0.09);
   ratioleg->SetBorderSize(1);
   //ratioleg->SetNColumns(2);
@@ -1754,18 +1764,18 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
 
 
   if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg_IsolateALL_pt1" || fTH1DNames[th1d]=="mgg_IsolateALL_pt2" || fTH1DNames[th1d]=="mgg_IsolateALL_ptgg" || fTH1DNames[th1d]=="mgg_IsolateALL_woPtgg" || fTH1DNames[th1d]=="mgg_IsolateALL_wPtgg"){
-    std::cout << " ----------------------------------------------------- " << std::endl;
-    std::cout << "Histogram Name = " << fTH1DNames[th1d] << std::endl;
-    std::cout << "Data Total = " << fInDataTH1DHists[th1d][0]->Integral() << std::endl; 
+    //std::cout << " ----------------------------------------------------- " << std::endl;
+    //std::cout << "Histogram Name = " << fTH1DNames[th1d] << std::endl;
+    //std::cout << "Data Total = " << fInDataTH1DHists[th1d][0]->Integral() << std::endl; 
     Double_t BkgIntegral = 0.;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
-      std::cout << fBkgNames[mc] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() << std::endl;
+      //std::cout << fBkgNames[mc] << " = " << fInBkgTH1DHists[th1d][mc]->Integral() << std::endl;
       BkgIntegral += fInBkgTH1DHists[th1d][mc]->Integral();
     }
-    std::cout << "QCD Reweight = " << GJetsClone[th1d]->Integral() << std::endl;
-    std::cout << "Bkg Total = " << BkgIntegral << std::endl;
-    std::cout << "Ratio Data/MC = " << fInDataTH1DHists[th1d][0]->Integral()/BkgIntegral << std::endl;
-    std::cout << " ----------------------------------------------------- " << std::endl;
+    ////std::cout << "QCD Reweight = " << GJetsClone[th1d]->Integral() << std::endl;
+    //std::cout << "Bkg Total = " << BkgIntegral << std::endl;
+    //std::cout << "Ratio Data/MC = " << fInDataTH1DHists[th1d][0]->Integral()/BkgIntegral << std::endl;
+    //std::cout << " ----------------------------------------------------- " << std::endl;
   }
 
   fOutTH1DCanvases[th1d]->Update();
@@ -1978,11 +1988,11 @@ void Combiner::InitCanvAndHists(){
     fTH1DLegends[th1d]->SetLineWidth(1);
     fTH1DLegends[th1d]->SetFillColor(0);
     fTH1DLegends[th1d]->SetFillStyle(0);
-    fTH1DLegends[th1d]->SetTextFont(62);
+    fTH1DLegends[th1d]->SetTextFont(42);
 
 
     fTH1DLegendsSig[th1d] = new TLegend(0.58,0.56,0.92,0.69); // (x1,y1,x2,y2)
-    fTH1DLegendsSig[th1d]->SetHeader("m_{A0} = 300 GeV with #sigma*BR = 1fb");
+    fTH1DLegendsSig[th1d]->SetHeader("m_{A0} = 300 GeV with #sigma = 1pb");
     fTH1DLegendsSig[th1d]->SetTextSize(0.036);
     fTH1DLegendsSig[th1d]->SetNColumns(2);
     fTH1DLegendsSig[th1d]->SetBorderSize(0);
@@ -1991,7 +2001,7 @@ void Combiner::InitCanvAndHists(){
     fTH1DLegendsSig[th1d]->SetLineWidth(1);
     fTH1DLegendsSig[th1d]->SetFillColor(0);
     fTH1DLegendsSig[th1d]->SetFillStyle(0);
-    fTH1DLegendsSig[th1d]->SetTextFont(62);
+    fTH1DLegendsSig[th1d]->SetTextFont(42);
   }
 
 
@@ -2107,20 +2117,20 @@ void Combiner::InitTH1DNames(){
     
     fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
-    fTH1DNames.push_back("JetEnUp");
-    fTH1DNames.push_back("JetEnDown");
-    fTH1DNames.push_back("JetResUp");
-    fTH1DNames.push_back("JetResDown");
-    fTH1DNames.push_back("MuonEnUp");
-    fTH1DNames.push_back("MuonEnDown");
-    fTH1DNames.push_back("EleEnUp");
-    fTH1DNames.push_back("EleEnDown");
-    fTH1DNames.push_back("TauEnUp");
-    fTH1DNames.push_back("TauEnDown");
-    fTH1DNames.push_back("PhoEnUp");
-    fTH1DNames.push_back("PhoEnDown");
-    fTH1DNames.push_back("UnclEnUp");
-    fTH1DNames.push_back("UnclEnDown");
+    //fTH1DNames.push_back("JetEnUp");
+    //fTH1DNames.push_back("JetEnDown");
+    //fTH1DNames.push_back("JetResUp");
+    //fTH1DNames.push_back("JetResDown");
+    //fTH1DNames.push_back("MuonEnUp");
+    //fTH1DNames.push_back("MuonEnDown");
+    //fTH1DNames.push_back("EleEnUp");
+    //fTH1DNames.push_back("EleEnDown");
+    //fTH1DNames.push_back("TauEnUp");
+    //fTH1DNames.push_back("TauEnDown");
+    //fTH1DNames.push_back("PhoEnUp");
+    //fTH1DNames.push_back("PhoEnDown");
+    //fTH1DNames.push_back("UnclEnUp");
+    //fTH1DNames.push_back("UnclEnDown");
 
     //fTH1DNames.push_back("ptJet1");
     //fTH1DNames.push_back("ptJet2");
@@ -2151,34 +2161,34 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("pt1_afterggMETCut");
     fTH1DNames.push_back("pt2_afterggMETCut");
 
-    fTH1DNames.push_back("met_afterJetCut");
-    fTH1DNames.push_back("metCorr_afterJetCut");
-    fTH1DNames.push_back("met_afterggMETCut");
-    fTH1DNames.push_back("metCorr_afterggMETCut");
-    fTH1DNames.push_back("met_aftergMETCut");
-    fTH1DNames.push_back("metCorr_aftergMETCut");
-    fTH1DNames.push_back("met_afterJetMETPhiCut");
-    fTH1DNames.push_back("metCorr_afterJetMETPhiCut");
-    fTH1DNames.push_back("met_womaxJetMET");
-    fTH1DNames.push_back("metCorr_womaxJetMET");
-    fTH1DNames.push_back("met_maxJetMET");
-    fTH1DNames.push_back("metCorr_maxJetMET");
-    fTH1DNames.push_back("met_minJetMET");
-    fTH1DNames.push_back("metCorr_minJetMET");
+    //fTH1DNames.push_back("met_afterJetCut");
+    //fTH1DNames.push_back("metCorr_afterJetCut");
+    //fTH1DNames.push_back("met_afterggMETCut");
+    //fTH1DNames.push_back("metCorr_afterggMETCut");
+    //fTH1DNames.push_back("met_aftergMETCut");
+    //fTH1DNames.push_back("metCorr_aftergMETCut");
+    //fTH1DNames.push_back("met_afterJetMETPhiCut");
+    //fTH1DNames.push_back("metCorr_afterJetMETPhiCut");
+    //fTH1DNames.push_back("met_womaxJetMET");
+    //fTH1DNames.push_back("metCorr_womaxJetMET");
+    //fTH1DNames.push_back("met_maxJetMET");
+    //fTH1DNames.push_back("metCorr_maxJetMET");
+    //fTH1DNames.push_back("met_minJetMET");
+    //fTH1DNames.push_back("metCorr_minJetMET");
 
-    fTH1DNames.push_back("jetInfo_CHfrac1");	
-    fTH1DNames.push_back("jetInfo_NHfrac1");	
-    fTH1DNames.push_back("jetInfo_NEMfrac1");
-    fTH1DNames.push_back("jetInfo_CEMfrac1");
-    fTH1DNames.push_back("jetInfo_PHfrac1");	
-    fTH1DNames.push_back("jetInfo_ELfrac1");
-    fTH1DNames.push_back("jetInfo_MUfrac1");	
-    fTH1DNames.push_back("jetInfo_CHmult1");
-    fTH1DNames.push_back("jetInfo_NEmult1");
-    fTH1DNames.push_back("jetInfo_pt1");
-    fTH1DNames.push_back("jetInfo_eta1");
-    fTH1DNames.push_back("jetInfo_phi1");
-    fTH1DNames.push_back("jetInfo_mass1");
+    //fTH1DNames.push_back("jetInfo_CHfrac1");	
+    //fTH1DNames.push_back("jetInfo_NHfrac1");	
+    //fTH1DNames.push_back("jetInfo_NEMfrac1");
+    //fTH1DNames.push_back("jetInfo_CEMfrac1");
+    //fTH1DNames.push_back("jetInfo_PHfrac1");	
+    //fTH1DNames.push_back("jetInfo_ELfrac1");
+    //fTH1DNames.push_back("jetInfo_MUfrac1");	
+    //fTH1DNames.push_back("jetInfo_CHmult1");
+    //fTH1DNames.push_back("jetInfo_NEmult1");
+    //fTH1DNames.push_back("jetInfo_pt1");
+    //fTH1DNames.push_back("jetInfo_eta1");
+    //fTH1DNames.push_back("jetInfo_phi1");
+    //fTH1DNames.push_back("jetInfo_mass1");
 
     fTH1DNames.push_back("met_Isolategg");
     fTH1DNames.push_back("metCorr_Isolategg");
@@ -2220,14 +2230,14 @@ void Combiner::InitTH1DNames(){
     fIndexEff = fTH1DNames.size()-1;
     fTH1DNames.push_back("eff_sel");
  
-    fTH1DNames.push_back("vtx_eff_ptzp_n");
-    fTH1DNames.push_back("vtx_eff_ptzp_d");
-    fTH1DNames.push_back("vtx_eff_nvtx_n");
-    fTH1DNames.push_back("vtx_eff_nvtx_d");
-    fTH1DNames.push_back("vtx_eff_met_n");
-    fTH1DNames.push_back("vtx_eff_met_d");
-    fTH1DNames.push_back("vtx_eff_njet_n");
-    fTH1DNames.push_back("vtx_eff_njet_d");
+    //fTH1DNames.push_back("vtx_eff_ptzp_n");
+    //fTH1DNames.push_back("vtx_eff_ptzp_d");
+    //fTH1DNames.push_back("vtx_eff_nvtx_n");
+    //fTH1DNames.push_back("vtx_eff_nvtx_d");
+    //fTH1DNames.push_back("vtx_eff_met_n");
+    //fTH1DNames.push_back("vtx_eff_met_d");
+    //fTH1DNames.push_back("vtx_eff_njet_n");
+    //fTH1DNames.push_back("vtx_eff_njet_d");
 
     //fTH1DNames.push_back("EBHighR9_mgg");
     //fTH1DNames.push_back("EBHighR9_ptgg");

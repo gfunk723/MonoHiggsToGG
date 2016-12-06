@@ -66,7 +66,7 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["Data"]		= "Data";
   fSampleTitleMap["QCD"] 		= "QCD";
   fSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
-  fSampleTitleMap["VH"]			= "V + H";
+  fSampleTitleMap["VHToGG"]		= "V + H";
   fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
   fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
   fSampleTitleMap["DiPhoton"]		= "$\\gamma\\gamma$";
@@ -90,8 +90,8 @@ ABCDMethod::ABCDMethod( SamplePairVec Samples, const Double_t inLumi, const TStr
   fSampleTitleMap["2HDM_mZP1700"]	= "2HDM, $m_{Z'} = 1700 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2000"]	= "2HDM, $m_{Z'} = 2000 GeV, m_{A0} = 300 GeV$";
   fSampleTitleMap["2HDM_mZP2500"]	= "2HDM, $m_{Z'} = 2500 GeV, m_{A0} = 300 GeV$";
-  fSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
-  fSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
+  //fSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
+  //fSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
 
 
   // make output root file
@@ -178,7 +178,7 @@ void ABCDMethod::DoAnalysis(UInt_t mass){
 
   fSampleTitleMap["QCD"] 		= "QCD";
   fSampleTitleMap["GJets"]		= "$\\gamma$ + Jets";
-  fSampleTitleMap["VH"]			= "V + H";
+  fSampleTitleMap["VHToGG"]		= "V + H";
   fSampleTitleMap["DYJetsToLL"]		= "Drell-Yan";
   fSampleTitleMap["GluGluHToGG"]	= "$H \\rightarrow \\gamma \\gamma$ (ggH)";
   fSampleTitleMap["ttHJetToGG"]		= "tt + $H \\rightarrow \\gamma\\gamma$";
@@ -192,7 +192,7 @@ void ABCDMethod::DoAnalysis(UInt_t mass){
 
   // find indices for the different bkg samples
   for (UInt_t mc = 0; mc < fNBkg; mc++){
-    if (fBkgNames[mc] == "VH")		i_vh  = mc;
+    if (fBkgNames[mc] == "VHToGG")	i_vh  = mc;
     if (fBkgNames[mc] == "QCD")		i_qcd = mc;
     if (fBkgNames[mc] == "DiPhoton")	i_gg  = mc;
     if (fBkgNames[mc] == "GJets")	i_gj  = mc;

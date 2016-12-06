@@ -695,7 +695,7 @@ void Plotter::DoPlots(int prompt){
 
 	  // make a set of bools for easier comparison
 	  Bool_t outsideMgg = false; // event lies outside mgg range
-	  if ( mgg < 120 || mgg > 130 ) outsideMgg = true;
+	  if ( mgg < 115 || mgg > 135 ) outsideMgg = true;
 
 	  // plots
 	  if ( !isData && dphigMETpass ) fTH1DMap["metCor_Sig"]->Fill(t1pfmetCorr,Weight);
@@ -761,16 +761,18 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["metCor_afterJetMETPhiCut"]->Fill(t1pfmetCorr,Weight); 
 	      if ( dphiggMETpass /*&& dphigMETpass*/ ){
 	        //fTH1DMap["met_IsolateALL"]->Fill(t1pfmet,Weight); 
+	        fTH1DMap["metCor_IsolateALL_Varbin"]->Fill(t1pfmetCorr,Weight);
 	        fTH1DMap["metCor_IsolateALL"]->Fill(t1pfmetCorr,Weight);
                 if (mgg >= 120 && mgg <= 130) fTH1DMap["t1pfmetCorr_selmgg_Varbin"]->Fill(t1pfmetCorr,Weight); 
                 if (mgg >= 120 && mgg <= 130) fTH1DMap["t1pfmetCorr_selmgg"]->Fill(t1pfmetCorr,Weight); 
 	        if (t1pfmet >= METcut) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight);  
 	        if (t1pfmet < METcut) fTH1DMap["mgg_inverseselt1pfmet"]->Fill(mgg,Weight);  
 		//if ( isData && t1pfmetCorr > 80 ) std::cout << run << ":" << lumi << ":" << event << std::endl;
-		if ( isData && t1pfmetCorr > METcut ) std::cout << "MET Tail: mgg = " << mgg << " MET = " << t1pfmetCorr << " ptgg = " << ptgg << " pt1/mgg = " << pt1/mgg << " pt2/mgg = " << pt2/mgg  << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
+		//if ( isData && t1pfmetCorr > METcut ) std::cout << "MET Tail: mgg = " << mgg << " MET = " << t1pfmetCorr << " ptgg = " << ptgg << " pt1/mgg = " << pt1/mgg << " pt2/mgg = " << pt2/mgg  << " Run = " << run << " Lumi = " << lumi << " Event " << event << std::endl;
 	      } 
 	    }
 	    if ( dphiggMETpassUncorr /*&& max_dphiJETMETpassUncorr*/ && min_dphiJETMETpassUncorr ){ 
+	      fTH1DMap["met_IsolateALL_Varbin"]->Fill(t1pfmet,Weight);
 	      fTH1DMap["met_IsolateALL"]->Fill(t1pfmet,Weight);
               if (mgg >= 120 && mgg <= 130) fTH1DMap["t1pfmet_selmgg"]->Fill(t1pfmet,Weight); 
 	    }
@@ -1318,12 +1320,14 @@ void Plotter::SetUpPlots(){
 
   Float_t METbins[] = {0,10,20,30,40,50,60,70,80,90,100,150,200};
   Int_t numbins = sizeof(METbins)/sizeof(Float_t) -1;
-  fTH1DMap["met_IsolateALL"]		= Plotter::MakeVariableTH1DPlot("met_IsolateALL","",numbins,METbins,"E_{T}^{miss} (GeV)","");
-  fTH1DMap["metCor_IsolateALL"]		= Plotter::MakeVariableTH1DPlot("metCorr_IsolateALL","",numbins,METbins,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["met_IsolateALL_Varbin"]	= Plotter::MakeVariableTH1DPlot("met_IsolateALL_Varbin","",numbins,METbins,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["metCor_IsolateALL_Varbin"]	= Plotter::MakeVariableTH1DPlot("metCorr_IsolateALL_Varbin","",numbins,METbins,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmet_selmgg"]		= Plotter::MakeVariableTH1DPlot("t1pfmet_selmgg","",numbins,METbins,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_selmgg_Varbin"]	= Plotter::MakeVariableTH1DPlot("t1pfmetCorr_selmgg_Varbin","",numbins,METbins,"E_{T}^{miss} (GeV)","");
   fTH1DMap["t1pfmetCorr_selmgg"]	= Plotter::MakeTH1DPlot("t1pfmetCorr_selmgg","",70,0.,350.,"E_{T}^{miss} [GeV]","Events");
  
+  fTH1DMap["met_IsolateALL"]		= Plotter::MakeTH1DPlot("met_IsolateALL","",60,0.,300.,"E_{T}^{miss} (GeV)","");
+  fTH1DMap["metCor_IsolateALL"]		= Plotter::MakeTH1DPlot("metCorr_IsolateALL","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["met_Isolategg"]		= Plotter::MakeTH1DPlot("met_Isolategg","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["metCor_Isolategg"]		= Plotter::MakeTH1DPlot("metCorr_Isolategg","",60,0.,300.,"E_{T}^{miss} (GeV)","");
   fTH1DMap["mgg_IsolateALL"]		= Plotter::MakeTH1DPlot("mgg_IsolateALL","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
@@ -1575,7 +1579,7 @@ void Plotter::SavePlots(){
 
     //fTH1DNewMap[(*mapiter).first].second = DrawOverflowBin( (*mapiter).second );   
  
-    if ((*mapiter).first=="metCor_IsolateALL" || (*mapiter).first=="t1pfmet_selmgg" || (*mapiter).first=="met_IsolateALL" || (*mapiter).first=="t1pfmetCorr_selmgg_Varbin"){
+    if ((*mapiter).first=="metCor_IsolateALL_Varbin" || (*mapiter).first=="t1pfmet_selmgg" || (*mapiter).first=="met_IsolateALL_Varbin" || (*mapiter).first=="t1pfmetCorr_selmgg_Varbin"){
       for (UInt_t bin = 1; bin < (*mapiter).second->GetSize()-1; bin++){
 	Float_t bincontent = (*mapiter).second->GetBinContent(bin);
         Float_t binwidth   = (*mapiter).second->GetBinWidth(bin);

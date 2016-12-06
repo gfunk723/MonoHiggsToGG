@@ -28,44 +28,53 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   // resonant bkgs
   Samples.push_back(SamplePair("GluGluHToGG",0)); 
   Samples.push_back(SamplePair("VBFHToGG",0)); 
-  Samples.push_back(SamplePair("VH",0));
+  Samples.push_back(SamplePair("VHToGG",0));
   Samples.push_back(SamplePair("ttHJetToGG",0)); 
   // non-resonant bkgs
   Samples.push_back(SamplePair("DYJetsToLL",1));
   Samples.push_back(SamplePair("DiPhoton",1));
-  Samples.push_back(SamplePair("GJets",1)); 
-  Samples.push_back(SamplePair("QCD",1));
-  Samples.push_back(SamplePair("WGToLNuG",1));
-  Samples.push_back(SamplePair("ZZTo2L2Nu",1));
-  Samples.push_back(SamplePair("ZGTo2LG",1));
-  Samples.push_back(SamplePair("TTGG_0Jets",1));
-  Samples.push_back(SamplePair("TGJets",1));
-  Samples.push_back(SamplePair("TTGJets",1));
+  //Samples.push_back(SamplePair("GJets",1)); 
+  //Samples.push_back(SamplePair("QCD",1));
+  //Samples.push_back(SamplePair("WGToLNuG",1));
+  //Samples.push_back(SamplePair("ZZTo2L2Nu",1));
+  //Samples.push_back(SamplePair("ZGTo2LG",1));
+  //Samples.push_back(SamplePair("TTGG_0Jets",1));
+  //Samples.push_back(SamplePair("TGJets",1));
+  //Samples.push_back(SamplePair("TTGJets",1));
   // data 
   Samples.push_back(SamplePair("DoubleEG",2)); 
 
   // signals
-  Samples.push_back(SamplePair("2HDM_mZP600",100)); //mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP800",101)); //mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1000",102));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1200",103));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1400",104));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1700",105));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP2000",106));//mA0_300  
-  Samples.push_back(SamplePair("2HDM_mZP2500",107));//mA0_300  
+  Samples.push_back(SamplePair("2HDM_mZP600_mA0300",100)); //mA0_300 
+  Samples.push_back(SamplePair("2HDM_mZP800_mA0300",101)); //mA0_300 
+  Samples.push_back(SamplePair("2HDM_mZP1000_mA0300",102));//mA0_300 
+  Samples.push_back(SamplePair("2HDM_mZP1200_mA0300",103));//mA0_300 
+  Samples.push_back(SamplePair("2HDM_mZP1400_mA0300",104));//mA0_300 
+  Samples.push_back(SamplePair("2HDM_mZP1700_mA0300",105));//mA0_300 
+  Samples.push_back(SamplePair("2HDM_mZP2000_mA0300",106));//mA0_300  
+  Samples.push_back(SamplePair("2HDM_mZP2500_mA0300",107));//mA0_300   
+
+  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi1000",150));
+  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi150" ,151));
+  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi1"   ,152));
+  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi500"  ,153));
+  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi150"  ,154));
+  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi1"    ,155));
+  Samples.push_back(SamplePair("BaryonicZp_mZP100_mChi10"   ,156));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi10"    ,157));
 
   Samples.push_back(SamplePair("2HDM_mZP600_mA0400",108)); 
-  Samples.push_back(SamplePair("2HDM_mZP800_mA0400",109)); 
+  //Samples.push_back(SamplePair("2HDM_mZP800_mA0400",109)); 
   Samples.push_back(SamplePair("2HDM_mZP1000_mA0400",110)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0400",111)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0400",112)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0400",113)); 
   Samples.push_back(SamplePair("2HDM_mZP2000_mA0400",114));  
-  Samples.push_back(SamplePair("2HDM_mZP2500_mA0400",115));  
+  //Samples.push_back(SamplePair("2HDM_mZP2500_mA0400",115));  
 
   //Samples.push_back(SamplePair("2HDM_mZP600_mA0500",116)); 
   Samples.push_back(SamplePair("2HDM_mZP800_mA0500",117)); 
-  Samples.push_back(SamplePair("2HDM_mZP1000_mA0500",118)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1000_mA0500",118)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0500",119)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0500",120)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0500",121)); 
@@ -73,30 +82,30 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0500",123));  
 
   //Samples.push_back(SamplePair("2HDM_mZP600_mA0600",124)); 
-  Samples.push_back(SamplePair("2HDM_mZP800_mA0600",125)); 
-  Samples.push_back(SamplePair("2HDM_mZP1000_mA0600",126)); 
+  //Samples.push_back(SamplePair("2HDM_mZP800_mA0600",125)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1000_mA0600",126)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0600",127)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0600",128)); 
-  Samples.push_back(SamplePair("2HDM_mZP1700_mA0600",129)); 
-  Samples.push_back(SamplePair("2HDM_mZP2000_mA0600",130));  
+  //Samples.push_back(SamplePair("2HDM_mZP1700_mA0600",129)); 
+  //Samples.push_back(SamplePair("2HDM_mZP2000_mA0600",130));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0600",131));  
 
   //Samples.push_back(SamplePair("2HDM_mZP600_mA0700",132)); 
   //Samples.push_back(SamplePair("2HDM_mZP800_mA0700",133)); 
   Samples.push_back(SamplePair("2HDM_mZP1000_mA0700",134)); 
-  Samples.push_back(SamplePair("2HDM_mZP1200_mA0700",135)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1200_mA0700",135)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0700",136)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0700",137)); 
-  Samples.push_back(SamplePair("2HDM_mZP2000_mA0700",138));  
+  //Samples.push_back(SamplePair("2HDM_mZP2000_mA0700",138));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0700",139));  
 
   //Samples.push_back(SamplePair("2HDM_mZP600_mA0800",140)); 
   //Samples.push_back(SamplePair("2HDM_mZP800_mA0800",141)); 
-  Samples.push_back(SamplePair("2HDM_mZP1000_mA0800",141)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1000_mA0800",141)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0800",142)); 
-  Samples.push_back(SamplePair("2HDM_mZP1400_mA0800",143)); 
+  //Samples.push_back(SamplePair("2HDM_mZP1400_mA0800",143)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0800",144)); 
-  Samples.push_back(SamplePair("2HDM_mZP2000_mA0800",145));  
+  //Samples.push_back(SamplePair("2HDM_mZP2000_mA0800",145));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0800",146));  
 
   //Samples.push_back(SamplePair("DMHtoGG_M1",0)); 
@@ -280,7 +289,7 @@ void CardMaker::MakeCards(){
   effhisto->Write();
 
   // Write out signal yield and efficiency tables
-  CardMaker::MakeYieldAndEfficiencyTables( Dbl_Results_ND_Sig , Dbl_Errors_Sig, Dbl_Eff_Sig, Dbl_Error_Eff_Sig);
+  //CardMaker::MakeYieldAndEfficiencyTables( Dbl_Results_ND_Sig , Dbl_Errors_Sig, Dbl_Eff_Sig, Dbl_Error_Eff_Sig);
 
   // Write out the datacard (one for each signal sample)
   for (UInt_t mc=0; mc < fNSig; mc++){
@@ -401,7 +410,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     Double_t Weight = 1.0;
     if (sampleID==2) Weight = 1; // no weight for data
     else if (sampleID==0 || sampleID==1) Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
-    else Weight = (weight)*fPUWeights[nvtx]*0.00227*1000;// reweighted to xsec*BR = 1pb*BR //*(1000);// reweighted to 1pb
+    else Weight = (weight)*fPUWeights[nvtx];//weighted to xsec*BR=1pb*BR
 
     // check that data passes METfilters
     if (sampleID==2 && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
@@ -827,18 +836,22 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
   Double_t predBkg = (Double_t)NA_Data*alpha;
 
   TString mZp = "";
-  if (fSigName=="2HDM_mZP600" || fSigName=="2HDM_mZP600_mA0400") mZp="600";  
-  if (fSigName=="2HDM_mZP800" || fSigName=="2HDM_mZP800_mA0400" || fSigName=="2HDM_mZP800_mA0500" || fSigName=="2HDM_mZP800_mA0600") mZp="800";  
-  if (fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HDM_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
-  if (fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HDM_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
-  if (fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HDM_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
-  if (fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HDM_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
-  if (fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HDM_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
-  if (fSigName=="2HDM_mZP2500" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HDM_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
+  if (fSigName=="2HDM_mZP600_mA0300" || fSigName=="2HDM_mZP600_mA0400") mZp="600";  
+  if (fSigName=="2HDM_mZP800_mA0300" || fSigName=="2HDM_mZP800_mA0400" || fSigName=="2HDM_mZP800_mA0500" || fSigName=="2HDM_mZP800_mA0600") mZp="800";  
+  if (fSigName=="2HDM_mZP1000_mA0300" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HDM_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
+  if (fSigName=="2HDM_mZP1200_mA0300" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HDM_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
+  if (fSigName=="2HDM_mZP1400_mA0300" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HDM_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
+  if (fSigName=="2HDM_mZP1700_mA0300" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HDM_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
+  if (fSigName=="2HDM_mZP2000_mA0300" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HDM_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
+  if (fSigName=="2HDM_mZP2500_mA0300" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HDM_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
 
 
   Bool_t A0300 = false;
   if (fSigName=="2HDM_mZP600" || fSigName=="2HDM_mZP800" || fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2500") A0300=true;
+  
+  if (fSigName=="BaryonicZp_mZP1000_mChi1000" || fSigName=="BaryonicZp_mZP1000_mChi150" || fSigName=="BaryonicZp_mZP1000_MChi1") mZp="1000";
+  if (fSigName=="BaryonicZp_mZP500_mChi500"   || fSigName=="BaryonicZp_mZP500_mChi150"  || fSigName=="BaryonicZp_mZP500_MChi1")  mZp="500";
+
 
   TString DataCardName;
   if (A0300) DataCardName = Form("%s%s/DataCard_%s_mA0300.txt",fOutDir.Data(),fOut.Data(),fSigName.Data());
