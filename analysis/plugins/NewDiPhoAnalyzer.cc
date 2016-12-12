@@ -2920,35 +2920,34 @@ bool NewDiPhoAnalyzer::rediscoveryHLT(float sceta, float pt, float r9,float siei
 
 
 double NewDiPhoAnalyzer::getChargedHadronEAForPhotonIso(float eta){
-  // There is NO correction of EffArea for the CH iso in Spr15 25ns ID
-  if (fabs(eta) < 1.0) return 0.0;
-  else if (fabs(eta) >= 1.0 && fabs(eta) < 1.479)  return 0.0;
-  else if (fabs(eta) >= 1.479 && fabs(eta) < 2.0 ) return 0.0;
-  else if (fabs(eta) >= 2.0 && fabs(eta) < 2.2 )   return 0.0;
-  else if (fabs(eta) >= 2.2 && fabs(eta) < 2.3 )   return 0.0;
-  else if (fabs(eta) >= 2.3 && fabs(eta) < 2.4 )   return 0.0;
-  else if (fabs(eta) >= 2.4) return 0.0;
+  if (fabs(eta) < 1.0) return 0.0360;
+  else if (fabs(eta) >= 1.0 && fabs(eta) < 1.479)  return 0.0377;
+  else if (fabs(eta) >= 1.479 && fabs(eta) < 2.0 ) return 0.0306;
+  else if (fabs(eta) >= 2.0 && fabs(eta) < 2.2 )   return 0.0283;
+  else if (fabs(eta) >= 2.2 && fabs(eta) < 2.3 )   return 0.0254;
+  else if (fabs(eta) >= 2.3 && fabs(eta) < 2.4 )   return 0.0217;
+  else if (fabs(eta) >= 2.4) return 0.0167;
   else return 0.;
 }
 double NewDiPhoAnalyzer::getNeutralHadronEAForPhotonIso(float eta) {
-  if (fabs(eta) < 1.0) return 0.0599;
-  else if (fabs(eta) >= 1.0 && fabs(eta) < 1.479)  return 0.0819;
-  else if (fabs(eta) >= 1.479 && fabs(eta) < 2.0 ) return 0.0696;
-  else if (fabs(eta) >= 2.0 && fabs(eta) < 2.2 )   return 0.0360;
-  else if (fabs(eta) >= 2.2 && fabs(eta) < 2.3 )   return 0.0360;
-  else if (fabs(eta) >= 2.3 && fabs(eta) < 2.4 )   return 0.0462;
-  else if (fabs(eta) >= 2.4) return 0.0656;
+  if (fabs(eta) < 1.0) return 0.0597;
+  else if (fabs(eta) >= 1.0 && fabs(eta) < 1.479)  return 0.0807;
+  else if (fabs(eta) >= 1.479 && fabs(eta) < 2.0 ) return 0.0629;
+  else if (fabs(eta) >= 2.0 && fabs(eta) < 2.2 )   return 0.0197;
+  else if (fabs(eta) >= 2.2 && fabs(eta) < 2.3 )   return 0.0184;
+  else if (fabs(eta) >= 2.3 && fabs(eta) < 2.4 )   return 0.0284;
+  else if (fabs(eta) >= 2.4) return 0.0591;
   else return 0.;
 }
 
 double NewDiPhoAnalyzer::getGammaEAForPhotonIso(float eta) {
-  if (fabs(eta) < 1.0) return 0.1271;
-  else if (fabs(eta) >= 1.0 && fabs(eta) < 1.479)  return 0.1101;
-  else if (fabs(eta) >= 1.479 && fabs(eta) < 2.0 ) return 0.0756;
-  else if (fabs(eta) >= 2.0 && fabs(eta) < 2.2 )   return 0.1175;
-  else if (fabs(eta) >= 2.2 && fabs(eta) < 2.3 )   return 0.1498;
-  else if (fabs(eta) >= 2.3 && fabs(eta) < 2.4 )   return 0.1857;
-  else if (fabs(eta) >= 2.4) return 0.2183;
+  if (fabs(eta) < 1.0) return 0.1210;
+  else if (fabs(eta) >= 1.0 && fabs(eta) < 1.479)  return 0.1107;
+  else if (fabs(eta) >= 1.479 && fabs(eta) < 2.0 ) return 0.0699;
+  else if (fabs(eta) >= 2.0 && fabs(eta) < 2.2 )   return 0.1056;
+  else if (fabs(eta) >= 2.2 && fabs(eta) < 2.3 )   return 0.1457;
+  else if (fabs(eta) >= 2.3 && fabs(eta) < 2.4 )   return 0.1719;
+  else if (fabs(eta) >= 2.4) return 0.1998;
   else return 0.;
 }
 
@@ -3056,32 +3055,32 @@ int NewDiPhoAnalyzer::passTightHoeCuts(float sceta, float hoe){
 // loose working point
 int NewDiPhoAnalyzer::passLooseSieieCuts(float sceta, float sieie){
   int passes = 1;
-  if (fabs(sceta)<1.4442 && sieie>0.0102) passes = 0;
-  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) && sieie>0.0274) passes = 0;
+  if (fabs(sceta)<1.4442 && sieie>0.01031) passes = 0;
+  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) && sieie>0.03013) passes = 0;
   return passes;
 }
 int NewDiPhoAnalyzer::passLooseCHisoCuts(float sceta, float chiso, float pt){
   int passes = 1;
-  if (fabs(sceta)<1.4442 && chiso>3.32) passes = 0;
-  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) && chiso>1.97) passes = 0;
+  if (fabs(sceta)<1.4442 && chiso>1.295) passes = 0;
+  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) && chiso>1.011) passes = 0;
   return passes;
 }
 int NewDiPhoAnalyzer::passLooseNHisoCuts(float sceta, float nhiso, float pt){
   int passes = 1;
-  if (fabs(sceta)<1.4442 && nhiso > (1.92 + 0.014*pt + 0.000019*pt*pt)) passes = 0;
-  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) &&  nhiso > (11.86 + 0.0139*pt + 0.000025*pt*pt)) passes = 0;
+  if (fabs(sceta)<1.4442 && nhiso > (10.910 + 0.0148*pt + 0.000017*pt*pt)) passes = 0;
+  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) &&  nhiso > (5.931 + 0.0163*pt + 0.000014*pt*pt)) passes = 0;
   return passes;
 }
 int NewDiPhoAnalyzer::passLoosePHisoCuts(float sceta, float phiso, float pt){
   int passes = 1;
-  if (fabs(sceta)<1.4442 && phiso > (0.81 + 0.0053*pt)) passes = 0;
-  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) &&  phiso > (0.83 + 0.0034*pt)) passes = 0;
+  if (fabs(sceta)<1.4442 && phiso > (3.630 + 0.0047*pt)) passes = 0;
+  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) &&  phiso > (6.641 + 0.0034*pt)) passes = 0;
   return passes;
 }
 int NewDiPhoAnalyzer::passLooseHoeCuts(float sceta, float hoe){
   int passes = 1;
-  if (fabs(sceta)<1.4442 && hoe>0.05) passes = 0;
-  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) &&hoe>0.05) passes = 0;
+  if (fabs(sceta)<1.4442 && hoe>0.0597) passes = 0;
+  if ((fabs(sceta)>1.566 && fabs(sceta)<2.5) &&hoe>0.0481) passes = 0;
   return passes;
 }
 
