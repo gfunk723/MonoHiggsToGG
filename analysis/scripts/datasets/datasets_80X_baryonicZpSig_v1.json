@@ -1,0 +1,400 @@
+{
+    "/MonoHaa_ZpBaryonic_MZp-10000_MChi-1000_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 98407, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10000_MChi-1000_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_125607/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 98407, 
+                "totEvents": 98407, 
+                "weights": 98407.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10000_MChi-10_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10000_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_130332/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10000_MChi-150_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10000_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_130516/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10000_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 99320, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10000_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_130646/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 99320, 
+                "totEvents": 99320, 
+                "weights": 99320.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10000_MChi-500_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10000_MChi-500_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_130816/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10000_MChi-50_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 95390, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10000_MChi-50_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_130947/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 95390, 
+                "totEvents": 95390, 
+                "weights": 95390.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-1000_MChi-1000_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 99334, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-1000_MChi-1000_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_131117/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 99334, 
+                "totEvents": 99334, 
+                "weights": 99334.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-1000_MChi-150_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-1000_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_131246/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-1000_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-1000_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_131416/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-100_MChi-10_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-100_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_131543/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-100_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-100_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_131731/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10_MChi-1000_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 99450, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10_MChi-1000_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_131859/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 99450, 
+                "totEvents": 99450, 
+                "weights": 99450.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10_MChi-10_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_132029/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 99201, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_132328/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 99201, 
+                "totEvents": 99201, 
+                "weights": 99201.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-10_MChi-50_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-10_MChi-50_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_132651/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-15_MChi-10_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-15_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_132829/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-1995_MChi-1000_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 95030, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-1995_MChi-1000_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133016/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 95030, 
+                "totEvents": 95030, 
+                "weights": 95030.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-2000_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 98876, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-2000_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133144/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 98876, 
+                "totEvents": 98876, 
+                "weights": 98876.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-2000_MChi-500_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 99526, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-2000_MChi-500_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133312/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 99526, 
+                "totEvents": 99526, 
+                "weights": 99526.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-200_MChi-150_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 2660, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-200_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133441/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 2660, 
+                "totEvents": 2660, 
+                "weights": 2660.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-200_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-200_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133616/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-200_MChi-50_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-200_MChi-50_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133751/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-20_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-20_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133922/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-295_MChi-150_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 96295, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-295_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_134054/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 96295, 
+                "totEvents": 96295, 
+                "weights": 96295.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-300_MChi-50_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 97210, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-300_MChi-50_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_134406/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 97210, 
+                "totEvents": 97210, 
+                "weights": 97210.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-500_MChi-150_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 29480, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-500_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_134539/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 29480, 
+                "totEvents": 29480, 
+                "weights": 29480.0
+            }, 
+            {
+                "bad": false, 
+                "events": 70520, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-500_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_134539/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 70520, 
+                "totEvents": 70520, 
+                "weights": 70520.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-500_MChi-500_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 98613, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-500_MChi-500_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_161535/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 98613, 
+                "totEvents": 98613, 
+                "weights": 98613.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-50_MChi-10_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 96695, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-50_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_161726/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 96695, 
+                "totEvents": 96695, 
+                "weights": 96695.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-50_MChi-1_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 95555, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-50_MChi-1_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_161911/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 95555, 
+                "totEvents": 95555, 
+                "weights": 95555.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/MonoHaa_ZpBaryonic_MZp-995_MChi-500_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 100000, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-995_MChi-500_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_163004/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 100000, 
+                "totEvents": 100000, 
+                "weights": 100000.0
+            }
+        ], 
+        "vetted": true
+    }
+}
