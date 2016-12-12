@@ -12,9 +12,8 @@ using namespace std;
 //   4th: prompt (for duplicate removal)
 //   5th: input filename 
 //   6th: sample name
-//   7th: outFile name
 
-void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample, TString outFile) {
+void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample) {
   cout << "Formatting " << inDir << filename << endl;
   cout << "Move to Pasquale's format for fit." << endl;
 
@@ -56,8 +55,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   // vector to store values of selection
   std::vector<Int_t> MetCut;
   MetCut.push_back(0);
-  MetCut.push_back(50);
-  MetCut.push_back(100);
+  MetCut.push_back(105);
 
   //// vector to store how selection is applied to trees
   //std::vector<TString> MetCat;
@@ -78,8 +76,9 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   std::vector<TString> theMetCat;
   theMetCat.push_back(TString::Format("met%d",MetCut[0]));
   theMetCat.push_back(TString::Format("met%d-%d",MetCut[0],MetCut[1]));
-  theMetCat.push_back(TString::Format("met%d-%d",MetCut[1],MetCut[2]));
-  theMetCat.push_back(TString::Format("met%d",MetCut[2]));
+  theMetCat.push_back(TString::Format("met%d",MetCut[1]));
+  //theMetCat.push_back(TString::Format("met%d-%d",MetCut[1],MetCut[2]));
+  //theMetCat.push_back(TString::Format("met%d",MetCut[2]));
 
   // To do in pTgg categories:
   //theMetCat.push_back(TString::Format("ptgg%d",MetCut[0]));
@@ -89,8 +88,16 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   UInt_t numMetCat = theMetCat.size();
 
   // make output file and new trees
-  cout << "OutputFile: " << outDir << "/" << outFile << endl;
-  TFile *fileNew = TFile::Open(TString::Format("%s/%s",outDir.Data(),outFile.Data()),"RECREATE");
+  TString outputname = "Output_Data.root";
+  TFile *fileNew = new TFile();
+  if (type=="data"){ 
+    cout << "OutputFile: " << outDir << "/" << outputname << endl;
+    fileNew = TFile::Open(TString::Format("%s/%s",outDir.Data(),outputname.Data()),"RECREATE");
+  }
+  else{
+    cout << "OutputFile: " << outDir << "/" << theSample << "_new.root" << endl;
+    fileNew = TFile::Open(TString::Format("%s/%s_new.root",outDir.Data(),theSample.Data()),"RECREATE");
+  }
   vector<TTree*> trees;
   trees.resize(numMetCat);
   //vector<TDirectory*> newDir;
@@ -100,7 +107,7 @@ void fitterFormatting(TString inDir, TString outDir, TString type, Int_t prompt,
   TString dir1 = "";
   TString dir2 = "trees";
   if (type=="data") dir1 = "cic"; // data
-  else dir1 = "gen";  // mc 
+  else dir1 = "genmc";  // mc 
   TDirectory *TDir1 = fileNew->mkdir(dir1);
   TDir1->cd();
   TDirectory *TDir2 = TDir1->mkdir(dir2);
