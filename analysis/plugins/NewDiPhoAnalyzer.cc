@@ -3185,38 +3185,38 @@ float NewDiPhoAnalyzer::getSmearingValue(float sceta, float r9, int syst){
 
   if (fabs(sceta)<=1.0){
     if (r9 >= 0.94){
-      smearingValue = 0.0079581;
-      smearingError = 0.00033622;
+      smearingValue = 0.0088;
+      smearingError = 0.0001;
     }else {
-      smearingValue = 0.0093795;
-      smearingError = 0.00036528;
+      smearingValue = 0.0101;
+      smearingError = 0.0001;
     }
   }
   if (fabs(sceta)>1.0 && fabs(sceta)<=1.4442){
     if (r9 >= 0.94){
-      smearingValue = 0.011545;
-      smearingError = 0.0015758;
+      smearingValue = 0.0128;
+      smearingError = 0.0004;
     }else{
-      smearingValue = 0.018267;
-      smearingError = 0.0004384;
+      smearingValue = 0.0175;
+      smearingError = 0.0001;
     }  
   }
   if (fabs(sceta)>1.4442 && fabs(sceta)<=2.0){
     if (r9 >= 0.94){
-      smearingValue = 0.020104;
-      smearingError = 0.00092618;
+      smearingValue = 0.0181;
+      smearingError = 0.0004;
     }else{
-      smearingValue = 0.022131;
-      smearingError = 0.00064383;
+      smearingValue = 0.0214;
+      smearingError = 0.0002;
     }
   }
   if (fabs(sceta)>2.0 && fabs(sceta)<=2.5){
     if (r9 >= 0.94){
-      smearingValue = 0.022984;
-      smearingError = 0.0005424;
+      smearingValue = 0.0257;
+      smearingError = 0.0002;
     }else {
-      smearingValue = 0.026830;
-      smearingError = 0.00069514;
+      smearingValue = 0.0264;
+      smearingError = 0.0002;
     }
   }
   return smearingValue+syst*smearingError;
