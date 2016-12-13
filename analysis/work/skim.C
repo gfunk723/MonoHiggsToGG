@@ -20,7 +20,11 @@ void skim(TString path, TString sample){
   TTree * intree = (TTree*)infile->Get("DiPhotonTree");
   const Bool_t isMC = !sample.Contains("DoubleEG",TString::kExact);
   const Bool_t doDupRemoval = (sample.Contains("QCD",TString::kExact) || sample.Contains("GJets",TString::kExact));
- 
+  TH1F * h_entries         = (TH1F*)infile->Get("h_entries");
+  TH1F * h_sumW            = (TH1F*)infile->Get("h_sumW");
+  TH1F * h_selection       = (TH1F*)infile->Get("h_selection");
+  TH1F * h_selection_unwgt = (TH1F*)infile->Get("h_selection_unwgt");
+
   // ----------------------------------------------------------------
   // set branch addresses of input needed to apply cuts
   // ----------------------------------------------------------------
@@ -227,6 +231,10 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
 
   outfile->cd();
+  h_entries->Write();
+  h_sumW->Write();
+  h_selection->Write();
+  h_selection_unwgt->Write();
   outtree->Write();
 
   // now delete (close) everything
