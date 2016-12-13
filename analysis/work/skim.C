@@ -4,14 +4,18 @@
 #include "TH1.h"
 #include "TDirectory.h"
 #include "TLorentzVector.h"
+#include <iostream>
 #include "../../../DataFormats/Math/interface/deltaPhi.h"
+
+using namespace std;
 
 void skim(TString path, TString sample){
 
   // ----------------------------------------------------------------
   // get input full trees
   // ----------------------------------------------------------------
-
+  
+  cout << "Running sample: " << sample << endl;
   TFile * infile = TFile::Open(Form("%s/%s.root",path.Data(),sample.Data()));
   TTree * intree = (TTree*)infile->Get("DiPhotonTree");
   const Bool_t isMC = !sample.Contains("DoubleEG",TString::kExact);
@@ -115,7 +119,9 @@ void skim(TString path, TString sample){
 
   for (UInt_t entry = 0; entry < intree->GetEntries(); entry++)
   {
+
     intree->GetEntry(entry);
+    //if (entry%10000 == 0) cout << " Working on event # " << entry << " / " << intree->GetEntries() << " entries" << endl;
 
     // ----------------------------------------------------------------
     // Fill TLorentzVector
