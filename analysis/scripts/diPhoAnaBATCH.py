@@ -5,8 +5,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC  = True;
-isSMh = True;
+isMC  = False;
+isSMh = False;
 is80X = True;
 is76X = False;
 isFLASHgg_1_1_0 = False;
@@ -40,8 +40,15 @@ if (isMC):
     
 else:
     if (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
-        print "80X_dataRun2_2016SeptRepro_v4"
+	if (SI==10002): #RunB 
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
+            print "80X_dataRun2_2016SeptRepro_v4"
+	elif (SI==10008): #RunH
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v14', '') 
+            print "80X_dataRun2_Prompt_v14"
+	else: #RunC,D,E,F,G 
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v3', '') 
+            print "80X_dataRun2_2016SeptRepro_v3"
     elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '') 
         print "76X_dataRun2_v15"

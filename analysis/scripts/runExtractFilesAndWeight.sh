@@ -4,6 +4,14 @@
 ## FLASHgg version 80X for 25ns
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/DoubleEG.json		-o DoubleEG			-d lists_25ns_v80X_v1
 
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016B.json		-o Run2016B			-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016C.json		-o Run2016C			-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016D.json		-o Run2016D			-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016E.json		-o Run2016E			-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016F.json		-o Run2016F			-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016G.json		-o Run2016G			-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/Data/Run2016H.json		-o Run2016H			-d lists_25ns_v80X_v1
+
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/GluGluHToGG.json		-o GluGluHToGG 			-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/VBFHToGG.json			-o VBFHToGG			-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/VHToGG.json			-o VHToGG			-d lists_25ns_v80X_v1
@@ -12,6 +20,7 @@ python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ttHJetToGG.json		-o ttH
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/DYJetsToLL.json		-o DYJetsToLL 			-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/DYToLL.json			-o DYToLL			-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/DiPhotonJetsBox_M40_80.json	-o DiPhotonJetsBox_M40_80 	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/DiPhotonJetsBox_MGG-80toInf.json -o DiPhotonJetsBox_MGG-80toInf 	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/DiPhotonJets_MGG-80toInf.json	-o DiPhotonJets_MGG-80toInf 	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/GJet_Pt-20to40.json		-o GJet_Pt-20to40 		-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/GJet_Pt-20toInf.json		-o GJet_Pt-20toInf 		-d lists_25ns_v80X_v1
@@ -70,7 +79,7 @@ python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-700.j
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1200_MA0-800.json	-o 2HDM_MZp-1200_MA0-800	-d lists_25ns_v80X_v1
 #python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1400_MA0-800.json	-o 2HDM_MZp-1400_MA0-800	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-1700_MA0-800.json	-o 2HDM_MZp-1700_MA0-800	-d lists_25ns_v80X_v1
-#python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-800.json	-o 2HDM_MZp-2000_MA0-800	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2000_MA0-800.json	-o 2HDM_MZp-2000_MA0-800	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/2HDM_MZp-2500_MA0-800.json	-o 2HDM_MZp-2500_MA0-800	-d lists_25ns_v80X_v1
 
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-1000_MChi-1000_13TeV.json	-o ZpBaryonic_MZp-1000_MChi-1000_13TeV	-d lists_25ns_v80X_v1
@@ -82,6 +91,30 @@ python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-500_MChi
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-100_MChi-10_13TeV.json		-o ZpBaryonic_MZp-100_MChi-10_13TeV	-d lists_25ns_v80X_v1
 python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10_MChi-10_13TeV.json		-o ZpBaryonic_MZp-10_MChi-10_13TeV	-d lists_25ns_v80X_v1
 
+
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10000_MChi-1000_13TeV.json	-o ZpBaryonic_MZp-10000_MChi-1000_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10000_MChi-500_13TeV.json	-o ZpBaryonic_MZp-10000_MChi-500_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10000_MChi-50_13TeV.json	-o ZpBaryonic_MZp-10000_MChi-50_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10000_MChi-150_13TeV.json  	-o ZpBaryonic_MZp-10000_MChi-150_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10000_MChi-10_13TeV.json   	-o ZpBaryonic_MZp-10000_MChi-10_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10000_MChi-1_13TeV.json    	-o ZpBaryonic_MZp-10000_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-100_MChi-1_13TeV.json      	-o ZpBaryonic_MZp-100_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10_MChi-1000_13TeV.json    	-o ZpBaryonic_MZp-10_MChi-1000_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10_MChi-1_13TeV.json       	-o ZpBaryonic_MZp-10_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-10_MChi-50_13TeV.json      	-o ZpBaryonic_MZp-10_MChi-50_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-15_MChi-10_13TeV.json      	-o ZpBaryonic_MZp-15_MChi-10_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-1995_MChi-1000_13TeV.json  	-o ZpBaryonic_MZp-1995_MChi-1000_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-2000_MChi-1_13TeV.json     	-o ZpBaryonic_MZp-2000_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-2000_MChi-500_13TeV.json   	-o ZpBaryonic_MZp-2000_MChi-500_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-200_MChi-150_13TeV.json    	-o ZpBaryonic_MZp-200_MChi-150_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-200_MChi-50_13TeV.json     	-o ZpBaryonic_MZp-200_MChi-50_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-200_MChi-1_13TeV.json      	-o ZpBaryonic_MZp-200_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-20_MChi-1_13TeV.json       	-o ZpBaryonic_MZp-20_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-295_MChi-150_13TeV.json    	-o ZpBaryonic_MZp-295_MChi-150_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-300_MChi-50_13TeV.json     	-o ZpBaryonic_MZp-300_MChi-50_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-50_MChi-10_13TeV.json      	-o ZpBaryonic_MZp-50_MChi-10_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-50_MChi-1_13TeV.json       	-o ZpBaryonic_MZp-50_MChi-1_13TeV	-d lists_25ns_v80X_v1
+python extractFilesAndWeight.py -i lists_25ns_v80X_v1/MC/ZpBaryonic_MZp-995_MChi-500_13TeV.json    	-o ZpBaryonic_MZp-995_MChi-500_13TeV	-d lists_25ns_v80X_v1
 
 
 

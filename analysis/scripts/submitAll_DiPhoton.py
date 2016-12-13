@@ -56,7 +56,7 @@
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1200_MA0-800 			1 176 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1400_MA0-800 			1 177 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-1700_MA0-800 			1 178 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
-#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-2000_MA0-800 			1 179 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-2000_MA0-800 			1 179 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py 2HDM_MZp-2500_MA0-800 			1 180 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-1000_MChi-1000_13TeV 	1 181 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
@@ -68,16 +68,41 @@
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-100_MChi-10_13TeV	 	1 187 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-10_13TeV	 	1 188 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10000_MChi-1000_13TeV 	1 189 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10000_MChi-500_13TeV        1 190 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10000_MChi-50_13TeV   	1 191 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10000_MChi-150_13TeV        1 192 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10000_MChi-10_13TeV   	1 193 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10000_MChi-1_13TeV          1 194 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-100_MChi-1_13TeV      	1 195 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-1000_13TeV    	1 196 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-1_13TeV       	1 197 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-50_13TeV            1 198 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-15_MChi-10_13TeV      	1 199 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-1995_MChi-1000_13TeV        1 200 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-2000_MChi-1_13TeV     	1 201 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-2000_MChi-500_13TeV         1 202 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-200_MChi-150_13TeV    	1 203 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-200_MChi-50_13TeV     	1 204 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-200_MChi-1_13TeV      	1 205 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-20_MChi-1_13TeV             1 206 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-295_MChi-150_13TeV    	1 207 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-300_MChi-50_13TeV           1 208 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-50_MChi-10_13TeV      	1 209 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-50_MChi-1_13TeV             1 210 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ZpBaryonic_MZp-995_MChi-500_13TeV    	1 211 /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002 	1 
+
 ## these use HLT2 instead of HLT
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GluGluHToGG	 			1 10  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.0952946	1 
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VBFHToGG					1 11  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.00890975	1
-#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ttHJetToGG					1 13  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.001132049	1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py ttHJetToGG				1 13  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.001132049	1
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py VHToGG					1 12  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 0.002050718	1
 
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DYJetsToLL 				1 14  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 6025.2	1
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DYToLL					1 15  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root xxxxxx	1
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhotonJetsBox_M40_80			1 16  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 299.3	1
-./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhotonJets_MGG-80toInf 			1 17  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 84.0	1
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhotonJetsBox_MGG-80toInf 		1 17  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 84.0	1
+./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DiPhotonJets_MGG-80toInf 			1 17  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 135.0	1
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GJet_Pt-20to40 	      			1 18  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 218.6108	1
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GJet_Pt-20toInf 	      			1 19  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 3329.475	1
 ./submitBatchDiPho.py --cfg diPhoAnaBATCH.py GJet_Pt-40toInf				1 20  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root 863.1088	1
@@ -96,6 +121,14 @@
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py WW_ 					1 30  /afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root xxxxxx 	1
 
 #./submitBatchDiPho.py --cfg diPhoAnaBATCH.py DoubleEG         		0 10001 pippo 1 1
+
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016B         		0 10002 pippo 1 1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016C         		0 10003 pippo 1 1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016D        		0 10004 pippo 1 1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016E         		0 10005 pippo 1 1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016F         		0 10006 pippo 1 1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016G         		0 10007 pippo 1 1
+#./submitBatchDiPho.py --cfg diPhoAnaBATCH.py Run2016H         		0 10008 pippo 1 1
 
 
 # -------------------------------------------------------------------------------
