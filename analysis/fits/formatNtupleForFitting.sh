@@ -32,7 +32,7 @@
 #############################################
 
 categType="1";
-indir="../macro/data/25ns_v80X_v0/"
+indir="../macro/data/25ns_v80X_v1/"
 outdir="ntuples4fit_vtx0_OptSel$categType"
 
 mkdir -p $outdir
@@ -41,6 +41,7 @@ root -l -b << EOF
 .L fitterFormatting.cc++
 
 fitterFormatting("$indir","$outdir","data",0,"DoubleEG.root",	"DoubleEG",	"Output_Data.root",$categType)
+
 
 fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP600_mA0300.root",  "sig_2HDM_mZP600_mA0300",	"2HDM_mZP600_mA0300_new.root",$categType)
 fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP800_mA0300.root",  "sig_2HDM_mZP800_mA0300",	"2HDM_mZP800_mA0300_new.root",$categType)
@@ -51,6 +52,18 @@ fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP1700_mA0300.root", "sig_2HD
 fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP2000_mA0300.root", "sig_2HDM_mZP2000_mA0300",	"2HDM_mZP2000_mA0300_new.root",$categType)
 fitterFormatting("$indir","$outdir","sig",0,"2HDM_mZP2500_mA0300.root", "sig_2HDM_mZP2500_mA0300",	"2HDM_mZP2500_mA0300_new.root",$categType)
 
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP1000_mChi1000.root", "sig_ZpBaryonic_mZP1000_mChi1000",	"ZpBaryonic_mZP1000_mChi1000.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP1000_mChi150.root",  "sig_ZpBaryonic_mZP1000_mChi150",	"ZpBaryonic_mZP1000_mChi150.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP1000_mChi1.root",    "sig_ZpBaryonic_mZP1000_mChi1",		"ZpBaryonic_mZP1000_mChi1.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP500_mChi500.root",   "sig_ZpBaryonic_mZP500_mChi500",	"ZpBaryonic_mZP500_mChi500.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP500_mChi150.root",   "sig_ZpBaryonic_mZP500_mChi150",	"ZpBaryonic_mZP500_mChi150.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP500_mChi1.root",     "sig_ZpBaryonic_mZP500_mChi1",		"ZpBaryonic_mZP500_mChi1.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP100_mChi10.root",    "sig_ZpBaryonic_mZP100_mChi10",		"ZpBaryonic_mZP100_mChi10.root",$categType)
+fitterFormatting("$indir","$outdir","sig",0,"BaryonicZp_mZP10_mChi10.root",     "sig_ZpBaryonic_mZP10_mChi10",		"ZpBaryonic_mZP10_mChi10.root",$categType)
+
+fitterFormatting("$indir","$outdir","bkg",0,"VHToGG.root",	"VHToGG",	"VHToGG_new.root",$categType)
+fitterFormatting("$indir","$outdir","bkg",0,"VBFHToGG.root",	"VBFHToGG",	"VBFHToGG_new.root",$categType)
+fitterFormatting("$indir","$outdir","bkg",0,"ttHJetToGG.root",	"ttHJetToGG",	"ttHJetToGG_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",0,"GluGluHToGG.root",	"GluGluHToGG",	"GluGluHToGG_new.root",$categType)
 fitterFormatting("$indir","$outdir","bkg",0,"DiPhoton.root",	"DiPhoton",	"DiPhoton_new.root",$categType)
 
@@ -61,7 +74,7 @@ echo "Done"
 
 echo "Adding MC Files Together"
 
-hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/DiPhoton_new.root 
+hadd $outdir/Output_MC.root $outdir/ZpBaryonic* $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/DiPhoton_new.root $outdir/V* $outdir/ttH* 
 
 #hadd $outdir/Output_MC.root $outdir/2HDM_mZP* $outdir/GluGluHToGG_new.root $outdir/VH_new.root $outdir/QCD_new.root $outdir/GJets_new.root $outdir/DiPhoton_new.root $outdir/DYJetsToLL_new.root $outdir/VBFHToGG_new.root $outdir/ttHJetToGG_new.root $outdir/TGJets_new.root $outdir/TTGJets_new.root $outdir/WGToLNuG_new.root $outdir/ZGTo2LG_new.root $outdir/TTGG_0Jets_new.root $outdir/ZZTo2L2Nu_new.root 
 
