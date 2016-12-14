@@ -47,7 +47,6 @@ void skim(TString path, TString sample){
   Int_t   metF_GV;		intree->SetBranchAddress("metF_GV",&metF_GV);
   Int_t   metF_HBHENoise;	intree->SetBranchAddress("metF_HBHENoise",&metF_HBHENoise);
   Int_t   metF_HBHENoiseIso;	intree->SetBranchAddress("metF_HBHENoiseIso",&metF_HBHENoiseIso);
-  Int_t   metF_CSC;		intree->SetBranchAddress("metF_CSC",&metF_CSC);
   Int_t   metF_eeBadSC;		intree->SetBranchAddress("metF_eeBadSC",&metF_eeBadSC);
   Int_t   metF_MuonBadTrack;	intree->SetBranchAddress("metF_MuonBadTrack",&metF_MuonBadTrack);
   Int_t   metF_HadronTrackRes;	intree->SetBranchAddress("metF_HadronTrackRes",&metF_HadronTrackRes);
@@ -212,7 +211,7 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
 
     const Bool_t triggered      = (isMC)?true:hltDiphoton30Mass95;
-    const Bool_t passMETfilters = (isMC)?true:(metF_GV && metF_HBHENoise && metF_HBHENoiseIso && metF_CSC && metF_eeBadSC && metF_MuonBadTrack && metF_HadronTrackRes);
+    const Bool_t passMETfilters = (isMC)?true:(metF_GV && metF_HBHENoise && metF_HBHENoiseIso && metF_eeBadSC && metF_MuonBadTrack && metF_HadronTrackRes);
     const Bool_t passKinematics = (pt1>0.5*mgg && pt2>0.25*mgg && ptgg>90 && mgg>=100 && mgg<=200);
     const Bool_t passDupRemoval = (!doDupRemoval || (doDupRemoval && (genmatch1==1 && genmatch2==1)));
     const Bool_t passLepVetos   = (nEle<2 && nMuons==0);

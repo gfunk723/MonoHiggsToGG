@@ -703,13 +703,13 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   int metF_HadronTrackRes =1;
   int metF_MuonBadTrack =1;
 
-  // 76X: everything from miniAOD
+  // 80X: almost everything from miniAOD -- but these should all be cut out by the microAOD production
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
   for( unsigned index = 0; index < flagsNames.size(); ++index ) {
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_goodVertices" && !triggerFlags->accept( index )) metF_GV = 0;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilter" && !triggerFlags->accept( index )) metF_HBHENoise = 0;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilterIso" && !triggerFlags->accept( index )) metF_HBHENoiseIso = 0;
-    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0;
+    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0; // only for 2015 data 
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter" && !triggerFlags->accept( index )) metF_eeBadSC = 0;
   }
 

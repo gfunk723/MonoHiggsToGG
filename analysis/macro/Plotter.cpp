@@ -238,7 +238,7 @@ void Plotter::DoPlots(int prompt){
     // Check if the Data passes MET filters
     Bool_t passMETfil = true;
     if (isData){
-      if (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1){ //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1){
+      if (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 /*|| metF_CSC!=1*/ || metF_eeBadSC!=1){ //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1){
 	passMETfil = false; 
       }
     }
@@ -1144,6 +1144,7 @@ void Plotter::DoPlots(int prompt){
   //std::cout << "ptJet1 Int " << fTH1DMap["ptJet1"]->Integral() << std::endl;
 
   std::cout << "======================================================" << std::endl;
+  std::cout << "mgg integral = " << fTH1DMap["mgg_IsolateALL"]->Integral() << std::endl;
   //std::cout << "======================================================" << std::endl;
   UInt_t binMETze = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(0.);
   UInt_t binMETlo = fTH1DMap["t1pfmetCorr_partblind"]->GetXaxis()->FindBin(METcut);
