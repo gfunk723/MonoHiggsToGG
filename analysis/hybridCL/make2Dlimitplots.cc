@@ -22,8 +22,9 @@ void make2Dlimitplots(){
   cout << "Making 2D limit plots" << endl;
 
   //TString inDir	= "~soffi/public/4Margaret/2Dinputs/";
-  TString inDir		= "~mzientek/public/2Dlimitfiles/";
-  TString outDir	= "~/www/Plots/25ns_Limits_76X_2DResults/";
+  //TString inDir         = "~soffi/public/4Margaret/CombineOutput2HDM-80/";
+  TString inDir         = "~/copy_of_files/";
+  TString outDir	= "~/www/Plots/25ns_Limits_80X_2DResults/";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   makePlots(inDir, outDir);
@@ -34,7 +35,7 @@ void make2Dlimitplots(){
 void makePlots(TString inDir, TString outDir){
 
   // lumi
-  Float_t lumi = 2.3;
+  Float_t lumi = 34.7;
 
   // mZp masses 
   Double_t mass[8] = {600,800,1000,1200,1400,1700,2000,2500};
@@ -56,12 +57,12 @@ void makePlots(TString inDir, TString outDir){
   higgsCombineFiles_MA0800.resize(nMasses);
 
   for (UInt_t n=0; n<nMasses; n++){
-    higgsCombineFiles_MA0300[n] = new TFile(Form("%sMA300/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),(Int_t)mass[n]));
-    higgsCombineFiles_MA0400[n] = new TFile(Form("%sMA400/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),(Int_t)mass[n]));
-    higgsCombineFiles_MA0500[n] = new TFile(Form("%sMA500/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),(Int_t)mass[n]));
-    higgsCombineFiles_MA0600[n] = new TFile(Form("%sMA600/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),(Int_t)mass[n]));
-    higgsCombineFiles_MA0700[n] = new TFile(Form("%sMA700/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),(Int_t)mass[n]));
-    higgsCombineFiles_MA0800[n] = new TFile(Form("%sMA800/higgsCombineTest.HybridNew.mH%i.root",inDir.Data(),(Int_t)mass[n]));
+    higgsCombineFiles_MA0300[n] = new TFile(Form("%shiggsCombineMonoHgg_mZP%i_mA0300.Asymptotic.mH%i.root",inDir.Data(),(Int_t)mass[n],(Int_t)mass[n]));
+    higgsCombineFiles_MA0400[n] = new TFile(Form("%shiggsCombineMonoHgg_mZP%i_mA0400.Asymptotic.mH%i.root",inDir.Data(),(Int_t)mass[n],(Int_t)mass[n]));
+    higgsCombineFiles_MA0500[n] = new TFile(Form("%shiggsCombineMonoHgg_mZP%i_mA0500.Asymptotic.mH%i.root",inDir.Data(),(Int_t)mass[n],(Int_t)mass[n]));
+    higgsCombineFiles_MA0600[n] = new TFile(Form("%shiggsCombineMonoHgg_mZP%i_mA0600.Asymptotic.mH%i.root",inDir.Data(),(Int_t)mass[n],(Int_t)mass[n]));
+    higgsCombineFiles_MA0700[n] = new TFile(Form("%shiggsCombineMonoHgg_mZP%i_mA0700.Asymptotic.mH%i.root",inDir.Data(),(Int_t)mass[n],(Int_t)mass[n]));
+    higgsCombineFiles_MA0800[n] = new TFile(Form("%shiggsCombineMonoHgg_mZP%i_mA0800.Asymptotic.mH%i.root",inDir.Data(),(Int_t)mass[n],(Int_t)mass[n]));
   }
 
  // pick up theory xsec
@@ -746,27 +747,29 @@ void getLimits(TFile* file, Double_t & Limit, Double_t quantile){
 
   TBranch *b_limit;
   TBranch *b_quantileExpected;
-
-  TTree* tree = (TTree*)file->Get("limit");
-  if (tree!=(TTree*)NULL){
- 
-    tree->SetBranchAddress("limit", &limit, &b_limit);
-    tree->SetBranchAddress("quantileExpected", &quantileExpected, &b_quantileExpected);
- 
-    Limit = 0;
-    UInt_t nentries = tree->GetEntries();
-    for (UInt_t entry = 0; entry < nentries; entry++){
-      tree->GetEntry(entry);
-      //std::cout << "Quantile = " << quantileExpected << std::endl;
-      //std::cout << "Limit    = " << limit << std::endl;
-      if (quantileExpected==quantile) Limit=limit;
-    }
-
-  }// end valid tree
-  else Limit = 0;
-  //std::cout << "Limit    = " << Limit << std::endl;
   
-  delete tree;
+  if (file!=(TFile*)NULL){
+    TTree* tree = (TTree*)file->Get("limit");
+    if (tree!=(TTree*)NULL){
+ 
+      tree->SetBranchAddress("limit", &limit, &b_limit);
+      tree->SetBranchAddress("quantileExpected", &quantileExpected, &b_quantileExpected);
+ 
+      Limit = 0;
+      UInt_t nentries = tree->GetEntries();
+      for (UInt_t entry = 0; entry < nentries; entry++){
+        tree->GetEntry(entry);
+        //std::cout << "Quantile = " << quantileExpected << std::endl;
+        //std::cout << "Limit    = " << limit << std::endl;
+        if (quantileExpected==quantile) Limit=limit;
+      }
+
+    }// end valid tree
+    else Limit = 0;
+    //std::cout << "Limit    = " << Limit << std::endl;
+    delete tree;
+  }
+  else Limit = 0; 
 
 }
 
