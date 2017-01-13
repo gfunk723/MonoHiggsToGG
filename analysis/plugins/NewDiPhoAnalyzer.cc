@@ -316,6 +316,8 @@ struct diphoTree_struc_ {
   int metF_eeBadSC;
   int metF_HadronTrackRes;
   int metF_MuonBadTrack;
+  int metF_badMuon;
+  int metF_badChargedHadron;
 
   float massCorrSmear; 
   float massCorrSmearUp; 
@@ -391,7 +393,8 @@ private:
   
   float getSmearingValue(float sceta, float r9, int syst);
   float getScalingValue(int sampleID, float sceta, float r9, int runNumber, int syst);
-  float getPtCorrected(float pt, float sceta,float r9, int run, int sampleID);
+  float getPtCorrected(float pt, float sceta,float r9, int run, int sampleID, float energy);
+  float applyGainCorr(float pt, float sceta,float energy);
   float applyEnergySmearing(float pt, float sceta,float r9, int run);
   float applyEnergyScaling(int sampleID, float pt, float sceta,float r9, int run);
   bool geometrical_acceptance(float eta1, float eta2);
@@ -702,6 +705,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   int metF_eeBadSC =1;
   int metF_HadronTrackRes =1;
   int metF_MuonBadTrack =1;
+  int metF_badMuon =1;
+  int metF_badChargedHadron =1;
 
   // 80X: almost everything from miniAOD -- but these should all be cut out by the microAOD production
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
@@ -869,7 +874,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
       
 	float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();         
 	float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9(); 
-	float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+	float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	float leadSieie  = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
 	float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();
 	float leadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
@@ -878,7 +883,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 	float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta(); 
 	float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();              
-	float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), leadScEta, subleadR9noZS,run, sampleID);
+	float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), leadScEta, subleadR9noZS,run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
 	float subleadSieie  = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta(); 
 	float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
 	float subleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());      
@@ -955,8 +960,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
 
 	  float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-	  float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-	  float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+	  float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   
+	  float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	  float leadSieienoZS = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
 	  float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();	
 	  float leadChIso  = TMath::Max(diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
@@ -993,7 +998,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  //look at subleading
 	  float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
 	  float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	  float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
+	  float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
 	  float subleadSieienoZS = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
 	  float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
 	  float subleadChIso  = TMath::Max(diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
@@ -1107,11 +1112,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	    
 	      float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
 	      float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-	      float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+	      float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	    
 	      float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
 	      float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	      float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
+	      float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
 	    
 	      if (leadPt<30 || subleadPt<20) continue;      
 	    
@@ -1136,12 +1141,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
 		float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
 		float leadPhi  = diphoPtr->leadingPhoton()->phi();   	
-		float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID);
+		float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	 
 		float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
 		float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
 		float subleadPhi  = diphoPtr->subLeadingPhoton()->phi();   	
-		float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID);
+		float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
       
 		TLorentzVector* p1=new TLorentzVector(0,0,0,0);;
 		TLorentzVector* p2=new TLorentzVector(0,0,0,0);;
@@ -1356,7 +1361,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      sceta1    = (candDiphoPtr->leadingPhoton()->superCluster())->eta();
 		      r91	  = candDiphoPtr->leadingPhoton()->full5x5_r9();
 		      ptUncorr1       = candDiphoPtr->leadingPhoton()->et();
-		      pt1     = getPtCorrected(ptUncorr1, sceta1, r91, run, sampleID);
+		      pt1       = getPtCorrected(ptUncorr1, sceta1, r91, run, sampleID, candDiphoPtr->leadingPhoton()->seedEnergy());
 		      ptOverM1  = pt1/massRaw;
 		      eta1      = candDiphoPtr->leadingPhoton()->eta();
 		      phi1      = candDiphoPtr->leadingPhoton()->phi();
@@ -1372,7 +1377,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      sceta2    = (candDiphoPtr->subLeadingPhoton()->superCluster())->eta();
 		      r92	  = candDiphoPtr->subLeadingPhoton()->full5x5_r9();
 		      ptUncorr2       = candDiphoPtr->subLeadingPhoton()->et();
-		      pt2     = getPtCorrected(ptUncorr2, sceta2, r92, run, sampleID);
+		      pt2     = getPtCorrected(ptUncorr2, sceta2, r92, run, sampleID, candDiphoPtr->subLeadingPhoton()->seedEnergy());
 		      ptOverM2  = pt2/massRaw;
 		      eta2      = candDiphoPtr->subLeadingPhoton()->eta();
 		      phi2      = candDiphoPtr->subLeadingPhoton()->phi();
@@ -2194,6 +2199,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.metF_eeBadSC = metF_eeBadSC;
 		      treeDipho_.metF_HadronTrackRes = metF_HadronTrackRes;
 		      treeDipho_.metF_MuonBadTrack = metF_MuonBadTrack;
+                      treeDipho_.metF_badMuon = metF_badMuon;
+                      treeDipho_.metF_badChargedHadron = metF_badChargedHadron;
 		      treeDipho_.massCorrSmear = massCorrSmear;
 		      treeDipho_.massCorrSmearUp = massCorrSmearUp;
 		      treeDipho_.massCorrSmearDown = massCorrSmearDown;
@@ -2549,6 +2556,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("metF_eeBadSC",&(treeDipho_.metF_eeBadSC),"metF_eeBadSC/I");
   DiPhotonTree->Branch("metF_HadronTrackRes",&(treeDipho_.metF_HadronTrackRes),"metF_HadronTrackRes/I");
   DiPhotonTree->Branch("metF_MuonBadTrack",&(treeDipho_.metF_MuonBadTrack),"metF_MuonBadTrack/I");
+  DiPhotonTree->Branch("metF_badMuon",&(treeDipho_.metF_badMuon),"metF_badMuon/I");
+  DiPhotonTree->Branch("metF_badChargedHadron",&(treeDipho_.metF_badChargedHadron),"metF_badChargedHadron/I");
   DiPhotonTree->Branch("massCorrSmear",&(treeDipho_.massCorrSmear),"massCorrSmear/F");
   DiPhotonTree->Branch("massCorrSmearUp",&(treeDipho_.massCorrSmearUp),"massCorrSmearUp/F");
   DiPhotonTree->Branch("massCorrSmearDown",&(treeDipho_.massCorrSmearDown),"massCorrSmearDown/F");
@@ -2805,6 +2814,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.metF_eeBadSC = -500;
   treeDipho_.metF_MuonBadTrack = -500;
   treeDipho_.metF_HadronTrackRes = -500;
+  treeDipho_.metF_badMuon = -500;
+  treeDipho_.metF_badChargedHadron = -500;
   treeDipho_.massCorrSmear = -500;
   treeDipho_.massCorrSmearUp = -500;
   treeDipho_.massCorrSmearDown = -500;
@@ -4526,6 +4537,19 @@ float NewDiPhoAnalyzer::getScalingValue(int sampleID, float sceta, float r9, int
   return scalingValue+syst*scalingError;
 }
 
+float NewDiPhoAnalyzer::applyGainCorr(float ptUncorr, float sceta, float energy){  
+  // EGamma prescription to correct the slew-rate problem
+  // https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer#ECAL_scale_and_resolution_correc
+  float gaincorr = 1.0; 
+  if (sceta < 1.4442){// barrel photons only
+    if (energy >= 200 || energy < 300) gaincorr = 1.0199;
+    if (energy >= 300 || energy < 400) gaincorr = 1.052;
+    if (energy >= 400 || energy < 500) gaincorr = 1.015;
+  }
+  float pt = ptUncorr*gaincorr;
+  return pt;
+}
+
 
 float NewDiPhoAnalyzer::applyEnergySmearing(float ptUncorr, float sceta, float r9, int run){
   float Smearing	= getSmearingValue( sceta, r9, 0 );   
@@ -4541,9 +4565,12 @@ float NewDiPhoAnalyzer::applyEnergyScaling(int sampleID, float ptUncorr, float s
   return pt;
 }
 
-float NewDiPhoAnalyzer::getPtCorrected(float ptUncorr, float sceta, float r9, int run, int sampleID){
+float NewDiPhoAnalyzer::getPtCorrected(float ptUncorr, float sceta, float r9, int run, int sampleID, float energy){
   float pt;
-  if(sampleID>=10000) pt = applyEnergyScaling(sampleID, ptUncorr,sceta,r9, run);// is data
+  if(sampleID>=10000){ //is data 
+    pt = applyEnergyScaling(sampleID, ptUncorr,sceta,r9, run); // apply scale to match MC z peak location
+    pt = applyGainCorr(pt,sceta,energy);                       // apply gain corr to correct slew-rate problem
+  }
   else pt = applyEnergySmearing(ptUncorr,sceta,r9, run);// is MC
   return pt;
 }
