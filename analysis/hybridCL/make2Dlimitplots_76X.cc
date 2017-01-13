@@ -7,6 +7,7 @@
 #include <TColor.h>
 #include <TLegend.h>
 #include <TMath.h>
+#include <TFrame.h>
 #include <TLatex.h>
 //#include "../macro/mkPlotsLivia/CMS_lumi.C"
 #include <iostream>
@@ -92,7 +93,7 @@ void makePlots(TString inDir, TString outDir){
  l2->SetNDC(kTRUE);
  l2->SetTextFont(42);
  //TLatex *l2b = new TLatex(0.74,0.90,latexname);
- TLatex *l2b = new TLatex(0.72,0.95,latexname);
+ TLatex *l2b = new TLatex(0.725,0.95,latexname);
  l2b->SetTextSize(0.034);
  l2b->SetTextAlign(12);
  l2b->SetNDC(kTRUE);
@@ -673,9 +674,6 @@ void makePlots(TString inDir, TString outDir){
  p1->GetRange(x1,y1,x2,y2);
 
  cboth->cd();
- //gStyle->SetFrameLineWidth(3);
- //TPad* p2 = new TPad("p2","",0,0.09,0.95,0.95);
- //TPad* p2 = new TPad("p2","",0.05,0.09,0.95,0.98); //x1,y1,x2,y2
  TPad* p2 = new TPad("p2","",pad2_x1,pad2_y1,pad2_x2,pad2_y2); //x1,y1,x2,y2
  p2->SetFillStyle(0);
  p2->SetFillColor(0);
@@ -683,6 +681,11 @@ void makePlots(TString inDir, TString outDir){
  p2->cd();
  p2->Range(x1,y1,x2,y2);
  gStyle->SetFrameLineWidth(3);
+ TFrame *f = (TFrame*)cboth->FindObject("TFrame");
+ Double_t px1 = f->GetX1();
+ Double_t px2 = f->GetX2();
+ Double_t py1 = f->GetY1()+0.23;
+ Double_t py2 = f->GetY2()+0.23;
 
  obslimits->SetMarkerSize(1.6);
  obslimits->GetXaxis()->SetTitle("");
@@ -705,7 +708,15 @@ void makePlots(TString inDir, TString outDir){
 
  //limits->Draw("TEXT SAME"); 
  obslimits->Draw("TEXT SAME");
- p2->Update();
+ p1->Update();
+
+ // redraw the frame around the histogram
+ TLine l;
+ l.SetLineWidth(3);
+ l.DrawLine(px1,py2,px2,py2);
+ l.DrawLine(px2,py1,px2,py2);
+ l.DrawLine(px1,py1,px2,py1);
+ l.DrawLine(px1,py1,px1,py2);
 
  //CMS_lumi(cboth,false,0);
  l1b->Draw("same");
@@ -713,8 +724,8 @@ void makePlots(TString inDir, TString outDir){
  l3b->Draw("same");
  l4b->Draw("same");
  cboth->cd();
- c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
- c->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
+ cboth->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.png",outDir.Data()));
+ cboth->SaveAs(Form("%s/limits2D_2HDM_ExpAndObs.pdf",outDir.Data()));
  delete cboth;
 
 
