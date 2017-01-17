@@ -11,7 +11,6 @@ is80X = True;
 isRunB = False;
 isRunH = False;
 is76X = False;
-isFLASHgg_1_1_0 = False;
 ######################
 
 process = cms.Process("diPhoAna")
@@ -68,12 +67,8 @@ else:
     bit = 'TriggerResults::HLT'
     print "Using HLT"
 
-if (isMC and isFLASHgg_1_1_0):
-    flag = 'TriggerResults::PAT'
-    print "Using name PAT"
-else: 
-    flag = 'TriggerResults::RECO'
-    print "Using name RECO"
+flag = 'TriggerResults::PAT'
+print "Using name PAT"
 #-----------------------------------
 
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 1000 )
