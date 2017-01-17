@@ -86,7 +86,9 @@ EventList readEventList(char const* _fileName) {
   return list;        
 }   
 
-// diphoton tree
+// ----------------------------------------------------------------------------------------------
+// Diphoton tree 
+// ----------------------------------------------------------------------------------------------
 struct diphoTree_struc_ {
 
   int hltPhoton26Photon16Mass60;
@@ -160,6 +162,7 @@ struct diphoTree_struc_ {
   float t1pfmetPhotonEnDown     ;
   float t1pfmetUnclusteredEnUp;
   float t1pfmetUnclusteredEnDown;
+  float t1pfmetUncorPhi;
   float t1pfmetPhi;
   float t1pfmetSumEt;
   float ptgg;
@@ -318,6 +321,7 @@ struct diphoTree_struc_ {
   int metF_MuonBadTrack;
   int metF_badMuon;
   int metF_badChargedHadron;
+  int metF_globalTightHalo;
 
   float massCorrSmear; 
   float massCorrSmearUp; 
@@ -419,13 +423,16 @@ private:
 
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlagsToken_;
+  EDGetTokenT<edm::TriggerResults> triggerFlashggToken_;
   const reco::JetCorrector* jec_cor_;
   EDGetTokenT<reco::JetCorrector> mJetCorrector;
   string bTag_;    
 
   typedef std::vector<edm::Handle<edm::View<flashgg::Jet> > > JetCollectionVector;
 
-  // sample-dependent parameters needed for the analysis
+  // ----------------------------------------------------------------------------------------------
+  // Sample-dependent parameters needed for the analysis
+  // ----------------------------------------------------------------------------------------------
   int dopureweight_;
   int sampleIndex_;
   string puWFileName_;
@@ -433,11 +440,15 @@ private:
   float kfac_;
   float sumDataset_;
 
+  // ----------------------------------------------------------------------------------------------
   // to compute weights for pileup
+  // ----------------------------------------------------------------------------------------------
   std::vector<Double_t> puweights_;
   bool doOfficialPUrecipe = true;
 
-  // output tree with several diphoton infos
+  // ----------------------------------------------------------------------------------------------
+  // Output tree
+  // ----------------------------------------------------------------------------------------------
   TTree *DiPhotonTree;
   diphoTree_struc_ treeDipho_;
 
@@ -448,13 +459,14 @@ private:
   TH1F *h_sumW;
   bool isFilled;
 
-  // numbers to store the passing of cuts
-  std::vector< int > numPassingCuts;
-  int numCuts = 7;
-
-
   // events breakdown
   TH1F *h_selection;
+
+  // ----------------------------------------------------------------------------------------------
+  // Numbers to store the passing of cuts
+  // ----------------------------------------------------------------------------------------------
+  std::vector< int > numPassingCuts;
+  int numCuts = 7;
 
   // counters to get eff
   Int_t eff_start = 0;
@@ -490,7 +502,9 @@ private:
   // 74X only: met filters lists
   //EventList listCSC, listEEbadSC, listHadronTrackRes, listMuonBadTrack;
 
-  // vtx studies
+  // ----------------------------------------------------------------------------------------------
+  // Vtx studies
+  // ----------------------------------------------------------------------------------------------
   TH1F *H_goodVtx;
   TH1F *H_minDz;
   TH1F *Hbad_logSumPt2, *Hbad_ptbal, *Hbad_ptasym;
@@ -508,13 +522,14 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   genPhotonExtraToken_(mayConsume<vector<flashgg::GenPhotonExtra> >(iConfig.getParameter<InputTag>("genPhotonExtraTag"))),
   genInfoToken_(consumes<GenEventInfoProduct>(iConfig.getParameter<InputTag>("generatorInfo"))),
   genPartToken_(consumes<View<reco::GenParticle> >(iConfig.getUntrackedParameter<InputTag> ("GenParticlesTag", InputTag("flashggPrunedGenParticles")))),
-  inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" ) ),   
-  electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ) ) ),
-  muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ), 
-  METToken_( consumes<View<flashgg::Met> >( iConfig.getUntrackedParameter<InputTag> ( "METTag" ) ) ),
+  inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" )),   
+  electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag>( "ElectronTag" ))),
+  muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ))), 
+  METToken_( consumes<View<flashgg::Met> >( iConfig.getUntrackedParameter<InputTag>( "METTag" ))),
   pfcandsToken_( consumes<edm::View<reco::Candidate> > (iConfig.getParameter<edm::InputTag>("pfcands"))),
-  triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ) ) ),
-  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ) ) ),
+  triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ))),
+  triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ))),
+  triggerFlashggToken_( consumes<edm::TriggerResults>( iConfig.getUntrackedParameter<InputTag> ("FlashggTrigger", InputTag("TriggerResults::FLASHggMicroAOD")))),
   mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
 { 
   numPassingCuts.resize(numCuts);
@@ -542,15 +557,18 @@ inline bool SortByJetPT(const edm::Ptr<flashgg::Jet> & jet1, const edm::Ptr<flas
 
 NewDiPhoAnalyzer::~NewDiPhoAnalyzer() { 
 
+  // ----------------------------------------------------------------------------------------------
+  // At end, print number passing each cut
+  // ----------------------------------------------------------------------------------------------
   std::cout<<"tot:    "<<totLivia<<std::endl;
   std::cout<<"BDTvtxInd=0:   "<<BDTVtx0Margaret<<::endl;
   std::cout<<"BDTvtxInd>0:   "<<BDTVtxMargaret<<::endl;
   std::cout<<"trig:   "<<trigLivia<<std::endl;
   std::cout<<"onereco:   "<<onerecoLivia<<std::endl;
-  /*  std::cout<<"notrig:   "<<notrigLivia<<std::endl;
-      std::cout<<"nomasstrig:   "<<notrigLivia<<std::endl;
-      std::cout<<"noleadtrig:   "<<notrigLivia<<std::endl;
-      std::cout<<"nosubleadtrig:   "<<notrigLivia<<std::endl;*/
+  //std::cout<<"notrig:   "<<notrigLivia<<std::endl;
+  //std::cout<<"nomasstrig:   "<<notrigLivia<<std::endl;
+  //std::cout<<"noleadtrig:   "<<notrigLivia<<std::endl;
+  //std::cout<<"nosubleadtrig:   "<<notrigLivia<<std::endl;
   std::cout<<"Acc: "<<preselAccLivia<<std::endl;
   std::cout<<"r9: "<<preselR9Livia<<std::endl;
   std::cout<<"Iso: "<<preselIsoLivia<<std::endl;
@@ -565,8 +583,6 @@ NewDiPhoAnalyzer::~NewDiPhoAnalyzer() {
   std::cout<<"vtx:    "<<vtxLivia<<std::endl;
   std::cout<<"mass:   "<<massLivia<<std::endl;
 
-
- 
   // std::cout << "Number of Initial Events = " << eff_start << std::endl;
   // std::cout << "Number of Events Passing HLT = " << eff_passingHLT << std::endl;
   //std::cout << "Number Events After Sel. = " << eff_end   << std::endl;
@@ -576,10 +592,14 @@ NewDiPhoAnalyzer::~NewDiPhoAnalyzer() {
 
 void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
-  // Sample index
+  // ----------------------------------------------------------------------------------------------
+  // Sample index 
+  // ----------------------------------------------------------------------------------------------
   int sampleID = sampleIndex_;
 
-  // access edm objects                                                                                    
+  // ----------------------------------------------------------------------------------------------
+  // Access edm objects 
+  // ----------------------------------------------------------------------------------------------
   Handle<View<reco::Vertex> > primaryVertices;
   iEvent.getByToken(vertexToken_,primaryVertices);
 
@@ -594,7 +614,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   
   Handle<double> objs_rho;
   iEvent.getByToken(rhoToken_, objs_rho);
-  //iEvent.getByLabel("fixedGridRhoAll",objs_rho);
 
   Handle<edm::View<reco::Candidate> > pfCands;
   iEvent.getByToken(pfcandsToken_, pfCands);
@@ -603,17 +622,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   edm::Handle<GenEventInfoProduct> genInfo;
   edm::Handle<View<reco::GenParticle> > genParticles;
  
-  if (sampleID>0 && sampleID<10000) {     // MC
+  if (sampleID>0 && sampleID<10000) {// MC
     iEvent.getByToken(genPhotonExtraToken_,genPhotonsHandle);
     iEvent.getByToken(genInfoToken_,genInfo);   
     iEvent.getByToken( genPartToken_, genParticles );
   }
-
-  // To keep track of the total number of events
-  h_entries->Fill(5);
-
-  totLivia++;
-  eff_start++;
 
   Handle<View<flashgg::Met> > METs;
   iEvent.getByToken( METToken_, METs );
@@ -624,7 +637,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   Handle<edm::TriggerResults> triggerFlags;
   iEvent.getByToken( triggerFlagsToken_, triggerFlags );
 
-  
+  Handle<edm::TriggerResults> triggerFlashgg;
+  iEvent.getByToken( triggerFlashggToken_, triggerFlashgg );
+
   JetCollectionVector Jets( inputTagJets_.size() );
   for( size_t j = 0; j < inputTagJets_.size(); ++j ) {
     iEvent.getByToken( tokenJets_[j], Jets[j] );
@@ -640,20 +655,17 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByToken(mJetCorrector, corrector);
   jec_cor_ = corrector.product();
        
-  // --------------------------------------------------
-  // std::cout<<"------------------------------ "<<diPhotons->size()<<" ------------------------------ "<<std::endl;
+  // ----------------------------------------------------------------------------------------------
+  // Keep track of the total number of events
+  // ----------------------------------------------------------------------------------------------
+  h_entries->Fill(5);
 
-  //Trigger info
- 
-  //HLT_Photon26_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon16_AND_HE10_R9Id65_Eta2_Mass60_v2 
-  //HLT_Photon36_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon22_AND_HE10_R9Id65_Eta2_Mass15_v2
-  //HLT_Photon42_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon25_AND_HE10_R9Id65_Eta2_Mass15_v1
-  //HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v1
-  //HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v1 
-  //HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v1
-  //HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v1
-  //HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v1
+  totLivia++;
+  eff_start++;
 
+  // ----------------------------------------------------------------------------------------------
+  //  Trigger info
+  // ----------------------------------------------------------------------------------------------
   int hltPhoton26Photon16Mass60=-500;
   int hltPhoton36Photon22Mass15=-500;
   int hltPhoton42Photon25Mass15=-500;
@@ -667,106 +679,72 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   //  vector<std::string> const &names = triggerNames.triggerNames();  
   for( unsigned index = 0; index < triggerNames.size(); ++index ) {
     // print out triggers that match "HLT_Photon or HLT_Diphoton" and have "Mass" as well
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon") /*&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass") */ ) cout << index << " " << triggerNames.triggerName( index ) << " " << triggerBits->accept( index ) << endl;
-
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass")  ) cout << index << " " << triggerNames.triggerName( index ) << " " << triggerBits->accept( index ) << endl;
-    //print ALL HLT triggers: 
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT") ) cout << index << " " << triggerNames.triggerName( index ) << " " << triggerBits->accept( index ) << endl;
+    // if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass")  ) cout << index << " " << triggerNames.triggerName( index ) << " " << triggerBits->accept( index ) << endl;
 
     // store trigger bits of interest
-    // 2016 triggers
+    // 2016 trigger -- mass90 instead of mass95
     if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass90")  )hltDiphoton30Mass95 = triggerBits->accept( index );
-
-    // 2015 triggers
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon26") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon16")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass60")  )hltPhoton26Photon16Mass60 = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon36") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon22")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass15")  )hltPhoton36Photon22Mass15 = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Photon42") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Photon25")&& (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass15")  )hltPhoton42Photon25Mass15 = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass95")  )hltDiphoton30Mass95 = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("Mass70")  )hltDiphoton30Mass70 = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30PV") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("DoublePixelVeto_Mass55")  )hltDiphoton30Mass55PV = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("R9Id_Mass55")  )hltDiphoton30Mass55 = triggerBits->accept( index );
-    //if( (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("HLT_Diphoton30EB") && (TString::Format((triggerNames.triggerName( index )).c_str())).Contains("DoublePixelVeto_Mass55")  )hltDiphoton30Mass55EB = triggerBits->accept( index );
 
   }
 
   if (hltDiphoton30Mass95) eff_passingHLT++;
 
-  // Event info
+  // ----------------------------------------------------------------------------------------------
+  //  Event info
+  // ----------------------------------------------------------------------------------------------
   int run   = iEvent.eventAuxiliary().run();
   int event = iEvent.eventAuxiliary().event();
   int lumi  = iEvent.eventAuxiliary().luminosityBlock(); 
 
 
-  // MET flags
+  // ----------------------------------------------------------------------------------------------
+  //  MET filters 
+  // ----------------------------------------------------------------------------------------------
   int metF_GV = 1;
-  int metF_HBHENoise =1;
-  int metF_HBHENoiseIso =1;
-  int metF_CSC =1;
-  int metF_eeBadSC =1;
-  int metF_HadronTrackRes =1;
-  int metF_MuonBadTrack =1;
-  int metF_badMuon =1;
-  int metF_badChargedHadron =1;
+  int metF_HBHENoise = 1;
+  int metF_HBHENoiseIso = 1;
+  int metF_eeBadSC = 1;
+  int metF_HadronTrackRes = 1;
+  int metF_MuonBadTrack = 1;
+  int metF_badMuon = 1;
+  int metF_badChargedHadron = 1;
+  int metF_CSC = 1;             // for 2015 only
+  int metF_globalTightHalo = 1; // for 2016 only
 
   // 80X: almost everything from miniAOD -- but these should all be cut out by the microAOD production
+  // ones not cut out by FLASHgg: globalTightHalo, badPFMuon, badChargedHadron
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
   for( unsigned index = 0; index < flagsNames.size(); ++index ) {
+    //std::cout << " trigger flag = " << flagsNames.triggerName(index) << std::endl;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_goodVertices" && !triggerFlags->accept( index )) metF_GV = 0;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilter" && !triggerFlags->accept( index )) metF_HBHENoise = 0;
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilterIso" && !triggerFlags->accept( index )) metF_HBHENoiseIso = 0;
-    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0; // only for 2015 data 
     if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter" && !triggerFlags->accept( index )) metF_eeBadSC = 0;
+    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_globalTightHalo2016Filter" && !triggerFlags->accept( index )) metF_globalTightHalo = 0; // for 2016
+    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0; // only for 2015 data 
   }
 
-  //// 74X: partially to be read from external lists
-  //EventList::iterator rItrCSC;
-  //rItrCSC = listCSC.find(run);
-  //if (rItrCSC != listCSC.end()) {     
-  //  set<unsigned> eventSetCSC = rItrCSC->second;
-  //  set<unsigned>::iterator eItrCSC;
-  //  eItrCSC = eventSetCSC.find(event);
-  //  if (eItrCSC != eventSetCSC.end()) metF_CSC = 0;     
-  //}
-  ////
-  //EventList::iterator rItrEEbadSC;         // this is to kill the 4th bad SC which is not included in the flags in trigger results
-  //rItrEEbadSC = listEEbadSC.find(run);
-  //if (rItrEEbadSC != listEEbadSC.end()) {     
-  //  set<unsigned> eventSetEEbadSC = rItrEEbadSC->second;
-  //  set<unsigned>::iterator eItrEEbadSC;
-  //  eItrEEbadSC = eventSetEEbadSC.find(event);
-  //  if (eItrEEbadSC != eventSetEEbadSC.end()) metF_eeBadSC = 0;     
-  //}
-  ////two new additional filters 74X
-  //EventList::iterator rItrHadronTrackRes;         
-  //rItrHadronTrackRes = listHadronTrackRes.find(run);
-  //if (rItrHadronTrackRes != listHadronTrackRes.end()) {     
-  //  set<unsigned> eventSetHadronTrackRes = rItrHadronTrackRes->second;
-  //  set<unsigned>::iterator eItrHadronTrackRes;
-  //  eItrHadronTrackRes = eventSetHadronTrackRes.find(event);
-  //  if (eItrHadronTrackRes != eventSetHadronTrackRes.end()) metF_HadronTrackRes = 0;     
-  //}
-  //EventList::iterator rItrMuonBadTrack;        
-  //rItrMuonBadTrack = listMuonBadTrack.find(run);
-  //if (rItrMuonBadTrack != listMuonBadTrack.end()) {     
-  //  set<unsigned> eventSetMuonBadTrack = rItrMuonBadTrack->second;
-  //  set<unsigned>::iterator eItrMuonBadTrack;
-  //  eItrMuonBadTrack = eventSetMuonBadTrack.find(event);
-  //  if (eItrMuonBadTrack != eventSetMuonBadTrack.end()) metF_MuonBadTrack = 0;     
-  //}
+  const edm::TriggerNames &flashggtriggerNames = iEvent.triggerNames( *triggerFlashgg );
+  for( unsigned index = 0; index < flashggtriggerNames.size(); ++index ){
+    //std::cout << " trigger flag = " << flashggtriggerNames.triggerName(index) << std::endl;
+    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="Flag_BadChargedCandidateFilter" && !triggerFlags->accept( index )) metF_badChargedHadron = 0;
+    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="Flag_BadPFMuonFilter" && !triggerFlags->accept( index )) metF_badMuon = 0;
+    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="Flag_globalTightHalo2016Filter" && !triggerFlags->accept( index )) metF_globalTightHalo = 0;
+  }
 
-  //if ( metF_CSC == 0) std::cout << "FAILS MET FILTER : CSC " << std::endl;
-  //if ( metF_eeBadSC == 0) std::cout << "FAILS MET FILTER : eeBadSC " << std::endl;
-  //if ( metF_HadronTrackRes == 0) std::cout << "FAILS MET FILTER : Hadron Track Res " << std::endl;
-  //if ( metF_MuonBadTrack == 0) std::cout << "FAILS MET FILTER : Muon Bad Track " << std::endl;
-  //if ( metF_GV == 0) std::cout << "FAILS MET FILTER : GV " << std::endl;
-
-  // # Vertices
+  // ----------------------------------------------------------------------------------------------
+  //  Vertices
+  // ----------------------------------------------------------------------------------------------
   int nvtx = primaryVertices->size(); 
 
-  // Energy density
+  // ----------------------------------------------------------------------------------------------
+  //  Energy density 
+  // ----------------------------------------------------------------------------------------------
   float rho = *(objs_rho.product());
 
-  // PU weight (for MC only and if requested)
+  // ----------------------------------------------------------------------------------------------
+  //  PU weight (for MC, only if requested in parameters) 
+  // ----------------------------------------------------------------------------------------------
   float pu_weight = 1.;
   float pu_n      = -1.;
   if (sampleID>0 && sampleID<10000) {     // MC
@@ -783,13 +761,16 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
   }
  
+  // ----------------------------------------------------------------------------------------------
   // x-sec * kFact for MC only 
+  // ----------------------------------------------------------------------------------------------
   float totXsec = 1.;
   if (sampleID>0 && sampleID<10000) totXsec = xsec_ * kfac_;
 
 
-
-  // other weights for the dataset
+  // ----------------------------------------------------------------------------------------------
+  // Other weights for the dataset 
+  // ----------------------------------------------------------------------------------------------
   float sumDataset = 1.;  
   float perEveW    = 1.;
   std::vector <float> perEveWeights;
@@ -810,17 +791,20 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     h_sumW->Fill(5,sumDataset);
     isFilled = true;
   }
-  if (sampleID>0 && sampleID<10000)hltDiphoton30Mass95=1;
-  // Events breakdown
+
+  // ----------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------
+  // 
+  // Events breakdown 
+  // 
+  // ----------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------
+  if (sampleID>0 && sampleID<10000)hltDiphoton30Mass95=1; // no trigger for MC
   if (hltDiphoton30Mass95){
-    //std::cout<<"passing trigger"<<std::endl;
     trigLivia++;
     h_selection->Fill(0.,perEveW);
     numPassingCuts[0]++;
  
-    //if (hltDiphoton30Mass95) std::cout << "  MADE IT PASSED HLT !!!! " << std::endl; 
- 
-  
     // Get MET
     if( METs->size() != 1 )
       { std::cout << "WARNING number of MET is not equal to 1" << std::endl; }
@@ -1137,15 +1121,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	    
 		//float thisSystemMgg = diphoPtr->mass();
 
-	   
-		float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-		float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
-		float leadPhi  = diphoPtr->leadingPhoton()->phi();   	
-		float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
+		float leadR9noZS    = diphoPtr->leadingPhoton()->full5x5_r9();
+		float leadScEta     = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
+		float leadPhi       = diphoPtr->leadingPhoton()->phi();   	
+		float leadPt        = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	 
 		float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
 		float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-		float subleadPhi  = diphoPtr->subLeadingPhoton()->phi();   	
+		float subleadPhi    = diphoPtr->subLeadingPhoton()->phi();   	
 		float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
       
 		TLorentzVector* p1=new TLorentzVector(0,0,0,0);;
@@ -1292,7 +1275,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float higgsVtxX, higgsVtxY, higgsVtxZ;
 		      float genVtxX, genVtxY, genVtxZ; 
 		      int eleveto1, eleveto2;
-		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi, t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
+		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi,t1pfmetUncorPhi,t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
 		      float t1pfmetJetEnUp ,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown,t1pfmetElectronEnUp   ,t1pfmetElectronEnDown   ,t1pfmetTauEnUp,t1pfmetTauEnDown, t1pfmetPhotonEnUp, t1pfmetPhotonEnDown,t1pfmetUnclusteredEnUp,t1pfmetUnclusteredEnDown;
 		      int passCHiso1, passCHiso2, passNHiso1, passNHiso2, passPHiso1, passPHiso2, passSieie1, passSieie2, passHoe1, passHoe2;
 		      int passTightCHiso1, passTightCHiso2, passTightNHiso1, passTightNHiso2, passTightPHiso1, passTightPHiso2, passTightSieie1, passTightSieie2, passTightHoe1, passTightHoe2;
@@ -1313,8 +1296,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      initTreeStructure();        
 		
 		      //met type1 corrected
+		      //t1pfmet = theMET->corPt(pat::MET::Type1);
 		      t1pfmet = theMET->pt();
-		      t1pfmetPhi = theMET->phi();
+		      t1pfmetUncorPhi = theMET->corPhi(pat::MET::Type1); // uncorr
+		      t1pfmetPhi = theMET->corPhi(pat::MET::Type1XY);    // corr
 		      t1pfmetSumEt = theMET->sumEt();
 
 		      //add MET systematic variables Livia
@@ -1396,15 +1381,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      presel2 = isGammaPresel( sceta2, pt2, r92, chiso2, hoe2 ); 
 	
 		
-		      // correct mass for smearing and scaling
+		      //-------> correct mass for smearing and scaling
 		      float leadSmearing	  = getSmearingValue( sceta1, r91, 0 );
 		      float subleadSmearing	  = getSmearingValue( sceta2, r92, 0 );
-		      // smear up and down for systematics
+		      //-------> smear up and down for systematics
 		      float leadSmearingUp	  = getSmearingValue( sceta1, r91, 1 );
 		      float subleadSmearingUp	  = getSmearingValue( sceta2, r92, 1 );
 		      float leadSmearingDown	  = getSmearingValue( sceta1, r91, -1 );
 		      float subleadSmearingDown = getSmearingValue( sceta2, r92, -1 );
-
 
 		      float gaussMean		= 1.0;
               	
@@ -1422,11 +1406,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      massCorrSmearUp	        = massRaw*sqrt(Smear1Up*Smear2Up);
 		      massCorrSmearDown	= massRaw*sqrt(Smear1Down*Smear2Down);
 
-		      // scaling of Data
+		      //-------> scaling of Data
 		      float leadScaling	= getScalingValue(sampleID, sceta1, r91, run, 0);
 		      float subleadScaling	= getScalingValue(sampleID, sceta2, r92, run, 0);
 
-		      // scale up and down for systematics
+		      //-------> scale up and down for systematics
 		      float leadScalingUp	= getScalingValue(sampleID, sceta1, r91 ,run, 1);
 		      float subleadScalingUp	= getScalingValue(sampleID, sceta2, r92 ,run, 1);
 
@@ -1441,16 +1425,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      massCorrScaleUp		= massRaw*sqrt(ScalingUp);
 		      massCorrScaleDown	= massRaw*sqrt(ScalingDown);
 
-		      // final mgg (has Smearing or Scaling applied)
+		      //------> final mgg (has Smearing or Scaling applied)
 		      if (sampleID>0 && sampleID<10000){
-			mgg = massCorrSmear;	  // smear mass for MC
+			mgg = massCorrSmear;	// smear mass for MC
 		      }
 		      else mgg = massCorrScale; // scale mass for Data
 		
 		      eff_end++;	  
 		
-	
-		      //std::cout<<"run: "<<run<<" event: "<<event<<" mass: "<<massRaw<<std::endl;
 		      //-------> pass each photon ID cut separately
 		      // medium working point selection
 		      passSieie1 = passSieieCuts( sceta1, sieie1);
@@ -1587,7 +1569,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      }
 		
 	
-		      // --> only for VH: check the mc truth for Higgs studies
+		      //-------> only for VH: check the mc truth for Higgs studies
 		      vhtruth = -1;
 		      if (sampleID==11) { //this is VH
 			for( unsigned int genLoop = 0 ; genLoop < genParticles->size(); genLoop++ ) {
@@ -1610,7 +1592,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			}
 		      }
 
-		      // Margaret added for Z'->ZH comparisons with SM ZH
+		      //-------> for Z'->ZH comparisons with SM ZH
 		      genZ = -1;
 		      ptZ  = -999.;
 		      etaZ = -999.;
@@ -1775,7 +1757,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			jetIndex++;
 		
 			// jet selection: kinematics and id - hardcoded
-			if( fabs( thejet->eta() ) > 4.7 ) continue;// Margaret changed to include all jets
+			if( fabs( thejet->eta() ) > 4.7 ) continue;
 			if( thejet->pt() < 30. ) continue;  
 			if( !thejet->passesPuJetId( candDiphoPtr ) ) continue;   
 		  
@@ -1920,7 +1902,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      } // loop over jets
 
 
-		      // vertex studies
+		      //-------> vertex studies
 		      if (wantVtxStudies) {
 
 			float vtxOk = -1;
@@ -1961,7 +1943,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 
 
+                      //-------------------------------------------------------------------------------------------------
 		      // Variables for the tree
+                      //-------------------------------------------------------------------------------------------------
 		      treeDipho_.hltPhoton26Photon16Mass60=hltPhoton26Photon16Mass60;
 		      treeDipho_.hltPhoton36Photon22Mass15=hltPhoton36Photon22Mass15;
 		      treeDipho_.hltPhoton42Photon25Mass15=hltPhoton42Photon25Mass15;
@@ -2031,8 +2015,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.t1pfmetUnclusteredEnUp  = t1pfmetUnclusteredEnUp  ;
 		      treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
 
-
-
+		      treeDipho_.t1pfmetUncorPhi = t1pfmetUncorPhi;
 		      treeDipho_.t1pfmetPhi = t1pfmetPhi;
 		      treeDipho_.t1pfmetSumEt = t1pfmetSumEt;
 		      treeDipho_.calomet = calomet;
@@ -2077,7 +2060,6 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.tightsel2 = tightsel2;
 		      treeDipho_.loosesel1 = loosesel1;
 		      treeDipho_.loosesel2 = loosesel2;
-
 
 		      //jet infos
 		      treeDipho_.ptJetLead = ptJetLead;
@@ -2201,6 +2183,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.metF_MuonBadTrack = metF_MuonBadTrack;
                       treeDipho_.metF_badMuon = metF_badMuon;
                       treeDipho_.metF_badChargedHadron = metF_badChargedHadron;
+                      treeDipho_.metF_globalTightHalo = metF_globalTightHalo;
 		      treeDipho_.massCorrSmear = massCorrSmear;
 		      treeDipho_.massCorrSmearUp = massCorrSmearUp;
 		      treeDipho_.massCorrSmearDown = massCorrSmearDown;
@@ -2223,7 +2206,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.BDTindex = BDTindex;
 		      treeDipho_.Vtx0index = Vtx0index;
 	
+                      //-------------------------------------------------------------------------------------------------
 		      // Filling the trees
+                      //-------------------------------------------------------------------------------------------------
 		      DiPhotonTree->Fill();
 	
 		    } // candIndex>-999
@@ -2295,14 +2280,6 @@ void NewDiPhoAnalyzer::beginJob() {
   // for the event breakdown
   h_selection = fs_->make<TH1F>("h_selection", "h_selection", 8, -0.5, 7.5);
   h_selection->Sumw2();
-
-  // For 74X only: met filters event lists 
-  //cout << "now reading met filters lists" << endl;
-  //listCSC     = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/csc2015_Dec01.txt");
-  //listEEbadSC = readEventList("/afs/cern.ch/user/c/crovelli/public/monoH/metFilters/ecalscn1043093_Dec01.txt");
-  //listHadronTrackRes= readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/badResolutionTrack_Jan13.txt");
-  //listMuonBadTrack = readEventList("/afs/cern.ch/user/s/soffi/public/MonoHgg/MetFilters/muonBadTrack_Jan13.txt");
-  //cout << "met filters lists read" << endl;
 
   // For vtx studies
   if (wantVtxStudies) {
@@ -2376,7 +2353,6 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("t1pfmet",&(treeDipho_.t1pfmet),"t1pfmet/F");
   DiPhotonTree->Branch("t1p2pfmet",&(treeDipho_.t1p2pfmet),"t1p2pfmet/F");
 
-
   DiPhotonTree->Branch("t1pfmetJetEnUp",&(treeDipho_.t1pfmetJetEnUp),"t1pfmetJetEnUp/F");         
   DiPhotonTree->Branch("t1pfmetJetEnDown",&(treeDipho_.t1pfmetJetEnDown),"t1pfmetJetEnDown/F");        
   DiPhotonTree->Branch("t1pfmetJetResUp",&(treeDipho_.t1pfmetJetResUp),"t1pfmetJetResUp/F");         
@@ -2392,6 +2368,7 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("t1pfmetUnclusteredEnUp",&(treeDipho_.t1pfmetUnclusteredEnUp),"t1pfmetUnclusteredEnUp/F");
   DiPhotonTree->Branch("t1pfmetUnclusteredEnDown",&(treeDipho_.t1pfmetUnclusteredEnDown),"t1pfmetUnclusteredEnDown/F");
 
+  DiPhotonTree->Branch("t1pfmetUncorPhi",&(treeDipho_.t1pfmetUncorPhi),"t1pfmetUncorPhi/F");
   DiPhotonTree->Branch("t1pfmetPhi",&(treeDipho_.t1pfmetPhi),"t1pfmetPhi/F");
   DiPhotonTree->Branch("t1pfmetSumEt",&(treeDipho_.t1pfmetSumEt),"t1pfmetSumEt/F");
   DiPhotonTree->Branch("calomet",&(treeDipho_.calomet),"calomet/F");
@@ -2558,6 +2535,7 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("metF_MuonBadTrack",&(treeDipho_.metF_MuonBadTrack),"metF_MuonBadTrack/I");
   DiPhotonTree->Branch("metF_badMuon",&(treeDipho_.metF_badMuon),"metF_badMuon/I");
   DiPhotonTree->Branch("metF_badChargedHadron",&(treeDipho_.metF_badChargedHadron),"metF_badChargedHadron/I");
+  DiPhotonTree->Branch("metF_globalTightHalo",&(treeDipho_.metF_globalTightHalo),"metF_globalTightHalo/I");
   DiPhotonTree->Branch("massCorrSmear",&(treeDipho_.massCorrSmear),"massCorrSmear/F");
   DiPhotonTree->Branch("massCorrSmearUp",&(treeDipho_.massCorrSmearUp),"massCorrSmearUp/F");
   DiPhotonTree->Branch("massCorrSmearDown",&(treeDipho_.massCorrSmearDown),"massCorrSmearDown/F");
@@ -2652,6 +2630,7 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.pfmetPhi = -500.;
   treeDipho_.pfmetSumEt = -500.;
   treeDipho_.t1pfmet = -500.;
+  treeDipho_.t1pfmetUncorPhi = -500.;
   treeDipho_.t1pfmetPhi = -500.;
   treeDipho_.t1pfmetSumEt = -500.;
   treeDipho_.calomet = -500.;
@@ -2816,6 +2795,7 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.metF_HadronTrackRes = -500;
   treeDipho_.metF_badMuon = -500;
   treeDipho_.metF_badChargedHadron = -500;
+  treeDipho_.metF_globalTightHalo = -500;
   treeDipho_.massCorrSmear = -500;
   treeDipho_.massCorrSmearUp = -500;
   treeDipho_.massCorrSmearDown = -500;
@@ -2871,7 +2851,6 @@ void NewDiPhoAnalyzer::SetPuWeights(std::string puWeightFile) {
       float weight=1.;
       weight=weights->GetBinContent(i+1);
       puweights_.push_back(weight);
-      //std::cout << "i= " << i << " & has weight = " << weight << std::endl;
     }
 
   } else {
@@ -2882,7 +2861,6 @@ void NewDiPhoAnalyzer::SetPuWeights(std::string puWeightFile) {
       weight=puweights->GetBinContent(i+1);
       sumPuWeights+=weight;
       puweights_.push_back(weight);
-      //std::cout << "i= " << i << " & has weight = " << weight << std::endl;
     }
   }
 }
@@ -2993,10 +2971,12 @@ bool NewDiPhoAnalyzer::SubLeadPhoTriggerSel(float eta, float hoe, float r9, floa
 }
 
 
-
-
+//--------------------------------------------------------------------------------------------------
+// Photon ID
+//
 // selection for 25ns implemented from EGamma suggestions
 // https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedPhotonIdentificationRun2
+//--------------------------------------------------------------------------------------------------
 
 
 // medium working point
@@ -3186,6 +3166,8 @@ int NewDiPhoAnalyzer::effectiveAreaRegion(float sceta) {
   if (fabs(sceta)<=2.5 && fabs(sceta)>2.2)  theEAregion = 4;
   return theEAregion;
 }
+
+//float NewDiPhoAnalyzer::getMETphiCorrection
 
 float NewDiPhoAnalyzer::getSmearingValue(float sceta, float r9, int syst){
   float smearingValue = 1.0;
@@ -4549,7 +4531,6 @@ float NewDiPhoAnalyzer::applyGainCorr(float ptUncorr, float sceta, float energy)
   float pt = ptUncorr*gaincorr;
   return pt;
 }
-
 
 float NewDiPhoAnalyzer::applyEnergySmearing(float ptUncorr, float sceta, float r9, int run){
   float Smearing	= getSmearingValue( sceta, r9, 0 );   
