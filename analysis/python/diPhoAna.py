@@ -11,7 +11,6 @@ is80X = True;
 isRunB = False;
 isRunH = False;
 is76X = False;
-isFLASHgg_1_1_0 = False;
 ######################
 
 process = cms.Process("diPhoAna")
@@ -72,16 +71,11 @@ else:
     print "Using HLT"
 
 
-if (isMC and isFLASHgg_1_1_0):
-    flag = 'TriggerResults::PAT'
-    print "Using name PAT"
-else: 
-    flag = 'TriggerResults::RECO'
-    print "Using name RECO"
+flag = 'TriggerResults::PAT'
 #-----------------------------------
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 100 ) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 10 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
@@ -120,7 +114,6 @@ _messageSettings = cms.untracked.PSet(
 process.MessageLogger.cerr.GetManyWithoutRegistration = _messageSettings
 process.MessageLogger.cerr.GetByLabelWithoutRegistration = _messageSettings
 
-# to make jets
 #================================ Get the most recent JEC ==================================================================#
     # Setup the private SQLite -- Ripped from PhysicsTools/PatAlgos/test/corMETFromMiniAOD.py
 usePrivateSQlite=True
@@ -203,7 +196,6 @@ for i in range(0,maxJetCollections):
     UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJets',str(i)))  
 #===========================================================================================================================#
 
-
 process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   VertexTag 		= cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag		= cms.untracked.InputTag('flashggMets::FLASHggMicroAOD'),#
@@ -227,10 +219,11 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root'),  
                                   xsec         		= cms.untracked.double(1), #pb
                                   kfac         		= cms.untracked.double(1.),
-                                  sumDataset   		= cms.untracked.double(1.0),   # chiara
+                                  sumDataset   		= cms.untracked.double(1.0), 
                                   )
 
 #process.p = cms.Path( process.diPhoAna )     
+
 if (isMC==True):
     process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSL1FastL2L3Corrector*process.diPhoAna )     
 if (isMC==False):
