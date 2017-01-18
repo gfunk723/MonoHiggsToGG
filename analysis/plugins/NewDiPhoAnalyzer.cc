@@ -162,7 +162,9 @@ struct diphoTree_struc_ {
   float t1pfmetPhotonEnDown     ;
   float t1pfmetUnclusteredEnUp;
   float t1pfmetUnclusteredEnDown;
-  float t1pfmetUncorPhi;
+  float t1pfmetCorrPhi;
+  float t1pfmetCorrPx;
+  float t1pfmetCorrPy;
   float t1pfmetPhi;
   float t1pfmetSumEt;
   float ptgg;
@@ -860,7 +862,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9(); 
 	float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	float leadSieie  = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
-	float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();
+	float leadHoE    = diphoPtr->leadingPhoton()->hadronicOverEm();
 	float leadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
      
 	bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
@@ -869,7 +871,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();              
 	float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), leadScEta, subleadR9noZS,run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
 	float subleadSieie  = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta(); 
-	float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
+	float subleadHoE    = diphoPtr->subLeadingPhoton()->hadronicOverEm();
 	float subleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());      
 	bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
 
@@ -947,7 +949,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   
 	  float leadPt     = getPtCorrected(diphoPtr->leadingPhoton()->et(), leadScEta,leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
 	  float leadSieienoZS = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
-	  float leadHoE    = diphoPtr->leadingPhoton()->hadTowOverEm();	
+	  float leadHoE    = diphoPtr->leadingPhoton()->hadronicOverEm();	
 	  float leadChIso  = TMath::Max(diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
 	  float leadNeuIso = TMath::Max(diphoPtr->leadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
 	  float leadPhoIso = TMath::Max(diphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta()),0.);
@@ -984,7 +986,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
 	  float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
 	  float subleadSieienoZS = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
-	  float subleadHoE    = diphoPtr->subLeadingPhoton()->hadTowOverEm();
+	  float subleadHoE    = diphoPtr->subLeadingPhoton()->hadronicOverEm();
 	  float subleadChIso  = TMath::Max(diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
 	  float subleadNeuIso = TMath::Max(diphoPtr->subLeadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
 	  float subleadPhoIso = TMath::Max(diphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
@@ -1275,7 +1277,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float higgsVtxX, higgsVtxY, higgsVtxZ;
 		      float genVtxX, genVtxY, genVtxZ; 
 		      int eleveto1, eleveto2;
-		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi,t1pfmetUncorPhi,t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
+		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi,t1pfmetCorrPhi,t1pfmetCorrPx,t1pfmetCorrPy,t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
 		      float t1pfmetJetEnUp ,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown,t1pfmetElectronEnUp   ,t1pfmetElectronEnDown   ,t1pfmetTauEnUp,t1pfmetTauEnDown, t1pfmetPhotonEnUp, t1pfmetPhotonEnDown,t1pfmetUnclusteredEnUp,t1pfmetUnclusteredEnDown;
 		      int passCHiso1, passCHiso2, passNHiso1, passNHiso2, passPHiso1, passPHiso2, passSieie1, passSieie2, passHoe1, passHoe2;
 		      int passTightCHiso1, passTightCHiso2, passTightNHiso1, passTightNHiso2, passTightPHiso1, passTightPHiso2, passTightSieie1, passTightSieie2, passTightHoe1, passTightHoe2;
@@ -1298,8 +1300,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      //met type1 corrected
 		      //t1pfmet = theMET->corPt(pat::MET::Type1);
 		      t1pfmet = theMET->pt();
-		      t1pfmetUncorPhi = theMET->corPhi(pat::MET::Type1); // uncorr
-		      t1pfmetPhi = theMET->corPhi(pat::MET::Type1XY);    // corr
+		      t1pfmetPhi = theMET->corPhi(pat::MET::Type1);       // uncorr
+		      t1pfmetCorrPhi = theMET->corPhi(pat::MET::Type1XY); // corr phi
+                      t1pfmetCorrPx  = theMET->corPx(pat::MET::Type1XY);  // corr px
+                      t1pfmetCorrPy  = theMET->corPy(pat::MET::Type1XY);  // corr py 
 		      t1pfmetSumEt = theMET->sumEt();
 
 		      //add MET systematic variables Livia
@@ -1351,7 +1355,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      eta1      = candDiphoPtr->leadingPhoton()->eta();
 		      phi1      = candDiphoPtr->leadingPhoton()->phi();
 		      sieie1	  = candDiphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
-		      hoe1      = candDiphoPtr->leadingPhoton()->hadTowOverEm();
+		      hoe1      = candDiphoPtr->leadingPhoton()->hadronicOverEm();
 		      scRawEne1 = candDiphoPtr->leadingPhoton()->superCluster()->rawEnergy();
 		      chiso1    = TMath::Max(candDiphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
 		      neuiso1   = TMath::Max(candDiphoPtr->leadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
@@ -1367,7 +1371,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      eta2      = candDiphoPtr->subLeadingPhoton()->eta();
 		      phi2      = candDiphoPtr->subLeadingPhoton()->phi();
 		      sieie2	  = candDiphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
-		      hoe2      = candDiphoPtr->subLeadingPhoton()->hadTowOverEm();
+		      hoe2      = candDiphoPtr->subLeadingPhoton()->hadronicOverEm();
 		      scRawEne2 = candDiphoPtr->subLeadingPhoton()->superCluster()->rawEnergy();
 		      chiso2    = TMath::Max(candDiphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
 		      neuiso2   = TMath::Max(candDiphoPtr->subLeadingPhoton()->egNeutralHadronIso()- rho * getNeutralHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);      	       
@@ -2015,7 +2019,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.t1pfmetUnclusteredEnUp  = t1pfmetUnclusteredEnUp  ;
 		      treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
 
-		      treeDipho_.t1pfmetUncorPhi = t1pfmetUncorPhi;
+		      treeDipho_.t1pfmetCorrPhi = t1pfmetCorrPhi;
+		      treeDipho_.t1pfmetCorrPx = t1pfmetCorrPy;
+		      treeDipho_.t1pfmetCorrPy = t1pfmetCorrPx;
 		      treeDipho_.t1pfmetPhi = t1pfmetPhi;
 		      treeDipho_.t1pfmetSumEt = t1pfmetSumEt;
 		      treeDipho_.calomet = calomet;
@@ -2368,7 +2374,10 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("t1pfmetUnclusteredEnUp",&(treeDipho_.t1pfmetUnclusteredEnUp),"t1pfmetUnclusteredEnUp/F");
   DiPhotonTree->Branch("t1pfmetUnclusteredEnDown",&(treeDipho_.t1pfmetUnclusteredEnDown),"t1pfmetUnclusteredEnDown/F");
 
-  DiPhotonTree->Branch("t1pfmetUncorPhi",&(treeDipho_.t1pfmetUncorPhi),"t1pfmetUncorPhi/F");
+  DiPhotonTree->Branch("t1pfmetCorrPhi",&(treeDipho_.t1pfmetCorrPhi),"t1pfmetCorrPhi/F");
+  DiPhotonTree->Branch("t1pfmetCorrPx",&(treeDipho_.t1pfmetCorrPx),"t1pfmetCorrPx/F");
+  DiPhotonTree->Branch("t1pfmetCorrPy",&(treeDipho_.t1pfmetCorrPy),"t1pfmetCorrPy/F");
+
   DiPhotonTree->Branch("t1pfmetPhi",&(treeDipho_.t1pfmetPhi),"t1pfmetPhi/F");
   DiPhotonTree->Branch("t1pfmetSumEt",&(treeDipho_.t1pfmetSumEt),"t1pfmetSumEt/F");
   DiPhotonTree->Branch("calomet",&(treeDipho_.calomet),"calomet/F");
@@ -2630,7 +2639,9 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.pfmetPhi = -500.;
   treeDipho_.pfmetSumEt = -500.;
   treeDipho_.t1pfmet = -500.;
-  treeDipho_.t1pfmetUncorPhi = -500.;
+  treeDipho_.t1pfmetCorrPhi = -500.;
+  treeDipho_.t1pfmetCorrPx = -500.;
+  treeDipho_.t1pfmetCorrPy = -500.;
   treeDipho_.t1pfmetPhi = -500.;
   treeDipho_.t1pfmetSumEt = -500.;
   treeDipho_.calomet = -500.;
@@ -3225,22 +3236,22 @@ float NewDiPhoAnalyzer::getScalingValue(int sampleID, float sceta, float r9, int
   if (r9 >= 0.94) hiR9 = true;
   if (r9  < 0.94) loR9 = true;
 
-  if (sampleID < 10000){ // if MC use the average of scaling for testing
+  if (sampleID < 10000){ // if MC use the average of scaling (for both hi&loR9 together) for testing
     if (fabs(sceta)<=1.0){
-      scalingValue = 0.998825;
-      scalingError = 0.0002428;  
+      scalingValue = 1.001237975;
+      scalingError = 0.0005;  
     }    
     if (fabs(sceta)>1.0 || fabs(sceta)<=1.442){
-      scalingValue = 1.001543;
-      scalingError = 0.001057;
+      scalingValue = 0.998212658;
+      scalingError = 0.0005;
     }    
     if (fabs(sceta)>=1.566 || fabs(sceta)<=2.0){
-      scalingValue = 1.005211;
-      scalingError = 0.001289;
+      scalingValue = 1.01096076;
+      scalingError = 0.0005;
     }    
     if (fabs(sceta)>2.0 || fabs(sceta)<=2.5){
-      scalingValue = 1.004596;
-      scalingError = 0.001182;
+      scalingValue = 1.002563924;
+      scalingError = 0.0005;
     }    
   }
 
