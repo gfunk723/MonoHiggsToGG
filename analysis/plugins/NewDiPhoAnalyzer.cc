@@ -24,7 +24,7 @@
 #include "flashgg/DataFormats/interface/Met.h"
 #include "flashgg/DataFormats/interface/Muon.h"
 #include "flashgg/DataFormats/interface/Jet.h"
-#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
+//#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 #include "flashgg/Taggers/interface/LeptonSelection.h"
 
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -404,7 +404,7 @@ private:
   float applyEnergySmearing(float pt, float sceta,float r9, int run);
   float applyEnergyScaling(int sampleID, float pt, float sceta,float r9, int run);
   bool geometrical_acceptance(float eta1, float eta2);
-  double applyJetCorrection(const flashgg::Jet &y);
+  //double applyJetCorrection(const flashgg::Jet &y);
   int sortedIndex(const unsigned int vtxIndex, const unsigned int sizemax, const Ptr<flashgg::DiPhotonCandidate> diphoPtr );
 
   std::vector<edm::EDGetTokenT<View<flashgg::Jet> > > tokenJets_;
@@ -417,7 +417,12 @@ private:
   EDGetTokenT<vector<flashgg::GenPhotonExtra> > genPhotonExtraToken_;
   EDGetTokenT<GenEventInfoProduct> genInfoToken_;
   EDGetTokenT<View<reco::GenParticle> > genPartToken_;
+
   std::vector<edm::InputTag> inputTagJets_;     
+  //const reco::JetCorrector* jec_cor_;
+  //EDGetTokenT<reco::JetCorrector> mJetCorrector;
+  string bTag_;    
+
   EDGetTokenT<View<Electron> > electronToken_;   
   EDGetTokenT<View<flashgg::Muon> > muonToken_;        
   EDGetTokenT<View<flashgg::Met> > METToken_;
@@ -426,9 +431,7 @@ private:
   EDGetTokenT<edm::TriggerResults> triggerBitsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlagsToken_;
   EDGetTokenT<edm::TriggerResults> triggerFlashggToken_;
-  const reco::JetCorrector* jec_cor_;
-  EDGetTokenT<reco::JetCorrector> mJetCorrector;
-  string bTag_;    
+
 
   typedef std::vector<edm::Handle<edm::View<flashgg::Jet> > > JetCollectionVector;
 
@@ -531,8 +534,8 @@ NewDiPhoAnalyzer::NewDiPhoAnalyzer(const edm::ParameterSet& iConfig):
   pfcandsToken_( consumes<edm::View<reco::Candidate> > (iConfig.getParameter<edm::InputTag>("pfcands"))),
   triggerBitsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "bits" ))),
   triggerFlagsToken_( consumes<edm::TriggerResults>( iConfig.getParameter<edm::InputTag>( "flags" ))),
-  triggerFlashggToken_( consumes<edm::TriggerResults>( iConfig.getUntrackedParameter<InputTag> ("FlashggTrigger", InputTag("TriggerResults::FLASHggMicroAOD")))),
-  mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
+  triggerFlashggToken_( consumes<edm::TriggerResults>( iConfig.getUntrackedParameter<InputTag> ("FlashggTrigger", InputTag("TriggerResults::FLASHggMicroAOD"))))
+  //mJetCorrector(consumes<reco::JetCorrector>( iConfig.getParameter<edm::InputTag>("JetCorrectorTag")))
 { 
   numPassingCuts.resize(numCuts);
   for (int i=0; i<numCuts; i++) numPassingCuts[i]=0;
@@ -653,9 +656,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   Handle<View<flashgg::Electron> > theElectrons;  
   iEvent.getByToken( electronToken_, theElectrons );    
 
-  edm::Handle<reco::JetCorrector> corrector;
-  iEvent.getByToken(mJetCorrector, corrector);
-  jec_cor_ = corrector.product();
+  //edm::Handle<reco::JetCorrector> corrector;
+  //iEvent.getByToken(mJetCorrector, corrector);
+  //jec_cor_ = corrector.product();
        
   // ----------------------------------------------------------------------------------------------
   // Keep track of the total number of events
@@ -1748,8 +1751,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			//tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 			//apply JEC
 			Ptr<flashgg::Jet> thejet = Jets[jetCollectionIndex]->ptrAt( jetIndex );
-			double scale = applyJetCorrection(*thejet);
-			thejet->correctedJet("Uncorrected").setP4( scale * thejet->correctedJet("Uncorrected").p4() );
+			//double scale = applyJetCorrection(*thejet);
+			//thejet->correctedJet("Uncorrected").setP4( scale * thejet->correctedJet("Uncorrected").p4() );
 			tempJets[jetIndex] = Jets[jetCollectionIndex]->ptrAt( jetIndex );
 		      }
 
@@ -2231,22 +2234,22 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   //delete lazyToolnoZS;
 }
 
-double NewDiPhoAnalyzer::applyJetCorrection(const flashgg::Jet &y)
-    {
-      double jec_adjust = 1.;
-      double jec = jec_cor_->correction( y.correctedJet("Uncorrected") );
-      double oldjec = (y.energy()/y.correctedJet("Uncorrected").energy());
-     
-      //	std::cout << " DOING JEC! We get this jec from the corrector: " << jec << std::endl;
-      //	std::cout << "    ... previous jec was: " << oldjec << std::endl;
-      
-      jec_adjust = jec/oldjec;
-            
-      //float scale = jec_adjust;
-      //   std::cout << ": Jet has pt= " << y.pt() << " eta=" << y.eta()
-      //		<< " and we apply a multiplicative correction of " << scale << std::endl;
-       return jec_adjust;
-    }
+//double NewDiPhoAnalyzer::applyJetCorrection(const flashgg::Jet &y)
+//    {
+//      double jec_adjust = 1.;
+//      double jec = jec_cor_->correction( y.correctedJet("Uncorrected") );
+//      double oldjec = (y.energy()/y.correctedJet("Uncorrected").energy());
+//     
+//      //	std::cout << " DOING JEC! We get this jec from the corrector: " << jec << std::endl;
+//      //	std::cout << "    ... previous jec was: " << oldjec << std::endl;
+//      
+//      jec_adjust = jec/oldjec;
+//            
+//      //float scale = jec_adjust;
+//      //   std::cout << ": Jet has pt= " << y.pt() << " eta=" << y.eta()
+//      //		<< " and we apply a multiplicative correction of " << scale << std::endl;
+//       return jec_adjust;
+//    }
 
 
 
@@ -4558,10 +4561,11 @@ float NewDiPhoAnalyzer::applyEnergyScaling(int sampleID, float ptUncorr, float s
 }
 
 float NewDiPhoAnalyzer::getPtCorrected(float ptUncorr, float sceta, float r9, int run, int sampleID, float energy){
+  float ptScaled;
   float pt;
   if(sampleID>=10000){ //is data 
-    pt = applyEnergyScaling(sampleID, ptUncorr,sceta,r9, run); // apply scale to match MC z peak location
-    pt = applyGainCorr(pt,sceta,energy);                       // apply gain corr to correct slew-rate problem
+    ptScaled = applyEnergyScaling(sampleID, ptUncorr,sceta,r9, run); // apply scale to match MC z peak location
+    pt = applyGainCorr(ptScaled,sceta,energy);                       // apply gain corr to correct slew-rate problem
   }
   else pt = applyEnergySmearing(ptUncorr,sceta,r9, run);// is MC
   return pt;
