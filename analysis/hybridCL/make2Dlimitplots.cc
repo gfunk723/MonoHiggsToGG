@@ -98,7 +98,7 @@ void makePlots(TString inDir, TString outDir){
  l2b->SetNDC(kTRUE);
  l2b->SetTextFont(42);
 
- TString thestring = "Z'#rightarrow DM+H(#gamma#gamma)";
+ TString thestring = "Z'#rightarrow DM+h(#gamma#gamma)";
  TString add2hdm   = "(2HDM)";
  //latex.SetTextSize(0.036);
  //latex.SetTextAlign(12); // centered
@@ -144,10 +144,11 @@ void makePlots(TString inDir, TString outDir){
  // setup output plot
  TH2D * limits = new TH2D("limits","limits",8,0,8,6,0,6);
  limits->GetXaxis()->SetTitle("m_{Z'} [GeV]");
- limits->GetYaxis()->SetTitle("m_{A0} [GeV]");
+ limits->GetYaxis()->SetTitle("m_{A} [GeV]");
  limits->GetZaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
  limits->SetTitle("");
- limits->SetMaximum(3000);
+ limits->SetMaximum(1000);
+ limits->SetMinimum(0.1);
  limits->SetMarkerSize(2);
 
  // size of axis labels
@@ -296,50 +297,70 @@ void makePlots(TString inDir, TString outDir){
  }
 
  // only pick up the limits that are non-zero
- Double_t mass_400[8] = {600,800,1000,1200,1400,1700,2000,2500};
- Double_t mass_500[7] = {800,1000,1200,1400,1700,2000,2500};
- Double_t mass_600[7] = {800,1000,1200,1400,1700,2000,2500};
- Double_t mass_700[6] = {1000,1200,1400,1700,2000,2500};
- Double_t mass_800[6] = {1000,1200,1400,1700,2000,2500};
- // mA0 400
- Double_t limitval_exp_400[8] = {explimit400[0],explimit400[1],explimit400[2],explimit400[3],explimit400[4],explimit400[5],explimit400[6],explimit400[7]};
- Double_t limitval_obs_400[8] = {obslimit400[0],obslimit400[1],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5],obslimit400[6],obslimit400[7]};
- Double_t effval_400[8] = {eff_A0400[0],eff_A0400[1],eff_A0400[2],eff_A0400[3],eff_A0400[4],eff_A0400[5],eff_A0400[6],eff_A0400[7]};
- Double_t efferr_400[8] = {efferr_A0400[0],efferr_A0400[1],efferr_A0400[2],efferr_A0400[3],efferr_A0400[4],efferr_A0400[5],efferr_A0400[6],efferr_A0400[7]};
- // mA0 500
- Double_t limitval_exp_500[7] = {explimit500[1],explimit500[2],explimit500[3],explimit500[4],explimit500[5],explimit500[6],explimit500[7]};
- Double_t limitval_obs_500[7] = {obslimit500[1],obslimit500[2],obslimit500[3],obslimit500[4],obslimit500[5],obslimit500[6],obslimit500[7]};
- Double_t effval_500[7] = {eff_A0500[1],eff_A0500[2],eff_A0500[3],eff_A0500[4],eff_A0500[5],eff_A0500[6],eff_A0500[7]};
- Double_t efferr_500[7] = {efferr_A0500[1],efferr_A0500[2],efferr_A0500[3],efferr_A0500[4],efferr_A0500[5],efferr_A0500[6],efferr_A0500[7]};
- // mA0 600
- Double_t limitval_exp_600[7] = {explimit600[1],explimit600[2],explimit600[3],explimit600[4],explimit600[5],explimit600[6],explimit600[7]};
- Double_t limitval_obs_600[7] = {obslimit600[1],obslimit600[2],obslimit600[3],obslimit600[4],obslimit600[5],obslimit600[6],obslimit600[7]};
- Double_t effval_600[7] = {eff_A0600[1],eff_A0600[2],eff_A0600[3],eff_A0600[4],eff_A0600[5],eff_A0600[6],eff_A0600[7]};
- Double_t efferr_600[7] = {efferr_A0600[1],efferr_A0600[2],efferr_A0600[3],efferr_A0600[4],efferr_A0600[5],efferr_A0600[6],efferr_A0600[7]};
- // mA0 700
- Double_t limitval_exp_700[6] = {explimit700[2],explimit700[3],explimit700[4],explimit700[5],explimit700[6],explimit700[7]};
- Double_t limitval_obs_700[6] = {obslimit700[2],obslimit700[3],obslimit700[4],obslimit700[5],obslimit700[6],obslimit700[7]};
- Double_t effval_700[6] = {eff_A0700[2],eff_A0700[3],eff_A0700[4],eff_A0700[5],eff_A0700[6],eff_A0700[7]};
- Double_t efferr_700[6] = {efferr_A0700[2],efferr_A0700[3],efferr_A0700[4],efferr_A0700[5],efferr_A0700[6],efferr_A0700[7]};
- // mA0 800
- Double_t limitval_exp_800[6] = {explimit800[2],explimit800[3],explimit800[4],explimit800[5],explimit800[6],explimit800[7]};
- Double_t limitval_obs_800[6] = {obslimit800[2],obslimit800[3],obslimit800[4],obslimit800[5],obslimit800[6],obslimit800[7]};
- Double_t effval_800[6] = {eff_A0800[2],eff_A0800[3],eff_A0800[4],eff_A0800[5],eff_A0800[6],eff_A0800[7]};
- Double_t efferr_800[6] = {efferr_A0800[2],efferr_A0800[3],efferr_A0800[4],efferr_A0800[5],efferr_A0800[6],efferr_A0800[7]};
+ Double_t mass_300[7] = {600,800,1000,1200,1400,1700,2500};
+ Double_t mass_400[5] = {600,1000,1200,1400,1700};
+ Double_t mass_500[5] = {800,1200,1400,1700,2500};
+ Double_t mass_600[3] = {1200,1400,2500};
+ Double_t mass_700[4] = {1000,1400,1700,2500};
+ Double_t mass_800[3] = {1200,1700,2500};
 
- limit300 = new TGraph(nMasses,mass,explimit300);
- limit400 = new TGraph(nMasses,mass_400,limitval_exp_400);
- limit500 = new TGraph(7,mass_500,limitval_exp_500);
- limit600 = new TGraph(7,mass_600,limitval_exp_600);
- limit700 = new TGraph(6,mass_700,limitval_exp_700);
- limit800 = new TGraph(6,mass_800,limitval_exp_800);
+ const Int_t npts_300 = (sizeof(mass_300)/sizeof(*mass_300));
+ const Int_t npts_400 = (sizeof(mass_400)/sizeof(*mass_400));
+ const Int_t npts_500 = (sizeof(mass_500)/sizeof(*mass_500));
+ const Int_t npts_600 = (sizeof(mass_600)/sizeof(*mass_600));
+ const Int_t npts_700 = (sizeof(mass_700)/sizeof(*mass_700));
+ const Int_t npts_800 = (sizeof(mass_800)/sizeof(*mass_800));
+
+ // mA0 300
+ Double_t limitval_exp_300[npts_300] = {explimit300[0],explimit300[1],explimit300[2],explimit300[3],explimit300[4],explimit300[5],explimit300[7]};
+ Double_t limitval_obs_300[npts_300] = {obslimit300[0],obslimit300[1],obslimit300[2],obslimit300[3],obslimit300[4],obslimit300[5],obslimit300[7]};
+ Double_t effval_300[npts_300] = {eff_A0300[0],eff_A0300[1],eff_A0300[2],eff_A0300[3],eff_A0300[4],eff_A0300[5],eff_A0300[7]};
+ //Double_t efferr_300[npts_300] = {efferr_A0300[0],efferr_A0300[1],efferr_A0300[2],efferr_A0300[3],efferr_A0300[4],efferr_A0300[5],efferr_A0300[6],efferr_A0300[7]};
+ Double_t efferr_300[npts_300] = {0};
+ // mA0 400
+ Double_t limitval_exp_400[npts_400] = {explimit400[0],explimit400[2],explimit400[3],explimit400[4],explimit400[5]};
+ Double_t limitval_obs_400[npts_400] = {obslimit400[0],obslimit400[2],obslimit400[3],obslimit400[4],obslimit400[5]};
+ Double_t effval_400[npts_400] = {eff_A0400[0],eff_A0400[2],eff_A0400[3],eff_A0400[4],eff_A0400[5]};
+ //Double_t efferr_400[npts_400] = {efferr_A0400[0],efferr_A0400[1],efferr_A0400[2],efferr_A0400[3],efferr_A0400[4],efferr_A0400[5],efferr_A0400[6],efferr_A0400[7]};
+ Double_t efferr_400[npts_400] = {0};
+ // mA0 500
+ Double_t limitval_exp_500[npts_500] = {explimit500[1],explimit500[3],explimit500[4],explimit500[5],explimit500[7]};
+ Double_t limitval_obs_500[npts_500] = {obslimit500[1],obslimit500[3],obslimit500[4],obslimit500[5],obslimit500[7]};
+ Double_t effval_500[npts_500] = {eff_A0500[1],eff_A0500[3],eff_A0500[4],eff_A0500[5],eff_A0500[7]};
+ //Double_t efferr_500[npts_500] = {efferr_A0500[1],efferr_A0500[2],efferr_A0500[3],efferr_A0500[4],efferr_A0500[5],efferr_A0500[6],efferr_A0500[7]};
+ Double_t efferr_500[npts_500] = {0};
+ // mA0 600
+ Double_t limitval_exp_600[npts_600] = {explimit600[3],explimit600[4],explimit600[7]};
+ Double_t limitval_obs_600[npts_600] = {obslimit600[3],obslimit600[4],obslimit600[7]};
+ Double_t effval_600[npts_600] = {eff_A0600[3],eff_A0600[4],eff_A0600[7]};
+ //Double_t efferr_600[npts_600] = {efferr_A0600[1],efferr_A0600[2],efferr_A0600[3],efferr_A0600[4],efferr_A0600[5],efferr_A0600[6],efferr_A0600[7]};
+ Double_t efferr_600[npts_600] = {0};
+ // mA0 700
+ Double_t limitval_exp_700[npts_700] = {explimit700[2],explimit700[4],explimit700[5],explimit700[7]};
+ Double_t limitval_obs_700[npts_700] = {obslimit700[2],obslimit700[4],obslimit700[5],obslimit700[7]};
+ Double_t effval_700[npts_700] = {eff_A0700[2],eff_A0700[4],eff_A0700[5],eff_A0700[7]};
+ //Double_t efferr_700[npts_700] = {efferr_A0700[2],efferr_A0700[3],efferr_A0700[4],efferr_A0700[5],efferr_A0700[6],efferr_A0700[7]};
+ Double_t efferr_700[npts_700] = {0};
+ // mA0 800
+ Double_t limitval_exp_800[npts_800] = {explimit800[3],explimit800[5],explimit800[7]};
+ Double_t limitval_obs_800[npts_800] = {obslimit800[3],obslimit800[5],obslimit800[7]};
+ Double_t effval_800[npts_800] = {eff_A0800[3],eff_A0800[5],eff_A0800[7]};
+ //Double_t efferr_800[npts_800] = {efferr_A0800[2],efferr_A0800[3],efferr_A0800[4],efferr_A0800[5],efferr_A0800[6],efferr_A0800[7]};
+ Double_t efferr_800[npts_800] = {0};
+
+ limit300 = new TGraph(npts_300,mass_300,limitval_exp_300);
+ limit400 = new TGraph(npts_400,mass_400,limitval_exp_400);
+ limit500 = new TGraph(npts_500,mass_500,limitval_exp_500);
+ limit600 = new TGraph(npts_600,mass_600,limitval_exp_600);
+ limit700 = new TGraph(npts_700,mass_700,limitval_exp_700);
+ limit800 = new TGraph(npts_800,mass_800,limitval_exp_800);
  
- limit300_obs = new TGraph(nMasses,mass,obslimit300);
- limit400_obs = new TGraph(nMasses,mass_400,limitval_obs_400);
- limit500_obs = new TGraph(7,mass_500,limitval_obs_500);
- limit600_obs = new TGraph(7,mass_600,limitval_obs_600);
- limit700_obs = new TGraph(6,mass_700,limitval_obs_700);
- limit800_obs = new TGraph(6,mass_800,limitval_obs_800);
+ limit300_obs = new TGraph(npts_300,mass_300,limitval_obs_300);
+ limit400_obs = new TGraph(npts_400,mass_400,limitval_obs_400);
+ limit500_obs = new TGraph(npts_500,mass_500,limitval_obs_500);
+ limit600_obs = new TGraph(npts_600,mass_600,limitval_obs_600);
+ limit700_obs = new TGraph(npts_700,mass_700,limitval_obs_700);
+ limit800_obs = new TGraph(npts_800,mass_800,limitval_obs_800);
 
  //TGraphErrors* eff300 = new TGraphErrors(nMasses,mass,eff_A0300,0,efferr_A0300);
  //TGraphErrors* eff400 = new TGraphErrors(7,mass_400,effval_400,0,efferr_400);
@@ -354,12 +375,13 @@ void makePlots(TString inDir, TString outDir){
  TGraph* eff700 = new TGraph(6,mass_700,effval_700);
  TGraph* eff800 = new TGraph(6,mass_800,effval_800);
 
+
  //styling
  limit300->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limit300->GetYaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
  limit300->SetTitle("");
- limit300->SetMaximum(3000);
- limit300->SetMinimum(0.9);
+ limit300->SetMaximum(1000);
+ limit300->SetMinimum(0.1);
  limit300->SetLineWidth(2);
  limit400->SetLineWidth(2);
  limit500->SetLineWidth(2);
@@ -391,8 +413,8 @@ void makePlots(TString inDir, TString outDir){
  limit300_obs->GetXaxis()->SetTitle("m_{Z'} [GeV]");
  limit300_obs->GetYaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
  limit300_obs->SetTitle("");
- limit300_obs->SetMaximum(3000);
- limit300_obs->SetMinimum(0.9);
+ limit300_obs->SetMaximum(1000);
+ limit300_obs->SetMinimum(0.1);
  limit300_obs->SetLineWidth(2);
  limit400_obs->SetLineWidth(2);
  limit500_obs->SetLineWidth(2);
@@ -478,7 +500,8 @@ void makePlots(TString inDir, TString outDir){
  c->SaveAs(Form("%s/limits2D_2HDM_obs.png",outDir.Data()));
  c->SaveAs(Form("%s/limits2D_2HDM_obs.pdf",outDir.Data()));
 
- TLegend* leg = new TLegend(0.65,0.2,0.85,0.4,NULL,"brNDC"); // (x1,y1,x2,y2)
+ //TLegend* leg = new TLegend(0.65,0.2,0.85,0.4,NULL,"brNDC"); // (x1,y1,x2,y2)
+ TLegend* leg = new TLegend(0.65,0.35,0.85,0.55,NULL,"brNDC"); // (x1,y1,x2,y2)
  leg->SetTextSize(0.046);
  leg->SetBorderSize(0);
  leg->SetLineColor(1);
@@ -487,12 +510,12 @@ void makePlots(TString inDir, TString outDir){
  leg->SetFillColor(0);
  leg->SetFillStyle(0);
  leg->SetTextFont(42);
- leg->AddEntry(limit300,"m_{A0} = 300 GeV","pl");
- leg->AddEntry(limit400,"m_{A0} = 400 GeV","pl");
- leg->AddEntry(limit500,"m_{A0} = 500 GeV","pl");
- leg->AddEntry(limit600,"m_{A0} = 600 GeV","pl");
- leg->AddEntry(limit700,"m_{A0} = 700 GeV","pl");
- leg->AddEntry(limit800,"m_{A0} = 800 GeV","pl");
+ leg->AddEntry(limit300,"m_{A} = 300 GeV","pl");
+ leg->AddEntry(limit400,"m_{A} = 400 GeV","pl");
+ leg->AddEntry(limit500,"m_{A} = 500 GeV","pl");
+ leg->AddEntry(limit600,"m_{A} = 600 GeV","pl");
+ leg->AddEntry(limit700,"m_{A} = 700 GeV","pl");
+ leg->AddEntry(limit800,"m_{A} = 800 GeV","pl");
  leg->SetTextSize(0.03);
 
  TLine* line1 = new TLine();
@@ -595,12 +618,12 @@ void makePlots(TString inDir, TString outDir){
  TLegend* effleg = new TLegend(0.65,0.6,0.85,0.8); // (x1,y1,x2,y2)
  effleg->SetBorderSize(4);
  effleg->SetLineWidth(2);
- effleg->AddEntry(eff300,"m_{A0} = 300 GeV","pl");
- effleg->AddEntry(eff400,"m_{A0} = 400 GeV","pl");
- effleg->AddEntry(eff500,"m_{A0} = 500 GeV","pl");
- effleg->AddEntry(eff600,"m_{A0} = 600 GeV","pl");
- effleg->AddEntry(eff700,"m_{A0} = 700 GeV","pl");
- effleg->AddEntry(eff800,"m_{A0} = 800 GeV","pl");
+ effleg->AddEntry(eff300,"m_{A} = 300 GeV","pl");
+ effleg->AddEntry(eff400,"m_{A} = 400 GeV","pl");
+ effleg->AddEntry(eff500,"m_{A} = 500 GeV","pl");
+ effleg->AddEntry(eff600,"m_{A} = 600 GeV","pl");
+ effleg->AddEntry(eff700,"m_{A} = 700 GeV","pl");
+ effleg->AddEntry(eff800,"m_{A} = 800 GeV","pl");
  effleg->SetTextSize(0.03);
 
  // draw 1D efficiency comparisons
