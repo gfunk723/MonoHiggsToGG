@@ -3,6 +3,7 @@
 #include "TH1.h"
 #include "TDirectory.h"
 #include "TString.h"
+#include "TBranch.h"
 #include <iostream>
 
 using namespace std;
@@ -50,19 +51,23 @@ void addWeights(float lumiForWgt, TString path, TString sample){
 
    float sampleSumWgt = (float)h_sumW->Integral(); // sum of wgts in dataset
    int   nentries     = intree->GetEntries();      // number of entries 
+   float xsecWeight;
    float xsecToWeight = 0.;
 
    // ----------------------------------------------------------------  
    // setup output file 
    // ----------------------------------------------------------------  
 
+   //TFile *outfile = TFile::Open(filename,"recreate");
    TFile *outfile = TFile::Open("test.root","recreate");
-   TTree *outtree = (TTree*)infile->Get("diPhoAna/DiPhotonTree");
    // clone structure of input tree, but storing no events
+   TTree *outtree = (TTree*)infile->Get("diPhoAna/DiPhotonTree");
    outtree = intree->CloneTree(0); 
 
-   // new branches to be added
-   float xsecWeight, weight, mggNominal, mggGen;
+   // ----------------------------------------------------------------  
+   // new branch to be added
+   // ----------------------------------------------------------------  
+   float weight;	outtree->Branch("weight",&weight, "weight/F");
 
    // ----------------------------------------------------------------  
    // loop over output tree 
