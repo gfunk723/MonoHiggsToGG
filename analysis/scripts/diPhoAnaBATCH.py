@@ -5,8 +5,8 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC  = True;
-isSMh = True;
+isMC  = False;
+isSMh = False;
 is80X = True;
 isRunB = False;
 isRunH = False;
@@ -67,8 +67,12 @@ else:
     bit = 'TriggerResults::HLT'
     print "Using HLT"
 
-flag = 'TriggerResults::PAT'
-print "Using name PAT"
+if (isMC):
+    flag = 'TriggerResults::PAT'
+    print "Using name PAT"
+else:
+    flag = 'TriggerResults::RECO'
+    print "Using name RECO"
 #-----------------------------------
 
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 1000 )

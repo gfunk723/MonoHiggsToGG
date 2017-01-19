@@ -5,11 +5,11 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC  = True; 
+isMC  = False; 
 isSMh = False;
 is80X = True;
 isRunB = False;
-isRunH = False;
+isRunH = True;
 is76X = False;
 ######################
 
@@ -39,16 +39,16 @@ if (isMC):
         print "74X_mcRun2_asymptotic_v2"
      
 else:
-    if (is80x):
+    if (is80X):
 	if (isRunB): 
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80x_dataRun2_2016SeptRepro_v4', '') 
-            print "80x_dataRun2_2016SeptRepro_v4"
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
+            print "80X_dataRun2_2016SeptRepro_v4"
 	elif (isRunH): #runh
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80x_dataRun2_Prompt_v14', '') 
-            print "80x_dataRun2_Prompt_v14"
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v14', '') 
+            print "80X_dataRun2_Prompt_v14"
 	else: #runc,d,e,f,g 
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80x_dataRun2_2016SeptRepro_v3', '') 
-            print "80x_dataRun2_2016SeptRepro_v3"
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v3', '') 
+            print "80X_dataRun2_2016SeptRepro_v3"
     elif (is76X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '')
         print "76X_dataRun2_v15"
@@ -70,8 +70,13 @@ else:
     bit = 'TriggerResults::HLT'
     print "Using HLT"
 
-
-flag = 'TriggerResults::PAT'
+if (isMC):
+    flag = 'TriggerResults::PAT'
+    print "Using TriggerResults::PAT"
+else:
+    flag = 'TriggerResults::RECO'
+    print "Using TriggerResults::RECO"
+   
 #-----------------------------------
 
 
@@ -81,7 +86,8 @@ process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	#"file:myMicroAODOutputFile.root"
 	# 80X_v1
-	"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_3_0/MonoHaa_ZpBaryonic_MZp-100_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0/161117_092117/0000/myMicroAODOutputFile_1.root", 
+	"/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/DoubleEG/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-Run2016H-23Sep2016-v1-NewJSON/161123_131657/0000/myMicroAODOutputFile_1.root" 
+	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_3_0/MonoHaa_ZpBaryonic_MZp-100_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0/161117_092117/0000/myMicroAODOutputFile_1.root", 
 	# 80X_v0
 	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root",
       	)

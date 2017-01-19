@@ -53,7 +53,7 @@ def main():
         diskoutputdir = "" 
 
     #else: diskoutputdir = '/afs/cern.ch/user/m/mzientek/private/MonoHggCMSSW80X/CMSSW_8_0_8_patch1/src/MonoHiggsToGG/output'
-    else: diskoutputdir = '/afs/cern.ch/work/m/mzientek/private/25ns_v80X_v2'
+    else: diskoutputdir = '/afs/cern.ch/work/m/mzientek/private/25ns_v80X_v3'
     diskoutputmain = diskoutputdir+"/"+opt.prefix+"/"+output
 
     os.system("mkdir -p "+opt.prefix+"/"+output)

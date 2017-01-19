@@ -315,6 +315,7 @@ struct diphoTree_struc_ {
   int nMediumBjets;
   int vhtruth;
   int metF_GV;
+  int metF_EcalDeadCell;
   int metF_HBHENoise;
   int metF_HBHENoiseIso;
   int metF_CSC;
@@ -706,6 +707,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   //  MET filters 
   // ----------------------------------------------------------------------------------------------
   int metF_GV = 1;
+  int metF_EcalDeadCell = 1;
   int metF_HBHENoise = 1;
   int metF_HBHENoiseIso = 1;
   int metF_eeBadSC = 1;
@@ -721,20 +723,21 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   const edm::TriggerNames &flagsNames = iEvent.triggerNames( *triggerFlags );
   for( unsigned index = 0; index < flagsNames.size(); ++index ) {
     //std::cout << " trigger flag = " << flagsNames.triggerName(index) << std::endl;
-    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_goodVertices" && !triggerFlags->accept( index )) metF_GV = 0;
-    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilter" && !triggerFlags->accept( index )) metF_HBHENoise = 0;
-    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilterIso" && !triggerFlags->accept( index )) metF_HBHENoiseIso = 0;
-    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter" && !triggerFlags->accept( index )) metF_eeBadSC = 0;
-    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_globalTightHalo2016Filter" && !triggerFlags->accept( index )) metF_globalTightHalo = 0; // for 2016
-    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter" && !triggerFlags->accept( index )) metF_CSC = 0; // only for 2015 data 
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_goodVertices"                       && !triggerFlags->accept( index )) metF_GV = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_EcalDeadCellTriggerPrimitiveFilter" && !triggerFlags->accept( index )) metF_EcalDeadCell = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseFilter"                    && !triggerFlags->accept( index )) metF_HBHENoise = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_HBHENoiseIsoFilter"                 && !triggerFlags->accept( index )) metF_HBHENoiseIso = 0;
+    if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_eeBadScFilter"                      && !triggerFlags->accept( index )) metF_eeBadSC = 0;
+    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_globalTightHalo2016Filter"          && !triggerFlags->accept( index )) metF_globalTightHalo = 0; 
+    //if (TString::Format((flagsNames.triggerName( index )).c_str())=="Flag_CSCTightHalo2015Filter"             && !triggerFlags->accept( index )) metF_CSC = 0; 
   }
 
   const edm::TriggerNames &flashggtriggerNames = iEvent.triggerNames( *triggerFlashgg );
   for( unsigned index = 0; index < flashggtriggerNames.size(); ++index ){
     //std::cout << " trigger flag = " << flashggtriggerNames.triggerName(index) << std::endl;
-    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="Flag_BadChargedCandidateFilter" && !triggerFlags->accept( index )) metF_badChargedHadron = 0;
-    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="Flag_BadPFMuonFilter" && !triggerFlags->accept( index )) metF_badMuon = 0;
-    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="Flag_globalTightHalo2016Filter" && !triggerFlags->accept( index )) metF_globalTightHalo = 0;
+    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="flag_BadChargedCandidateFilter" && !triggerFlashgg->accept( index )) metF_badChargedHadron = 0;
+    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="flag_BadPFMuonFilter"           && !triggerFlashgg->accept( index )) metF_badMuon = 0;
+    if (TString::Format((flashggtriggerNames.triggerName( index )).c_str())=="flag_globalTightHalo2016Filter" && !triggerFlashgg->accept( index )) metF_globalTightHalo = 0;
   }
 
   // ----------------------------------------------------------------------------------------------
@@ -2184,6 +2187,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.nMediumBjets = nMediumBjets;
 		      treeDipho_.vhtruth = vhtruth;
 		      treeDipho_.metF_GV = metF_GV;
+		      treeDipho_.metF_EcalDeadCell = metF_EcalDeadCell;
 		      treeDipho_.metF_HBHENoise = metF_HBHENoise;
 		      treeDipho_.metF_HBHENoiseIso = metF_HBHENoiseIso;
 		      treeDipho_.metF_CSC = metF_CSC;
@@ -2539,6 +2543,7 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("nMediumBjets",&(treeDipho_.nMediumBjets),"nMediumBjets/I");
   DiPhotonTree->Branch("vhtruth",&(treeDipho_.vhtruth),"vhtruth/I");
   DiPhotonTree->Branch("metF_GV",&(treeDipho_.metF_GV),"metF_GV/I");
+  DiPhotonTree->Branch("metF_EcalDeadCell",&(treeDipho_.metF_EcalDeadCell),"metF_EcalDeadCell/I");
   DiPhotonTree->Branch("metF_HBHENoise",&(treeDipho_.metF_HBHENoise),"metF_HBHENoise/I");
   DiPhotonTree->Branch("metF_HBHENoiseIso",&(treeDipho_.metF_HBHENoiseIso),"metF_HBHENoiseIso/I");
   DiPhotonTree->Branch("metF_CSC",&(treeDipho_.metF_CSC),"metF_CSC/I");
@@ -2801,6 +2806,7 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.nMediumBjets = -500;
   treeDipho_.vhtruth = -500;
   treeDipho_.metF_GV = -500;
+  treeDipho_.metF_EcalDeadCell = -500;
   treeDipho_.metF_HBHENoise = -500;
   treeDipho_.metF_HBHENoiseIso = -500;
   treeDipho_.metF_CSC = -500;
