@@ -1,9 +1,9 @@
 #! /bin/sh
 
-path="../macro/data/25ns_v80X_v2/"
+path="../macro/data/25ns_v80X_v3/"
 
 root -l -b << EOF
-.L skim.C++
+.L ../scripts/skim.C++
 
 skim("${path}","DoubleEG");
 

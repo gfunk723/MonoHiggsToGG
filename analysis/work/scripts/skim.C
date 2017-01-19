@@ -5,7 +5,7 @@
 #include "TDirectory.h"
 #include "TLorentzVector.h"
 #include <iostream>
-#include "../../../DataFormats/Math/interface/deltaPhi.h"
+#include "../../../../DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 
@@ -19,7 +19,8 @@ void skim(TString path, TString sample){
   TFile * infile = TFile::Open(Form("%s/%s.root",path.Data(),sample.Data()));
   TTree * intree = (TTree*)infile->Get("DiPhotonTree");
   const Bool_t isMC = !sample.Contains("DoubleEG",TString::kExact);
-  const Bool_t doDupRemoval = (sample.Contains("QCD",TString::kExact) || sample.Contains("GJets",TString::kExact));
+  const Bool_t doQCD_DupRem  = (sample.Contains("QCD",TString::kExact));
+  const Bool_t doGJet_DupRem = (sample.Contains("GJets",TString::kExact));
   TH1F * h_entries         = (TH1F*)infile->Get("h_entries");
   TH1F * h_sumW            = (TH1F*)infile->Get("h_sumW");
   TH1F * h_selection       = (TH1F*)infile->Get("h_selection");
@@ -40,16 +41,23 @@ void skim(TString path, TString sample){
   Float_t eta2;			intree->SetBranchAddress("eta2",&eta2);
   Float_t phi1;			intree->SetBranchAddress("phi1",&phi1);
   Float_t phi2;			intree->SetBranchAddress("phi2",&phi2);
+
   // met variables
   Float_t t1pfmet; 		intree->SetBranchAddress("t1pfmet",&t1pfmet);
   Float_t t1pfmetPhi;		intree->SetBranchAddress("t1pfmetPhi",&t1pfmetPhi);
-  Float_t t1pfmetSumEt;		intree->SetBranchAddress("t1pfmetSumEt",&t1pfmetSumEt);
-  Int_t   metF_GV;		intree->SetBranchAddress("metF_GV",&metF_GV);
-  Int_t   metF_HBHENoise;	intree->SetBranchAddress("metF_HBHENoise",&metF_HBHENoise);
-  Int_t   metF_HBHENoiseIso;	intree->SetBranchAddress("metF_HBHENoiseIso",&metF_HBHENoiseIso);
-  Int_t   metF_eeBadSC;		intree->SetBranchAddress("metF_eeBadSC",&metF_eeBadSC);
-  Int_t   metF_MuonBadTrack;	intree->SetBranchAddress("metF_MuonBadTrack",&metF_MuonBadTrack);
-  Int_t   metF_HadronTrackRes;	intree->SetBranchAddress("metF_HadronTrackRes",&metF_HadronTrackRes);
+  Float_t t1pfmetCorr;		intree->SetBranchAddress("t1pfmetCorr",&t1pfmetCorr);
+  Float_t t1pfmetCorrPhi;	intree->SetBranchAddress("t1pfmetCorrPhi",&t1pfmetCorrPhi);
+
+  // met filters
+  Int_t metF_GV;		intree->SetBranchAddress("metF_GV",&metF_GV);
+  Int_t metF_globalTightHalo;	intree->SetBranchAddress("metF_globalTightHalo",&metF_globalTightHalo);
+  Int_t metF_HBHENoise;		intree->SetBranchAddress("metF_HBHENoise",&metF_HBHENoise);
+  Int_t metF_HBHENoiseIso;	intree->SetBranchAddress("metF_HBHENoiseIso",&metF_HBHENoiseIso);
+  Int_t metF_EcalDeadCell;	intree->SetBranchAddress("metF_EcalDeadCell",&metF_EcalDeadCell);
+  Int_t metF_eeBadSC;		intree->SetBranchAddress("metF_eeBadSC",&metF_eeBadSC);
+  Int_t metF_badMuon;		intree->SetBranchAddress("metF_badMuon",&metF_badMuon);
+  Int_t metF_badChargedHadron;  intree->SetBranchAddress("metF_badChargedHadron",&metF_badChargedHadron); 
+
   // QCD/GJet dup. removal
   Int_t   genmatch1;		intree->SetBranchAddress("genmatch1",&genmatch1);
   Int_t   genmatch2; 		intree->SetBranchAddress("genmatch2",&genmatch2);
@@ -139,22 +147,27 @@ void skim(TString path, TString sample){
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
     // ----------------------------------------------------------------
-    // Apply the t1pfmet phi Correction
+    // Apply the t1pfmet phi Correction (old method)
     // ----------------------------------------------------------------
 
-    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE;
-    if (!isMC){ 
-      t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
-      t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrData[2] + fMETCorrData[3]*t1pfmetSumEt);
-    }
-    else{
-      t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrMC[0] + fMETCorrMC[1]*t1pfmetSumEt);
-      t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrMC[2] + fMETCorrMC[3]*t1pfmetSumEt);
-    }
-    t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
-    correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
-    Double_t t1pfmetPhiCorr = correctedMet.Phi(); 
-    Double_t t1pfmetCorr = correctedMet.Pt();
+    Float_t t1pfmetPhiCorr = 0;
+    //-----> now just take the official corr from ntuple
+    t1pfmetPhiCorr = t1pfmetCorrPhi; 
+
+    //-----> old met phi corr recipe 
+    //Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorr;
+    //if (!isMC){ 
+    //  t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
+    //  t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrData[2] + fMETCorrData[3]*t1pfmetSumEt);
+    //}
+    //else{
+    //  t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrMC[0] + fMETCorrMC[1]*t1pfmetSumEt);
+    //  t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrMC[2] + fMETCorrMC[3]*t1pfmetSumEt);
+    //}
+    //t1pfmetCorr = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+    //TLorentzVector correctedMet;
+    //correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetSumEt);
+    //t1pfmetPhiCorr = correctedMet.Phi();
 
     // ----------------------------------------------------------------
     // look at deltaPhi(gg,MET)
@@ -210,12 +223,17 @@ void skim(TString path, TString sample){
     // Apply the cuts 
     // ----------------------------------------------------------------
 
-    const Bool_t triggered      = (isMC)?true:hltDiphoton30Mass95;
-    const Bool_t passMETfilters = (isMC)?true:(metF_GV && metF_HBHENoise && metF_HBHENoiseIso && metF_eeBadSC && metF_MuonBadTrack && metF_HadronTrackRes);
-    const Bool_t passKinematics = (pt1>0.5*mgg && pt2>0.25*mgg && ptgg>90 && mgg>=100 && mgg<=200);
-    const Bool_t passDupRemoval = (!doDupRemoval || (doDupRemoval && (genmatch1==1 && genmatch2==1)));
-    const Bool_t passLepVetos   = (nEle<2 && nMuons==0);
-    const Bool_t passDphiCuts   = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
+    const Bool_t triggered        = (isMC)?true:hltDiphoton30Mass95;
+    const Bool_t passMetFil_All   = (metF_GV && metF_globalTightHalo && metF_HBHENoise && metF_HBHENoiseIso && metF_EcalDeadCell && metF_badMuon && metF_badChargedHadron);
+    const Bool_t passMetFil_Data  = (isMC)?true:(metF_eeBadSC); // filter for data only
+    const Bool_t passMETfilters   = (passMetFil_All && passMetFil_Data);
+
+    const Bool_t passKinematics   = (pt1>0.5*mgg && pt2>0.25*mgg && ptgg>90 && mgg>=100 && mgg<=200);
+    const Bool_t pass_GJet_DupRem = (!doGJet_DupRem || (doGJet_DupRem && (genmatch1==1 && genmatch2==1)));
+    const Bool_t pass_QCD_DupRem  = (!doQCD_DupRem  || (doQCD_DupRem  && (genmatch1==1 || genmatch2==1)));
+    const Bool_t passDupRemoval   = (pass_QCD_DupRem && pass_GJet_DupRem);
+    const Bool_t passLepVetos     = (nEle<2 && nMuons==0);
+    const Bool_t passDphiCuts     = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
 
     // skim cut
     if (triggered && passMETfilters && passKinematics && passDupRemoval && passLepVetos && passDphiCuts)

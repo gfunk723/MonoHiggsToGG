@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void addWeights(TString path, TString sample, float lumiForWgt){
+void addWeights(float lumiForWgt, TString path, TString sample){
 
    // ----------------------------------------------------------------  
    // get input from trees
