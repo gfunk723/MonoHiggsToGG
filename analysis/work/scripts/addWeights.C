@@ -58,8 +58,7 @@ void addWeights(float lumiForWgt, TString path, TString sample){
    // setup output file 
    // ----------------------------------------------------------------  
 
-   //TFile *outfile = TFile::Open(filename,"recreate");
-   TFile *outfile = TFile::Open("test.root","recreate");
+   TFile *outfile = TFile::Open(filename,"recreate");
    // clone structure of input tree, but storing no events
    TTree *outtree = (TTree*)infile->Get("diPhoAna/DiPhotonTree");
    outtree = intree->CloneTree(0); 
