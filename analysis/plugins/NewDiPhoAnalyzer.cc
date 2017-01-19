@@ -162,6 +162,7 @@ struct diphoTree_struc_ {
   float t1pfmetPhotonEnDown     ;
   float t1pfmetUnclusteredEnUp;
   float t1pfmetUnclusteredEnDown;
+  float t1pfmetCorr;
   float t1pfmetCorrPhi;
   float t1pfmetCorrPx;
   float t1pfmetCorrPy;
@@ -333,6 +334,8 @@ struct diphoTree_struc_ {
   float massCorrScaleUp;
   float massCorrScaleDown;
   float massRaw;
+  float massOrig;
+  float ptggOrig;
   int genZ;
   float ptZ;
   float etaZ;
@@ -1139,8 +1142,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		float subleadPhi    = diphoPtr->subLeadingPhoton()->phi();   	
 		float subleadPt     = getPtCorrected(diphoPtr->subLeadingPhoton()->et(), subleadScEta,subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
       
-		TLorentzVector* p1=new TLorentzVector(0,0,0,0);;
-		TLorentzVector* p2=new TLorentzVector(0,0,0,0);;
+		TLorentzVector* p1=new TLorentzVector(0,0,0,0);
+		TLorentzVector* p2=new TLorentzVector(0,0,0,0);
 		p1->SetPtEtaPhiM(leadPt,diphoPtr->leadingPhoton()->eta() , leadPhi, 0);
 		p2->SetPtEtaPhiM(subleadPt, diphoPtr->subLeadingPhoton()->eta(), subleadPhi, 0);
 		float thisSystemMggCorr = (*p1+*p2).M();
@@ -1189,36 +1192,49 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  for( size_t diphotonlooper = 0; diphotonlooper < vtxDipho.size(); diphotonlooper++ ) {  
 		    int theDiphoton = vtxDipho[diphotonlooper];
 		    Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
-		    float theMass = diphoPtr->mass();
-		
-		    //correct mass for smearing and scaling
+
+                    // photon variables
+                    float leadEt = diphoPtr->leadingPhoton()->et();
 		    float leadR9noZS = diphoPtr->leadingPhoton()->full5x5_r9();
-		    float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();   	
+		    float leadScEta  = (diphoPtr->leadingPhoton()->superCluster())->eta();  
+                    float leadPhi = diphoPtr->leadingPhoton()->phi();
+
+                    float subleadEt = diphoPtr->subLeadingPhoton()->et(); 	
 		    float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();
 		    float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta();   	
-	      
-		    float leadSmearing	= getSmearingValue( leadScEta, leadR9noZS,0);
-		    float subleadSmearing	= getSmearingValue( subleadScEta,subleadR9noZS  ,0);
+                    float subleadPhi = diphoPtr->subLeadingPhoton()->phi();
 
+                    // pick up the corrections
+		    float leadPt    = getPtCorrected(leadEt,       leadScEta,    leadR9noZS, run, sampleID, diphoPtr->leadingPhoton()->seedEnergy());
+		    float subleadPt = getPtCorrected(subleadEt, subleadScEta, subleadR9noZS, run, sampleID, diphoPtr->subLeadingPhoton()->seedEnergy());
+
+		    //float theMass = diphoPtr->mass(); // uncorr mass
+		    TLorentzVector* p1=new TLorentzVector(0,0,0,0);
+		    TLorentzVector* p2=new TLorentzVector(0,0,0,0);
+		    p1->SetPtEtaPhiM(leadPt,    diphoPtr->leadingPhoton()->eta(),    leadPhi,    0);
+		    p2->SetPtEtaPhiM(subleadPt, diphoPtr->subLeadingPhoton()->eta(), subleadPhi, 0);
+		    float theMass = (*p1+*p2).M();
+		
+		    //correct mass for smearing and scaling
+		    float leadSmearing		= getSmearingValue( leadScEta, leadR9noZS,0);
+		    float subleadSmearing	= getSmearingValue( subleadScEta,subleadR9noZS  ,0);
 		    float gaussMean		= 1.0;
-              	
 		    TRandom Rand1(event);
 		    float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
 		    TRandom Rand2(event+83941);
 		    float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
-		    float massCorrSmear	= theMass*sqrt(Smear1*Smear2);
+		    float massCorrSmear		= theMass*sqrt(Smear1*Smear2);
 		
 		    // scaling of Data
-		    float leadScaling	= getScalingValue( sampleID, leadScEta, leadR9noZS , run, 0);
+		    float leadScaling		= getScalingValue( sampleID, leadScEta, leadR9noZS , run, 0);
 		    float subleadScaling	= getScalingValue( sampleID, subleadScEta, subleadR9noZS, run, 0);
 		    float Scaling		= leadScaling*subleadScaling;
-		    float massCorrScale	= theMass*sqrt(Scaling);
+		    float massCorrScale		= theMass*sqrt(Scaling);
 
 		    float theMassCorr = theMass;
-	
 		    // final theMassCorr (has Smearing or Scaling applied)
 		    if (sampleID>0 && sampleID<10000){
-		      theMassCorr = massCorrSmear;	  // smear mass for MC
+		      theMassCorr = massCorrSmear;    // smear mass for MC
 		    }
 		    else theMassCorr = massCorrScale; // scale mass for Data
 		
@@ -1283,14 +1299,21 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float higgsVtxX, higgsVtxY, higgsVtxZ;
 		      float genVtxX, genVtxY, genVtxZ; 
 		      int eleveto1, eleveto2;
-		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi,t1pfmetCorrPhi,t1pfmetCorrPx,t1pfmetCorrPy,t1pfmetSumEt,calomet,calometPhi, calometSumEt, t1p2pfmet;
-		      float t1pfmetJetEnUp ,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown,t1pfmetElectronEnUp   ,t1pfmetElectronEnDown   ,t1pfmetTauEnUp,t1pfmetTauEnDown, t1pfmetPhotonEnUp, t1pfmetPhotonEnDown,t1pfmetUnclusteredEnUp,t1pfmetUnclusteredEnDown;
+		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi,t1pfmetSumEt;
+                      float t1pfmetCorr,t1pfmetCorrPhi,t1pfmetCorrPx,t1pfmetCorrPy; 
+                      float calomet,calometPhi, calometSumEt, t1p2pfmet;
+		      float t1pfmetJetEnUp,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown;
+                      float t1pfmetElectronEnUp,t1pfmetElectronEnDown,t1pfmetTauEnUp,t1pfmetTauEnDown;
+                      float t1pfmetPhotonEnUp, t1pfmetPhotonEnDown,t1pfmetUnclusteredEnUp,t1pfmetUnclusteredEnDown;
 		      int passCHiso1, passCHiso2, passNHiso1, passNHiso2, passPHiso1, passPHiso2, passSieie1, passSieie2, passHoe1, passHoe2;
-		      int passTightCHiso1, passTightCHiso2, passTightNHiso1, passTightNHiso2, passTightPHiso1, passTightPHiso2, passTightSieie1, passTightSieie2, passTightHoe1, passTightHoe2;
-		      int passLooseCHiso1, passLooseCHiso2, passLooseNHiso1, passLooseNHiso2, passLoosePHiso1, passLoosePHiso2, passLooseSieie1, passLooseSieie2, passLooseHoe1, passLooseHoe2;
+		      int passTightCHiso1, passTightCHiso2, passTightNHiso1, passTightNHiso2, passTightPHiso1, passTightPHiso2; 
+                      int passTightSieie1, passTightSieie2, passTightHoe1, passTightHoe2;
+		      int passLooseCHiso1, passLooseCHiso2, passLooseNHiso1, passLooseNHiso2, passLoosePHiso1, passLoosePHiso2;
+                      int passLooseSieie1, passLooseSieie2, passLooseHoe1, passLooseHoe2;
 		      int nEle, nMuons, nJets, nLooseBjets, nMediumBjets;
 		      int vhtruth;
 
+                      float ptggOrig, massOrig;
 		      float massCorrSmear, massCorrScale, massRaw;
 		      float massCorrSmearUp, massCorrSmearDown;
 		      float massCorrScaleUp, massCorrScaleDown;
@@ -1305,38 +1328,39 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		
 		      //met type1 corrected
 		      //t1pfmet = theMET->corPt(pat::MET::Type1);
-		      t1pfmet = theMET->pt();
-		      t1pfmetPhi = theMET->corPhi(pat::MET::Type1);       // uncorr
-		      t1pfmetCorrPhi = theMET->corPhi(pat::MET::Type1XY); // corr phi
-                      t1pfmetCorrPx  = theMET->corPx(pat::MET::Type1XY);  // corr px
-                      t1pfmetCorrPy  = theMET->corPy(pat::MET::Type1XY);  // corr py 
-		      t1pfmetSumEt = theMET->sumEt();
-
-		      //add MET systematic variables Livia
+		      t1pfmetSumEt	= theMET->sumEt();                   // uncorr sumEt
+		      t1pfmet		= theMET->pt();                      // uncorr MET 
+		      t1pfmetPhi	= theMET->corPhi(pat::MET::Type1);   // uncorr phi 
+		      t1pfmetCorrPhi	= theMET->corPhi(pat::MET::Type1XY); // corr phi
+                      t1pfmetCorrPx	= theMET->corPx(pat::MET::Type1XY);  // corr px
+                      t1pfmetCorrPy	= theMET->corPy(pat::MET::Type1XY);  // corr py
+                      t1pfmetCorr       = TMath::Sqrt(t1pfmetCorrPx*t1pfmetCorrPx + t1pfmetCorrPy*t1pfmetCorrPy); // corr MET
+                    
+		      //add MET systematic variables 
 		      t1pfmetJetEnUp		= theMET->shiftedPt(flashgg::Met::JetEnUp);
-		      t1pfmetJetEnDown	= theMET->shiftedPt(flashgg::Met::JetEnDown);
+		      t1pfmetJetEnDown		= theMET->shiftedPt(flashgg::Met::JetEnDown);
 		      t1pfmetJetResUp		= theMET->shiftedPt(flashgg::Met::JetResUp);
-		      t1pfmetJetResDown	= theMET->shiftedPt(flashgg::Met::JetResDown);
+		      t1pfmetJetResDown		= theMET->shiftedPt(flashgg::Met::JetResDown);
 		      t1pfmetMuonEnUp		= theMET->shiftedPt(flashgg::Met::MuonEnUp);
-		      t1pfmetMuonEnDown	= theMET->shiftedPt(flashgg::Met::MuonEnDown);
+		      t1pfmetMuonEnDown		= theMET->shiftedPt(flashgg::Met::MuonEnDown);
 		      t1pfmetElectronEnUp	= theMET->shiftedPt(flashgg::Met::ElectronEnUp);
 		      t1pfmetElectronEnDown	= theMET->shiftedPt(flashgg::Met::ElectronEnDown);
 		      t1pfmetTauEnUp		= theMET->shiftedPt(flashgg::Met::TauEnUp);
-		      t1pfmetTauEnDown	= theMET->shiftedPt(flashgg::Met::TauEnDown);
-		      t1pfmetPhotonEnUp	= theMET->shiftedPt(flashgg::Met::PhotonEnUp);
+		      t1pfmetTauEnDown		= theMET->shiftedPt(flashgg::Met::TauEnDown);
+		      t1pfmetPhotonEnUp		= theMET->shiftedPt(flashgg::Met::PhotonEnUp);
 		      t1pfmetPhotonEnDown	= theMET->shiftedPt(flashgg::Met::PhotonEnDown);
 		      t1pfmetUnclusteredEnUp	= theMET->shiftedPt(flashgg::Met::UnclusteredEnUp);
-		      t1pfmetUnclusteredEnDown= theMET->shiftedPt(flashgg::Met::UnclusteredEnDown);
+		      t1pfmetUnclusteredEnDown	= theMET->shiftedPt(flashgg::Met::UnclusteredEnDown);
 
 		      //met correction type 1+2
 		      t1p2pfmet = theMET->corPt(flashgg::Met::Type1XY);
 
 		      //uncorrected met
-		      pfmet = theMET->uncorPt();
-		      pfmetPhi = theMET->uncorPhi();
-		      pfmetSumEt = theMET->uncorSumEt();
-		      calomet = theMET->caloMETPt();
-		      calometPhi = theMET->caloMETPhi();
+		      pfmet 	   = theMET->uncorPt();
+		      pfmetPhi 	   = theMET->uncorPhi();
+		      pfmetSumEt   = theMET->uncorSumEt();
+		      calomet	   = theMET->caloMETPt();
+		      calometPhi   = theMET->caloMETPhi();
 		      calometSumEt = theMET->caloMETSumEt();
 
 		      //-------> diphotonBDTvtx system properties 
@@ -1348,19 +1372,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      BDTindex   = candDiphoBDTVtxPtr->vertexIndex();
 		      Vtx0index  = candDiphoPtr->vertexIndex();
 
-		      //-------> diphoton system properties 
-		      ptgg = candDiphoPtr->pt();
-		      massRaw  = candDiphoPtr->mass();
 
 		      //-------> individual photon properties
 		      sceta1    = (candDiphoPtr->leadingPhoton()->superCluster())->eta();
-		      r91	  = candDiphoPtr->leadingPhoton()->full5x5_r9();
-		      ptUncorr1       = candDiphoPtr->leadingPhoton()->et();
+		      r91	= candDiphoPtr->leadingPhoton()->full5x5_r9();
+		      ptUncorr1	= candDiphoPtr->leadingPhoton()->et();
 		      pt1       = getPtCorrected(ptUncorr1, sceta1, r91, run, sampleID, candDiphoPtr->leadingPhoton()->seedEnergy());
-		      ptOverM1  = pt1/massRaw;
 		      eta1      = candDiphoPtr->leadingPhoton()->eta();
 		      phi1      = candDiphoPtr->leadingPhoton()->phi();
-		      sieie1	  = candDiphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
+		      sieie1	= candDiphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
 		      hoe1      = candDiphoPtr->leadingPhoton()->hadronicOverEm();
 		      scRawEne1 = candDiphoPtr->leadingPhoton()->superCluster()->rawEnergy();
 		      chiso1    = TMath::Max(candDiphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta()),0.);
@@ -1370,13 +1390,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      eleveto1  = 0;
 		      if (candDiphoPtr->leadingPhoton()->passElectronVeto()) eleveto1 = 1;
 		      sceta2    = (candDiphoPtr->subLeadingPhoton()->superCluster())->eta();
-		      r92	  = candDiphoPtr->subLeadingPhoton()->full5x5_r9();
-		      ptUncorr2       = candDiphoPtr->subLeadingPhoton()->et();
-		      pt2     = getPtCorrected(ptUncorr2, sceta2, r92, run, sampleID, candDiphoPtr->subLeadingPhoton()->seedEnergy());
-		      ptOverM2  = pt2/massRaw;
+		      r92	= candDiphoPtr->subLeadingPhoton()->full5x5_r9();
+		      ptUncorr2 = candDiphoPtr->subLeadingPhoton()->et();
+		      pt2       = getPtCorrected(ptUncorr2, sceta2, r92, run, sampleID, candDiphoPtr->subLeadingPhoton()->seedEnergy());
 		      eta2      = candDiphoPtr->subLeadingPhoton()->eta();
 		      phi2      = candDiphoPtr->subLeadingPhoton()->phi();
-		      sieie2	  = candDiphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
+		      sieie2	= candDiphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta();
 		      hoe2      = candDiphoPtr->subLeadingPhoton()->hadronicOverEm();
 		      scRawEne2 = candDiphoPtr->subLeadingPhoton()->superCluster()->rawEnergy();
 		      chiso2    = TMath::Max(candDiphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta()),0.);
@@ -1385,39 +1404,50 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	
 		      eleveto2  = 0;
 		      if (candDiphoPtr->subLeadingPhoton()->passElectronVeto()) eleveto2 = 1;
-	
+
+		      //-------> diphoton system properties 
+		      massOrig = candDiphoPtr->mass(); // uncorr mass
+		      ptggOrig = candDiphoPtr->pt();   // uncorr ptgg
+		      TLorentzVector p1, p2, gg;
+		      p1.SetPtEtaPhiM(pt1, eta1, phi1, 0);
+		      p2.SetPtEtaPhiM(pt2, eta2, phi2, 0);
+                      gg = p1 + p2;
+		      massRaw   = gg.M();
+                      ptgg      = gg.Pt();
+		      ptOverM1  = pt1/massRaw;
+		      ptOverM2  = pt2/massRaw;
+
 		      //-------> photon selection (should be on, may be useful for extra studies
 		      presel1 = isGammaPresel( sceta1, pt1, r91, chiso1, hoe1 ); 
 		      presel2 = isGammaPresel( sceta2, pt2, r92, chiso2, hoe2 ); 
 	
 		
 		      //-------> correct mass for smearing and scaling
-		      float leadSmearing	  = getSmearingValue( sceta1, r91, 0 );
-		      float subleadSmearing	  = getSmearingValue( sceta2, r92, 0 );
+		      float leadSmearing	= getSmearingValue( sceta1, r91, 0 );
+		      float subleadSmearing	= getSmearingValue( sceta2, r92, 0 );
 		      //-------> smear up and down for systematics
-		      float leadSmearingUp	  = getSmearingValue( sceta1, r91, 1 );
-		      float subleadSmearingUp	  = getSmearingValue( sceta2, r92, 1 );
-		      float leadSmearingDown	  = getSmearingValue( sceta1, r91, -1 );
-		      float subleadSmearingDown = getSmearingValue( sceta2, r92, -1 );
-
+		      float leadSmearingUp	= getSmearingValue( sceta1, r91, 1 );
+		      float subleadSmearingUp	= getSmearingValue( sceta2, r92, 1 );
+		      float leadSmearingDown	= getSmearingValue( sceta1, r91, -1 );
+		      float subleadSmearingDown	= getSmearingValue( sceta2, r92, -1 );
 		      float gaussMean		= 1.0;
               	
 		      TRandom Rand1(event);
 		      float Smear1 		= Rand1.Gaus(gaussMean,leadSmearing);
 		      float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
-		      float Smear1Down	= Rand1.Gaus(gaussMean,leadSmearingDown);
+		      float Smear1Down		= Rand1.Gaus(gaussMean,leadSmearingDown);
 
 		      TRandom Rand2(event+83941);
 		      float Smear2 		= Rand2.Gaus(gaussMean,subleadSmearing);
 		      float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
-		      float Smear2Down	= Rand2.Gaus(gaussMean,subleadSmearingDown);
+		      float Smear2Down		= Rand2.Gaus(gaussMean,subleadSmearingDown);
 
 		      massCorrSmear		= massRaw*sqrt(Smear1*Smear2);
 		      massCorrSmearUp	        = massRaw*sqrt(Smear1Up*Smear2Up);
-		      massCorrSmearDown	= massRaw*sqrt(Smear1Down*Smear2Down);
+		      massCorrSmearDown		= massRaw*sqrt(Smear1Down*Smear2Down);
 
 		      //-------> scaling of Data
-		      float leadScaling	= getScalingValue(sampleID, sceta1, r91, run, 0);
+		      float leadScaling		= getScalingValue(sampleID, sceta1, r91, run, 0);
 		      float subleadScaling	= getScalingValue(sampleID, sceta2, r92, run, 0);
 
 		      //-------> scale up and down for systematics
@@ -1429,11 +1459,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 		      float Scaling		= leadScaling*subleadScaling;
 		      float ScalingUp		= leadScalingUp*subleadScalingUp;
-		      float ScalingDown	= leadScalingDown*subleadScalingDown;
+		      float ScalingDown		= leadScalingDown*subleadScalingDown;
 
 		      massCorrScale		= massRaw*sqrt(Scaling);
 		      massCorrScaleUp		= massRaw*sqrt(ScalingUp);
-		      massCorrScaleDown	= massRaw*sqrt(ScalingDown);
+		      massCorrScaleDown		= massRaw*sqrt(ScalingDown);
 
 		      //------> final mgg (has Smearing or Scaling applied)
 		      if (sampleID>0 && sampleID<10000){
@@ -2025,6 +2055,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.t1pfmetUnclusteredEnUp  = t1pfmetUnclusteredEnUp  ;
 		      treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
 
+		      treeDipho_.t1pfmetCorr = t1pfmetCorr;
 		      treeDipho_.t1pfmetCorrPhi = t1pfmetCorrPhi;
 		      treeDipho_.t1pfmetCorrPx = t1pfmetCorrPy;
 		      treeDipho_.t1pfmetCorrPy = t1pfmetCorrPx;
@@ -2204,6 +2235,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.massCorrScaleUp = massCorrScaleUp;
 		      treeDipho_.massCorrScaleDown = massCorrScaleDown;
 		      treeDipho_.massRaw = massRaw;
+		      treeDipho_.massOrig = massOrig;
+		      treeDipho_.ptggOrig = ptggOrig;
 		      treeDipho_.genZ	= genZ;
 		      treeDipho_.ptZ = ptZ;
 		      treeDipho_.etaZ = etaZ;
@@ -2381,6 +2414,7 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("t1pfmetUnclusteredEnUp",&(treeDipho_.t1pfmetUnclusteredEnUp),"t1pfmetUnclusteredEnUp/F");
   DiPhotonTree->Branch("t1pfmetUnclusteredEnDown",&(treeDipho_.t1pfmetUnclusteredEnDown),"t1pfmetUnclusteredEnDown/F");
 
+  DiPhotonTree->Branch("t1pfmetCorr",&(treeDipho_.t1pfmetCorr),"t1pfmetCorr/F");
   DiPhotonTree->Branch("t1pfmetCorrPhi",&(treeDipho_.t1pfmetCorrPhi),"t1pfmetCorrPhi/F");
   DiPhotonTree->Branch("t1pfmetCorrPx",&(treeDipho_.t1pfmetCorrPx),"t1pfmetCorrPx/F");
   DiPhotonTree->Branch("t1pfmetCorrPy",&(treeDipho_.t1pfmetCorrPy),"t1pfmetCorrPy/F");
@@ -2560,6 +2594,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("massCorrScaleUp",&(treeDipho_.massCorrScaleUp),"massCorrScaleUp/F");
   DiPhotonTree->Branch("massCorrScaleDown",&(treeDipho_.massCorrScaleDown),"massCorrScaleDown/F");
   DiPhotonTree->Branch("massRaw",&(treeDipho_.massRaw),"massRaw/F");
+  DiPhotonTree->Branch("massOrig",&(treeDipho_.massOrig),"massOrig/F");
+  DiPhotonTree->Branch("ptggOrig",&(treeDipho_.ptggOrig),"ptggOrig/F");
   DiPhotonTree->Branch("genZ",&(treeDipho_.genZ),"genZ/I");
   DiPhotonTree->Branch("ptZ",&(treeDipho_.ptZ),"ptZ/F");
   DiPhotonTree->Branch("etaZ",&(treeDipho_.etaZ),"etaZ/F");
@@ -2647,6 +2683,7 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.pfmetPhi = -500.;
   treeDipho_.pfmetSumEt = -500.;
   treeDipho_.t1pfmet = -500.;
+  treeDipho_.t1pfmetCorr = -500.;
   treeDipho_.t1pfmetCorrPhi = -500.;
   treeDipho_.t1pfmetCorrPx = -500.;
   treeDipho_.t1pfmetCorrPy = -500.;
@@ -2823,6 +2860,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.massCorrScaleUp = -500;
   treeDipho_.massCorrScaleDown = -500;
   treeDipho_.massRaw = -500;
+  treeDipho_.massOrig = -500;
+  treeDipho_.ptggOrig = -500;
   treeDipho_.genZ = -500;
   treeDipho_.ptZ = -500;
   treeDipho_.etaZ = -500;
