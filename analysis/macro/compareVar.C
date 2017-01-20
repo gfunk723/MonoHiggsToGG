@@ -10,7 +10,7 @@ void MakeComparisonPlots(TString, TString, int, double, double, TString);
 void compareVar(){
   cout << "Plot met vs corr met" << endl;
   MakeComparisonPlots("t1pfmet",    "t1pfmetCorr",    60, 0.,  300., "p_{T}^{miss} (GeV)");
-  MakeComparisonPlots("t1pfmetPhi", "t1pfmetCorrPhi", 40, -4.,   4., "p_{T}^{miss} #phi");
+  MakeComparisonPlots("t1pfmetPhi", "t1pfmetCorrPhi", 35, -3.5, 3.5, "p_{T}^{miss} #phi");
 
   return;
 }
@@ -21,7 +21,7 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   gStyle->SetOptStat(0);
 
   // read file
-  TString filename = "NonResBkg_skimmedtree.root";
+  TString filename = "DiPhoton_skimmedtree.root";
   TFile file(TString::Format("%s%s",path.Data(),filename.Data()));
   TTree* tree = (TTree*) file.Get("DiPhotonTree");
   bool isMC = (filename=="DoubleEG.root")? false:true;
@@ -123,10 +123,10 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   Double_t tempmax = (max1 > max2)?    max1:max2;
   Double_t theMax  = (max3 > tempmax)? max3:tempmax;
 
-  h_1->SetMaximum(theMax*1.1);
+  h_1->SetMaximum(theMax*1.5);
 
   // setup legend 
-  TLegend *leg1 = new TLegend(0.6,0.7,0.9,0.78); // (x1,y1,x2,y2)
+  TLegend *leg1 = new TLegend(0.2,0.2,0.5,0.3); // (x1,y1,x2,y2)
   leg1->SetBorderSize(4);
   leg1->SetTextSize(0.03);
   leg1->SetLineWidth(2);
