@@ -19,19 +19,35 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
   cout << " Computing Efficiency for Samples in " << inDir << endl;
 
   vector< TString > sigNames;
-  sigNames.push_back("2HDM_mZP600");
-  sigNames.push_back("2HDM_mZP800");
-  sigNames.push_back("2HDM_mZP1000");
-  sigNames.push_back("2HDM_mZP1200");
-  sigNames.push_back("2HDM_mZP1400");
-  sigNames.push_back("2HDM_mZP1700");
-  sigNames.push_back("2HDM_mZP2500");
+  //sigNames.push_back("Bkg_MC");
+  //sigNames.push_back("BaryonicZp_mZP10_mChi1");
+  //sigNames.push_back("BaryonicZp_mZP10_mChi10");
+  //sigNames.push_back("BaryonicZp_mZP10_mChi50");
+  //sigNames.push_back("BaryonicZp_mZP10_mChi1000");
+  //sigNames.push_back("BaryonicZp_mZP10000_mChi1");
+  //sigNames.push_back("BaryonicZp_mZP10000_mChi10");
+  //sigNames.push_back("BaryonicZp_mZP10000_mChi50");
+  //sigNames.push_back("BaryonicZp_mZP10000_mChi150");
+  //sigNames.push_back("BaryonicZp_mZP10000_mChi500");
+  //sigNames.push_back("BaryonicZp_mZP10000_mChi1000");
+  sigNames.push_back("2HDM_mZP600_mA0300");
+  sigNames.push_back("2HDM_mZP800_mA0300");
+  sigNames.push_back("2HDM_mZP1000_mA0300");
+  sigNames.push_back("2HDM_mZP1200_mA0300");
+  sigNames.push_back("2HDM_mZP1400_mA0300");
+  sigNames.push_back("2HDM_mZP1700_mA0300");
+  sigNames.push_back("2HDM_mZP2500_mA0300");
   UInt_t fNSig = sigNames.size();
+
+  //vector<Double_t> mass = {1,10,50,1000};
+  //vector<Double_t> mass = {1,10,50,150,500,1000};
+   vector<Double_t> mass = {600,800,1000,1200,1400,1700,2500};//{1,10,100,1000}; 
+  //vector<Double_t> mass = {100};
 
   vector< TFile *> inFile;
   inFile.resize(fNSig);
 
-  vector< Int_t > original;
+  vector< Double_t > original;
   original.resize(fNSig);
 
   // setup eff vectors
@@ -64,7 +80,8 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     // 1=trigger, 2=presel, 3=selection, 4=pt1>30,pt2>20, 5=pt1>mgg/3,pt2>mgg/4, 6=goodVtx, 7=mgg, 8=met
     TH1D * fSel_unwgt = (TH1D*)inFile[mc]->Get("h_selection_unwgt");
     original[mc] = fSel_unwgt->GetBinContent(1);
-    //cout << "orig = " << original[mc] << endl;
+    //original[mc] = 432325000000;
+    cout << "orig = " << original[mc] << endl;
 
     TTree * tpho = (TTree*)inFile[mc]->Get("DiPhotonTree");
 
@@ -77,6 +94,8 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     Float_t	phi2;
     Float_t	eta1;
     Float_t	eta2;
+    Float_t	t1pfmetCorr;
+    Float_t	t1pfmetCorrPhi;
     Float_t	t1pfmet;
     Float_t	t1pfmetPhi;
     Float_t	t1pfmetSumEt;
@@ -109,6 +128,8 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     TBranch	*b_phi2;
     TBranch	*b_eta1;
     TBranch	*b_eta2;
+    TBranch	*b_t1pfmetCorr;
+    TBranch	*b_t1pfmetCorrPhi;
     TBranch	*b_t1pfmet;
     TBranch	*b_t1pfmetPhi;
     TBranch	*b_t1pfmetSumEt;
@@ -141,6 +162,8 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     tpho->SetBranchAddress("eta2", &eta2, &b_eta2);   
     tpho->SetBranchAddress("phi1", &phi1, &b_phi1);   
     tpho->SetBranchAddress("phi2", &phi2, &b_phi2);   
+    tpho->SetBranchAddress("t1pfmetCorr", &t1pfmetCorr, &b_t1pfmetCorr);   
+    tpho->SetBranchAddress("t1pfmetCorrPhi", &t1pfmetCorrPhi, &b_t1pfmetCorrPhi);
     tpho->SetBranchAddress("t1pfmet", &t1pfmet, &b_t1pfmet);   
     tpho->SetBranchAddress("t1pfmetPhi", &t1pfmetPhi, &b_t1pfmetPhi);
     tpho->SetBranchAddress("t1pfmetSumEt", &t1pfmetSumEt, &b_t1pfmetSumEt);   
@@ -179,6 +202,7 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     vector< Int_t > count1b;
     vector< Int_t > count1c;
     vector< Int_t > count1d;
+    vector< Int_t > count1e;
     vector< Int_t > count2a;
     vector< Int_t > count2b;
     vector< Int_t > count2c;
@@ -187,6 +211,7 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     count1b.resize(fNSig);
     count1c.resize(fNSig);
     count1d.resize(fNSig);
+    count1e.resize(fNSig);
     count2a.resize(fNSig);
     count2b.resize(fNSig);
     count2c.resize(fNSig);
@@ -206,16 +231,17 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
       fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
       fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
-      // t1pfmet phi Correction
-      Double_t t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
-      Double_t t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
-      Double_t t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
-      //std::cout << "px = t1pfmet*cos(t1pfmetPhi) - (" << fMETCorr[0] << " + " << fMETCorr[1] << "*t1pfmetSumEt)" << std::endl;
-      //std::cout << "py = t1pfmet*sin(t1pfmetPhi) - (" << fMETCorr[2] << " + " << fMETCorr[3] << "*t1pfmetSumEt)" << std::endl;
-      fLorenzVecCorrMET.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
-      Double_t t1pfmetPhiCorr = fLorenzVecCorrMET.Phi(); 
-      Double_t t1pfmetCorr = fLorenzVecCorrMET.Pt();
-
+      //// t1pfmet phi Correction
+      //Double_t t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
+      //Double_t t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+      //Double_t t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+      ////std::cout << "px = t1pfmet*cos(t1pfmetPhi) - (" << fMETCorr[0] << " + " << fMETCorr[1] << "*t1pfmetSumEt)" << std::endl;
+      ////std::cout << "py = t1pfmet*sin(t1pfmetPhi) - (" << fMETCorr[2] << " + " << fMETCorr[3] << "*t1pfmetSumEt)" << std::endl;
+      //fLorenzVecCorrMET.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+      //Double_t t1pfmetPhiCorr = fLorenzVecCorrMET.Phi(); 
+      //Double_t t1pfmetCorr = fLorenzVecCorrMET.Pt();
+      Double_t t1pfmetPhiCorr = t1pfmetCorrPhi; 
+      //Double_t t1pfmetCorr    = t1pfmetCorr; 
       
       // DeltaPhi between each Jet and the MET
       // set these values to true for events w/o jets
@@ -273,16 +299,19 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
 
 
       // START applying cuts
-      if ( !dphiggMETpass || !max_dphiJETMETpass || !min_dphiJETMETpass) continue;
+      //if ( !dphiggMETpass || !max_dphiJETMETpass /*|| !min_dphiJETMETpass*/) continue;
 
       // for selection option 1 
-      if ( pt1 > 0.5*mgg && pt2 > 0.25*mgg && t1pfmetCorr > 105){
+      if ( pt1 > 0.5*mgg && pt2 > 0.25*mgg && t1pfmetCorr > 130 & ptgg > 90){
         count1a[mc]++;
-        if ( nEle < 2){
+        if ( dphiggMETpass ){
           count1b[mc]++;
-          if ( nMuons == 0){
+          if ( max_dphiJETMETpass){
             count1c[mc]++;
-            if ( ptgg > 90) count1d[mc]++;
+            if ( nEle < 2 && nMuons == 0){
+	      count1d[mc]++;
+	      if ( nJets <= 2) count1e[mc]++;
+	    }
           }
         }
       }  
@@ -301,13 +330,14 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
 
     }// end loop over tree entries  
 
-    //cout << count1a[mc] << " " << count1b[mc] << " " << count1c[mc] << " " << count1d[mc] << endl;
+    cout << count1a[mc] << " " << count1b[mc] << " " << count1c[mc] << " " << count1d[mc] << endl;
     //cout << count2a[mc] << " " << count2b[mc] << " " << count2c[mc] << " " << count2d[mc] << endl;
 
     eff1[mc][0] = (Double_t)count1a[mc]/(Double_t)original[mc];
     eff1[mc][1] = (Double_t)count1b[mc]/(Double_t)original[mc];
     eff1[mc][2] = (Double_t)count1c[mc]/(Double_t)original[mc];
     eff1[mc][3] = (Double_t)count1d[mc]/(Double_t)original[mc];
+    eff1[mc][4] = (Double_t)count1e[mc]/(Double_t)original[mc];
 
     eff2[mc][0] = (Double_t)count2a[mc]/(Double_t)original[mc];
     eff2[mc][1] = (Double_t)count2b[mc]/(Double_t)original[mc];
@@ -318,6 +348,7 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     eff1err[mc][1] = TMath::Sqrt(eff1[mc][1]*(1.0-eff1[mc][1])/(Double_t)original[mc]);
     eff1err[mc][2] = TMath::Sqrt(eff1[mc][2]*(1.0-eff1[mc][2])/(Double_t)original[mc]);
     eff1err[mc][3] = TMath::Sqrt(eff1[mc][3]*(1.0-eff1[mc][3])/(Double_t)original[mc]);
+    eff1err[mc][4] = TMath::Sqrt(eff1[mc][4]*(1.0-eff1[mc][4])/(Double_t)original[mc]);
 
     eff2err[mc][0] = TMath::Sqrt(eff2[mc][0]*(1.0-eff2[mc][0])/(Double_t)original[mc]);
     eff2err[mc][1] = TMath::Sqrt(eff2[mc][1]*(1.0-eff2[mc][1])/(Double_t)original[mc]);
@@ -329,54 +360,77 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
 
   }// end loop over sig files
 
-  vector<Double_t> mass =  {600,800,1000,1200,1400,1700,2500};//{1,10,100,1000}; 
 
 
 
   vector< TH1D * > eff_mDM1;  
-  eff_mDM1.resize(4);
+  eff_mDM1.resize(5);
   vector< TH1D * > eff_mDM2;  
-  eff_mDM2.resize(4);
+  eff_mDM2.resize(5);
 
   Int_t binForMass;
-  for (UInt_t h = 0; h < 4; h++){ 
+  for (UInt_t h = 0; h < 5; h++){ 
+    //eff_mDM1[h] = new TH1D(Form("eff_mDM1_%i",h),"",3000,0.8,2000);
+    //eff_mDM2[h] = new TH1D(Form("eff_mDM2_%i",h),"",300,0.8,2000);
     eff_mDM1[h] = new TH1D(Form("eff_mDM1_%i",h),"",75,500,3000);
     eff_mDM2[h] = new TH1D(Form("eff_mDM2_%i",h),"",75,500,3000);
     for (UInt_t mc = 0; mc < fNSig; mc++){
       binForMass = eff_mDM1[h]->FindBin(mass[mc]);
       eff_mDM1[h]->SetBinContent(binForMass,eff1[mc][h]);
       eff_mDM1[h]->SetBinError(binForMass,eff1err[mc][h]);
+      cout << "After cut #" << h << " efficiency = " << eff1[mc][h] << " pm " << eff1err[mc][h] << endl; 
 
       binForMass = eff_mDM2[h]->FindBin(mass[mc]);
       eff_mDM2[h]->SetBinContent(binForMass,eff2[mc][h]);
       eff_mDM2[h]->SetBinError(binForMass,eff2err[mc][h]);
     }
-    eff_mDM1[h]->SetMaximum(0.7);
+    eff_mDM1[h]->SetMaximum(0.6);
+    //eff_mDM1[h]->SetMaximum(0.45);
     eff_mDM1[h]->SetMinimum(0.2);
     eff_mDM2[h]->SetMaximum(0.7);
     eff_mDM2[h]->SetMinimum(0.2);
   }
+
+  TString latexCMS = "CMS";
+  TString latexHgg = "Z' #rightarrow DM + h(#gamma#gamma)";
+  TString latexlumi = Form("%1.1f fb^{-1}",lumi);
+  TString latexener = " (13 TeV)";
+  TString latexname = latexlumi+latexener; 
+
+  TLatex *l1 = new TLatex(0.14,0.86,latexCMS);
+  l1->SetTextSize(0.036);
+  l1->SetTextAlign(12);
+  l1->SetNDC(kTRUE);
+  l1->SetTextFont(62);
+  TLatex *l2 = new TLatex(0.73,0.92,latexname);
+  l2->SetTextSize(0.034);
+  l2->SetTextAlign(12);
+  l2->SetNDC(kTRUE);
+  l2->SetTextFont(42);
 
   TCanvas *c = new TCanvas();
   c->cd();
   gStyle->SetOptStat(0);
 
   eff_mDM1[0]->GetXaxis()->SetTitle("m_{Z'} [GeV]");
+  //eff_mDM1[0]->GetXaxis()->SetTitle("m_{#Chi} [GeV]");
   eff_mDM1[0]->GetYaxis()->SetTitle("Efficiency");
   eff_mDM1[0]->Draw("PE1");
 
   ColorMap effCol;
-  effCol["0"] = kBlue;
-  effCol["1"] = kTeal+10;
-  effCol["2"] = kRed-7;
+  effCol["0"] = kBlack;
+  effCol["1"] = kBlue;
+  effCol["2"] = kTeal+10;
   effCol["3"] = kMagenta;
+  effCol["4"] = kRed-7;
 
-  TLegend* ftempLegends = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+  TLegend* ftempLegends = new TLegend(0.32,0.2,0.7,0.4); // (x1,y1,x2,y2)
 
-  ftempLegends->AddEntry(eff_mDM1[0],"pt1,pt2 + dphi","l");
-  ftempLegends->AddEntry(eff_mDM1[1],"add el veto","l");
-  ftempLegends->AddEntry(eff_mDM1[2],"add muon veto ","l");
-  ftempLegends->AddEntry(eff_mDM1[3],"add ptgg cut","l");
+  ftempLegends->AddEntry(eff_mDM1[0],"pt1,pt2,MET,ptgg","l");
+  ftempLegends->AddEntry(eff_mDM1[1],"add dphi(h,MET) cut","l");
+  ftempLegends->AddEntry(eff_mDM1[2],"add dphi(j,MET) cut","l");
+  ftempLegends->AddEntry(eff_mDM1[3],"add #el/mu cut","l");
+  ftempLegends->AddEntry(eff_mDM1[4],"add #jet cut","l");
 
   ftempLegends->SetBorderSize(4);
   ftempLegends->SetLineColor(kBlack);
@@ -384,12 +438,15 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
   ftempLegends->SetLineWidth(2);
   ftempLegends->Draw("SAME");
 
-  for (UInt_t h = 0; h < 4; h++){
+  l1->Draw("same");
+  l2->Draw("same");
+
+  for (UInt_t h = 0; h < 5; h++){
     eff_mDM1[h]->SetLineColor(effCol[Form("%i",h)]);
     eff_mDM1[h]->Draw("PE1 SAME");
   }
   
-  CMSLumi(c,11,lumi);
+  //CMSLumi(c,11,lumi);
   c->SetLogx();
   c->SaveAs(Form("%seff_mDM1.%s",outDir.Data(),fType.Data()));
   delete c; 
@@ -404,7 +461,7 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
 
   eff_mDM2[0]->Draw("PE1");
 
-  TLegend* ftempLegends2 = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+  TLegend* ftempLegends2 = new TLegend(0.32,0.2,0.9,0.4); // (x1,y1,x2,y2)
 
   ftempLegends2->AddEntry(eff_mDM2[0],"pt1,pt2 + dphi","l");
   ftempLegends2->AddEntry(eff_mDM2[1],"add el veto","l");
@@ -422,7 +479,7 @@ void doEff( TString inDir, TString outDir, TString fType, Double_t lumi, vector<
     eff_mDM2[h]->Draw("PE1 SAME");
   }
   
-  CMSLumi(c2,11,lumi);
+  //CMSLumi(c2,11,lumi);
   c2->SetLogx();
   c2->SaveAs(Form("%seff_mDM2.%s",outDir.Data(),fType.Data()));
   delete c2; 
