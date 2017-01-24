@@ -24,10 +24,10 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
-   Float_t         xsecWeight;
+   //Float_t         xsecWgt;
    Float_t         weight;
-   Float_t         mggNominal;
-   Float_t         mggGen;
+   //Float_t         mggNominal;
+   //Float_t         mggGen;
    Int_t           run;
    Int_t           event;
    Int_t           lumi;
@@ -176,10 +176,10 @@ public :
    Float_t         phiZ;
 
    // List of branches
-   TBranch        *b_xsecWeight;   //!
+   //TBranch        *b_xsecWgt;   //!
    TBranch        *b_weight;   //!
-   TBranch        *b_mggNominal;   //!
-   TBranch        *b_mggGen;   //!
+   //TBranch        *b_mggNominal;   //!
+   //TBranch        *b_mggGen;   //!
    TBranch        *b_run;   //!
    TBranch        *b_event;   //!
    TBranch        *b_lumi;   //!
@@ -414,10 +414,10 @@ void METCorr2016::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("xsecWeight", &xsecWeight, &b_xsecWeight);
+   //fChain->SetBranchAddress("xsecWgt", &xsecWgt, &b_xsecWgt);
    fChain->SetBranchAddress("weight", &weight, &b_weight);
-   fChain->SetBranchAddress("mggNominal", &mggNominal, &b_mggNominal);
-   fChain->SetBranchAddress("mggGen", &mggGen, &b_mggGen);
+   //fChain->SetBranchAddress("mggNominal", &mggNominal, &b_mggNominal);
+   //fChain->SetBranchAddress("mggGen", &mggGen, &b_mggGen);
    fChain->SetBranchAddress("run", &run, &b_run);
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("lumi", &lumi, &b_lumi);

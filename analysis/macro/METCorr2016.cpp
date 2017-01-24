@@ -19,11 +19,11 @@ DblVec METCorr2016::Loop(TString inDir, TString outFile)
   //if (fChain == 0) return;
   
   TFile *temp=new TFile(Form("%smetCorr_%s.root",inDir.Data(),outFile.Data()), "RECREATE");
-  TProfile metx("metx","",10,0,200);
-  TProfile mety("mety","",10,0,200);
+  TProfile metx("metx","",100,0,2000);
+  TProfile mety("mety","",100,0,2000);
   
-  TProfile metxnew("metxnew","",10,0,200);
-  TProfile metynew("metynew","",10,0,200);
+  TProfile metxnew("metxnew","",100,0,2000);
+  TProfile metynew("metynew","",100,0,2000);
   
   TH1D metphi("metphi","",100,-3.14,3.14);
   TH1D metphinew("metphinew","",100,-3.14,3.14);
