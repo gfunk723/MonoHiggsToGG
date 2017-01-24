@@ -109,6 +109,8 @@ private:
   Float_t       t1pfmetUnclusteredEnUp;
   Float_t       t1pfmetUnclusteredEnDown;
   Float_t	t1pfmetPhi; 
+  Float_t	t1pfmetCorr; 
+  Float_t	t1pfmetCorrPhi; 
   Float_t	t1pfmetSumEt; 
   Float_t	pfmet; 
   Float_t	pfmetphi; 
@@ -242,13 +244,19 @@ private:
   Int_t         nLooseBjets;
   Int_t         nMediumBjets;
   Int_t         vhtruth;
+
   Int_t         metF_GV;
+  Int_t		metF_globalTightHalo;
   Int_t         metF_HBHENoise;
   Int_t         metF_HBHENoiseIso;
   Int_t         metF_CSC;
   Int_t         metF_eeBadSC;
   Int_t         metF_MuonBadTrack;
   Int_t         metF_HadronTrackRes;
+  Int_t		metF_EcalDeadCell;
+  Int_t		metF_badMuon;
+  Int_t		metF_badChargedHadron;
+
   Int_t		vtxIndex;
   Float_t       vtxX;
   Float_t       vtxY;
@@ -309,6 +317,8 @@ private:
   TBranch       *b_t1pfmetUnclusteredEnUp;   //!
   TBranch       *b_t1pfmetUnclusteredEnDown;   //!
   TBranch	*b_t1pfmetPhi;
+  TBranch	*b_t1pfmetCorr;
+  TBranch	*b_t1pfmetCorrPhi;
   TBranch	*b_t1pfmetSumEt;
   TBranch	*b_pfmet;
   TBranch	*b_pfmetPhi;
@@ -442,6 +452,7 @@ private:
   TBranch       *b_CHmultJet4;   //!
   TBranch       *b_NEmultJet4;   //!
   TBranch       *b_vhtruth;   //!
+
   TBranch       *b_metF_GV;   //!
   TBranch       *b_metF_HBHENoise;   //!
   TBranch       *b_metF_HBHENoiseIso;   //!
@@ -449,6 +460,11 @@ private:
   TBranch       *b_metF_eeBadSC;   //!
   TBranch       *b_metF_MuonBadTrack;   //!
   TBranch       *b_metF_HadronTrackRes;   //!
+  TBranch	*b_metF_globalTightHalo;
+  TBranch	*b_metF_EcalDeadCell;
+  TBranch	*b_metF_badMuon;
+  TBranch	*b_metF_badChargedHadron;
+
   TBranch       *b_higgsVtxX;   //!
   TBranch       *b_higgsVtxY;   //!
   TBranch       *b_higgsVtxZ;   //!

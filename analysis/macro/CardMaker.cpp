@@ -54,15 +54,6 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("2HDM_mZP2000_mA0300",106));//mA0_300  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0300",107));//mA0_300   
 
-  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi1000",150));
-  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi150" ,151));
-  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi1"   ,152));
-  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi500"  ,153));
-  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi150"  ,154));
-  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi1"    ,155));
-  Samples.push_back(SamplePair("BaryonicZp_mZP100_mChi10"   ,156));
-  Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi10"    ,157));
-
   Samples.push_back(SamplePair("2HDM_mZP600_mA0400",108)); 
   //Samples.push_back(SamplePair("2HDM_mZP800_mA0400",109)); 
   Samples.push_back(SamplePair("2HDM_mZP1000_mA0400",110)); 
@@ -107,6 +98,38 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0800",144)); 
   //Samples.push_back(SamplePair("2HDM_mZP2000_mA0800",145));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0800",146));  
+
+  Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi1000",150));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi10"  ,151));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi150" ,152));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi1"   ,153));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi500" ,154));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi50"  ,155));
+  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi1000" ,156));
+  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi150"  ,157));
+  Samples.push_back(SamplePair("BaryonicZp_mZP1000_mChi1"    ,158));
+  Samples.push_back(SamplePair("BaryonicZp_mZP100_mChi10"    ,159));
+  Samples.push_back(SamplePair("BaryonicZp_mZP100_mChi1"     ,160));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi1000"   ,161));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi10"     ,162));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi1"      ,163));
+  Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi50"     ,164));
+  Samples.push_back(SamplePair("BaryonicZp_mZP15_mChi10"     ,165));
+  Samples.push_back(SamplePair("BaryonicZp_mZP1995_mChi1000" ,166));
+  Samples.push_back(SamplePair("BaryonicZp_mZP2000_mChi1"    ,167));
+  Samples.push_back(SamplePair("BaryonicZp_mZP2000_mChi500"  ,168));
+  Samples.push_back(SamplePair("BaryonicZp_mZP200_mChi150"   ,169));
+  Samples.push_back(SamplePair("BaryonicZp_mZP200_mChi1"     ,170));
+  Samples.push_back(SamplePair("BaryonicZp_mZP200_mChi50"    ,171));
+  Samples.push_back(SamplePair("BaryonicZp_mZP20_mChi1"      ,172));
+  Samples.push_back(SamplePair("BaryonicZp_mZP295_mChi150"   ,173));
+  Samples.push_back(SamplePair("BaryonicZp_mZP300_mChi50"    ,174));
+  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi150"   ,175));
+  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi1"     ,176));
+  Samples.push_back(SamplePair("BaryonicZp_mZP500_mChi500"   ,177));
+  Samples.push_back(SamplePair("BaryonicZp_mZP50_mChi10"     ,178));
+  Samples.push_back(SamplePair("BaryonicZp_mZP50_mChi1"      ,179));
+  Samples.push_back(SamplePair("BaryonicZp_mZP995_mChi500"   ,180));
 
   //Samples.push_back(SamplePair("DMHtoGG_M1",0)); 
   //Samples.push_back(SamplePair("DMHtoGG_M10",0)); 
@@ -235,8 +258,6 @@ void CardMaker::MakeCards(){
       Dbl_Errors_Sig.push_back(Dbl_Errors[SampleNumber]); 
       Dbl_Eff_Sig.push_back(Dbl_Efficiency[SampleNumber]);
       Dbl_Error_Eff_Sig.push_back(Dbl_Efficiency_Errors[SampleNumber]);
-      //Dbl_Eff_Sig.push_back(Dbl_Efficiency[SampleNumber]*AnalyzerEff_unwgt[SampleNumber]);
-      //Dbl_Error_Eff_Sig.push_back(TMath::Sqrt(Dbl_Efficiency_Errors[SampleNumber]*Dbl_Efficiency_Errors[SampleNumber]+AnalyzerEffErr_unwgt[SampleNumber]*AnalyzerEff_unwgt[SampleNumber]);
     }
     SampleNumber++;
   }
@@ -252,6 +273,36 @@ void CardMaker::MakeCards(){
   Double_t binY = 0.0;
   Double_t wght = 0.0;
   Double_t erro = 0.0;
+
+  TString OutputTable = Form("%s/%s/PlainEff.tex",fOutDir.Data(),fOut.Data());
+  std::cout << "Writing Yield and Efficiency Table in: " << OutputTable.Data() << std::endl;
+  std::ofstream fOutResults;
+  fOutResults.open(OutputTable);
+  if (fOutResults.is_open()){
+   
+     //setup Latex doc
+     fOutResults << "\\documentclass[a4paper,landscape]{article}" << std::endl;
+     fOutResults << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
+     fOutResults << "\\begin{document}" << std::endl;
+
+     // setup table
+     fOutResults << "\% Efficiencies listed for each signal" << std::endl;
+     fOutResults << "\\begin{table}[bthp]" <<std::endl;
+     fOutResults << "\\begin{tabular}{|l|r|}" <<std::endl;
+     fOutResults << "\\hline \\hline" <<std::endl;
+   
+     for (UInt_t n=0; n<fNSig; n++){
+       fOutResults << fSigNames[n] << " & " << Form("%1.3f",Dbl_Eff_Sig[n][0]) << " $ \\pm $ " << Form("%1.3f",Dbl_Error_Eff_Sig[n][0])  << " \\\\" << std::endl;
+     } 
+     fOutResults << "\\hline \\hline" <<std::endl;
+     fOutResults << "\\end{tabular}" <<std::endl;
+     fOutResults << "\\end{table}" <<std::endl;
+     // end efficiency table
+
+     // finish Latex doc
+     fOutResults << "\\end{document}" <<std::endl;
+  }
+  
 
   for (UInt_t n=0; n<fNSig; n++){
     wght = Dbl_Eff_Sig[n][0];
@@ -383,28 +434,28 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
-    // met-phi correction
-    Bool_t doMETphiCorr = true;
-    Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE, t1pfmetCorr, t1pfmetCorrPhi;
+    //// met-phi correction
+    //Bool_t doMETphiCorr = true;
+    //Double_t t1pfmetCorrX, t1pfmetCorrY, t1pfmetCorrE, t1pfmetCorr, t1pfmetCorrPhi;
 
-    if (sampleID==2){// data 
-      t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
-      t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrData[2] + fMETCorrData[3]*t1pfmetSumEt);
-    }
-    else{// mc
-      t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrMC[0] + fMETCorrMC[1]*t1pfmetSumEt);
-      t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrMC[2] + fMETCorrMC[3]*t1pfmetSumEt);
-    }
-    t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
-    correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
-    if (doMETphiCorr){
-      t1pfmetCorr = correctedMet.Pt();
-      t1pfmetCorrPhi = correctedMet.Phi();
-    }
-    else{ //just take original met
-      t1pfmetCorr = t1pfmet; 
-      t1pfmetCorrPhi = t1pfmetPhi;
-    }
+    //if (sampleID==2){// data 
+    //  t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrData[0] + fMETCorrData[1]*t1pfmetSumEt);
+    //  t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrData[2] + fMETCorrData[3]*t1pfmetSumEt);
+    //}
+    //else{// mc
+    //  t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorrMC[0] + fMETCorrMC[1]*t1pfmetSumEt);
+    //  t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorrMC[2] + fMETCorrMC[3]*t1pfmetSumEt);
+    //}
+    //t1pfmetCorrE = sqrt(t1pfmetCorrX*t1pfmetCorrX + t1pfmetCorrY*t1pfmetCorrY);
+    //correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetCorrE);
+    ////if (doMETphiCorr){
+    ////  t1pfmetCorr = correctedMet.Pt();
+    ////  t1pfmetCorrPhi = correctedMet.Phi();
+    ////}
+    //if (!doMETphiCorr){ //just take original met
+    //  t1pfmetCorr    = t1pfmet; 
+    //  t1pfmetCorrPhi = t1pfmetPhi;
+    //}
 
     // calculate the weight
     Double_t Weight = 1.0;
@@ -412,9 +463,12 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     else if (sampleID==0 || sampleID==1) Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
     else Weight = (weight)*fPUWeights[nvtx];//weighted to xsec*BR=1pb*BR
 
-    // check that data passes METfilters
-    if (sampleID==2 && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 || metF_CSC!=1 || metF_eeBadSC!=1)) continue; //|| metF_MuonBadTrack!=1 || metF_HadronTrackRes!=1)) continue; 
-
+    // check that samples passes METfilters
+    Bool_t passMetFil_All   = (metF_GV && metF_globalTightHalo && metF_HBHENoise && metF_HBHENoiseIso && metF_EcalDeadCell && metF_badMuon && metF_badChargedHadron);
+    Bool_t passMetFil_Data  = (sampleID==2)?(metF_eeBadSC):true; // filter for data only
+    Bool_t passMETfil       = (passMetFil_All && passMetFil_Data);
+    if (!passMETfil) continue;
+ 
     // check that passes trigger
     if (sampleID==2 && hltDiphoton30Mass95==0) continue;
 
@@ -477,6 +531,8 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
     if (nMuons > 0 || nEle > 1) continue;
 
+    if (nJets > 2) continue;
+  
     // any events that make it to this point have passed all the common selection
     for (UInt_t cut=0; cut < fNSig; cut++){
       if (pt1/mgg > Cut_pt1mgg[cut] && pt2/mgg > Cut_pt2mgg[cut] && ptgg > Cut_ptgg[cut]){
@@ -498,8 +554,10 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
   for (UInt_t cut=0; cut < fNSig; cut++){
     Dbl_Errors[sampleNumber][cut] = TMath::Sqrt(Dbl_Errors[sampleNumber][cut]);// part2 of err calc.
+    // for efficiency after analyzer
     //Dbl_Efficiency[sampleNumber][cut] = (Double_t)Int_Results_ND[sampleNumber][cut]/(Double_t)Int_Starting[sampleNumber];
-    //Dbl_Efficiency_Errors[sampleNumber][cut] = TMath::Sqrt(Dbl_Efficiency[sampleNumber][cut]*(1.0-Dbl_Efficiency[sampleNumber][cut])/(Double_t)Int_Starting[sampleNumber]); 
+    //Dbl_Efficiency_Errors[sampleNumber][cut] = TMath::Sqrt(Dbl_Efficiency[sampleNumber][cut]*(1.0-Dbl_Efficiency[sampleNumber][cut])/(Double_t)Int_Starting[sampleNumber]);
+    // for efficiency including analyzer eff 
     Dbl_Efficiency[sampleNumber][cut] = AnalyzerEff_unwgt[sampleNumber]*((Double_t)Int_Results_ND[sampleNumber][cut]/(Double_t)Int_Starting[sampleNumber]); 
     Dbl_Efficiency_Errors[sampleNumber][cut] = TMath::Sqrt(AnalyzerEffErr_unwgt[sampleNumber]*AnalyzerEffErr_unwgt[sampleNumber]+(Dbl_Efficiency[sampleNumber][cut]*(1.0-Dbl_Efficiency[sampleNumber][cut])/(Double_t)Int_Starting[sampleNumber])); 
   }
@@ -836,21 +894,42 @@ void  CardMaker::WriteDataCard(const TString fSigName, const Double_t ND_Sig, co
   Double_t predBkg = (Double_t)NA_Data*alpha;
 
   TString mZp = "";
-  if (fSigName=="2HDM_mZP600_mA0300" || fSigName=="2HDM_mZP600_mA0400") mZp="600";  
-  if (fSigName=="2HDM_mZP800_mA0300" || fSigName=="2HDM_mZP800_mA0400" || fSigName=="2HDM_mZP800_mA0500" || fSigName=="2HDM_mZP800_mA0600") mZp="800";  
-  if (fSigName=="2HDM_mZP1000_mA0300" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HDM_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
-  if (fSigName=="2HDM_mZP1200_mA0300" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HDM_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
-  if (fSigName=="2HDM_mZP1400_mA0300" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HDM_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
-  if (fSigName=="2HDM_mZP1700_mA0300" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HDM_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
-  if (fSigName=="2HDM_mZP2000_mA0300" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HDM_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
-  if (fSigName=="2HDM_mZP2500_mA0300" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HDM_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
+//  if (fSigName=="2HDM_mZP600_mA0300" || fSigName=="2HDM_mZP600_mA0400") mZp="600";  
+//  if (fSigName=="2HDM_mZP800_mA0300" || fSigName=="2HDM_mZP800_mA0400" || fSigName=="2HDM_mZP800_mA0500" || fSigName=="2HDM_mZP800_mA0600") mZp="800";  
+//  if (fSigName=="2HDM_mZP1000_mA0300" || fSigName=="2HDM_mZP1000_mA0400" || fSigName=="2HDM_mZP1000_mA0500" || fSigName=="2HDM_mZP1000_mA0600" || fSigName=="2HDM_mZP1000_mA0700" || fSigName=="2HDM_mZP1000_mA0800") mZp="1000";  
+//  if (fSigName=="2HDM_mZP1200_mA0300" || fSigName=="2HDM_mZP1200_mA0400" || fSigName=="2HDM_mZP1200_mA0500" || fSigName=="2HDM_mZP1200_mA0600" || fSigName=="2HDM_mZP1200_mA0700" || fSigName=="2HDM_mZP1200_mA0800") mZp="1200";  
+//  if (fSigName=="2HDM_mZP1400_mA0300" || fSigName=="2HDM_mZP1400_mA0400" || fSigName=="2HDM_mZP1400_mA0500" || fSigName=="2HDM_mZP1400_mA0600" || fSigName=="2HDM_mZP1400_mA0700" || fSigName=="2HDM_mZP1400_mA0800") mZp="1400";  
+//  if (fSigName=="2HDM_mZP1700_mA0300" || fSigName=="2HDM_mZP1700_mA0400" || fSigName=="2HDM_mZP1700_mA0500" || fSigName=="2HDM_mZP1700_mA0600" || fSigName=="2HDM_mZP1700_mA0700" || fSigName=="2HDM_mZP1700_mA0800") mZp="1700";  
+//  if (fSigName=="2HDM_mZP2000_mA0300" || fSigName=="2HDM_mZP2000_mA0400" || fSigName=="2HDM_mZP2000_mA0500" || fSigName=="2HDM_mZP2000_mA0600" || fSigName=="2HDM_mZP2000_mA0700" || fSigName=="2HDM_mZP2000_mA0800") mZp="2000";  
+//  if (fSigName=="2HDM_mZP2500_mA0300" || fSigName=="2HDM_mZP2500_mA0400" || fSigName=="2HDM_mZP2500_mA0500" || fSigName=="2HDM_mZP2500_mA0600" || fSigName=="2HDM_mZP2500_mA0700" || fSigName=="2HDM_mZP2500_mA0800") mZp="2500";  
 
 
   Bool_t A0300 = false;
   if (fSigName=="2HDM_mZP600" || fSigName=="2HDM_mZP800" || fSigName=="2HDM_mZP1000" || fSigName=="2HDM_mZP1200" || fSigName=="2HDM_mZP1400" || fSigName=="2HDM_mZP1700" || fSigName=="2HDM_mZP2000" || fSigName=="2HDM_mZP2500") A0300=true;
   
-  if (fSigName=="BaryonicZp_mZP1000_mChi1000" || fSigName=="BaryonicZp_mZP1000_mChi150" || fSigName=="BaryonicZp_mZP1000_MChi1") mZp="1000";
-  if (fSigName=="BaryonicZp_mZP500_mChi500"   || fSigName=="BaryonicZp_mZP500_mChi150"  || fSigName=="BaryonicZp_mZP500_MChi1")  mZp="500";
+  if (fSigName.Contains("_mZP600_",   TString::kExact)) mZp="600";
+  if (fSigName.Contains("_mZP800_",   TString::kExact)) mZp="800";
+  if (fSigName.Contains("_mZP1200_",  TString::kExact)) mZp="1200";
+  if (fSigName.Contains("_mZP1400_",  TString::kExact)) mZp="1400";
+  if (fSigName.Contains("_mZP1700_",  TString::kExact)) mZp="1700";
+  if (fSigName.Contains("_mZP2000_",  TString::kExact)) mZp="2000";
+  if (fSigName.Contains("_mZP2500_",  TString::kExact)) mZp="2500";
+  if (fSigName.Contains("_mZP10000_", TString::kExact)) mZp="10000";
+  if (fSigName.Contains("_mZP1000_",  TString::kExact)) mZp="1000";
+  if (fSigName.Contains("_mZP100_",   TString::kExact)) mZp="100";
+  if (fSigName.Contains("_mZP10_",    TString::kExact)) mZp="10";
+  if (fSigName.Contains("_mZP15_",    TString::kExact)) mZp="15";
+  if (fSigName.Contains("_mZP1995_",  TString::kExact)) mZp="1995";
+  if (fSigName.Contains("_mZP200_",   TString::kExact)) mZp="200";
+  if (fSigName.Contains("_mZP20_",    TString::kExact)) mZp="20";
+  if (fSigName.Contains("_mZP295_",   TString::kExact)) mZp="295";
+  if (fSigName.Contains("_mZP300_",   TString::kExact)) mZp="300";
+  if (fSigName.Contains("_mZP500_",   TString::kExact)) mZp="500";
+  if (fSigName.Contains("_mZP50_",    TString::kExact)) mZp="50";
+  if (fSigName.Contains("_mZP995_",   TString::kExact)) mZp="995";
+ 
+//  if (fSigName=="BaryonicZp_mZP1000_mChi1000" || fSigName=="BaryonicZp_mZP1000_mChi150" || fSigName=="BaryonicZp_mZP1000_mChi1") mZp="1000";
+//  if (fSigName=="BaryonicZp_mZP500_mChi500"   || fSigName=="BaryonicZp_mZP500_mChi150"  || fSigName=="BaryonicZp_mZP500_mChi1")  mZp="500";
 
 
   TString DataCardName;
@@ -1084,7 +1163,7 @@ void CardMaker::SetupCutsToApply(){
   
   /////////////////////////////////////////////////////////  
   // Setup cuts for MET for each signal sample
-  Cut_met.push_back(105); // mZp600, mA0300
+  Cut_met.push_back(130); // mZp600, mA0300
   Cut_met.push_back(165); // mZp800, mA0300
   Cut_met.push_back(220); // mZp1000, mA0300
   Cut_met.push_back(245); // mZp1200, mA0300
@@ -1144,6 +1223,18 @@ void CardMaker::SetupCutsToApply(){
 
 
 void CardMaker::SetBranchAddresses( TTree * treeIn){
+  treeIn->SetBranchAddress("metF_GV",&metF_GV, &b_metF_GV);
+  treeIn->SetBranchAddress("metF_globalTightHalo",&metF_globalTightHalo, &b_metF_globalTightHalo);
+  treeIn->SetBranchAddress("metF_HBHENoise", &metF_HBHENoise, &b_metF_HBHENoise);
+  treeIn->SetBranchAddress("metF_HBHENoiseIso", &metF_HBHENoiseIso, &b_metF_HBHENoiseIso);
+  treeIn->SetBranchAddress("metF_EcalDeadCell",&metF_EcalDeadCell, &b_metF_EcalDeadCell);
+  treeIn->SetBranchAddress("metF_badMuon",&metF_badMuon, &b_metF_badMuon);
+  treeIn->SetBranchAddress("metF_badChargedHadron",&metF_badChargedHadron, &b_metF_badChargedHadron); 
+  treeIn->SetBranchAddress("metF_CSC", &metF_CSC, &b_metF_CSC);
+  treeIn->SetBranchAddress("metF_eeBadSC", &metF_eeBadSC, &b_metF_eeBadSC);
+  treeIn->SetBranchAddress("metF_MuonBadTrack", &metF_MuonBadTrack, &b_metF_MuonBadTrack);
+  treeIn->SetBranchAddress("metF_HadronTrackRes", &metF_HadronTrackRes, &b_metF_HadronTrackRes);
+
   treeIn->SetBranchAddress("run", &run, &b_run);
   treeIn->SetBranchAddress("event", &event, &b_event);
   treeIn->SetBranchAddress("lumi", &lumi, &b_lumi);
@@ -1154,6 +1245,8 @@ void CardMaker::SetBranchAddresses( TTree * treeIn){
   treeIn->SetBranchAddress("mgg",    &mgg,     &b_mgg);
   treeIn->SetBranchAddress("ptgg",   &ptgg,    &b_ptgg);
   treeIn->SetBranchAddress("t1pfmet", &t1pfmet, &b_t1pfmet);   
+  treeIn->SetBranchAddress("t1pfmetCorr", &t1pfmetCorr, &b_t1pfmetCorr);   
+  treeIn->SetBranchAddress("t1pfmetCorrPhi", &t1pfmetCorrPhi, &b_t1pfmetCorrPhi);   
   treeIn->SetBranchAddress("t1p2pfmet", &t1p2pfmet, &b_t1p2pfmet);
   treeIn->SetBranchAddress("t1pfmetJetEnUp", &t1pfmetJetEnUp, &b_t1pfmetJetEnUp);
   treeIn->SetBranchAddress("t1pfmetJetEnDown", &t1pfmetJetEnDown, &b_t1pfmetJetEnDown);
@@ -1303,13 +1396,7 @@ void CardMaker::SetBranchAddresses( TTree * treeIn){
   treeIn->SetBranchAddress("CHmultJet4", &CHmultJet4, &b_CHmultJet4);
   treeIn->SetBranchAddress("NEmultJet4", &NEmultJet4, &b_NEmultJet4);
   treeIn->SetBranchAddress("vhtruth", &vhtruth, &b_vhtruth);
-  treeIn->SetBranchAddress("metF_GV", &metF_GV, &b_metF_GV);
-  treeIn->SetBranchAddress("metF_HBHENoise", &metF_HBHENoise, &b_metF_HBHENoise);
-  treeIn->SetBranchAddress("metF_HBHENoiseIso", &metF_HBHENoiseIso, &b_metF_HBHENoiseIso);
-  treeIn->SetBranchAddress("metF_CSC", &metF_CSC, &b_metF_CSC);
-  treeIn->SetBranchAddress("metF_eeBadSC", &metF_eeBadSC, &b_metF_eeBadSC);
-  treeIn->SetBranchAddress("metF_MuonBadTrack", &metF_MuonBadTrack, &b_metF_MuonBadTrack);
-  treeIn->SetBranchAddress("metF_HadronTrackRes", &metF_HadronTrackRes, &b_metF_HadronTrackRes);
+
   treeIn->SetBranchAddress("higgsVtxX", &higgsVtxX, &b_higgsVtxX);
   treeIn->SetBranchAddress("higgsVtxY", &higgsVtxY, &b_higgsVtxY);
   treeIn->SetBranchAddress("higgsVtxZ", &higgsVtxZ, &b_higgsVtxZ);
