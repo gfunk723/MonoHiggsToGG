@@ -22,7 +22,7 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   gStyle->SetOptStat(0);
 
   // read file
-  TFile file("data/25ns_v1-1-0_ReReco_wJETinfo/GluGluHToGG.root");
+  TFile file("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/GluGluHToGG.root");
   TTree* tree = (TTree*) file.Get("DiPhotonTree");
 
   // get histos to compare
@@ -44,6 +44,7 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   tree->Draw(var2+TString::Format(">>h_%s",var2.Data()),"("+mainCut+")*weight");
   h_1->SetLineColor(kBlue);
   h_1->SetTitle("");
+  h_1->GetYaxis()->SetTitle("arb. units");
   h_1->GetXaxis()->SetTitle("m(#gamma#gamma) [GeV]");
   h_2->SetLineColor(kRed);
   h_2->SetTitle("");
@@ -64,7 +65,7 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
 
 
   // setup legend 
-  TLegend *leg1 = new TLegend(0.6,0.7,0.9,0.8); // (x1,y1,x2,y2)
+  TLegend *leg1 = new TLegend(0.6,0.7,0.9,0.78); // (x1,y1,x2,y2)
   leg1->SetBorderSize(4);
   leg1->SetTextSize(0.03);
   leg1->SetLineWidth(2);
@@ -80,8 +81,8 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   h_2->Draw("HIST SAME");
   leg1->Draw("SAME");
 
-  c->SaveAs(TString::Format("~/www/Plots/13TeV/%s_v_%s.png",var1.Data(),var2.Data()));
-  c->SaveAs(TString::Format("~/www/Plots/13TeV/%s_v_%s.pdf",var1.Data(),var2.Data()));
+  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots80X_%s_v_%s.png",var1.Data(),var2.Data()));
+  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots80X_%s_v_%s.pdf",var1.Data(),var2.Data()));
 
 }
 
