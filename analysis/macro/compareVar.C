@@ -21,10 +21,10 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   gStyle->SetOptStat(0);
 
   // read file
-  TString filename = "DiPhoton_skimmedtree.root";
+  TString filename = "DoubleEG_skimmedtree_origSel.root";
   TFile file(TString::Format("%s%s",path.Data(),filename.Data()));
   TTree* tree = (TTree*) file.Get("DiPhotonTree");
-  bool isMC = (filename=="DoubleEG.root")? false:true;
+  bool isMC = (filename=="DoubleEG.root" || filename=="DoubleEG_skimmedtree.root" || filename=="DoubleEG_skimmedtree_origSel.root")? false:true;
 
   // get histos to compare
   TH1F *h_1;
@@ -132,7 +132,7 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
   leg1->SetLineWidth(2);
   leg1->AddEntry(h_1,TString::Format("%s",var1.Data()),"L");
   leg1->AddEntry(h_2,TString::Format("%s",var2.Data()),"L");
-  if (var1=="t1pfmet" || var1=="t1pfmetPhi") leg1->AddEntry(h_3,TString::Format("%s_ourCorr",var1.Data()),"L");
+  //if (var1=="t1pfmet" || var1=="t1pfmetPhi") leg1->AddEntry(h_3,TString::Format("%s_ourCorr",var1.Data()),"L");
 
   int iPos=11;
   CMS_lumi(pad1, true, iPos);
@@ -141,16 +141,19 @@ void MakeComparisonPlots(TString var1, TString var2, int BINS, double MIN, doubl
 
   h_1->Draw("HIST");
   h_2->Draw("HIST SAME");
-  if (var1=="t1pfmet" || var1=="t1pfmetPhi") h_3->Draw("HIST SAME");
+  //if (var1=="t1pfmet" || var1=="t1pfmetPhi") h_3->Draw("HIST SAME");
   leg1->Draw("SAME");
 
-  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_%s_v_%s.png",var1.Data(),var2.Data()));
-  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_%s_v_%s.pdf",var1.Data(),var2.Data()));
-
+  //c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Data_%s_v_%s.png",var1.Data(),var2.Data()));
+  //c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Data_%s_v_%s.pdf",var1.Data(),var2.Data()));
+  //c->SetLogy(1);
+  //c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Data_%s_v_%s_log.png",var1.Data(),var2.Data()));
+  //c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Data_%s_v_%s_log.pdf",var1.Data(),var2.Data()));
+  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Clean_Data_%s_v_%s.png",var1.Data(),var2.Data()));
+  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Clean_Data_%s_v_%s.pdf",var1.Data(),var2.Data()));
   c->SetLogy(1);
-
-  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_%s_v_%s_log.png",var1.Data(),var2.Data()));
-  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_%s_v_%s_log.pdf",var1.Data(),var2.Data()));
+  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Clean_Data_%s_v_%s_log.png",var1.Data(),var2.Data()));
+  c->SaveAs(TString::Format("~/www/Plots/13TeV/plots_80X_Clean_Data_%s_v_%s_log.pdf",var1.Data(),var2.Data()));
 
   delete c;
 
