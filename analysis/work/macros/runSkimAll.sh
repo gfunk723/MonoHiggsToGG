@@ -1,6 +1,7 @@
 #! /bin/sh
 
-path="../macro/data/25ns_v80X_v3/"
+path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"
+#path="../macro/data/25ns_v80X_v3/"
 
 root -l -b << EOF
 .L ../scripts/skim.C++
@@ -24,6 +25,8 @@ skim("${path}","TTJets");
 skim("${path}","WGToLNuG");
 skim("${path}","ZGTo2LG");
 skim("${path}","ZZTo2L2Q");
+skim("${path}","WJetsToLNu");
+skim("${path}","WZTo2L2Q");
 
 skim("${path}","BaryonicZp_mZP10000_mChi1000");
 skim("${path}","BaryonicZp_mZP10000_mChi10");
@@ -93,8 +96,5 @@ skim("${path}","2HDM_mZP800_mA0500");
 .q
 
 EOF
-
-#skim("${path}","WJetsToLNu");
-#skim("${path}","WZTo2L2Q");
 
 echo "done skimming"
