@@ -66,6 +66,8 @@ void addWeights(float lumiForWgt, TString path, TString sample){
    // ----------------------------------------------------------------  
    // new branch to be added
    // ----------------------------------------------------------------  
+
+   float xsecWeight;	outtree->Branch("xsecWeight",&xsecWeight, "xsecWeight/F");
    float weight;	outtree->Branch("weight",&weight, "weight/F");
 
    // ----------------------------------------------------------------  
