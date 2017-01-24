@@ -19,9 +19,9 @@ void AllSignalComparisons(){
  
   cout << "Signal Comparison" << endl;
 
-  TString inDir = "data/25ns_v76X_v2/";
+  TString inDir = "data/25ns_v80X_v0/";
   TString mZp = "1000";
-  TString nameFileSig1 = Form("2HDM_mZP%s",mZp.Data()); 
+  TString nameFileSig1 = Form("2HDM_mZP%s_mA0300",mZp.Data()); 
   TString nameFileSig2 = Form("2HDM_mZP%s_mA0400",mZp.Data()); 
   TString nameFileSig3 = Form("2HDM_mZP%s_mA0500",mZp.Data()); 
   TString nameFileSig4 = Form("2HDM_mZP%s_mA0600",mZp.Data()); 
@@ -36,16 +36,16 @@ void AllSignalComparisons(){
   nameFiles.push_back(nameFileSig6);
   UInt_t nFiles = nameFiles.size();
   
-  TString outDir = "~/www/Plots/25ns_Limits_76X_2DResults";
+  TString outDir = "~/www/Plots/25ns_Limits_80X_Results";
   // SPECIFY LUMI in mkPlotsLivia/CMS_lumi.C
 
   cout << "Comparing Sample with mZp = " << mZp << endl;
 
-  //makePlots("mgg",    26, 99., 151,  inDir, outDir, nameFiles, nFiles, mZp);
+  makePlots("mgg",    26, 99., 151,  inDir, outDir, nameFiles, nFiles, mZp);
   makePlots("t1pfmet",200, 0., 2000, inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("pt1",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("pt2",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
-  makePlots("ptgg",   60, 0.,  600,  inDir, outDir, nameFiles, nFiles, mZp);
+  //makePlots("pt1",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
+  //makePlots("pt2",    30, 0.,  300,  inDir, outDir, nameFiles, nFiles, mZp);
+  //makePlots("ptgg",   60, 0.,  600,  inDir, outDir, nameFiles, nFiles, mZp);
   //makePlots("nvtx",   40, 0.,  40,   inDir, outDir, nameFiles, nFiles, mZp);
 
 }
