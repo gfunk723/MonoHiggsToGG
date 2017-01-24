@@ -252,12 +252,16 @@ private:
   Int_t         nMediumBjets;
   Int_t         vhtruth;
   Int_t         metF_GV;
+  Int_t		metF_globalTightHalo;
   Int_t         metF_HBHENoise;
   Int_t         metF_HBHENoiseIso;
   Int_t         metF_CSC;
   Int_t         metF_eeBadSC;
   Int_t         metF_MuonBadTrack;
   Int_t         metF_HadronTrackRes;
+  Int_t		metF_EcalDeadCell;
+  Int_t		metF_badMuon;
+  Int_t		metF_badChargedHadron;
   Int_t		vtxIndex;
   Float_t       vtxX;
   Float_t       vtxY;
@@ -288,7 +292,12 @@ private:
   Float_t	BDTr92;
   Float_t	BDTvtxZ;
   Int_t		BDTindex;
-
+  Float_t	massOrig;
+  Float_t	ptggOrig;
+  Float_t	t1pfmetCorr;
+  Float_t	t1pfmetCorrPx;
+  Float_t	t1pfmetCorrPy;
+  Float_t	t1pfmetCorrPhi;
 
   // branches
   TBranch       *b_run;   //!
@@ -458,6 +467,10 @@ private:
   TBranch       *b_metF_eeBadSC;   //!
   TBranch       *b_metF_MuonBadTrack;   //!
   TBranch       *b_metF_HadronTrackRes;   //!
+  TBranch	*b_metF_globalTightHalo;
+  TBranch	*b_metF_EcalDeadCell;
+  TBranch	*b_metF_badMuon;
+  TBranch	*b_metF_badChargedHadron;
   TBranch       *b_higgsVtxX;   //!
   TBranch       *b_higgsVtxY;   //!
   TBranch       *b_higgsVtxZ;   //!
@@ -488,6 +501,12 @@ private:
   TBranch	*b_BDTr92;
   TBranch	*b_BDTvtxZ;
   TBranch	*b_BDTindex;
+  TBranch	*b_massOrig;
+  TBranch	*b_ptggOrig;
+  TBranch	*b_t1pfmetCorr;
+  TBranch	*b_t1pfmetCorrPx;
+  TBranch	*b_t1pfmetCorrPy;
+  TBranch	*b_t1pfmetCorrPhi;
 
 };
 
