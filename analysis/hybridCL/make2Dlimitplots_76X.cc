@@ -93,7 +93,8 @@ void makePlots(TString inDir, TString outDir){
  l2->SetNDC(kTRUE);
  l2->SetTextFont(42);
  //TLatex *l2b = new TLatex(0.74,0.90,latexname);
- TLatex *l2b = new TLatex(0.725,0.95,latexname);
+ //TLatex *l2b = new TLatex(0.725,0.95,latexname);
+ TLatex *l2b = new TLatex(0.68,0.95,latexname);
  l2b->SetTextSize(0.034);
  l2b->SetTextAlign(12);
  l2b->SetNDC(kTRUE);
