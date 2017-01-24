@@ -1,10 +1,11 @@
 #! /bin/sh
 
-path="../macro/data/25ns_v80X_v2/"
+path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"
+#path="../../macro/data/25ns_v80X_v3/"
 weight=$1
 
 root -l -b << EOF
-.L addWeights.C++
+.L ../scripts/addWeights.C++
 
 addWeights(${weight},"${path}","DoubleEG");
 
@@ -14,18 +15,21 @@ addWeights(${weight},"${path}","VBFHToGG");
 addWeights(${weight},"${path}","ttHJetToGG");
 
 addWeights(${weight},"${path}","DiPhoton");
-addWeights(${weight},"${path}","QCD");
-addWeights(${weight},"${path}","GJets");
+addWeights(${weight},"${path}","QCD_Pt-30toInf");
+addWeights(${weight},"${path}","QCD_Pt-40toInf");
+addWeights(${weight},"${path}","GJet_Pt-20to40");
+addWeights(${weight},"${path}","GJet_Pt-40toInf");
 addWeights(${weight},"${path}","DYJetsToLL");
-addWeights(${weight},"${path}","NonResBkg");
 addWeights(${weight},"${path}","TGJets");
 addWeights(${weight},"${path}","TTGG_0Jets");
 addWeights(${weight},"${path}","TTGJets");
 addWeights(${weight},"${path}","TTJets");
 addWeights(${weight},"${path}","WGToLNuG");
+addWeights(${weight},"${path}","WJetsToLNu");
+addWeights(${weight},"${path}","WZTo2L2Q");
 addWeights(${weight},"${path}","ZGTo2LG");
 addWeights(${weight},"${path}","ZZTo2L2Q");
-
+addWeights(${weight},"${path}","ZGTo2L2Q");
 addWeights(${weight},"${path}","BaryonicZp_mZP10000_mChi1000");
 addWeights(${weight},"${path}","BaryonicZp_mZP10000_mChi10");
 addWeights(${weight},"${path}","BaryonicZp_mZP10000_mChi150");
