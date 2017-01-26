@@ -45,7 +45,7 @@ Analysis::Analysis(TString inName, TString outName, TString inSpecies, DblVec pu
       fSelection[i]=fSel->GetBinContent(i+1);
       fSelection_unwgt[i]=fSel_unwgt->GetBinContent(i+1);
     }    
-    //fTH1DMap["selection_unwgt"] = (TH1D*)fSel_unwgt->Clone();
+    //standardTH1Map["selection_unwgt"] = (TH1D*)fSel_unwgt->Clone();
   }
   std::cout << "Finished getting the h_selection & h_selection_unwgt" << std::endl;  
 
@@ -67,11 +67,10 @@ Analysis::Analysis(TString inName, TString outName, TString inSpecies, DblVec pu
   fOutDir = fName.Data();
   fOutDir+="/";
   fOutDir+=species.Data();
-  fOutDir+="/";
   MakeOutDir(fOutDir.Data());
   // Make output ROOT file
-  outFile = new TFile(Form("%splots_%s.root",fOutDir.Data(),species.Data()),"RECREATE");
-  CheckValidFile(outFile,Form("%splots_%s.root",fOutDir.Data(),species.Data()));
+  outFile = new TFile(Form("%s/plots_%s.root",fOutDir.Data(),species.Data()),"RECREATE");
+  CheckValidFile(outFile,Form("%s/plots_%s.root",fOutDir.Data(),species.Data()));
 
 }// end Analysis::Analysis
 
@@ -97,6 +96,12 @@ void Analysis::DoPlots(int prompt)
   //------------------------------------------------------------------------
   if (Config::doStandard) Analysis::SetupStandardPlots();
   if (Config::doNminus1)  Analysis::SetupNminus1Plots();
+
+  //------------------------------------------------------------------------
+  // Setup MET threshold  
+  //------------------------------------------------------------------------
+  Double_t metCut = 100;          // OrigSel
+  if (fWhichSel==1) metCut = 130; // OptSel1
 
   //------------------------------------------------------------------------
   // Setup counters  
@@ -141,7 +146,33 @@ void Analysis::DoPlots(int prompt)
     Bool_t passMetFil_Data  = (isData)?(metF_eeBadSC):true; // filter for data only
     Bool_t passMETfil       = (passMetFil_All && passMetFil_Data);
     if (!passMETfil){ numFail_metF++; continue; }
+ 
+    //------------------------------------------------------------------------
+    // Remove PP photons in QCD and Gjets samples
+    //------------------------------------------------------------------------
+    if (prompt==1 /*GJet*/ && (genmatch1==1 && genmatch2==1)) continue;
+    if (prompt==2 /*QCD */ && (genmatch1==1 && genmatch2==1)) continue; 
 
+    //------------------------------------------------------------------------
+    // Lepton and jet vetos 
+    //------------------------------------------------------------------------
+    if (nEle >= 2 || nMuons >= 1) continue;
+    if (nJets > 2) continue;
+
+    //------------------------------------------------------------------------
+    // Deal with the blinding 
+    //------------------------------------------------------------------------
+    Bool_t mggokay = (!doBlind || (doBlind && (mgg < 115 || mgg > 135)))? true:false; // outside mgg range
+    Bool_t canplot = (isData)? (mggokay):true;                                        // data outside of blinding 
+
+    //------------------------------------------------------------------------
+    // Apply kinematic selection 
+    //------------------------------------------------------------------------
+    Bool_t passSel = false;
+    if (fWhichSel==0) passSel = true; // original selection
+    if (fWhichSel==1 && (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90)) passSel = true;   
+    if (!passSel) continue;
+ 
     //------------------------------------------------------------------------
     // Fill the histograms 
     //------------------------------------------------------------------------
@@ -149,11 +180,26 @@ void Analysis::DoPlots(int prompt)
     //--------> Fill the standard plots
     if (Config::doStandard){
        standardTH1Map["nvtx"]->Fill(nvtx,wgt);
-       standardTH1Map["mgg"]->Fill(mgg,wgt);
+       standardTH1Map["ptgg"]->Fill(ptgg,wgt);
+       standardTH1Map["pt1"]->Fill(pt1,wgt);
+       standardTH1Map["pt2"]->Fill(pt2,wgt);
+       standardTH1Map["phi1"]->Fill(phi1,wgt);
+       standardTH1Map["phi2"]->Fill(phi2,wgt);
+       standardTH1Map["eta1"]->Fill(eta1,wgt);
+       standardTH1Map["eta2"]->Fill(eta2,wgt);
+       standardTH1Map["nJets"]->Fill(nJets,wgt);
+       standardTH1Map["jetInfo_CHfrac1"]->Fill(CHfracJet1,wgt);
+       standardTH1Map["jetInfo_NHfrac1"]->Fill(NHfracJet1,wgt);
+       standardTH1Map["jetInfo_pt1"]->Fill(ptJetLead,wgt);
+       standardTH1Map["jetInfo_eta1"]->Fill(etaJetLead,wgt);
+       standardTH1Map["jetInfo_phi1"]->Fill(phiJetLead,wgt);
+       standardTH1Map["jetInfo_mass1"]->Fill(massJetLead,wgt);
+
+       if (canplot) standardTH1Map["mgg"]->Fill(mgg,wgt);
     }
     //--------> Fill the n minus 1 plots
     if (Config::doNminus1){
-       nminus1TH1Map["n1_mgg"]->Fill(mgg,wgt);
+       if (canplot) nminus1TH1Map["n1_mgg"]->Fill(mgg,wgt);
     }
 
   }// end loop over entries!
@@ -170,8 +216,30 @@ void Analysis::DoPlots(int prompt)
 
 void Analysis::SetupStandardPlots()
 {
+
+  //------------------------------------------------------------------------
+  // Photon or general event variables 
+  //------------------------------------------------------------------------
   standardTH1Map["nvtx"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nvtx","",50,0.,50.,"nVertices","");
   standardTH1Map["mgg"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");
+  standardTH1Map["ptgg"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","ptgg","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");
+  standardTH1Map["phi1"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","phi1","",20,-4.,4.,"#phi(#gamma1)","");
+  standardTH1Map["phi2"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","phi2","",20,-4.,4.,"#phi(#gamma2)","");
+  standardTH1Map["eta1"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","eta1","",20,-3.,3.,"#eta(#gamma1)","");
+  standardTH1Map["eta2"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","eta2","",20,-3.,3.,"#eta(#gamma2)","");
+  standardTH1Map["pt1"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","pt1","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
+  standardTH1Map["pt2"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","pt2","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
+
+  //------------------------------------------------------------------------
+  // Jet info plots 
+  //------------------------------------------------------------------------
+  standardTH1Map["nJets"]		= Analysis::MakeTH1Plot(standardSubDirMap,"jet","nJets","",10,0.,10.,"nJets","");
+  standardTH1Map["jetInfo_CHfrac1"]	= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_CHfrac1","",20,0,1.,"CH frac","");
+  standardTH1Map["jetInfo_NHfrac1"]	= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_NHfrac1","",20,0,1.,"NH frac","");
+  standardTH1Map["jetInfo_pt1"]		= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_pt1","",40,0,200,"p_{T}","");
+  standardTH1Map["jetInfo_eta1"]	= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_eta1","",40,-5.,5.,"#eta","");
+  standardTH1Map["jetInfo_phi1"]	= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_phi1","",20,-4.,4.,"#phi","");
+  standardTH1Map["jetInfo_mass1"]	= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_mass1","",50,0,100,"mass [GeV]","");
 
 }// end Analysis::SetupStandardPlots
 void Analysis::SetupNminus1Plots()
