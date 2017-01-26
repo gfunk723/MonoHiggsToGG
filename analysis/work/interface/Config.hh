@@ -43,7 +43,6 @@ namespace Config{
   extern Bool_t       doStandard;
   extern Bool_t       doNminus1;
   extern Bool_t       useData;
-  extern Bool_t       useAll;
   extern Bool_t       doMETcor;
   extern TString      outtype;
 

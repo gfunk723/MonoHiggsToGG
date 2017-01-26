@@ -31,11 +31,12 @@ void InitializeMain(TStyle *& tdrStyle)
   //------------------------------------------------------------------------
   // Set sample map 
   //------------------------------------------------------------------------
-  if (Config::useData) Config::SampleMap["DoubleEG"] = false; // !isMC
-  if (Config::useAll){
-     Config::SampleMap["DiPhoton"] = true; // isMC
-     Config::SampleMap["QCD"]      = true; // isMC
-  } 
+  if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
+  if (Config::doAnalysis)
+  {
+    Config::SampleMap["DiPhoton"]     = false; // !isData 
+    Config::SampleMap["QCD"]          = false; // !isData 
+  }
 
   //------------------------------------------------------------------------
   // Set color map 
@@ -96,7 +97,6 @@ int main(int argc, const char* argv[])
         "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
 	"  --do-metcor     <bool>        calculate pile-up weights (def: %s)\n"
         "  --use-Data      <bool>        use DoubleEG data (def: %s)\n"
-        "  --use-All       <bool>        use all MC data sets (def: %s)\n"
         "  --out-image     <string>      extension of file to save plots (def: %s)\n"
         ,
         argv[0],
@@ -107,7 +107,6 @@ int main(int argc, const char* argv[])
         (Config::doStandard ? "true" : "false"),
         (Config::doNminus1  ? "true" : "false"),
 	(Config::useData    ? "true" : "false"),
-	(Config::useAll     ? "true" : "false"),
 	(Config::doMETcor   ? "true" : "false"),
         Config::outtype.Data()
       );
@@ -120,7 +119,6 @@ int main(int argc, const char* argv[])
     else if (*i == "--do-standard") { Config::doStandard   = true; }
     else if (*i == "--do-nminus1")  { Config::doNminus1    = true; }
     else if (*i == "--use-Data")    { Config::useData      = true; }
-    else if (*i == "--use-All")     { Config::useAll       = true; }
     else if (*i == "--do-metcor")   { Config::doMETcor     = true; }
     else if (*i == "--out-image")   { next_arg_or_die(mArgs, i); Config::outtype  = i->c_str(); }
     else    { std::cerr << "Error: Unknown option/argument: " << i->c_str() << " ...exiting..." << std::endl; exit(1); }
@@ -130,7 +128,9 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   // Initialization
   //------------------------------------------------------------------------
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"; 
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/";
+  TStyle * tdrStyle; 
+  InitializeMain(tdrStyle);
 
   //------------------------------------------------------------------------
   // Blinding
@@ -166,8 +166,7 @@ int main(int argc, const char* argv[])
   }
   else
   {
-    std::cout << "Skipping MET-phi calculation" << std::endl;
-    std::cout << "Just pickup MET-phi correction" << std::endl; 
+    std::cout << "Skipping MET-phi calculation, just pickup correction" << std::endl; 
     // pick up MC metCorr
     TString metStudyMC = Form("%smetCorr_MC.root",inDir.Data());
     TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
@@ -193,11 +192,18 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   if (Config::doAnalysis)
   {
-    std::cout << "Working on DiPhoton sample" << std::endl;
-    Analysis * GG = new Analysis(inDir,Config::outdir,"DiPhoton",Config::lumi,false,Config::doBlind,Config::outtype,metCorrMC,Config::whichSel);
-    GG->DoPlots(0);
-    delete GG;
-    std::cout << "Finished DiPhoton sample" << std::endl;
+    Int_t prompt = 0; //Do prompt removal
+    for (TStrBoolMapIter iter = Config::SampleMap.begin(); iter != Config::SampleMap.end(); ++iter){
+      std::cout << "Working on " << (*iter).first << " sample" << std::endl;
+      if ( (*iter).first=="GJets") prompt==1;
+      if ( (*iter).first=="QCD")   prompt==2;
+      // input arguments: inputdir,outputdir,sample,lumi,isData,doBlind,png/pdf,metCorr,whichSel
+      Analysis * plot = new Analysis(inDir,Config::outdir,(*iter).first,Config::lumi,(*iter).second,Config::doBlind,Config::outtype,metCorrMC,Config::whichSel);
+      plot->DoPlots(prompt);
+      delete plot;
+      std::cout << "Finished " << (*iter).first << " sample" << std::endl;
+    }
+    std::cout << "Finished running analysis" << std::endl;
   }
   else std::cout << "Skipping running analysis" << std::endl;  
 

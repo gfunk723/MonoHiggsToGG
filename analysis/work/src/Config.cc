@@ -12,7 +12,6 @@ namespace Config{
   Bool_t  doStandard  = false;
   Bool_t  doNminus1   = false;
   Bool_t  useData     = false;
-  Bool_t  useAll      = false;
   Bool_t  doMETcor    = false;
   TString outtype     = "png";
 
