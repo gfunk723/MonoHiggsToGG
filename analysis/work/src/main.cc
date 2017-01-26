@@ -1,7 +1,7 @@
 #include "../interface/CommonTypes.hh"
 #include "../interface/Common.hh"
 #include "../interface/Config.hh"
-//#include "../interface/Style.hh"
+#include "../interface/Analysis.hh"
 #include "../interface/METcorr.hh"
 
 #include "TROOT.h"
@@ -29,7 +29,6 @@ void InitializeMain(TStyle *& tdrStyle)
   //------------------------------------------------------------------------
   // Make output dir 
   //------------------------------------------------------------------------
-
   MakeOutDir(Config::outdir);
 
   //------------------------------------------------------------------------
@@ -72,9 +71,7 @@ void InitializeMain(TStyle *& tdrStyle)
   Config::colorMap["2HDM_mZP800_mA0300"]   = kMagenta+2;
   Config::colorMap["2HDM_mZP1000_mA0300"]  = kMagenta;
 
-
-
-}
+}// end initializing
 
 
 int main(int argc, const char* argv[])
@@ -95,6 +92,11 @@ int main(int argc, const char* argv[])
         "Usage: %s [options]\n"
         "Options:\n"
 	"  --outdir        <string>      name of ouput directory (def: %s)\n"
+        "  --unblind       <bool>        unblind the data (def: %s)\n"
+        "  --do-analysis   <bool>        run analysis cuts (def: %s)\n"
+        "  --which-sel     <int>         choose which selection to apply (def: %s)\n"
+        "  --do-standard   <bool>        make standard plots (def: %s)\n"
+        "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
 	"  --do-metcor     <bool>        calculate pile-up weights (def: %s)\n"
         "  --use-Data      <bool>        use DoubleEG data (def: %s)\n"
         "  --use-All       <bool>        use all MC data sets (def: %s)\n"
@@ -102,6 +104,11 @@ int main(int argc, const char* argv[])
         ,
         argv[0],
         Config::outdir.Data(),
+        (Config::doBlind    ? "false" : "true"),
+        (Config::doAnalysis ? "true" : "false"),
+        Config::whichSel,
+        (Config::doStandard ? "true" : "false"),
+        (Config::doNminus1  ? "true" : "false"),
 	(Config::useData    ? "true" : "false"),
 	(Config::useAll     ? "true" : "false"),
 	(Config::doMETcor   ? "true" : "false"),
@@ -110,6 +117,11 @@ int main(int argc, const char* argv[])
       exit(0);
     }
     else if (*i == "--outdir")      { next_arg_or_die(mArgs, i); Config::outdir = i->c_str(); }
+    else if (*i == "--unblind")     { Config::doBlind      = false; }
+    else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
+    else if (*i == "--which-sel")   { next_arg_or_die(mArgs, i); Config::whichSel = std::atoi(i->c_str()); }
+    else if (*i == "--do-standard") { Config::doStandard   = true; }
+    else if (*i == "--do-nminus1")  { Config::doNminus1    = true; }
     else if (*i == "--use-Data")    { Config::useData      = true; }
     else if (*i == "--use-All")     { Config::useAll       = true; }
     else if (*i == "--do-metcor")   { Config::doMETcor     = true; }
@@ -121,24 +133,43 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   // Initialization
   //------------------------------------------------------------------------
-
   TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"; 
+
+  //------------------------------------------------------------------------
+  // Get the MET correction
+  //------------------------------------------------------------------------
+  DblVec metCorrMC;
+  DblVec metCorrData;
+
   if (Config::doMETcor)
   {
-    DblVec metCorrMC;
-    DblVec metCorrData;
-
     std::cout << "Get MET-phi Correction MC" << std::endl;
-    METcorr * metcorrMC = new METcorr(0,inDir,Config::outdir,"DiPhoton");
+    METcorr * metcorrMC = new METcorr(0,inDir,"DiPhoton");
     metCorrMC = metcorrMC->Loop(inDir, "MC");    
     delete metcorrMC;
     
     std::cout << "Get MET-phi Correction Data" << std::endl;
-    METcorr * metcorrData = new METcorr(0,inDir,Config::outdir,"DoubleEG");
+    METcorr * metcorrData = new METcorr(0,inDir,"DoubleEG");
     metCorrData = metcorrData->Loop(inDir, "Data");    
     delete metcorrData;    
   }
   else std::cout << "Skipping MET-phi calculation" << std::endl;
 
+  //------------------------------------------------------------------------
+  // Do analysis
+  //------------------------------------------------------------------------
+  DblVec puweights_MC;
+  
+  if (Config::doAnalysis)
+  {
+    std::cout << "Working on DiPhoton sample" << std::endl;
+    Analysis * GG = new Analysis(inDir,Config::outdir,"DiPhoton",puweights_MC,Config::lumi,false,Config::doBlind,Config::outtype,metCorrMC,Config::whichSel);
+    GG->DoPlots(0);
+    delete GG;
+    std::cout << "Finished DiPhoton sample" << std::endl;
+  }
+  else std::cout << "Skipping running analysis" << std::endl;  
 
-}
+
+
+}// end main

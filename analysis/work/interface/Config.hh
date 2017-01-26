@@ -37,6 +37,11 @@ namespace Config{
   //------------------------------------------------------------------------
 
   extern TString      outdir;
+  extern Bool_t       doBlind;
+  extern Bool_t       doAnalysis;
+  extern Int_t        whichSel;
+  extern Bool_t       doStandard;
+  extern Bool_t       doNminus1;
   extern Bool_t       useData;
   extern Bool_t       useAll;
   extern Bool_t       doMETcor;

@@ -5,7 +5,12 @@ namespace Config{
   //------------------------------------------------------------------------
   // Default Config parameters
   //------------------------------------------------------------------------
-  TString outdir      = "output";
+  TString outdir      = "diPhoPlots";
+  Bool_t  doBlind     = true;
+  Bool_t  doAnalysis  = false;
+  Int_t   whichSel    = 0;
+  Bool_t  doStandard  = false;
+  Bool_t  doNminus1   = false;
   Bool_t  useData     = false;
   Bool_t  useAll      = false;
   Bool_t  doMETcor    = false;

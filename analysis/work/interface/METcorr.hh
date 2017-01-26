@@ -35,7 +35,7 @@ public :
    TBranch        *b_pt1;
    TBranch        *b_pt2;
 
-   METcorr(TTree *tree=0, TString inDir="", TString outDir="", TString inSpecies="");
+   METcorr(TTree *tree=0, TString inDir="", TString inSpecies="");
    virtual ~METcorr();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -55,7 +55,7 @@ public :
 #endif
 
 #ifdef METcorr_cxx
- METcorr::METcorr(TTree *tree, TString inDir, TString outDir, TString inSpecies) : fChain(0) 
+ METcorr::METcorr(TTree *tree, TString inDir, TString inSpecies) : fChain(0) 
 {
 
 // if parameter tree is not specified (or zero), connect the file
