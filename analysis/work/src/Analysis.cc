@@ -1,7 +1,7 @@
 #include "../interface/Analysis.hh"
 #include "../interface/deltaPhi.hh"
 
-Analysis::Analysis(TString inName, TString outName, TString inSpecies, DblVec puwgts, Double_t lumi,
+Analysis::Analysis(TString inName, TString outName, TString inSpecies, Double_t lumi,
                    Bool_t Data, Bool_t Blind, TString type, DblVec metCorr, Int_t whichSel)
 {
 
@@ -14,7 +14,6 @@ Analysis::Analysis(TString inName, TString outName, TString inSpecies, DblVec pu
   fMETCorr = metCorr;
   fWhichSel = whichSel;
   fLumi = lumi;
-  fPUWeights = puwgts;
 
   //------------------------------------------------------------------------
   // Get input ROOT file
@@ -125,12 +124,22 @@ void Analysis::DoPlots(int prompt)
     fLorenzVecJet2.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,massJetSubLead);
     fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
+ 
+    //------------------------------------------------------------------------
+    // MET phi correction, old method
+    //------------------------------------------------------------------------
+    //Double_t t1pmfetCorrX, t1pfmetCorrY;
+    //t1pfmetCorrX = t1pfmet*cos(t1pfmetPhi) - (fMETCorr[0] + fMETCorr[1]*t1pfmetSumEt);
+    //t1pfmetCorrY = t1pfmet*sin(t1pfmetPhi) - (fMETCorr[2] + fMETCorr[3]*t1pfmetSumEt);
+    //TLorentzVector correctedMet;
+    //correctedMet.SetPxPyPzE(t1pfmetCorrX,t1pfmetCorrY,0,t1pfmetSumEt);  
+    //Double_t t1pfmetCorrPhi = correctedMet.Phi();
+    //Double_t t1pfmetCorr = correctedMet.Pt();
 
     //------------------------------------------------------------------------
-    // Calculate the weight 
+    // Calculate the weight (could put in a PU reweight here) 
     //------------------------------------------------------------------------
     Double_t wgt = weight; 
-    //Double_t wgt = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
 
     //------------------------------------------------------------------------
     // Check that data passes trigger

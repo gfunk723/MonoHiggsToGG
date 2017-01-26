@@ -33,7 +33,7 @@ typedef TH2Map::iterator		TH2MapIter;
 
 class Analysis{
 public:
-  Analysis( const TString inName, const TString outName, const TString inSpecies, const DblVec puweights, const Double_t lumi, 
+  Analysis( const TString inName, const TString outName, const TString inSpecies, const Double_t lumi, 
             Bool_t Data, Bool_t Blind, const TString type, const DblVec metcorr, const int whichSelection);
   ~Analysis();
 
@@ -72,8 +72,6 @@ private:
   TLorentzVector	fLorenzVecJet4;
 
   DblVec		fMETCorr;
-
-  DblVec		fPUWeights;
   Double_t 		fLumi;
   DblVec		fSelection;
   DblVec		fSelection_unwgt;

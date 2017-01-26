@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------
+// To clean:   make clean
+// To compile: make
+// To call:    ./main --help (gives config options)
+//------------------------------------------------------------------------
+
 #include "../interface/CommonTypes.hh"
 #include "../interface/Common.hh"
 #include "../interface/Config.hh"
@@ -6,15 +12,6 @@
 
 #include "TROOT.h"
 #include <iostream>
-
-  //------------------------------------------------------------------------
-  // To Compile:
-  // make clean (if you have changed something in the .hh files)
-  // make
-  //
-  // Call this script:
-  // ./main
-  //------------------------------------------------------------------------
 
 void InitializeMain(TStyle *& tdrStyle)
 {
@@ -136,6 +133,20 @@ int main(int argc, const char* argv[])
   TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"; 
 
   //------------------------------------------------------------------------
+  // Blinding
+  //------------------------------------------------------------------------
+  std::string input;
+  if (Config::doBlind) std::cout << "Blinding data" << std::endl;
+  else
+  {
+    std::cout << "Unblinding data!" << std::endl;
+    std::cout << "Do you want to proceed? (yn) " << std::endl;
+    std::cin >> input;
+    if (input == "y") std::cout << "Proceeding" << std::endl;
+    else{ std::cout << "Please do not use flag: --unblind ... exiting..." << std::endl; exit(1); }
+  }
+
+  //------------------------------------------------------------------------
   // Get the MET correction
   //------------------------------------------------------------------------
   DblVec metCorrMC;
@@ -153,17 +164,37 @@ int main(int argc, const char* argv[])
     metCorrData = metcorrData->Loop(inDir, "Data");    
     delete metcorrData;    
   }
-  else std::cout << "Skipping MET-phi calculation" << std::endl;
+  else
+  {
+    std::cout << "Skipping MET-phi calculation" << std::endl;
+    std::cout << "Just pickup MET-phi correction" << std::endl; 
+    // pick up MC metCorr
+    TString metStudyMC = Form("%smetCorr_MC.root",inDir.Data());
+    TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
+    CheckValidFile(fmetCorrMC,metStudyMC);
+    TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
+    CheckValidTH1D(MCmet,"",metStudyMC);
+
+    // pick up Data metCorr
+    TString metStudyData = Form("%smetCorr_Data.root",inDir.Data());
+    TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
+    CheckValidFile(fmetCorrDATA,metStudyData);
+    TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
+    CheckValidTH1D(DATAmet,"",metStudyData);
+     
+    for (UInt_t i=0; i<4; i++){
+      metCorrMC.push_back(MCmet->GetBinContent(i+1));
+      metCorrData.push_back(DATAmet->GetBinContent(i+1));
+    }
+  }
 
   //------------------------------------------------------------------------
   // Do analysis
   //------------------------------------------------------------------------
-  DblVec puweights_MC;
-  
   if (Config::doAnalysis)
   {
     std::cout << "Working on DiPhoton sample" << std::endl;
-    Analysis * GG = new Analysis(inDir,Config::outdir,"DiPhoton",puweights_MC,Config::lumi,false,Config::doBlind,Config::outtype,metCorrMC,Config::whichSel);
+    Analysis * GG = new Analysis(inDir,Config::outdir,"DiPhoton",Config::lumi,false,Config::doBlind,Config::outtype,metCorrMC,Config::whichSel);
     GG->DoPlots(0);
     delete GG;
     std::cout << "Finished DiPhoton sample" << std::endl;
