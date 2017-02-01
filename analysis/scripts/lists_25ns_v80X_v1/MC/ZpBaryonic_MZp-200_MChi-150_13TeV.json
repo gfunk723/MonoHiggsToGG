@@ -1,0 +1,8 @@
+    "/MonoHaa_ZpBaryonic_MZp-200_MChi-150_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1-090147f88fbb2f11f6859f4cbd44f07d/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic/2_3_0/MonoHaa_ZpBaryonic_MZp-200_MChi-150_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoHBaryonic-2_3_0-v0-RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/161208_133441/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 2660, 
+                "totEvents": 2660, 
+                "weights": 2660.0
