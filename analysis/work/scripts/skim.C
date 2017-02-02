@@ -21,6 +21,7 @@ void skim(TString path, TString sample){
   const Bool_t isMC = !sample.Contains("DoubleEG",TString::kExact);
   const Bool_t doQCD_DupRem  = (sample.Contains("QCD",TString::kExact));
   const Bool_t doGJet_DupRem = (sample.Contains("GJets",TString::kExact));
+  if (doGJet_DupRem || doQCD_DupRem) cout << "doing dup removal" << endl;
   TH1F * h_entries         = (TH1F*)infile->Get("h_entries");
   TH1F * h_sumW            = (TH1F*)infile->Get("h_sumW");
   TH1F * h_selection       = (TH1F*)infile->Get("h_selection");
@@ -65,7 +66,10 @@ void skim(TString path, TString sample){
   Int_t   nEle;			intree->SetBranchAddress("nEle",&nEle);
   Int_t   nMuons;		intree->SetBranchAddress("nMuons",&nMuons);
   // jet variables
-  Int_t   nJets;		intree->SetBranchAddress("nJets",&nJets);
+  Int_t   nJets20;		intree->SetBranchAddress("nJets20",&nJets20);
+  Int_t   nJets30;		intree->SetBranchAddress("nJets30",&nJets30);
+  Int_t   nJets40;		intree->SetBranchAddress("nJets40",&nJets40);
+  Int_t   nJets50;		intree->SetBranchAddress("nJets50",&nJets50);
   Float_t ptJetLead;		intree->SetBranchAddress("ptJetLead",&ptJetLead);
   Float_t etaJetLead;		intree->SetBranchAddress("etaJetLead",&etaJetLead);
   Float_t phiJetLead;		intree->SetBranchAddress("phiJetLead",&phiJetLead);
@@ -125,10 +129,14 @@ void skim(TString path, TString sample){
   outtree = intree->CloneTree(0);
   
   // ----------------------------------------------------------------
-  // loop over input tree
+  // Initialize any counters wanted
   // ----------------------------------------------------------------
   Int_t num_failing = 0;
+  Int_t num_mufails = 0;
 
+  // ----------------------------------------------------------------
+  // loop over input tree
+  // ----------------------------------------------------------------
   for (UInt_t entry = 0; entry < intree->GetEntries(); entry++)
   {
 
@@ -181,7 +189,7 @@ void skim(TString path, TString sample){
     Double_t min_dphi_JetMET = 10.;
     Double_t max_dphi_JetMET = 0.;
 
-    if (nJets > 0){
+    if (nJets50 > 0){
       Double_t dphiJet1METmin = 10;
       Double_t dphiJet2METmin = 10;
       Double_t dphiJet3METmin = 10;
@@ -224,23 +232,25 @@ void skim(TString path, TString sample){
     // Apply the cuts 
     // ----------------------------------------------------------------
 
-    const Bool_t triggered        = (isMC)?true:hltDiphoton30Mass95;
+    const Bool_t triggered        = (isMC)?true:hltDiphoton30Mass95; // trigger for data only
     const Bool_t passMetFil_All   = (metF_GV && metF_globalTightHalo && metF_HBHENoise && metF_HBHENoiseIso && metF_EcalDeadCell && metF_badMuon && metF_badChargedHadron);
     const Bool_t passMetFil_Data  = (isMC)?true:(metF_eeBadSC); // filter for data only
     const Bool_t passMETfilters   = (passMetFil_All && passMetFil_Data);
 
     const Bool_t passKinematics   = (pt1>0.5*mgg && pt2>0.25*mgg && ptgg>90 && mgg>=100 && mgg<=200);
-    //const Bool_t passKinematics   = (pt1>0.33*mgg && pt2>0.25*mgg && ((mgg>=100 && mgg<=115) || (mgg >=135 && mgg<=200)));
-    const Bool_t pass_GJet_DupRem = (!doGJet_DupRem || (doGJet_DupRem && (genmatch1==1 && genmatch2==1)));
-    const Bool_t pass_QCD_DupRem  = (!doQCD_DupRem  || (doQCD_DupRem  && (genmatch1==1 || genmatch2==1)));
+    //const Bool_t passKinematics   = (pt1>0.33*mgg && pt2>0.25*mgg /*&& ((mgg>=100 && mgg<=115) || (mgg >=135 && mgg<=200))*/);
+    const Bool_t pass_GJet_DupRem = (!doGJet_DupRem || (doGJet_DupRem && (genmatch1!=1 || genmatch2!=1)));
+    const Bool_t pass_QCD_DupRem  = (!doQCD_DupRem  || (doQCD_DupRem  && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t passDupRemoval   = (pass_QCD_DupRem && pass_GJet_DupRem);
     const Bool_t passLepVetos     = (nEle<2 && nMuons==0);
+    const Bool_t passJetVetos     = (nJets30 < 3);
     const Bool_t passDphiCuts     = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
 
+    if (nMuons!=0)       num_mufails++;
     if (!passMETfilters) num_failing++;
 
     // skim cut
-    if (triggered && passMETfilters && passKinematics && passDupRemoval && passLepVetos && passDphiCuts)
+    if (triggered && passMETfilters && passKinematics && passDupRemoval && passLepVetos && passDphiCuts && passJetVetos)
     {
       outtree->Fill(); // fill output tree
     }
@@ -248,6 +258,7 @@ void skim(TString path, TString sample){
   }// finish event loop
 
   cout << num_failing << " events fail met filters of " << intree->GetEntries() << " original events " << endl;
+  cout << num_mufails << " events fail muon cut " << endl;
 
 
   // ----------------------------------------------------------------
