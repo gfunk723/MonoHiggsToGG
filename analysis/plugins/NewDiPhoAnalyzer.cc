@@ -112,6 +112,8 @@ struct diphoTree_struc_ {
   float pu_n;
   float sumDataset;
   float perEveW;
+  float SF1;
+  float SF2;
   //float perEveW1;
   //float perEveW2;
   //float perEveW3;
@@ -408,7 +410,8 @@ private:
   int passLoosePHisoCuts(float sceta, float phiso, float pt);
   int passLooseHoeCuts(float sceta, float hoe);
   bool passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso);
-  
+ 
+  float getPhoSFValue(float sceta, float pt); 
   float getSmearingValue(float sceta, float r9, int syst);
   float getScalingValue(int sampleID, float sceta, float r9, int runNumber, int syst);
   float getPtCorrected(float pt, float sceta,float r9, int run, int sampleID, float energy, int event, int syst);
@@ -1368,6 +1371,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      eleveto2  = 0;
 		      if (candDiphoPtr->subLeadingPhoton()->passElectronVeto()) eleveto2 = 1;
 
+		      //-------> photon SFs
+                      double SF1 = getPhoSFValue(sceta1,pt1);
+                      double SF2 = getPhoSFValue(sceta2,pt2);
+ 
 		      //-------> diphoton system properties 
 		      massOrig = candDiphoPtr->mass(); // uncorr mass
 		      ptggOrig = candDiphoPtr->pt();   // uncorr ptgg
@@ -1982,6 +1989,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.pu_n = pu_n;
 		      treeDipho_.sumDataset = sumDataset;
 		      treeDipho_.perEveW = perEveW;
+                      treeDipho_.SF1 = SF1;
+                      treeDipho_.SF2 = SF2;
 		      //treeDipho_.perEveW1 = perEveWeights[1];
 		      //treeDipho_.perEveW2 = perEveWeights[2];
 		      //treeDipho_.perEveW3 = perEveWeights[3];
@@ -2346,6 +2355,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("pu_n",&(treeDipho_.pu_n),"pu_n/F");
   DiPhotonTree->Branch("sumDataset",&(treeDipho_.sumDataset),"sumDataset/F");
   DiPhotonTree->Branch("perEveW",&(treeDipho_.perEveW),"perEveW/F");
+  DiPhotonTree->Branch("SF1",&(treeDipho_.SF1),"SF1/F");
+  DiPhotonTree->Branch("SF2",&(treeDipho_.SF2),"SF2/F");
   //DiPhotonTree->Branch("perEveW1",&(treeDipho_.perEveW1),"perEveW1/F");
   //DiPhotonTree->Branch("perEveW2",&(treeDipho_.perEveW2),"perEveW2/F");
   //DiPhotonTree->Branch("perEveW3",&(treeDipho_.perEveW3),"perEveW3/F");
@@ -2638,6 +2649,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.pu_n = -500.;
   treeDipho_.sumDataset = -500.;
   treeDipho_.perEveW = -500.;
+  treeDipho_.SF1 = -500.;
+  treeDipho_.SF2 = -500.;
   //treeDipho_.perEveW1 = -500.;
   //treeDipho_.perEveW2 = -500.;
   //treeDipho_.perEveW3 = -500.;
@@ -3221,7 +3234,71 @@ int NewDiPhoAnalyzer::effectiveAreaRegion(float sceta) {
   return theEAregion;
 }
 
-//float NewDiPhoAnalyzer::getMETphiCorrection
+float NewDiPhoAnalyzer::getPhoSFValue(float eta, float pt){
+
+  double SF = 1.0;
+
+  if (-2.5   <= eta && eta < -2.0  ){
+    if (pt <= 35) SF = 0.973225;
+    if (35 < pt && pt <= 50)  SF = 0.986928;
+    if (50 < pt && pt <= 90)  SF = 0.989213;
+    if (90 < pt && pt <= 150) SF = 1.01416;
+    if (pt > 150) SF = 1.01416;
+  }
+  if (-2.0   <= eta && eta < -1.566){
+    if (pt <= 35) SF = 0.971864;
+    if (35 < pt && pt <= 50)  SF = 0.988987;
+    if (50 < pt && pt <= 90)  SF = 0.985777;
+    if (90 < pt && pt <= 150) SF = 1.00669;
+    if (pt > 150) SF = 1.00669;
+  }
+  if (-1.444 <= eta && eta < -0.8  ){
+    if (pt <= 35) SF = 0.986063;
+    if (35 < pt && pt <= 50)  SF = 0.98803;
+    if (50 < pt && pt <= 90)  SF = 0.980413;
+    if (90 < pt && pt <= 150) SF = 1.02018;
+    if (pt > 150) SF = 1.02018;
+  }
+  if (-0.8   <= eta && eta < 0.0   ){
+    if (pt <= 35) SF = 0.9807;
+    if (35 < pt && pt <= 50)  SF = 0.980111;
+    if (50 < pt && pt <= 90)  SF = 0.972467;
+    if (90 < pt && pt <= 150) SF = 1.0034;
+    if (pt > 150) SF = 1.0034;
+  }
+  if (0.0    <= eta && eta < 0.8   ){
+    if (pt <= 35) SF = 0.983112;
+    if (35 < pt && pt <= 50)  SF = 0.985588;
+    if (50 < pt && pt <= 90)  SF = 0.978982;
+    if (90 < pt && pt <= 150) SF = 1.01479;
+    if (pt > 150) SF = 1.01479;
+  }
+  if (0.8    <= eta && eta < 1.444 ){
+    if (pt <= 35) SF = 0.987179;
+    if (35 < pt && pt <= 50)  SF = 0.986928;
+    if (50 < pt && pt <= 90)  SF = 0.984716;
+    if (90 < pt && pt <= 150) SF = 1.01906;
+    if (pt > 150) SF = 1.01906;
+  }
+  if (1.566  <= eta && eta < 2.0   ){
+    if (pt <= 35) SF = 0.977647;
+    if (35 < pt && pt <= 50)  SF = 0.99118;
+    if (50 < pt && pt <= 90)  SF = 0.990121;
+    if (90 < pt && pt <= 150) SF = 1.01453;
+    if (pt > 150) SF = 1.01453;
+  }
+  if (2.0    <= eta && eta < 2.5   ){
+    if (pt <= 35) SF = 0.970896;
+    if (35 < pt && pt <= 50)  SF = 0.992333;
+    if (50 < pt && pt <= 90)  SF = 0.994577;
+    if (90 < pt && pt <= 150) SF = 1.02434;
+    if (pt > 150) SF = 1.02434;
+  }
+
+
+  return SF;
+
+}// end getPhoSFValue
 
 float NewDiPhoAnalyzer::getSmearingValue(float sceta, float r9, int syst){
   float smearingValue = 1.0;

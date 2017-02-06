@@ -27,18 +27,18 @@ void makeTxtFile(TString file, TString fileout){
  
   if (outfile.is_open()){
     for (i=0; i < etas.size(); i++){
-      if (i==0) outfile << "if (-2.5   <= eta < -2.0  ){" << std::endl;
-      if (i==1) outfile << "if (-2.0   <= eta < -1.566){" << std::endl;
-      if (i==2) outfile << "if (-1.444 <= eta < -0.8  ){" << std::endl;
-      if (i==3) outfile << "if (-0.8   <= eta < 0.0   ){" << std::endl;
-      if (i==4) outfile << "if (0.0    <= eta < 0.8   ){" << std::endl;
-      if (i==5) outfile << "if (0.8    <= eta < 1.444 ){" << std::endl;
-      if (i==6) outfile << "if (1.566  <= eta < 2.0   ){" << std::endl;
-      if (i==7) outfile << "if (2.0    <= eta < 2.5   ){" << std::endl;
+      if (i==0) outfile << "if (-2.5   <= eta && eta < -2.0  ){" << std::endl;
+      if (i==1) outfile << "if (-2.0   <= eta && eta < -1.566){" << std::endl;
+      if (i==2) outfile << "if (-1.444 <= eta && eta < -0.8  ){" << std::endl;
+      if (i==3) outfile << "if (-0.8   <= eta && eta < 0.0   ){" << std::endl;
+      if (i==4) outfile << "if (0.0    <= eta && eta < 0.8   ){" << std::endl;
+      if (i==5) outfile << "if (0.8    <= eta && eta < 1.444 ){" << std::endl;
+      if (i==6) outfile << "if (1.566  <= eta && eta < 2.0   ){" << std::endl;
+      if (i==7) outfile << "if (2.0    <= eta && eta < 2.5   ){" << std::endl;
       outfile << "  if (pt <= 35) SF = "       << getValue(inhist, etas[i],  30) << ";" << std::endl;
-      outfile << "  if (35 < pt <= 50)  SF = " << getValue(inhist, etas[i],  40) << ";" << std::endl;
-      outfile << "  if (50 < pt <= 90)  SF = " << getValue(inhist, etas[i],  80) << ";" << std::endl;
-      outfile << "  if (90 < pt <= 150) SF = " << getValue(inhist, etas[i], 100) << ";" << std::endl;
+      outfile << "  if (35 < pt && pt <= 50)  SF = " << getValue(inhist, etas[i],  40) << ";" << std::endl;
+      outfile << "  if (50 < pt && pt <= 90)  SF = " << getValue(inhist, etas[i],  80) << ";" << std::endl;
+      outfile << "  if (90 < pt && pt <= 150) SF = " << getValue(inhist, etas[i], 100) << ";" << std::endl;
       outfile << "  if (pt > 150) SF = "       << getValue(inhist, etas[i], 160) << ";" << std::endl;
       outfile << "}" << std::endl;
     }
