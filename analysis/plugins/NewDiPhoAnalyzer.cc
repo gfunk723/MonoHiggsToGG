@@ -317,6 +317,8 @@ struct diphoTree_struc_ {
   int passLooseHoe2;
   int nEle;
   int nMuons;
+  int nEleMed;
+  int nMuTight;
   int nJets;
   int nJets20;
   int nJets30;
@@ -1268,6 +1270,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      int passLooseCHiso1, passLooseCHiso2, passLooseNHiso1, passLooseNHiso2, passLoosePHiso1, passLoosePHiso2;
                       int passLooseSieie1, passLooseSieie2, passLooseHoe1, passLooseHoe2;
 		      int nEle, nMuons, nJets, nLooseBjets, nMediumBjets;
+                      int nEleMed, nMuTight;
                       int nJets20, nJets30, nJets40, nJets50;
 		      int vhtruth;
 
@@ -1667,7 +1670,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      // leptons and jets
 		      nEle   = 0;
 		      nMuons = 0;
-		      nJets  = 0;     
+		      nJets  = 0;
+                      nEleMed = 0;
+                      nMuTight = 0; 
 		      nJets20  = 0;     
 		      nJets30  = 0;     
 		      nJets40  = 0;     
@@ -1680,15 +1685,23 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      // 0.3  (distance from the photons) => seems reasonable to me. 0.5 was used in globe
 		      // pT>20
 		      vector<Ptr<flashgg::Muon> > goodMuons = 
-			selectMuons( theMuons->ptrs(), candDiphoPtr, primaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
+			selectLooseMuons( theMuons->ptrs(), candDiphoPtr, primaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
 		      nMuons = goodMuons.size();
+
+		      vector<Ptr<flashgg::Muon> > goodMedMuons = 
+			selectMuons( theMuons->ptrs(), candDiphoPtr, primaryVertices->ptrs(), 2.4, 20., 0.25, 0.3, 0.3);  
+		      nMuTight = goodMedMuons.size();
 		
 		      // Electrons =>
 		      // pT>20 (maybe can be put higher?)
 		      // 0.3 (distance from the photons) => seems reasonable to me
 		      std::vector<edm::Ptr<Electron> > goodElectrons = 
-			selectMediumElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
+			selectLooseElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
 		      nEle = goodElectrons.size();
+
+		      std::vector<edm::Ptr<Electron> > goodMedElectrons = 
+			selectMediumElectrons( theElectrons->ptrs(), primaryVertices->ptrs(), candDiphoPtr, rho, 20., 0.3, 0.3);
+		      nEleMed = goodMedElectrons.size();
 		
 		      // Jets
 		      // leading jet 
@@ -2201,6 +2214,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.passLooseHoe2 = passLooseHoe2;	
 		      treeDipho_.nEle   = nEle;
 		      treeDipho_.nMuons = nMuons;
+		      treeDipho_.nEleMed = nEleMed;
+		      treeDipho_.nMuTight = nMuTight;
 		      treeDipho_.nJets  = nJets;
 		      treeDipho_.nJets20  = nJets20;
 		      treeDipho_.nJets30  = nJets30;
@@ -2568,6 +2583,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("passLooseHoe2",&(treeDipho_.passLooseHoe2),"passLooseHoe2/I");
   DiPhotonTree->Branch("nEle",&(treeDipho_.nEle),"nEle/I");
   DiPhotonTree->Branch("nMuons",&(treeDipho_.nMuons),"nMuons/I");
+  DiPhotonTree->Branch("nMuTight",&(treeDipho_.nMuTight),"nMuTight/I");
+  DiPhotonTree->Branch("nEleMed",&(treeDipho_.nEleMed),"nEleMed/I");
   DiPhotonTree->Branch("nJets",&(treeDipho_.nJets),"nJets/I");
   DiPhotonTree->Branch("nJets20",&(treeDipho_.nJets20),"nJets20/I");
   DiPhotonTree->Branch("nJets30",&(treeDipho_.nJets30),"nJets30/I");
@@ -2842,6 +2859,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.passLooseHoe2 = -500;
   treeDipho_.nEle   = -500;
   treeDipho_.nMuons = -500;
+  treeDipho_.nEleMed  = -500;
+  treeDipho_.nMuTight = -500;
   treeDipho_.nJets  = -500;
   treeDipho_.nJets20  = -500;
   treeDipho_.nJets30  = -500;
