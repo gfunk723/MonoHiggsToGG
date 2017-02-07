@@ -900,8 +900,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	float leadSieie  = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
 	float leadHoE    = diphoPtr->leadingPhoton()->hadronicOverEm();
 	float leadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
-     
-	bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
+	//bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
 
 	float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta(); 
 	float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();              
@@ -910,17 +909,19 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	float subleadSieie  = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta(); 
 	float subleadHoE    = diphoPtr->subLeadingPhoton()->hadronicOverEm();
 	float subleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());      
-	bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
+	//bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
 
 	//rediscovery HLT
 	float leadPfPhIso = diphoPtr->leadingPhoton()->pfPhoIso03();
-	float leadTrkSum03 = diphoPtr->leadingPhoton()->trkSumPtHollowConeDR03();
+	//float leadTrkSum03 = diphoPtr->leadingPhoton()->trkSumPtHollowConeDR03();
 	float subleadPfPhIso = diphoPtr->leadingPhoton()->pfPhoIso03();
 	float subleadTrkSum03 = diphoPtr->leadingPhoton()->trkSumPtHollowConeDR03();
-     
-	bool leadHLTok = rediscoveryHLT( leadScEta,leadPt, leadR9noZS,leadSieie,leadPfPhIso,leadTrkSum03 );
-	bool subleadHLTok = rediscoveryHLT( subleadScEta,subleadPt, subleadR9noZS,subleadSieie,subleadPfPhIso,subleadTrkSum03 );
-     
+	//bool leadHLTok = rediscoveryHLT( leadScEta,leadPt, leadR9noZS,leadSieie,leadPfPhIso,leadTrkSum03 );
+	//bool subleadHLTok = rediscoveryHLT( subleadScEta,subleadPt, subleadR9noZS,subleadSieie,subleadPfPhIso,subleadTrkSum03 );
+
+        // mimic trigger selection 
+        bool leadPassTrig    = LeadPhoTriggerSel(leadScEta, leadHoE, leadR9noZS, leadSieie, leadPfPhIso, leadPt);
+        bool subleadPassTrig = SubLeadPhoTriggerSel(subleadScEta, subleadHoE, subleadR9noZS, subleadSieie, subleadPfPhIso, subleadTrkSum03, subleadPt);     
  
 	//excercise for synchronyzation livia 
 	if(geometrical_acceptance(leadScEta,subleadScEta)){
@@ -938,10 +939,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	    }
 	  }
 	}
-	if (/*!passesTrigger ||*/ !leadPresel || !subleadPresel) continue;   
-	preselDipho.push_back(diphotonlooper);
-	if(!leadHLTok || !subleadHLTok)continue;
-	preselHLTDipho.push_back(diphotonlooper);
+	//if (/*!passesTrigger ||*/ !leadPresel || !subleadPresel) continue;   
+	//preselDipho.push_back(diphotonlooper);
+	//if(!leadHLTok || !subleadHLTok)continue;
+	//preselHLTDipho.push_back(diphotonlooper);
+	if ( !leadPassTrig || !subleadPassTrig) continue;
+        preselHLTDipho.push_back(diphotonlooper);
       }
       //excercise for synchronyzation livia 
       if (preselDiphoAcc.size()>0) {
@@ -1202,7 +1205,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		    int theDiphoton = vtxDipho[diphotonlooper];
 		    Ptr<flashgg::DiPhotonCandidate> diphoPtr = diPhotons->ptrAt( theDiphoton );
 
-		    if (mapMggCorr[diphoPtr] <= 100 || mapMggCorr[diphoPtr] >= 300) continue;
+		    if (mapMggCorr[diphoPtr] < 100 || mapMggCorr[diphoPtr] > 300) continue;
 		    massDipho.push_back(theDiphoton);
 		  }
 
@@ -3050,13 +3053,13 @@ double NewDiPhoAnalyzer::getGammaEAForPhotonIso(float eta) {
 
 bool NewDiPhoAnalyzer::LeadPhoTriggerSel(float eta, float hoe, float r9, float sieie, float phoiso, float pt){
   bool passes = false;
-  if (fabs(eta)<1.4442 && hoe < 0.1){
-    if (r9 > 0.85 || (sieie < 0.015 && phoiso < (6 + 0.12*pt))){
+  if (fabs(eta)<1.4442 && hoe < 0.12){
+    if (r9 > 0.85 || (r9 > 0.5 && sieie < 0.015 && phoiso < (6 + 0.12*pt))){
       passes = true;
     }
   }
-  else if (fabs(eta)>1.566 && hoe < 0.1){
-    if (r9 > 0.9 || (sieie < 0.035 && phoiso < (6 + 0.12*pt))){
+  else if (fabs(eta)>1.566 && fabs(eta) < 2.5 && hoe < 0.10){
+    if (r9 > 0.85 || (r9 > 0.8 && sieie < 0.035 && phoiso < (6 + 0.12*pt))){
       passes = true;
     }
   }  
@@ -3065,13 +3068,13 @@ bool NewDiPhoAnalyzer::LeadPhoTriggerSel(float eta, float hoe, float r9, float s
 
 bool NewDiPhoAnalyzer::SubLeadPhoTriggerSel(float eta, float hoe, float r9, float sieie, float phoiso, float chiso, float pt){
   bool passes = false;
-  if (fabs(eta)<1.4442 && hoe < 0.1){
-    if (r9 > 0.85 || (sieie < 0.015 && phoiso < (6 + 0.12*pt) && chiso < (6 + 0.002*pt))){
+  if (fabs(eta)<1.4442 && hoe < 0.12){
+    if (r9 > 0.85 || (r9 > 0.5 && sieie < 0.015 && phoiso < (6 + 0.12*pt) && chiso < (6 + 0.002*pt))){
       passes = true;
     }
   }
-  else if (fabs(eta)>1.566 && hoe < 0.1){
-    if (r9 > 0.9 || (sieie < 0.035 && phoiso < (6 + 0.12*pt) && chiso < (6 + 0.002*pt))){
+  else if (fabs(eta)>1.566 && hoe < 0.10){
+    if (r9 > 0.85 || (r9 > 0.8 && sieie < 0.035 && phoiso < (6 + 0.12*pt) && chiso < (6 + 0.002*pt))){
       passes = true;
     }
   }  
