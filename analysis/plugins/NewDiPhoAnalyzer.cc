@@ -114,6 +114,10 @@ struct diphoTree_struc_ {
   float perEveW;
   float SF1;
   float SF2;
+  float trigSF1;
+  float trigSF2;
+  float phoSF1;
+  float phoSF2;
   //float perEveW1;
   //float perEveW2;
   //float perEveW3;
@@ -413,6 +417,8 @@ private:
   int passLooseHoeCuts(float sceta, float hoe);
   bool passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso);
  
+  float getPhoTRIGGERSFValueLeadPhoton(float r9,float eta, float pt);
+  float getPhoTRIGGERSFValueSubLeadPhoton(float r9,float eta, float pt);
   float getPhoSFValue(float sceta, float pt); 
   float getSmearingValue(float sceta, float r9, int syst);
   float getScalingValue(int sampleID, float sceta, float r9, int runNumber, int syst);
@@ -1375,8 +1381,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      if (candDiphoPtr->subLeadingPhoton()->passElectronVeto()) eleveto2 = 1;
 
 		      //-------> photon SFs
-                      double SF1 = getPhoSFValue(sceta1,pt1);
-                      double SF2 = getPhoSFValue(sceta2,pt2);
+		      float trigSF1 = getPhoTRIGGERSFValueLeadPhoton(r91, eta1, pt1);  
+		      float trigSF2 = getPhoTRIGGERSFValueSubLeadPhoton(r92, eta2, pt2);    
+                      float phoSF1  = getPhoSFValue(sceta1,pt1);
+                      float phoSF2  = getPhoSFValue(sceta2,pt2);
+                      float SF1 = trigSF1*phoSF1;
+                      float SF2 = trigSF2*phoSF2;
  
 		      //-------> diphoton system properties 
 		      massOrig = candDiphoPtr->mass(); // uncorr mass
@@ -2002,6 +2012,10 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.pu_n = pu_n;
 		      treeDipho_.sumDataset = sumDataset;
 		      treeDipho_.perEveW = perEveW;
+                      treeDipho_.trigSF1 = trigSF1;
+                      treeDipho_.trigSF2 = trigSF2;
+                      treeDipho_.phoSF1 = phoSF1;
+                      treeDipho_.phoSF2 = phoSF2;
                       treeDipho_.SF1 = SF1;
                       treeDipho_.SF2 = SF2;
 		      //treeDipho_.perEveW1 = perEveWeights[1];
@@ -2370,6 +2384,10 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("pu_n",&(treeDipho_.pu_n),"pu_n/F");
   DiPhotonTree->Branch("sumDataset",&(treeDipho_.sumDataset),"sumDataset/F");
   DiPhotonTree->Branch("perEveW",&(treeDipho_.perEveW),"perEveW/F");
+  DiPhotonTree->Branch("trigSF1",&(treeDipho_.trigSF1),"trigSF1/F");
+  DiPhotonTree->Branch("trigSF2",&(treeDipho_.trigSF2),"trigSF2/F");
+  DiPhotonTree->Branch("phoSF1",&(treeDipho_.phoSF1),"phoSF1/F");
+  DiPhotonTree->Branch("phoSF2",&(treeDipho_.phoSF2),"phoSF2/F");
   DiPhotonTree->Branch("SF1",&(treeDipho_.SF1),"SF1/F");
   DiPhotonTree->Branch("SF2",&(treeDipho_.SF2),"SF2/F");
   //DiPhotonTree->Branch("perEveW1",&(treeDipho_.perEveW1),"perEveW1/F");
@@ -2666,6 +2684,10 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.pu_n = -500.;
   treeDipho_.sumDataset = -500.;
   treeDipho_.perEveW = -500.;
+  treeDipho_.trigSF1 = -500.;
+  treeDipho_.trigSF2 = -500.;
+  treeDipho_.phoSF1 = -500.;
+  treeDipho_.phoSF2 = -500.;
   treeDipho_.SF1 = -500.;
   treeDipho_.SF2 = -500.;
   //treeDipho_.perEveW1 = -500.;
@@ -3314,6 +3336,211 @@ float NewDiPhoAnalyzer::getPhoSFValue(float eta, float pt){
     if (pt > 150) SF = 1.02434;
   }
 
+
+  return SF;
+
+}// end getPhoSFValue
+
+
+float NewDiPhoAnalyzer::getPhoTRIGGERSFValueLeadPhoton(float r9,float eta, float pt){
+
+  double SF = 1.0;
+  int r9bin=0;
+  if(r9<=0.55)r9bin=1;
+  if(r9>0.55&&r9<=0.85)r9bin=2;
+  if(r9>0.85&&r9<9999)r9bin=3;
+  int etabin=0;
+  if(abs(eta)>0 &&abs(eta)<=1.5)etabin=1;
+  if(abs(eta)>1.5 &&abs(eta)<=3.)etabin=2;
+  int ptbin=0;
+  if(pt>0 &&pt<=33)ptbin=1;
+  if(pt>33 &&pt<=35)ptbin=2;
+  if(pt>35 &&pt<=40)ptbin=3;
+  if(pt>40 &&pt<=45)ptbin=4;
+  if(pt>45 &&pt<=50)ptbin=5;
+  if(pt>50 &&pt<=60)ptbin=6;
+  if(pt>60 &&pt<=70)ptbin=7;
+  if(pt>70 &&pt<=90)ptbin=8;
+  if(pt>90 &&pt<=999999)ptbin=9;
+
+  if(r9bin==1&&etabin==1&&ptbin==1) SF=0.775114;
+  if(r9bin==1&&etabin==1&&ptbin==2) SF=0.885320;
+  if(r9bin==1&&etabin==1&&ptbin==3) SF=0.892203;
+  if(r9bin==1&&etabin==1&&ptbin==4) SF=0.904842;
+  if(r9bin==1&&etabin==1&&ptbin==5) SF=0.914859;
+  if(r9bin==1&&etabin==1&&ptbin==6) SF=0.924156;
+  if(r9bin==1&&etabin==1&&ptbin==7) SF=0.942922;
+  if(r9bin==1&&etabin==1&&ptbin==8) SF=0.927536;
+  if(r9bin==1&&etabin==1&&ptbin==9) SF=0.925926;
+
+  if(r9bin==2&&etabin==1&&ptbin==1) SF=0.878942;
+  if(r9bin==2&&etabin==1&&ptbin==2) SF=0.966379;
+  if(r9bin==2&&etabin==1&&ptbin==3) SF=0.972522;
+  if(r9bin==2&&etabin==1&&ptbin==4) SF=0.976961;
+  if(r9bin==2&&etabin==1&&ptbin==5) SF=0.979303;
+  if(r9bin==2&&etabin==1&&ptbin==6) SF=0.982115;
+  if(r9bin==2&&etabin==1&&ptbin==7) SF=0.984479;
+  if(r9bin==2&&etabin==1&&ptbin==8) SF=0.986807;
+  if(r9bin==2&&etabin==1&&ptbin==9) SF=0.988418;
+
+  if(r9bin==3&&etabin==1&&ptbin==1) SF=0.91112 ;
+  if(r9bin==3&&etabin==1&&ptbin==2) SF=0.976805;
+  if(r9bin==3&&etabin==1&&ptbin==3) SF=0.983143;
+  if(r9bin==3&&etabin==1&&ptbin==4) SF=0.985977;
+  if(r9bin==3&&etabin==1&&ptbin==5) SF=0.988068;
+  if(r9bin==3&&etabin==1&&ptbin==6) SF=0.989167;
+  if(r9bin==3&&etabin==1&&ptbin==7) SF=0.98897 ;
+  if(r9bin==3&&etabin==1&&ptbin==8) SF=0.990893;
+  if(r9bin==3&&etabin==1&&ptbin==9) SF=0.990964;
+
+  if(r9bin==1&&etabin==2&&ptbin==1) SF=0.679018;
+  if(r9bin==1&&etabin==2&&ptbin==2) SF=0.81687 ;
+  if(r9bin==1&&etabin==2&&ptbin==3) SF=0.83901 ;
+  if(r9bin==1&&etabin==2&&ptbin==4) SF=0.853319;
+  if(r9bin==1&&etabin==2&&ptbin==5) SF=0.861865;
+  if(r9bin==1&&etabin==2&&ptbin==6) SF=0.873447;
+  if(r9bin==1&&etabin==2&&ptbin==7) SF=0.887509;
+  if(r9bin==1&&etabin==2&&ptbin==8) SF=0.898403;
+  if(r9bin==1&&etabin==2&&ptbin==9) SF=0.908284;
+
+  if(r9bin==2&&etabin==2&&ptbin==1) SF=0.786549;
+  if(r9bin==2&&etabin==2&&ptbin==2) SF=0.966016;
+  if(r9bin==2&&etabin==2&&ptbin==3) SF=0.985321;
+  if(r9bin==2&&etabin==2&&ptbin==4) SF=0.989327;
+  if(r9bin==2&&etabin==2&&ptbin==5) SF=0.98988 ;
+  if(r9bin==2&&etabin==2&&ptbin==6) SF=0.991248;
+  if(r9bin==2&&etabin==2&&ptbin==7) SF=0.991908;
+  if(r9bin==2&&etabin==2&&ptbin==8) SF=0.994417;
+  if(r9bin==2&&etabin==2&&ptbin==9) SF=0.996711;
+
+  if(r9bin==3&&etabin==2&&ptbin==1) SF=0.712497;
+  if(r9bin==3&&etabin==2&&ptbin==2) SF=0.952991;
+  if(r9bin==3&&etabin==2&&ptbin==3) SF=0.981648;
+  if(r9bin==3&&etabin==2&&ptbin==4) SF=0.987275;
+  if(r9bin==3&&etabin==2&&ptbin==5) SF=0.988334;
+  if(r9bin==3&&etabin==2&&ptbin==6) SF=0.989925;
+  if(r9bin==3&&etabin==2&&ptbin==7) SF=0.992184;
+  if(r9bin==3&&etabin==2&&ptbin==8) SF=0.993519;
+  if(r9bin==3&&etabin==2&&ptbin==9) SF=0.995242;
+
+
+  return SF;
+
+}// end getPhoSFValue
+
+
+
+float NewDiPhoAnalyzer::getPhoTRIGGERSFValueSubLeadPhoton(float r9,float eta, float pt){
+
+  double SF = 1.0;
+  int r9bin=0;
+  if(r9<=0.55)r9bin=1;
+  if(r9>0.55&&r9<=0.85)r9bin=2;
+  if(r9>0.85&&r9<9999)r9bin=3;
+  int etabin=0;
+  if(abs(eta)>0 &&abs(eta)<=1.5)etabin=1;
+  if(abs(eta)>1.5 &&abs(eta)<=3.)etabin=2;
+  int ptbin=0;
+  if(pt>0 &&pt<=22.5) ptbin=1;
+  if(pt>22.5 &&pt<=25)ptbin=2;
+  if(pt>25 &&pt<=27.5)ptbin=3;
+  if(pt>27.5 &&pt<=30)ptbin=4;
+  if(pt>30 &&pt<=33)  ptbin=5;
+  if(pt>33 &&pt<=35)  ptbin=6;
+  if(pt>35 &&pt<=40)  ptbin=7;
+  if(pt>40 &&pt<=45)  ptbin=8;
+  if(pt>45 &&pt<=50)  ptbin=9;
+  if(pt>50 &&pt<=60)  ptbin=10;
+  if(pt>60 &&pt<=70)  ptbin=11;
+  if(pt>70 &&pt<=90)  ptbin=12;
+  if(pt>90 &&pt<=999999)ptbin=13;
+
+  if(r9bin==1&&etabin==1&&ptbin==1)  SF=0.856223;
+  if(r9bin==1&&etabin==1&&ptbin==2)  SF=0.879531;
+  if(r9bin==1&&etabin==1&&ptbin==3)  SF=0.889777;
+  if(r9bin==1&&etabin==1&&ptbin==4)  SF=0.8999  ;
+  if(r9bin==1&&etabin==1&&ptbin==5)  SF=0.910071;
+  if(r9bin==1&&etabin==1&&ptbin==6)  SF=0.916902;
+  if(r9bin==1&&etabin==1&&ptbin==7)  SF=0.919239;
+  if(r9bin==1&&etabin==1&&ptbin==8)  SF=0.930018;
+  if(r9bin==1&&etabin==1&&ptbin==9)  SF=0.941432;
+  if(r9bin==1&&etabin==1&&ptbin==10) SF=0.945578;
+  if(r9bin==1&&etabin==1&&ptbin==11) SF=0.954545;
+  if(r9bin==1&&etabin==1&&ptbin==12) SF=0.938462;
+  if(r9bin==1&&etabin==1&&ptbin==13) SF=0.923077;
+  
+  if(r9bin==2&&etabin==1&&ptbin==1)  SF=0.976199;
+  if(r9bin==2&&etabin==1&&ptbin==2)  SF=0.986182;
+  if(r9bin==2&&etabin==1&&ptbin==3)  SF=0.989449;
+  if(r9bin==2&&etabin==1&&ptbin==4)  SF=0.992121;
+  if(r9bin==2&&etabin==1&&ptbin==5)  SF=0.994007;
+  if(r9bin==2&&etabin==1&&ptbin==6)  SF=0.995227;
+  if(r9bin==2&&etabin==1&&ptbin==7)  SF=0.995363;
+  if(r9bin==2&&etabin==1&&ptbin==8)  SF=0.995721;
+  if(r9bin==2&&etabin==1&&ptbin==9)  SF=0.995166;
+  if(r9bin==2&&etabin==1&&ptbin==10) SF=0.99457 ;
+  if(r9bin==2&&etabin==1&&ptbin==11) SF=0.994133;
+  if(r9bin==2&&etabin==1&&ptbin==12) SF=0.992971;
+  if(r9bin==2&&etabin==1&&ptbin==13) SF=0.991319;
+  
+  if(r9bin==3&&etabin==1&&ptbin==1)  SF=0.983968;
+  if(r9bin==3&&etabin==1&&ptbin==2)  SF=0.990318;
+  if(r9bin==3&&etabin==1&&ptbin==3)  SF=0.99455 ;
+  if(r9bin==3&&etabin==1&&ptbin==4)  SF=0.996122;
+  if(r9bin==3&&etabin==1&&ptbin==5)  SF=0.997719;
+  if(r9bin==3&&etabin==1&&ptbin==6)  SF=0.998429;
+  if(r9bin==3&&etabin==1&&ptbin==7)  SF=0.998859;
+  if(r9bin==3&&etabin==1&&ptbin==8)  SF=0.999347;
+  if(r9bin==3&&etabin==1&&ptbin==9)  SF=0.99953 ;
+  if(r9bin==3&&etabin==1&&ptbin==10) SF=0.999667;
+  if(r9bin==3&&etabin==1&&ptbin==11) SF=0.999679;
+  if(r9bin==3&&etabin==1&&ptbin==12) SF=0.999707;
+  if(r9bin==3&&etabin==1&&ptbin==13) SF=0.999774;
+  
+  //now  endcaps
+  
+  if(r9bin==1&&etabin==2&&ptbin==1)  SF=0.786797;
+  if(r9bin==1&&etabin==2&&ptbin==2)  SF=0.802244;
+  if(r9bin==1&&etabin==2&&ptbin==3)  SF=0.81586	;
+  if(r9bin==1&&etabin==2&&ptbin==4)  SF=0.827889;
+  if(r9bin==1&&etabin==2&&ptbin==5)  SF=0.831283;
+  if(r9bin==1&&etabin==2&&ptbin==6)  SF=0.835983;
+  if(r9bin==1&&etabin==2&&ptbin==7)  SF=0.846593;
+  if(r9bin==1&&etabin==2&&ptbin==8)  SF=0.857106;
+  if(r9bin==1&&etabin==2&&ptbin==9)  SF=0.864572;
+  if(r9bin==1&&etabin==2&&ptbin==10) SF=0.875115;
+  if(r9bin==1&&etabin==2&&ptbin==11) SF=0.88824	;
+  if(r9bin==1&&etabin==2&&ptbin==12) SF=0.896024;
+  if(r9bin==1&&etabin==2&&ptbin==13) SF=0.901538;
+  
+  if(r9bin==2&&etabin==2&&ptbin==1)  SF=0.972328;
+  if(r9bin==2&&etabin==2&&ptbin==2)  SF=0.989023;
+  if(r9bin==2&&etabin==2&&ptbin==3)  SF=0.990974;
+  if(r9bin==2&&etabin==2&&ptbin==4)  SF=0.991866;
+  if(r9bin==2&&etabin==2&&ptbin==5)  SF=0.99450 ;
+  if(r9bin==2&&etabin==2&&ptbin==6)  SF=0.99435 ;
+  if(r9bin==2&&etabin==2&&ptbin==7)  SF=0.99477 ;
+  if(r9bin==2&&etabin==2&&ptbin==8)  SF=0.99502 ;
+  if(r9bin==2&&etabin==2&&ptbin==9)  SF=0.99557 ;
+  if(r9bin==2&&etabin==2&&ptbin==10) SF=0.99517 ;
+  if(r9bin==2&&etabin==2&&ptbin==11) SF=0.993546;
+  if(r9bin==2&&etabin==2&&ptbin==12) SF=0.995398;
+  if(r9bin==2&&etabin==2&&ptbin==13) SF=0.993151;
+  
+  if(r9bin==3&&etabin==2&&ptbin==1)  SF=0.980932;
+  if(r9bin==3&&etabin==2&&ptbin==2)  SF=0.995857;
+  if(r9bin==3&&etabin==2&&ptbin==3)  SF=0.997887;
+  if(r9bin==3&&etabin==2&&ptbin==4)  SF=0.998436;
+  if(r9bin==3&&etabin==2&&ptbin==5)  SF=0.998723;
+  if(r9bin==3&&etabin==2&&ptbin==6)  SF=0.999228;
+  if(r9bin==3&&etabin==2&&ptbin==7)  SF=0.999385;
+  if(r9bin==3&&etabin==2&&ptbin==8)  SF=0.999617;
+  if(r9bin==3&&etabin==2&&ptbin==9)  SF=0.999592;
+  if(r9bin==3&&etabin==2&&ptbin==10) SF=0.999622;
+  if(r9bin==3&&etabin==2&&ptbin==11) SF=0.999571;
+  if(r9bin==3&&etabin==2&&ptbin==12) SF=0.999525;
+  if(r9bin==3&&etabin==2&&ptbin==13) SF=0.999603;
+  
 
   return SF;
 
