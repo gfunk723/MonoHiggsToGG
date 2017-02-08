@@ -1,13 +1,19 @@
 #! /bin/sh
 
-path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"
-#path="../../macro/data/25ns_v80X_v3/"
+path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v5/"
+#path="../../macro/data/25ns_v80X_v5/"
 weight=$1
 
 root -l -b << EOF
 .L ../scripts/addWeights.C++
 
-addWeights(${weight},"${path}","DoubleEG");
+addWeights(${weight},"${path}","Run2016B");
+addWeights(${weight},"${path}","Run2016C");
+addWeights(${weight},"${path}","Run2016D");
+addWeights(${weight},"${path}","Run2016E");
+addWeights(${weight},"${path}","Run2016F");
+addWeights(${weight},"${path}","Run2016G");
+addWeights(${weight},"${path}","Run2016H");
 
 addWeights(${weight},"${path}","GluGluHToGG");
 addWeights(${weight},"${path}","VHToGG");
@@ -29,7 +35,6 @@ addWeights(${weight},"${path}","WJetsToLNu");
 addWeights(${weight},"${path}","WZTo2L2Q");
 addWeights(${weight},"${path}","ZGTo2LG");
 addWeights(${weight},"${path}","ZZTo2L2Q");
-addWeights(${weight},"${path}","ZGTo2L2Q");
 addWeights(${weight},"${path}","BaryonicZp_mZP10000_mChi1000");
 addWeights(${weight},"${path}","BaryonicZp_mZP10000_mChi10");
 addWeights(${weight},"${path}","BaryonicZp_mZP10000_mChi150");

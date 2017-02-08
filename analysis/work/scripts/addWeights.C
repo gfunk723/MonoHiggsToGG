@@ -44,6 +44,8 @@ void addWeights(float lumiForWgt, TString path, TString sample){
    float totXsec;		intree->SetBranchAddress("totXsec",&totXsec);
    float perEveW;		intree->SetBranchAddress("perEveW",&perEveW);
    float pu_weight;		intree->SetBranchAddress("pu_weight",&pu_weight);
+   float SF1;			intree->SetBranchAddress("SF1",&SF1);
+   float SF2;			intree->SetBranchAddress("SF2",&SF2);
 
    // ----------------------------------------------------------------  
    // other info needed to do weights 
@@ -51,7 +53,6 @@ void addWeights(float lumiForWgt, TString path, TString sample){
 
    float sampleSumWgt = (float)h_sumW->Integral(); // sum of wgts in dataset
    int   nentries     = intree->GetEntries();      // number of entries 
-   float xsecWeight;
    float xsecToWeight = 0.;
 
    // ----------------------------------------------------------------  
@@ -85,7 +86,7 @@ void addWeights(float lumiForWgt, TString path, TString sample){
 
       if (entry==0) xsecToWeight = totXsec;// pick up total xsec 
       if (sampleID>0 && sampleID<10000){// MC
-        xsecWeight = perEveW * lumiForWgt * totXsec / sampleSumWgt;
+        xsecWeight = SF1 * SF2 * perEveW * lumiForWgt * totXsec / sampleSumWgt;
         weight     = xsecWeight * pu_weight;
       }
       else{// Data

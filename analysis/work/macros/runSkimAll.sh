@@ -1,7 +1,7 @@
 #! /bin/sh
 
-path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"
-#path="../macro/data/25ns_v80X_v3/"
+path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v5/"
+#path="../macro/data/25ns_v80X_v5/"
 
 root -l -b << EOF
 .L ../scripts/skim.C++

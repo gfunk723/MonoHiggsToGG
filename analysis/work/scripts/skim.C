@@ -238,13 +238,14 @@ void skim(TString path, TString sample){
     const Bool_t passMETfilters   = (passMetFil_All && passMetFil_Data);
 
     const Bool_t passKinematics   = (pt1>0.5*mgg && pt2>0.25*mgg && ptgg>90 && mgg>=100 && mgg<=200);
-    //const Bool_t passKinematics   = (pt1>0.33*mgg && pt2>0.25*mgg /*&& ((mgg>=100 && mgg<=115) || (mgg >=135 && mgg<=200))*/);
+    //const Bool_t passKinematics   = (pt1>0.33*mgg && pt2>0.25*mgg && ((mgg>=100 && mgg<=115) || (mgg >=135 && mgg<=200)));
     const Bool_t pass_GJet_DupRem = (!doGJet_DupRem || (doGJet_DupRem && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t pass_QCD_DupRem  = (!doQCD_DupRem  || (doQCD_DupRem  && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t passDupRemoval   = (pass_QCD_DupRem && pass_GJet_DupRem);
     const Bool_t passLepVetos     = (nEle<2 && nMuons==0);
     const Bool_t passJetVetos     = (nJets30 < 3);
     const Bool_t passDphiCuts     = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
+    //const Bool_t passDphiCuts     = true;
 
     if (nMuons!=0)       num_mufails++;
     if (!passMETfilters) num_failing++;
