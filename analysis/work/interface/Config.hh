@@ -41,6 +41,9 @@ namespace Config{
   extern Bool_t       doAnalysis;
   extern Bool_t       doStack;
   extern TString      plotnames;
+  extern Bool_t       mergeBkgs;
+  extern Bool_t       doQCDrewgt;
+  extern Bool_t       scaleToData;
   extern Int_t        whichSel;
   extern Bool_t       doStandard;
   extern Bool_t       doNminus1;

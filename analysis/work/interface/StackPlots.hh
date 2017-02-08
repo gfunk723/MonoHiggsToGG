@@ -24,11 +24,17 @@ typedef std::vector<TPad*>	TPadVec;
 class StackPlots{
 public:
   StackPlots();
-  void DoStack();
   void OpenInputFiles();
   void InitTH1FNamesAndSubDNames();
   void InitInputPlots();
   void InitOutputPlots();
+  void InitOutputLegends();
+  void InitRatioPlots();
+  void InitRatioLines();
+  void InitOutputCanvPads();
+
+  void DoStack();
+  void MakeStackPlots();
 
   ~StackPlots();
 
@@ -57,6 +63,24 @@ private:
   TH1FVec	fOutSigTH1FHists;
   THStackVec	fOutMCTH1FStacks;
   THStackVec	fOutMCUncStacks;
+
+  TH1FVec	fOutDYBkgHists;
+  TH1FVec	fOutEWK1BkgHists;
+  TH1FVec	fOutEWK2BkgHists;
+  TH1FVec	fOutJetsBkgHists;
+  TH1FVec	fOutHiggsBkgHists;
+  TH1FVec	fGJetsClone;
+ 
+  TStrIntMap	fBkgIndicesMap;
+  TLegVec	fTH1FLegends;
+  TLegVec	fSigLegends;
+
+  TCanvVec	fOutTH1FCanvases;
+  TPadVec	fOutTH1FStackPads;
+  TPadVec	fOutTH1FRatioPads;
+  TLineVec	fOutTH1FRatioLines;
+  TH1FVec	fOutRatioTH1FHists;
+  TH1FVec	fOutRatioMCErrs;
 
 };
 

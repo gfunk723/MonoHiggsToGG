@@ -10,6 +10,9 @@ namespace Config{
   Bool_t  doAnalysis  = false;
   Bool_t  doStack     = false;
   TString plotnames   = "plotnames.txt";
+  Bool_t  mergeBkgs   = true;
+  Bool_t  doQCDrewgt  = true;
+  Bool_t  scaleToData = false;
   Int_t   whichSel    = 0;
   Bool_t  doStandard  = false;
   Bool_t  doNminus1   = false;
