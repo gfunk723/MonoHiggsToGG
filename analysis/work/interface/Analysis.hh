@@ -137,6 +137,8 @@ private:
   Float_t         calometSumEt;
   Float_t         ptgg;
   Float_t         mgg;
+  Float_t         seedEnergy1;
+  Float_t         seedEnergy2;
   Int_t           eventClass;
   Float_t         pt1;
   Float_t         ptUncorr1;
@@ -276,9 +278,15 @@ private:
   Int_t           passLooseSieie2;
   Int_t           passLooseHoe1;
   Int_t           passLooseHoe2;
+  Int_t           nEleMed;
+  Int_t           nMuTight;
   Int_t           nEle;
   Int_t           nMuons;
   Int_t           nJets;
+  Int_t           nJets20;
+  Int_t           nJets30;
+  Int_t           nJets40;
+  Int_t           nJets50;
   Int_t           nLooseBjets;
   Int_t           nMediumBjets;
   Int_t           vhtruth;
@@ -316,6 +324,8 @@ private:
   Int_t           BDTindex;
   Int_t           Vtx0index;
   Float_t         weight;
+  Float_t	  SF1;
+  Float_t	  SF2;
 
   //------------------------------------------------------------------------
   // List of branches
@@ -368,6 +378,8 @@ private:
   TBranch        *b_calometSumEt;   //!
   TBranch        *b_ptgg;   //!
   TBranch        *b_mgg;   //!
+  TBranch        *b_seedEnergy1;   //!
+  TBranch        *b_seedEnergy2;   //!
   TBranch        *b_eventClass;   //!
   TBranch        *b_pt1;   //!
   TBranch        *b_ptUncorr1;   //!
@@ -507,9 +519,15 @@ private:
   TBranch        *b_passLooseSieie2;   //!
   TBranch        *b_passLooseHoe1;   //!
   TBranch        *b_passLooseHoe2;   //!
+  TBranch        *b_nEleMed;   //!
+  TBranch        *b_nMuTight;   //!
   TBranch        *b_nEle;   //!
   TBranch        *b_nMuons;   //!
   TBranch        *b_nJets;   //!
+  TBranch        *b_nJets20;   //!
+  TBranch        *b_nJets30;   //!
+  TBranch        *b_nJets40;   //!
+  TBranch        *b_nJets50;   //!
   TBranch        *b_nLooseBjets;   //!
   TBranch        *b_nMediumBjets;   //!
   TBranch        *b_vhtruth;   //!
@@ -547,7 +565,8 @@ private:
   TBranch        *b_BDTindex;   //!
   TBranch        *b_Vtx0index;   //!
   TBranch        *b_weight;   //!
-
+  TBranch	 *b_SF1;   //!
+  TBranch	 *b_SF2;   //!
 
  
 };

@@ -13,7 +13,7 @@
 #include "TROOT.h"
 #include <iostream>
 
-void InitializeMain(TStyle *& tdrStyle)
+void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
 {
 
   //------------------------------------------------------------------------
@@ -37,6 +37,11 @@ void InitializeMain(TStyle *& tdrStyle)
     Config::SampleMap["DiPhoton"]     = false; // !isData 
     Config::SampleMap["QCD"]          = false; // !isData 
   }
+
+  //------------------------------------------------------------------------
+  // Make a yields table to sort samples 
+  //------------------------------------------------------------------------
+  yields.open(Form("%s/yields.txt",Config::outdir.Data()),std::ios_base::app);
 
   //------------------------------------------------------------------------
   // Set color map 
@@ -71,6 +76,12 @@ void InitializeMain(TStyle *& tdrStyle)
 
 }// end initializing
 
+void DestroyMain(std::ofstream & yields, TStyle *& tdrStyle) 
+{
+  yields.close();
+  delete tdrStyle;
+}
+
 
 int main(int argc, const char* argv[])
 {
@@ -95,7 +106,7 @@ int main(int argc, const char* argv[])
         "  --which-sel     <int>         choose which selection to apply (def: %s)\n"
         "  --do-standard   <bool>        make standard plots (def: %s)\n"
         "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
-	"  --do-metcor     <bool>        calculate pile-up weights (def: %s)\n"
+	"  --do-metcor     <bool>        calculate MET-phi corr (def: %s)\n"
         "  --use-Data      <bool>        use DoubleEG data (def: %s)\n"
         "  --out-image     <string>      extension of file to save plots (def: %s)\n"
         ,
@@ -128,9 +139,9 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   // Initialization
   //------------------------------------------------------------------------
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/";
-  TStyle * tdrStyle; 
-  InitializeMain(tdrStyle);
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v5/";
+  std::ofstream yields; TStyle * tdrStyle; 
+  InitializeMain(yields, tdrStyle);
 
   //------------------------------------------------------------------------
   // Blinding
@@ -207,6 +218,6 @@ int main(int argc, const char* argv[])
   }
   else std::cout << "Skipping running analysis" << std::endl;  
 
-
-
+  
+  DestroyMain(yields,tdrStyle);
 }// end main

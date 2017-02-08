@@ -124,7 +124,7 @@ void Analysis::DoPlots(int prompt)
     fLorenzVecJet2.SetPtEtaPhiM(ptJetSubLead,etaJetSubLead,phiJetSubLead,massJetSubLead);
     fLorenzVecJet3.SetPtEtaPhiM(ptJet3,etaJet3,phiJet3,massJet3);
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
- 
+
     //------------------------------------------------------------------------
     // MET phi correction, old method
     //------------------------------------------------------------------------
@@ -166,13 +166,68 @@ void Analysis::DoPlots(int prompt)
     // Lepton and jet vetos 
     //------------------------------------------------------------------------
     if (nEle >= 2 || nMuons >= 1) continue;
-    if (nJets > 2) continue;
+    if (nJets30 > 2) continue;
 
+    //------------------------------------------------------------------------
+    // DeltaPhi (higgs,MET) 
+    //------------------------------------------------------------------------
+    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetCorrPhi));
+    Bool_t pass_dphi_hMET = (dphi_ggMET > 2.1)? true:false;
+    
+    //------------------------------------------------------------------------
+    // DeltaPhi(jet,MET)
+    //------------------------------------------------------------------------
+    Double_t min_dphi_JetMET = 10.;
+    Double_t max_dphi_JetMET = 0.;
+
+    if (nJets50 > 0){
+      Double_t dphiJet1METmin = 10;
+      Double_t dphiJet2METmin = 10;
+      Double_t dphiJet3METmin = 10;
+      Double_t dphiJet4METmin = 10;
+      Double_t dphiJet1METmax = 0;
+      Double_t dphiJet2METmax = 0;
+      Double_t dphiJet3METmax = 0;
+      Double_t dphiJet4METmax = 0;
+      if ( ptJetLead > 50 ){
+        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
+        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
+      }
+      if ( ptJetSubLead > 50 ){
+        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
+        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
+      }
+      if ( ptJet3 > 50 ){
+        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
+        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
+      }
+      if ( ptJet4 > 50 ){
+        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
+        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
+      }
+
+      // find the min_dphi_JetMET 
+      if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
+      if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
+      if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
+      if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
+
+      // find the max_dphi_JetMET 
+      if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
+      if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
+      if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
+      if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
+    }
+   
+    Bool_t pass_dphi_jMET = (min_dphi_JetMET >= 0.5 /* && max_dphi_JetMET <= 2.7*/)? true:false; 
+    Bool_t pass_dphi = (pass_dphi_hMET && pass_dphi_jMET); 
+    
     //------------------------------------------------------------------------
     // Deal with the blinding 
     //------------------------------------------------------------------------
-    Bool_t mggokay = (!doBlind || (doBlind && (mgg < 115 || mgg > 135)))? true:false; // outside mgg range
-    Bool_t canplot = (isData)? (mggokay):true;                                        // data outside of blinding 
+    Bool_t mggSB   = (mgg < 115 || mgg > 135);                     // in mgg SB
+    Bool_t mggOkay = (!doBlind || (doBlind && mggSB))? true:false; // not blind, or in mgg SB (use for plots other than mgg)
+    Bool_t mggPlot = (isData)? (mggOkay):true;                     // check for data the mgg ok (use for mgg plots)
 
     //------------------------------------------------------------------------
     // Apply kinematic selection 
@@ -188,6 +243,9 @@ void Analysis::DoPlots(int prompt)
     
     //--------> Fill the standard plots
     if (Config::doStandard){
+       if (mggPlot) standardTH1Map["mgg"]->Fill(mgg,wgt);
+       if (mggOkay) standardTH1Map["t1pfmetCorr"]->Fill(t1pfmetCorr,wgt);
+       if (mggOkay) standardTH1Map["t1pfmet"]->Fill(t1pfmet,wgt);
        standardTH1Map["nvtx"]->Fill(nvtx,wgt);
        standardTH1Map["ptgg"]->Fill(ptgg,wgt);
        standardTH1Map["pt1"]->Fill(pt1,wgt);
@@ -196,19 +254,18 @@ void Analysis::DoPlots(int prompt)
        standardTH1Map["phi2"]->Fill(phi2,wgt);
        standardTH1Map["eta1"]->Fill(eta1,wgt);
        standardTH1Map["eta2"]->Fill(eta2,wgt);
-       standardTH1Map["nJets"]->Fill(nJets,wgt);
+       standardTH1Map["nJets"]->Fill(nJets30,wgt);
        standardTH1Map["jetInfo_CHfrac1"]->Fill(CHfracJet1,wgt);
        standardTH1Map["jetInfo_NHfrac1"]->Fill(NHfracJet1,wgt);
        standardTH1Map["jetInfo_pt1"]->Fill(ptJetLead,wgt);
        standardTH1Map["jetInfo_eta1"]->Fill(etaJetLead,wgt);
        standardTH1Map["jetInfo_phi1"]->Fill(phiJetLead,wgt);
        standardTH1Map["jetInfo_mass1"]->Fill(massJetLead,wgt);
-
-       if (canplot) standardTH1Map["mgg"]->Fill(mgg,wgt);
     }
+
     //--------> Fill the n minus 1 plots
     if (Config::doNminus1){
-       if (canplot) nminus1TH1Map["n1_mgg"]->Fill(mgg,wgt);
+       if (mggPlot) nminus1TH1Map["n1_mgg"]->Fill(mgg,wgt);
     }
 
   }// end loop over entries!
@@ -238,6 +295,8 @@ void Analysis::SetupStandardPlots()
   standardTH1Map["eta2"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","eta2","",20,-3.,3.,"#eta(#gamma2)","");
   standardTH1Map["pt1"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","pt1","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
   standardTH1Map["pt2"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","pt2","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
+  standardTH1Map["t1pfmet"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","t1pfmet","",70,0.,350.,"p_{T}^{miss} [GeV]","");
+  standardTH1Map["t1pfmetCorr"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","t1pfmetCorr","",70,0.,350.,"p_{T}^{miss} [GeV]","");
 
   //------------------------------------------------------------------------
   // Jet info plots 
@@ -409,6 +468,8 @@ void Analysis::SetBranchAddresses()
   tpho->SetBranchAddress("calometSumEt", &calometSumEt, &b_calometSumEt);
   tpho->SetBranchAddress("ptgg", &ptgg, &b_ptgg);
   tpho->SetBranchAddress("mgg", &mgg, &b_mgg);
+  tpho->SetBranchAddress("seedEnergy1", &seedEnergy1, &b_seedEnergy1);
+  tpho->SetBranchAddress("seedEnergy2", &seedEnergy2, &b_seedEnergy2);
   tpho->SetBranchAddress("eventClass", &eventClass, &b_eventClass);
   tpho->SetBranchAddress("pt1", &pt1, &b_pt1);
   tpho->SetBranchAddress("ptUncorr1", &ptUncorr1, &b_ptUncorr1);
@@ -548,9 +609,15 @@ void Analysis::SetBranchAddresses()
   tpho->SetBranchAddress("passLooseSieie2", &passLooseSieie2, &b_passLooseSieie2);
   tpho->SetBranchAddress("passLooseHoe1", &passLooseHoe1, &b_passLooseHoe1);
   tpho->SetBranchAddress("passLooseHoe2", &passLooseHoe2, &b_passLooseHoe2);
+  tpho->SetBranchAddress("nEleMed", &nEleMed, &b_nEleMed);
+  tpho->SetBranchAddress("nMuTight", &nMuTight, &b_nMuTight);
   tpho->SetBranchAddress("nEle", &nEle, &b_nEle);
   tpho->SetBranchAddress("nMuons", &nMuons, &b_nMuons);
   tpho->SetBranchAddress("nJets", &nJets, &b_nJets);
+  tpho->SetBranchAddress("nJets20", &nJets20, &b_nJets20);
+  tpho->SetBranchAddress("nJets30", &nJets30, &b_nJets30);
+  tpho->SetBranchAddress("nJets40", &nJets40, &b_nJets40);
+  tpho->SetBranchAddress("nJets50", &nJets50, &b_nJets50);
   tpho->SetBranchAddress("nLooseBjets", &nLooseBjets, &b_nLooseBjets);
   tpho->SetBranchAddress("nMediumBjets", &nMediumBjets, &b_nMediumBjets);
   tpho->SetBranchAddress("vhtruth", &vhtruth, &b_vhtruth);
@@ -588,6 +655,8 @@ void Analysis::SetBranchAddresses()
   tpho->SetBranchAddress("BDTindex", &BDTindex, &b_BDTindex);
   tpho->SetBranchAddress("Vtx0index", &Vtx0index, &b_Vtx0index);
   tpho->SetBranchAddress("weight", &weight, &b_weight);
+  tpho->SetBranchAddress("SF1", &SF1, &b_SF1);
+  tpho->SetBranchAddress("SF2", &SF2, &b_SF2);
 
 }
 
