@@ -28,6 +28,7 @@ public:
   void OpenInputFiles();
   void InitTH1FNamesAndSubDNames();
   void InitInputPlots();
+  void InitOutputPlots();
 
   ~StackPlots();
 
@@ -37,20 +38,25 @@ private:
   TFile*	fOutFile;
   TStrVec	fTH1FNames;
   UInt_t	fNTH1F;
-  TH1FVecVec	fInDataTH1FHists;
-  TH1FVecVec 	fInBkgTH1FHists;
-  TH1FVecVec 	fInSigTH1FHists;
 
+  TFileVec	fDataFiles;
+  TFileVec	fBkgFiles;
+  TFileVec	fSigFiles;
   TStrVec	fDataNames;
   TStrVec	fBkgNames;
   TStrVec	fSigNames;
   Int_t		fNData;
   Int_t		fNBkg;
   Int_t		fNSig;
+  TH1FVecVec	fInDataTH1FHists;
+  TH1FVecVec 	fInBkgTH1FHists;
+  TH1FVecVec 	fInSigTH1FHists;
 
-  TFileVec	fDataFiles;
-  TFileVec	fBkgFiles;
-  TFileVec	fSigFiles;
+  TH1FVec	fOutDataTH1FHists;
+  TH1FVec	fOutBkgTH1FHists;
+  TH1FVec	fOutSigTH1FHists;
+  THStackVec	fOutMCTH1FStacks;
+  THStackVec	fOutMCUncStacks;
 
 };
 

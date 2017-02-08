@@ -30,15 +30,34 @@ StackPlots::StackPlots()
   //------------------------------------------------------------------------
   // Initialize objects
   //------------------------------------------------------------------------
-  StackPlots::OpenInputFiles();
-  StackPlots::InitTH1FNamesAndSubDNames();
-  MakeSubDirs(fTH1FSubDMap,fOutDir);
-  StackPlots::InitInputPlots();
+  StackPlots::OpenInputFiles();            // open the input files
+  StackPlots::InitTH1FNamesAndSubDNames(); // get histo names from plotnames file
+  MakeSubDirs(fTH1FSubDMap,fOutDir);       // setup output subdir
+  StackPlots::InitInputPlots();            // initialize input histos
+  StackPlots::InitOutputPlots();           // initialize output histos
  
 }
 
 void StackPlots::DoStack()
 {
+
+}
+
+void StackPlots::InitOutputPlots()
+{
+
+  //------------------------------------------------------------------------
+  // Init output th1f hists 
+  //------------------------------------------------------------------------
+  fOutDataTH1FHists.resize(fNTH1F); // make enough space for data double hists
+  fOutBkgTH1FHists.resize(fNTH1F);  // make enough space for bkg double hists
+  fOutSigTH1FHists.resize(fNTH1F);  // make enough space for sig double hists
+  fOutMCTH1FStacks.resize(fNTH1F);  // same with stack
+  fOutMCUncStacks.resize(fNTH1F);   // same with stack for uncer. 
+  for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
+    fOutMCTH1FStacks[th1f] = new THStack(Form("%s_stack",fTH1FNames[th1f].Data()),"");
+    fOutMCUncStacks[th1f]  = new THStack(Form("%s_uncer",fTH1FNames[th1f].Data()),"");
+  }
 
 }
 
@@ -146,8 +165,12 @@ StackPlots::~StackPlots()
   //------------------------------------------------------------------------
   // Finish by deleting everything
   //------------------------------------------------------------------------
-  
-  for (Int_t th1f = 0; th1f < fNTH1F; th1f++){ 
+  for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
+    delete fOutDataTH1FHists[th1f];
+    delete fOutBkgTH1FHists[th1f];
+    delete fOutSigTH1FHists[th1f];
+    delete fOutMCTH1FStacks[th1f];
+    delete fOutMCUncStacks[th1f]; 
     for (Int_t data = 0; data < fNData; data++) { delete fInDataTH1FHists[th1f][data]; } 
     for (Int_t mc = 0; mc < fNBkg; mc++)        { delete fInBkgTH1FHists[th1f][mc]; } 
     for (Int_t mc = 0; mc < fNSig; mc++)        { delete fInSigTH1FHists[th1f][mc]; } 
