@@ -26,13 +26,20 @@ public:
   StackPlots();
   void DoStack();
   void OpenInputFiles();
+  void InitTH1FNamesAndSubDNames();
+  void InitInputPlots();
 
   ~StackPlots();
 
-
 private:
   TString	fOutDir;
+  TStrMap	fTH1FSubDMap;
   TFile*	fOutFile;
+  TStrVec	fTH1FNames;
+  UInt_t	fNTH1F;
+  TH1FVecVec	fInDataTH1FHists;
+  TH1FVecVec 	fInBkgTH1FHists;
+  TH1FVecVec 	fInSigTH1FHists;
 
   TStrVec	fDataNames;
   TStrVec	fBkgNames;

@@ -9,6 +9,7 @@ namespace Config{
   Bool_t  doBlind     = true;
   Bool_t  doAnalysis  = false;
   Bool_t  doStack     = false;
+  TString plotnames   = "plotnames.txt";
   Int_t   whichSel    = 0;
   Bool_t  doStandard  = false;
   Bool_t  doNminus1   = false;

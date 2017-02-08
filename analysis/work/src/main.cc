@@ -106,6 +106,7 @@ int main(int argc, const char* argv[])
         "  --unblind       <bool>        unblind the data (def: %s)\n"
         "  --do-analysis   <bool>        run analysis cuts (def: %s)\n"
         "  --do-stack      <bool>        run stacking for plots (def: %s)\n"
+        "  --plotnames     <string>      list of plots to stack (def: %s)\n"
         "  --which-sel     <int>         choose which selection to apply (def: %s)\n"
         "  --do-standard   <bool>        make standard plots (def: %s)\n"
         "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
@@ -118,6 +119,7 @@ int main(int argc, const char* argv[])
         (Config::doBlind    ? "false" : "true"),
         (Config::doAnalysis ? "true" : "false"),
         (Config::doStack    ? "true" : "false"),
+        Config::plotnames.Data(),
         Config::whichSel,
         (Config::doStandard ? "true" : "false"),
         (Config::doNminus1  ? "true" : "false"),
@@ -131,6 +133,7 @@ int main(int argc, const char* argv[])
     else if (*i == "--unblind")     { Config::doBlind      = false; }
     else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
     else if (*i == "--do-stack")    { Config::doStack      = true; }
+    else if (*i == "--plotnames")   { next_arg_or_die(mArgs, i); Config::plotnames = std::atoi(i->c_str()); }
     else if (*i == "--which-sel")   { next_arg_or_die(mArgs, i); Config::whichSel = std::atoi(i->c_str()); }
     else if (*i == "--do-standard") { Config::doStandard   = true; }
     else if (*i == "--do-nminus1")  { Config::doNminus1    = true; }
