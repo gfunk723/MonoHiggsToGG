@@ -25,19 +25,25 @@ class StackPlots{
 public:
   StackPlots();
   void DoStack();
+  void OpenInputFiles();
 
   ~StackPlots();
 
 
 private:
+  TString	fOutDir;
+  TFile*	fOutFile;
 
   TStrVec	fDataNames;
   TStrVec	fBkgNames;
   TStrVec	fSigNames;
-
   Int_t		fNData;
   Int_t		fNBkg;
   Int_t		fNSig;
+
+  TFileVec	fDataFiles;
+  TFileVec	fBkgFiles;
+  TFileVec	fSigFiles;
 
 };
 
