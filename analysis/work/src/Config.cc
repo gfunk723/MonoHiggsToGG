@@ -8,6 +8,7 @@ namespace Config{
   TString outdir      = "diPhoPlots";
   Bool_t  doBlind     = true;
   Bool_t  doAnalysis  = false;
+  Bool_t  doStack     = false;
   Int_t   whichSel    = 0;
   Bool_t  doStandard  = false;
   Bool_t  doNminus1   = false;

@@ -8,6 +8,7 @@
 #include "../interface/Common.hh"
 #include "../interface/Config.hh"
 #include "../interface/Analysis.hh"
+#include "../interface/StackPlots.hh"
 #include "../interface/METcorr.hh"
 
 #include "TROOT.h"
@@ -32,10 +33,11 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set sample map 
   //------------------------------------------------------------------------
   if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
-  if (Config::doAnalysis)
+  if (Config::doAnalysis || Config::doStack)
   {
-    Config::SampleMap["DiPhoton"]     = false; // !isData 
-    Config::SampleMap["QCD"]          = false; // !isData 
+    Config::SampleMap["DiPhoton"]		= false; // !isData 
+    Config::SampleMap["QCD"]			= false; // !isData
+    Config::SampleMap["2HDM_mZP600_mA0300"]	= false; // !isData 
   }
 
   //------------------------------------------------------------------------
@@ -103,6 +105,7 @@ int main(int argc, const char* argv[])
 	"  --outdir        <string>      name of ouput directory (def: %s)\n"
         "  --unblind       <bool>        unblind the data (def: %s)\n"
         "  --do-analysis   <bool>        run analysis cuts (def: %s)\n"
+        "  --do-stack      <bool>        run stacking for plots (def: %s)\n"
         "  --which-sel     <int>         choose which selection to apply (def: %s)\n"
         "  --do-standard   <bool>        make standard plots (def: %s)\n"
         "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
@@ -114,6 +117,7 @@ int main(int argc, const char* argv[])
         Config::outdir.Data(),
         (Config::doBlind    ? "false" : "true"),
         (Config::doAnalysis ? "true" : "false"),
+        (Config::doStack    ? "true" : "false"),
         Config::whichSel,
         (Config::doStandard ? "true" : "false"),
         (Config::doNminus1  ? "true" : "false"),
@@ -126,6 +130,7 @@ int main(int argc, const char* argv[])
     else if (*i == "--outdir")      { next_arg_or_die(mArgs, i); Config::outdir = i->c_str(); }
     else if (*i == "--unblind")     { Config::doBlind      = false; }
     else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
+    else if (*i == "--do-stack")    { Config::doStack      = true; }
     else if (*i == "--which-sel")   { next_arg_or_die(mArgs, i); Config::whichSel = std::atoi(i->c_str()); }
     else if (*i == "--do-standard") { Config::doStandard   = true; }
     else if (*i == "--do-nminus1")  { Config::doNminus1    = true; }
@@ -218,6 +223,15 @@ int main(int argc, const char* argv[])
   }
   else std::cout << "Skipping running analysis" << std::endl;  
 
-  
+  //------------------------------------------------------------------------
+  // Make stack plots 
+  //------------------------------------------------------------------------
+  if (Config::doStack)  
+  {
+    StackPlots * stack = new StackPlots();
+    stack->DoStack();
+    delete stack;    
+  }
+
   DestroyMain(yields,tdrStyle);
 }// end main
