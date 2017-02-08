@@ -89,10 +89,10 @@ void Plotter::DoPlots(int prompt){
   nentries = tpho->GetEntries(); 
   std::cout << "nentries = " << nentries << std::endl;
   
-  Double_t effPUn[60]={0};
-  Double_t effPUd[60]={0};
-  Double_t effptn[60]={0};
-  Double_t effptd[60]={0};
+  Double_t effPUn[100]={0};
+  Double_t effPUd[100]={0};
+  Double_t effptn[100]={0};
+  Double_t effptd[100]={0};
 
   fTH1DMap["hlt"]->Fill(0.5,nentries);
   // fSelection[i]-> i: 0=trigger, 1=presel, 2=selection, 3=pt1>30,pt2>20, 4=pt1>mgg/3,pt2>mgg/4, 5=goodVtx, 6=mgg, 7=met
@@ -327,11 +327,11 @@ void Plotter::DoPlots(int prompt){
           //numMargaretDupRem++;
           numMargaretDupRem+=Weight;
 
-	  fTH1DMap["nJets"]->Fill(nJets,Weight);
+	  fTH1DMap["nJets"]->Fill(nJets30,Weight);
 	  fTH1DMap["nElec"]->Fill(nEle,Weight);
 	  fTH1DMap["nMuon"]->Fill(nMuons,Weight);
 
-          if (nJets > 2) continue; // test jet veto
+          if (nJets30 > 2) continue; // test jet veto
 
 	  if (nEle >= 2 || nMuons >= 1) continue; //reject events with leptons
 	  //numMargaretLepVeto++;
@@ -566,7 +566,7 @@ void Plotter::DoPlots(int prompt){
 	  //  }
 	  //}
 	  // if more than one high pt jet, find min & max dphi of the top 4 jets
-	  if ( nJets > 0 ){
+	  if ( nJets50 > 0 ){
 	    Double_t dphiJet1METmin = 10;
 	    Double_t dphiJet2METmin = 10;
 	    Double_t dphiJet3METmin = 10;
@@ -644,9 +644,8 @@ void Plotter::DoPlots(int prompt){
 	  //if (max_dphi_JetMETUncorr > 2.7) max_dphiJETMETpassUncorr = false;// max dphi Jet-MET < 2.7 
 	  max_dphiJETMETpassUncorr = true;// max dphi Jet-MET < 2.7 
 	  if (min_dphi_JetMETUncorr < 0.5) min_dphiJETMETpassUncorr = false;// min dphi Jet-MET > 0.5 
- 
 
-	  if (nJets > 0 && (ptJetLead>50 || ptJetSubLead>50 || ptJet3>50 || ptJet4>50)){
+	  if (nJets50 > 0){
 	    fTH1DMap["absdphi_maxJetMET"]->Fill(TMath::Abs(max_dphi_JetMET),Weight);
 	    fTH1DMap["absdphi_minJetMET"]->Fill(TMath::Abs(min_dphi_JetMET),Weight);
 	    fTH1DMap["absdphiUncorr_maxJetMET"]->Fill(TMath::Abs(max_dphi_JetMETUncorr),Weight);
@@ -682,10 +681,7 @@ void Plotter::DoPlots(int prompt){
  	  dphig1MET = TMath::Abs(deltaPhi(fLorenzVec1.Phi(),t1pfmetPhiCorr));
  	  dphig2MET = TMath::Abs(deltaPhi(fLorenzVec2.Phi(),t1pfmetPhiCorr));
 	  Double_t maxdphigMET = TMath::Max(dphig1MET,dphig2MET);
-	  Bool_t dphigMETpass = false; // dphi g1-JET && g2-JET < 2.7
-	  if ( dphig1MET < 2.7) dphigMETpass = true;
-	  fTH1DMap["absdphi_maxgMET"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
-	  if (t1pfmetCorr > METcut) fTH1DMap["absdphi_maxgMET_metCUT"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
+          Double_t mindphigMET = TMath::Min(dphig1MET,dphig2MET);
 
 	  // DeltaPhi between gg and MET
 	  Double_t dphiggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhiCorr));
@@ -699,6 +695,52 @@ void Plotter::DoPlots(int prompt){
 	  // make a set of bools for easier comparison
 	  Bool_t outsideMgg = false; // event lies outside mgg range
 	  if ( mgg < 115 || mgg > 135 ) outsideMgg = true;
+
+
+
+
+          if (min_dphiJETMETpass && dphiggMETpass && t1pfmetCorr <= METcut){
+            if (!isData || (isData && outsideMgg)) fTH1DMap["test_mgg_lowmet"]->Fill(mgg,Weight);
+          }
+ 
+          if (outsideMgg && t1pfmetCorr > METcut){
+            fTH1DMap["clean_dphi_min_jMET_metCUT"]->Fill(min_dphi_JetMET,Weight);
+            fTH1DMap["clean_dphi_hMET_metCUT"]->Fill(dphiggMET,Weight);
+          } 
+          if (outsideMgg && min_dphiJETMETpass && dphiggMETpass){
+            fTH1DMap["clean_dphi_min_gMET"]->Fill(mindphigMET,Weight); 
+            if (t1pfmetCorr > METcut) fTH1DMap["clean_dphi_min_gMET_metCUT"]->Fill(mindphigMET,Weight); 
+          }
+          if (min_dphiJETMETpass && dphiggMETpass && t1pfmetCorr > METcut && outsideMgg){
+	    fTH1DMap["metphi_metCUT"]->Fill(t1pfmetPhiCorr,Weight);
+            fTH1DMap["ggphi_metCUT"]->Fill(fLorenzVecgg.Phi(),Weight);
+	    fTH1DMap["ptgg_afterMETcut"]->Fill(ptgg,Weight);
+            fTH1DMap["pt1_afterMETcut"]->Fill(pt1,Weight);
+            fTH1DMap["pt2_afterMETcut"]->Fill(pt2,Weight);
+          }
+          if (outsideMgg){
+            fTH1DMap["test_mgg_nocuts"]->Fill(mgg,Weight);
+	    if (min_dphiJETMETpass) fTH1DMap["test_mgg_dphiJmet"]->Fill(mgg,Weight);
+            if (dphiggMETpass)      fTH1DMap["test_mgg_dphiGGmet"]->Fill(mgg,Weight);
+          }
+ 
+
+
+
+
+
+
+
+
+
+
+	  Bool_t dphigMETpass = false; // dphi g1-JET && g2-JET < 2.7
+
+	  if ( dphig1MET < 2.7) dphigMETpass = true;
+	  fTH1DMap["absdphi_maxgMET"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
+	  if (t1pfmetCorr > METcut) fTH1DMap["absdphi_maxgMET_metCUT"]->Fill(TMath::Abs(deltaPhi(maxdphigMET,t1pfmetPhiCorr)),Weight);
+
+
 
 	  // plots
 	  if ( !isData && dphigMETpass ) fTH1DMap["metCor_Sig"]->Fill(t1pfmetCorr,Weight);
@@ -766,6 +808,7 @@ void Plotter::DoPlots(int prompt){
 	        //fTH1DMap["met_IsolateALL"]->Fill(t1pfmet,Weight); 
 	        fTH1DMap["metCor_IsolateALL_Varbin"]->Fill(t1pfmetCorr,Weight);
 	        fTH1DMap["metCor_IsolateALL"]->Fill(t1pfmetCorr,Weight);
+                if (mgg >= 105 && mgg <= 180) fTH1DMap["metCor_IsolateALL_selmgg"]->Fill(t1pfmetCorr,Weight);
                 if (mgg >= 120 && mgg <= 130) fTH1DMap["t1pfmetCorr_selmgg_Varbin"]->Fill(t1pfmetCorr,Weight); 
                 if (mgg >= 120 && mgg <= 130) fTH1DMap["t1pfmetCorr_selmgg"]->Fill(t1pfmetCorr,Weight); 
 	        if (t1pfmet >= METcut) fTH1DMap["mgg_selt1pfmet"]->Fill(mgg,Weight);  
@@ -805,6 +848,7 @@ void Plotter::DoPlots(int prompt){
           if (dphiggMETpass && min_dphiJETMETpass && t1pfmetCorr >= METcut){
 	    fTH1DMap["nElec_metCUT"]->Fill(nEle,Weight);
 	    fTH1DMap["nMuon_metCUT"]->Fill(nMuons,Weight);
+            fTH1DMap["nJets_metCUT"]->Fill(nJets30,Weight);
           }
 
 	  if ( !isData && dphiggMETpass /*&& max_dphiJETMETpass*/ && min_dphiJETMETpass  ){
@@ -865,6 +909,7 @@ void Plotter::DoPlots(int prompt){
 
 	    	fTH1DMap["mgg_metCUT_forShape"]->Fill(mgg,Weight);
 	    }
+	    else fTH1DMap["mgg_IsolateALLlowCUT"]->Fill(mgg,Weight);
 	    if (t1pfmet > METcut) fTH1DMap["mgg_IsolateALLUncorrmetCUT"]->Fill(mgg,Weight);
 	  }
           if ( isData && dphiggMETpass /*&& max_dphiJETMETpass*/ && min_dphiJETMETpass ){
@@ -916,6 +961,7 @@ void Plotter::DoPlots(int prompt){
                   if (pt1 > 0.50*mgg && pt2 > 0.25*mgg) fTH1DMap["mgg_IsolateALL_woPtgg"]->Fill(mgg,Weight);
                   if (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90) fTH1DMap["mgg_IsolateALL_wPtgg"]->Fill(mgg,Weight);
 		  if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
+		  else fTH1DMap["mgg_IsolateALLlowCUT"]->Fill(mgg,Weight);
 		  if (t1pfmet > METcut) fTH1DMap["mgg_IsolateALLUncorrmetCUT"]->Fill(mgg,Weight);
 		}
 		//}// end outside mgg
@@ -929,6 +975,7 @@ void Plotter::DoPlots(int prompt){
                 if (pt1 > 0.50*mgg && pt2 > 0.25*mgg) fTH1DMap["mgg_IsolateALL_woPtgg"]->Fill(mgg,Weight);
                 if (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90) fTH1DMap["mgg_IsolateALL_wPtgg"]->Fill(mgg,Weight);
 		if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
+		else fTH1DMap["mgg_IsolateALLlowCUT"]->Fill(mgg,Weight);
 		if (t1pfmet > METcut) fTH1DMap["mgg_IsolateALLUncorrmetCUT"]->Fill(mgg,Weight);
 	      }
 	      fTH1DMap["ptgg_IsolateALL"]->Fill(ptgg,Weight);
@@ -1048,11 +1095,11 @@ void Plotter::DoPlots(int prompt){
 
 	  if (!isData && dphiggMETpass && max_dphiJETMETpass && min_dphiJETMETpass ){
 	    nEvents_allVtx++;
-	    fTH2DMap["ptzp_njets"]->Fill(nJets,fLorenzVecZp.Pt(),Weight);
+	    fTH2DMap["ptzp_njets"]->Fill(nJets20,fLorenzVecZp.Pt(),Weight);
 	    fTH1DMap["vtx_eff_ptzp_d"]->Fill(fLorenzVecZp.Pt());
 	    fTH1DMap["vtx_eff_nvtx_d"]->Fill(nvtx);
 	    fTH1DMap["vtx_eff_met_d"]->Fill(t1pfmetCorr);
-	    fTH1DMap["vtx_eff_njet_d"]->Fill(nJets);
+	    fTH1DMap["vtx_eff_njet_d"]->Fill(nJets20);
 	    Double_t vtxZdiff = TMath::Abs(genVtxZ-vtxZ); 
 	    Double_t vtx0Zdiff = TMath::Abs(genVtxZ-vtx0Z); 
 	    Bool_t goodVtx = true;
@@ -1064,7 +1111,7 @@ void Plotter::DoPlots(int prompt){
 	      fTH1DMap["vtx_eff_ptzp_n"]->Fill(fLorenzVecZp.Pt());
 	      fTH1DMap["vtx_eff_nvtx_n"]->Fill(nvtx);
 	      fTH1DMap["vtx_eff_met_n"]->Fill(t1pfmetCorr);
-	      fTH1DMap["vtx_eff_njet_n"]->Fill(nJets);
+	      fTH1DMap["vtx_eff_njet_n"]->Fill(nJets20);
 	    }
 	    if ( goodVtx0 ) nEvents_goodVtx0++;
 	  }
@@ -1249,11 +1296,13 @@ if (!isData){
 void Plotter::SetUpPlots(){
   // fill all plots from tree
   fTH1DMap["nvtx"]			= Plotter::MakeTH1DPlot("nvtx","",40,0.,40.,"nvtx","");
-  fTH1DMap["mgg"]			= Plotter::MakeTH1DPlot("mgg","",26,99.,151.,"m_{#gamma#gamma} [GeV]","");  
+  fTH1DMap["mgg"]			= Plotter::MakeTH1DPlot("mgg","",26,99.,151.,"m_{#gamma#gamma} [GeV]",""); 
   fTH1DMap["ptgg"]			= Plotter::MakeTH1DPlot("ptgg","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");
   fTH1DMap["t1pfmetphi"]		= Plotter::MakeTH1DPlot("t1pfmetphi","",20,-4.,4.,"E_{T}^{miss} #phi","");
   fTH1DMap["t1pfmetCorr"]		= Plotter::MakeTH1DPlot("t1pfmetCorr","",75,0.,900,"p_{T}^{miss} [GeV]",""); 
   fTH1DMap["t1pfmetphiCorr"]		= Plotter::MakeTH1DPlot("t1pfmetphiCorr","",20,-4.,4.,"E_{T}^{miss} #phi","");
+  fTH1DMap["metphi_metCUT"]		= Plotter::MakeTH1DPlot("metphi_metCUT","",20,-4.,4.,"E_{T}^{miss} #phi","");
+  fTH1DMap["ggphi_metCUT"]		= Plotter::MakeTH1DPlot("ggphi_metCUT","",20,-4.,4.,"#phi(#gamma#gamma)","");
   fTH1DMap["ptggOverMET"]		= Plotter::MakeTH1DPlot("ptggOverMET","",100,0.,10.,"p_{T,#gamma#gamma}/E_{T}^{miss}","");
   fTH1DMap["pfmet"]			= Plotter::MakeTH1DPlot("pfmet","",100,0.,1000,"PF MET [GeV]","");
   fTH1DMap["pfmetphi"]			= Plotter::MakeTH1DPlot("pfmetphi","",80,-4.,4.,"PF MET #phi","");
@@ -1296,6 +1345,19 @@ void Plotter::SetUpPlots(){
   fTH1DMap["absdphi_ggJet1"]		= Plotter::MakeTH1DPlot("absdphi_ggJet1","",20,-4,4.,"|#Delta#phi(Jet1,E_{T}^{miss})|","");
   fTH1DMap["deltaRphotons"]		= Plotter::MakeTH1DPlot("deltaRphotons","",20,0,4.,"#Delta R(#gamma1,#gamma2)","");
 
+  fTH1DMap["pt1_afterMETcut"]		= Plotter::MakeTH1DPlot("pt1_afterMETcut","",40,0.,400.,"p_{T,#gamma1} [GeV]","");
+  fTH1DMap["pt2_afterMETcut"]		= Plotter::MakeTH1DPlot("pt2_afterMETcut","",40,0.,400.,"p_{T,#gamma2} [GeV]","");
+  fTH1DMap["ptgg_afterMETcut"]		= Plotter::MakeTH1DPlot("ptgg_afterMETcut","",40,0.,400.,"p_{T,#gamma#gamma} [GeV]","");
+
+  fTH1DMap["clean_dphi_min_gMET"]        = Plotter::MakeTH1DPlot("clean_dphi_min_gMET","",40,0.,4.,"min|#Delta#phi(#gamma,E_{T}^{miss})|","");
+  fTH1DMap["clean_dphi_min_gMET_metCUT"] = Plotter::MakeTH1DPlot("clean_dphi_min_gMET_metCUT","",40,0.,4.,"min|#Delta#phi(#gamma,E_{T}^{miss})|","");
+  fTH1DMap["clean_dphi_min_jMET_metCUT"] = Plotter::MakeTH1DPlot("clean_dphi_min_jMET_metCUT","",40,0.,4.,"min|#Delta#phi(jet,E_{T}^{miss})|","");
+  fTH1DMap["clean_dphi_hMET_metCUT"]     = Plotter::MakeTH1DPlot("clean_dphi_hMET_metCUT","",40,0.,4.,"|#Delta#phi(#gamma#gamma,E_{T}^{miss})|","");
+  fTH1DMap["test_mgg_lowmet"]		 = Plotter::MakeTH1DPlot("mgg_lowmet","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["test_mgg_nocuts"]		 = Plotter::MakeTH1DPlot("mgg_nocuts","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["test_mgg_dphiJmet"]		 = Plotter::MakeTH1DPlot("mgg_dphiJmet","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["test_mgg_dphiGGmet"]	 = Plotter::MakeTH1DPlot("mgg_dphiGGmet","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+
   fTH1DMap["absdphi_g1MET"]		= Plotter::MakeTH1DPlot("absdphi_g1MET","",10,0.,4.,"|#Delta#phi(Pho1,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxgMET"]		= Plotter::MakeTH1DPlot("absdphi_maxgMET","",10,0.,4.,"Max|#Delta#phi(Pho,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxgMET_metCUT"]	= Plotter::MakeTH1DPlot("absdphi_maxgMET_metCUT","",10,0.,4.,"Max|#Delta#phi(Pho,E_{T}^{miss})|","");
@@ -1337,6 +1399,7 @@ void Plotter::SetUpPlots(){
  
   fTH1DMap["met_IsolateALL"]		= Plotter::MakeTH1DPlot("met_IsolateALL","",60,0.,300.,"p_{T}^{miss} [GeV]","");
   fTH1DMap["metCor_IsolateALL"]		= Plotter::MakeTH1DPlot("metCorr_IsolateALL","",60,0.,300.,"p_{T}^{miss} [GeV]","");
+  fTH1DMap["metCor_IsolateALL_selmgg"]	= Plotter::MakeTH1DPlot("metCorr_IsolateALL_selmgg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
   fTH1DMap["met_Isolategg"]		= Plotter::MakeTH1DPlot("met_Isolategg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
   fTH1DMap["metCor_Isolategg"]		= Plotter::MakeTH1DPlot("metCorr_Isolategg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
   fTH1DMap["mgg_IsolateALL"]		= Plotter::MakeTH1DPlot("mgg_IsolateALL","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
@@ -1346,7 +1409,8 @@ void Plotter::SetUpPlots(){
   fTH1DMap["mgg_IsolateALL_pt2"]	= Plotter::MakeTH1DPlot("mgg_IsolateALL_pt2","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");  
   fTH1DMap["mgg_IsolateALL_ptgg"]	= Plotter::MakeTH1DPlot("mgg_IsolateALL_ptgg","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");  
   //fTH1DMap["mgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLmetCUT","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");  
-  fTH1DMap["mgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLmetCUT","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");  
+  fTH1DMap["mgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLmetCUT","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");  
+  fTH1DMap["mgg_IsolateALLlowCUT"]	= Plotter::MakeTH1DPlot("mgg_IsolateALLlowCUT","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");  
   fTH1DMap["mgg_IsolateALLUncorrmetCUT"]= Plotter::MakeTH1DPlot("mgg_IsolateALLUncorrmetCUT","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");  
   fTH1DMap["ptgg_IsolateALL"]		= Plotter::MakeTH1DPlot("ptgg_IsolateALL","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");  
   fTH1DMap["ptgg_IsolateALLmetCUT"]	= Plotter::MakeTH1DPlot("ptgg_IsolateALLmetCUT","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");  
@@ -1378,6 +1442,7 @@ void Plotter::SetUpPlots(){
   fTH1DMap["nJets"]			= Plotter::MakeTH1DPlot("nJets","",10,0.,10.,"Num Jets","");
   fTH1DMap["nElec"]			= Plotter::MakeTH1DPlot("nElec","",10,0.,10.,"Num Electrons","");
   fTH1DMap["nMuon"]			= Plotter::MakeTH1DPlot("nMuon","",10,0.,10.,"Num Muons","");
+  fTH1DMap["nJets_metCUT"]		= Plotter::MakeTH1DPlot("nJets_metCUT","",10,0.,10.,"Num Jets","");
   fTH1DMap["nElec_metCUT"]		= Plotter::MakeTH1DPlot("nElec_metCUT","",10,0.,10.,"Num Electrons","");
   fTH1DMap["nMuon_metCUT"]		= Plotter::MakeTH1DPlot("nMuon_metCUT","",10,0.,10.,"Num Muons","");
   fTH1DMap["BDTindex"]			= Plotter::MakeTH1DPlot("BDTindex","",10,0.,10.,"BDT Vtx Index","");
@@ -1534,7 +1599,7 @@ void Plotter::SetUpPlots(){
 
 TH1D * Plotter::MakeVariableTH1DPlot(const TString hname, const TString htitle, const Int_t numbins, Float_t bins[], const TString xtitle, const TString ytitle){
   TString ytitleNew;
-  if (ytitle=="") ytitleNew = "Events/GeV";
+  if (ytitle=="") ytitleNew = "Events / GeV";
   else ytitleNew = ytitle;
   
   TH1D * hist = new TH1D(hname.Data(),htitle.Data(),numbins,bins);
@@ -1549,7 +1614,7 @@ TH1D * Plotter::MakeTH1DPlot(const TString hname, const TString htitle, const In
   TString ytitleNew;
   Float_t binwidth = (xhigh-xlow)/nbins;
   //std::cout << "binwidth " <<  binwidth << std::endl;
-  if (ytitle=="") ytitleNew = Form("Events/(%2.2f GeV)",binwidth);
+  if (ytitle=="") ytitleNew = Form("Events / %2.1f GeV",binwidth);
   else ytitleNew = ytitle;
   //std::cout << "yTitle = " << ytitleNew.Data() << std::endl;
  
@@ -1663,6 +1728,8 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("nvtx",   &nvtx,    &b_nvtx);
   tpho->SetBranchAddress("mgg",    &mgg,     &b_mgg);
   tpho->SetBranchAddress("ptgg",   &ptgg,    &b_ptgg);
+  tpho->SetBranchAddress("seedEnergy1", &seedEnergy1, &b_seedEnergy1);
+  tpho->SetBranchAddress("seedEnergy2", &seedEnergy2, &b_seedEnergy2);
   tpho->SetBranchAddress("t1pfmet", &t1pfmet, &b_t1pfmet);   
   tpho->SetBranchAddress("t1p2pfmet", &t1p2pfmet, &b_t1p2pfmet);
   tpho->SetBranchAddress("t1pfmetJetEnUp", &t1pfmetJetEnUp, &b_t1pfmetJetEnUp);
@@ -1753,7 +1820,10 @@ void Plotter::SetBranchAddresses(){
   tpho->SetBranchAddress("hltDiphoton30Mass55EB", &hltDiphoton30Mass55EB, &b_hltDiphoton30Mass55EB);
   tpho->SetBranchAddress("nEle", &nEle, &b_nEle);
   tpho->SetBranchAddress("nMuons", &nMuons, &b_nMuons);
-  tpho->SetBranchAddress("nJets", &nJets, &b_nJets);
+  tpho->SetBranchAddress("nJets20", &nJets20, &b_nJets20);
+  tpho->SetBranchAddress("nJets30", &nJets30, &b_nJets30);
+  tpho->SetBranchAddress("nJets40", &nJets40, &b_nJets40);
+  tpho->SetBranchAddress("nJets50", &nJets50, &b_nJets50);
   tpho->SetBranchAddress("nLooseBjets", &nLooseBjets, &b_nLooseBjets);
   tpho->SetBranchAddress("nMediumBjets", &nMediumBjets, &b_nMediumBjets);
   tpho->SetBranchAddress("ptJetLead", &ptJetLead, &b_ptJetLead);

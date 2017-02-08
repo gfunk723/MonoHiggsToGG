@@ -147,9 +147,9 @@ void Combiner::DoComb(){
       }
     //}// end if ndata>0
 
-    // ---------------------------------
-    // scale to the integral of the data
-    // ---------------------------------
+    //// ---------------------------------
+    //// scale to the integral of the data
+    //// ---------------------------------
     Double_t data_integral = fOutDataTH1DHists[th1d]->Integral();
     TH1D *allBkgHisto;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -160,9 +160,9 @@ void Combiner::DoComb(){
     Double_t binMggLo = allBkgHisto->FindBin(115);
     Double_t binMggHi = allBkgHisto->FindBin(135); 
     Double_t blinded_part = allBkgHisto->Integral(binMggLo,binMggHi);
-    if (fTH1DNames[th1d]=="mgg_IsolateALL") data_integral += blinded_part;
+    if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg" || fTH1DNames[th1d]=="mgg_IsolateALLmetCUT" || fTH1DNames[th1d]=="mgg_IsolateALLlowCUT") data_integral += blinded_part;
     Double_t new_integral = data_integral/bkg_integral;
-    //std::cout << fTH1DNames[th1d] << " Data = " << data_integral << " new = " <<  new_integral << std::endl;
+    //std::cout << fTH1DNames[th1d] << " Ratio = " << data_integral/bkg_integral << std::endl;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
      if (new_integral > 0) fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
     }
@@ -336,8 +336,10 @@ void Combiner::DoComb(){
 
     
 
-    if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
-    //if (fTH1DNames[th1d]=="mgg_IsolateALL"){
+    //if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
+    //if (fTH1DNames[th1d]=="mgg_IsolateALLlowCUT"){
+    //if (fTH1DNames[th1d]=="mgg_lowmet"){
+    if (fTH1DNames[th1d]=="mgg_IsolateALL"){
       std::ofstream	fOutTableTxtFile2;
       fOutTableTxtFile2.open(Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()));
 
@@ -372,7 +374,7 @@ void Combiner::DoComb(){
       fLatexSampleTitleMap["2HDM_mZP600_mA0400"]	= "2HDM, $m_{Z'} = 600 GeV, m_{A0} = 400 GeV$";
       fLatexSampleTitleMap["2HDM_mZP800_mA0400"]	= "2HDM, $m_{Z'} = 800 GeV, m_{A0} = 400 GeV$";
 
-      UInt_t sbbin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
+      UInt_t sbbin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(105.);
       UInt_t sbbin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(115.);
       UInt_t sbbin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
       UInt_t sbbin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
@@ -425,7 +427,7 @@ void Combiner::DoComb(){
         //fOutTableTxtFile2 << "Sqrt Bkg &" << TMath::Sqrt(fSignalRegInt2) << std::endl; 
         //for (UInt_t mc = 0; mc < fNSig; mc++) std::cout << " -- Sig -- " << fSigInt[mc]/TMath::Sqrt(fSigInt[mc]+fSignalRegInt2) << std::endl; 
 
-        UInt_t bin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(100.);
+        UInt_t bin0 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(105.);
         UInt_t bin1 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(115.);
         UInt_t bin2 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(135.);
         UInt_t bin3 = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(180.);
@@ -1471,7 +1473,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->SetLineColor(kWhite);
     fInSigTH1DHists[th1d][0]->Draw("hist");
 
-    TLegend* ftempLegends = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    TLegend* ftempLegends = new TLegend(0.55,0.7,0.9,0.934); // (x1,y1,x2,y2)
 
     for (UInt_t mc = 0; mc < fNBkg; mc++){
       if (mc == i_hgg){
@@ -1515,7 +1517,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->Draw("hist");
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitle("");
 
-    TLegend* ftempLegends = new TLegend(0.32,0.7,0.9,0.934); // (x1,y1,x2,y2)
+    TLegend* ftempLegends = new TLegend(0.55,0.7,0.85,0.934); // (x1,y1,x2,y2)
 
     for (UInt_t mc = 0; mc < fNSig; mc++){
       if (mc==0 || mc==2 || mc==fNSig-1){
@@ -1569,7 +1571,7 @@ void Combiner::DrawCanvasOverlay(const UInt_t th1d, const Bool_t isLogY){
   fOutTH1DStackPads[th1d]->SetLogy(isLogY);
   fOutTH1DCanvases[th1d]->cd();
 
-  CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
+  if (fTH1DNames[th1d]!="mgg_forShape") CMSLumi(fOutTH1DCanvases[th1d],11,lumi);
 
   // don't save plots that are used for efficiencies 
   if (fTH1DNames[th1d]!="vtx_eff_ptzp_n" && fTH1DNames[th1d]!="vtx_eff_ptzp_d" && fTH1DNames[th1d]!="vtx_eff_nvtx_n" && fTH1DNames[th1d]!="vtx_eff_nvtx_d" && fTH1DNames[th1d]!="vtx_eff_met_n" && fTH1DNames[th1d]!="vtx_eff_met_d" && fTH1DNames[th1d]!="vtx_eff_njet_n" && fTH1DNames[th1d]!="vtx_eff_njet_d" && fTH1DNames[th1d]!="JetEnUp" && fTH1DNames[th1d]!="JetEnDown" && fTH1DNames[th1d]!="JetResUp" && fTH1DNames[th1d]!="JetResDown" && fTH1DNames[th1d]!="MuonEnUp" && fTH1DNames[th1d]!="MuonEnDown" && fTH1DNames[th1d]!="EleEnUp" && fTH1DNames[th1d]!="EleEnDown" && fTH1DNames[th1d]!="TauEnUp" && fTH1DNames[th1d]!="TauEnDown" && fTH1DNames[th1d]!="PhoEnUp" && fTH1DNames[th1d]!="PhoEnDown" && fTH1DNames[th1d]!="UnclEnUp" && fTH1DNames[th1d]!="UnclEnDown" && fTH1DNames[th1d]!="pt1_afterIDloose"&& fTH1DNames[th1d]!="pt1_beforeIDloose" && fTH1DNames[th1d]!="eta1_afterIDloose" && fTH1DNames[th1d]!="eta1_beforeIDloose"){
@@ -1618,7 +1620,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   if (fTH1DNames[th1d]=="mgg_forShape" || fTH1DNames[th1d]=="mgg_metCUT_forShape"){
 
     THStack* mgg_Shape = new THStack();
-    TLegend* ftempLegend = new TLegend(0.32,0.8,0.9,0.934); // (x1,y1,x2,y2)
+    TLegend* ftempLegend = new TLegend(0.6,0.8,0.9,0.934); // (x1,y1,x2,y2)
 
     fInSigTH1DHists[th1d][0]->SetTitle("");
     fInSigTH1DHists[th1d][0]->SetLineColor(kWhite);
@@ -1653,8 +1655,10 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
     fInSigTH1DHists[th1d][0]->GetXaxis()->SetTitleOffset(999);
     fInSigTH1DHists[th1d][0]->GetXaxis()->SetLabelSize(0);
     if (isLogY){
-      if (fTH1DNames[th1d]=="mgg_IsolateALL") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*9E1);
+      if (fTH1DNames[th1d]=="mgg_IsolateALL") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*9E2);
       else if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E1);
+      else if (fTH1DNames[th1d]=="nvtx") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E4);
+      else if (fTH1DNames[th1d]=="jetInfo_eta1") fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E4);
       else fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1E2);
       if (fTH1DNames[th1d]=="t1pfmetCorr_selmgg") fInSigTH1DHists[th1d][0]->SetMinimum(0.5E-2);
       else fInSigTH1DHists[th1d][0]->SetMinimum(0.5E-1);
@@ -1786,7 +1790,7 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
   ratioleg->SetBorderSize(1);
   //ratioleg->SetNColumns(2);
   ratioleg->AddEntry(fOutRatioTH1DHistsCopy[th1d], "MC uncert. (stat)","f");
-  ratioleg->Draw("same");
+  if (fTH1DNames[th1d]!="mgg_forShape") ratioleg->Draw("same");
 
 
   if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg_IsolateALL_pt1" || fTH1DNames[th1d]=="mgg_IsolateALL_pt2" || fTH1DNames[th1d]=="mgg_IsolateALL_ptgg" || fTH1DNames[th1d]=="mgg_IsolateALL_woPtgg" || fTH1DNames[th1d]=="mgg_IsolateALL_wPtgg"){
@@ -2128,8 +2132,9 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("nJets");
     fTH1DNames.push_back("nElec");
     fTH1DNames.push_back("nMuon");
-    //fTH1DNames.push_back("nElec_metCUT");
-    //fTH1DNames.push_back("nMuon_metCUT");
+    //fTH1DNames.push_back("nJets_metCUT");
+    fTH1DNames.push_back("nElec_metCUT");
+    fTH1DNames.push_back("nMuon_metCUT");
     fTH1DNames.push_back("BDTindex");
 
     fTH1DNames.push_back("t1pfmetCorr");
@@ -2143,20 +2148,20 @@ void Combiner::InitTH1DNames(){
     
     fTH1DNames.push_back("t1pfmet");
     fIndexMET = fTH1DNames.size()-1;
-    //fTH1DNames.push_back("JetEnUp");
-    //fTH1DNames.push_back("JetEnDown");
-    //fTH1DNames.push_back("JetResUp");
-    //fTH1DNames.push_back("JetResDown");
-    //fTH1DNames.push_back("MuonEnUp");
-    //fTH1DNames.push_back("MuonEnDown");
-    //fTH1DNames.push_back("EleEnUp");
-    //fTH1DNames.push_back("EleEnDown");
-    //fTH1DNames.push_back("TauEnUp");
-    //fTH1DNames.push_back("TauEnDown");
-    //fTH1DNames.push_back("PhoEnUp");
-    //fTH1DNames.push_back("PhoEnDown");
-    //fTH1DNames.push_back("UnclEnUp");
-    //fTH1DNames.push_back("UnclEnDown");
+    fTH1DNames.push_back("JetEnUp");
+    fTH1DNames.push_back("JetEnDown");
+    fTH1DNames.push_back("JetResUp");
+    fTH1DNames.push_back("JetResDown");
+    fTH1DNames.push_back("MuonEnUp");
+    fTH1DNames.push_back("MuonEnDown");
+    fTH1DNames.push_back("EleEnUp");
+    fTH1DNames.push_back("EleEnDown");
+    fTH1DNames.push_back("TauEnUp");
+    fTH1DNames.push_back("TauEnDown");
+    fTH1DNames.push_back("PhoEnUp");
+    fTH1DNames.push_back("PhoEnDown");
+    fTH1DNames.push_back("UnclEnUp");
+    fTH1DNames.push_back("UnclEnDown");
 
     //fTH1DNames.push_back("ptJet1");
     //fTH1DNames.push_back("ptJet2");
@@ -2220,6 +2225,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("metCorr_Isolategg");
     fTH1DNames.push_back("met_IsolateALL");
     fTH1DNames.push_back("metCorr_IsolateALL");
+    //fTH1DNames.push_back("metCorr_IsolateALL_selmgg");
     fTH1DNames.push_back("metCorr_forShape");
     fTH1DNames.push_back("mgg_forShape");
     fTH1DNames.push_back("mgg_metCUT_forShape");
@@ -2230,12 +2236,25 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("mgg_IsolateALL_woPtgg");
     fTH1DNames.push_back("mgg_IsolateALL_wPtgg");
     fTH1DNames.push_back("mgg_IsolateALLmetCUT");
+    fTH1DNames.push_back("mgg_IsolateALLlowCUT");
     fTH1DNames.push_back("mgg_IsolateALLUncorrmetCUT");
     fTH1DNames.push_back("ptgg_IsolateALL");
     fTH1DNames.push_back("ptgg_IsolateALLmetCUT");
     fTH1DNames.push_back("nvtx_IsolateALL");
     fTH1DNames.push_back("nvtx_IsolateALLmetCUT");
 
+    //fTH1DNames.push_back("pt1_afterMETcut");
+    //fTH1DNames.push_back("pt2_afterMETcut");
+    //fTH1DNames.push_back("ptgg_afterMETcut");
+ 
+    //fTH1DNames.push_back("mgg_lowmet"); 
+    //fTH1DNames.push_back("mgg_nocuts");
+    //fTH1DNames.push_back("mgg_dphiJmet");
+    //fTH1DNames.push_back("mgg_dphiGGmet");
+    fTH1DNames.push_back("clean_dphi_min_gMET");
+    fTH1DNames.push_back("clean_dphi_min_gMET_metCUT");
+    fTH1DNames.push_back("clean_dphi_min_jMET_metCUT");
+    fTH1DNames.push_back("clean_dphi_hMET_metCUT");
 
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
@@ -2243,6 +2262,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("t1pfmetCorr_selmgg_Varbin");
     fTH1DNames.push_back("t1pfmetCorr_selmgg");
     fTH1DNames.push_back("phigg");
+    fTH1DNames.push_back("ggphi_metCUT");
+    fTH1DNames.push_back("metphi_metCUT");
     fTH1DNames.push_back("dphi_ggmet");
     fTH1DNames.push_back("absdphi_ggJet1");
     fTH1DNames.push_back("absdphiUncorr_ggmet");

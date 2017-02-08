@@ -101,6 +101,8 @@ private:
   Float_t	weight;
   Float_t	mgg;
   Float_t	ptgg;
+  Float_t	seedEnergy1;
+  Float_t	seedEnergy2;
   Float_t	t1pfmet; 
   Float_t       t1p2pfmet;
   Float_t       t1pfmetJetEnUp;
@@ -247,7 +249,10 @@ private:
   Int_t         NEmultJet4;
   Int_t         nEle;
   Int_t         nMuons;
-  Int_t         nJets;
+  Int_t         nJets20;
+  Int_t         nJets30;
+  Int_t         nJets40;
+  Int_t         nJets50;
   Int_t         nLooseBjets;
   Int_t         nMediumBjets;
   Int_t         vhtruth;
@@ -310,6 +315,8 @@ private:
   TBranch	*b_weight;
   TBranch	*b_mgg;
   TBranch	*b_ptgg;
+  TBranch	*b_seedEnergy1;
+  TBranch	*b_seedEnergy2;
   TBranch	*b_t1pfmet;
   TBranch       *b_t1p2pfmet;   //!
   TBranch       *b_t1pfmetJetEnUp;   //!
@@ -400,7 +407,10 @@ private:
   TBranch	*b_hltDiphoton30Mass55EB;
   TBranch       *b_nEle;   //!
   TBranch       *b_nMuons;   //!
-  TBranch       *b_nJets;   //!
+  TBranch       *b_nJets20;   //!
+  TBranch       *b_nJets30;   //!
+  TBranch       *b_nJets40;   //!
+  TBranch       *b_nJets50;   //!
   TBranch       *b_nLooseBjets;   //!
   TBranch       *b_nMediumBjets;   //!
   TBranch       *b_ptJetLead;   //!

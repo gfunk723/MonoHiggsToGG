@@ -487,7 +487,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     Double_t min_dphi_JetMET = 10.;
     Double_t max_dphi_JetMET = 0.;
 
-    if (nJets > 0){
+    if (nJets50 > 0){
       Double_t dphiJet1METmin = 10;
       Double_t dphiJet2METmin = 10;
       Double_t dphiJet3METmin = 10;
@@ -531,13 +531,16 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
     if (nMuons > 0 || nEle > 1) continue;
 
-    if (nJets > 2) continue;
+    if (nJets30 > 2) continue;
+
+    if (mgg < 105 || mgg > 180) continue;
   
     // any events that make it to this point have passed all the common selection
     for (UInt_t cut=0; cut < fNSig; cut++){
       if (pt1/mgg > Cut_pt1mgg[cut] && pt2/mgg > Cut_pt2mgg[cut] && ptgg > Cut_ptgg[cut]){
         if (t1pfmetCorr > Cut_met[cut]){
-	  if (mgg > 120 && mgg < 130){
+	  if (mgg > 115 && mgg < 135){
+	  //if (mgg > 120 && mgg < 130){
 	    Int_Results_ND[sampleNumber][cut]++;
             Dbl_Results_ND[sampleNumber][cut]+=Weight;
 	    Dbl_Errors[sampleNumber][cut]+=Weight*Weight;// part1 of err calc.
@@ -1336,7 +1339,10 @@ void CardMaker::SetBranchAddresses( TTree * treeIn){
   treeIn->SetBranchAddress("hltDiphoton30Mass55EB", &hltDiphoton30Mass55EB, &b_hltDiphoton30Mass55EB);
   treeIn->SetBranchAddress("nEle", &nEle, &b_nEle);
   treeIn->SetBranchAddress("nMuons", &nMuons, &b_nMuons);
-  treeIn->SetBranchAddress("nJets", &nJets, &b_nJets);
+  treeIn->SetBranchAddress("nJets20", &nJets20, &b_nJets20);
+  treeIn->SetBranchAddress("nJets30", &nJets30, &b_nJets30);
+  treeIn->SetBranchAddress("nJets40", &nJets40, &b_nJets40);
+  treeIn->SetBranchAddress("nJets50", &nJets50, &b_nJets50);
   treeIn->SetBranchAddress("nLooseBjets", &nLooseBjets, &b_nLooseBjets);
   treeIn->SetBranchAddress("nMediumBjets", &nMediumBjets, &b_nMediumBjets);
   treeIn->SetBranchAddress("ptJetLead", &ptJetLead, &b_ptJetLead);
