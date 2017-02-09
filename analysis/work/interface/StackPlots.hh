@@ -35,6 +35,15 @@ public:
 
   void DoStack();
   void MakeStackPlots();
+  void MakeRatioPlots();
+  void MakeOutputCanvas();
+
+  void DrawUpperPad(const Int_t th1f, const Bool_t isLogY);
+  void DrawLowerPad(const Int_t th1f);
+  void SetLines(const Int_t th1f);
+  void SaveCanvas(const Int_t th1f, const Bool_t isLogY);
+  Float_t GetMaximum(const Int_t th1f);
+  Float_t GetMinimum(const Int_t th1f);
 
   ~StackPlots();
 

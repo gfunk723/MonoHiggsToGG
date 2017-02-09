@@ -56,8 +56,198 @@ void StackPlots::DoStack()
   // Start running
   //------------------------------------------------------------------------
   StackPlots::MakeStackPlots();
+  StackPlots::MakeRatioPlots();
+  StackPlots::MakeOutputCanvas();
 
 }
+
+void StackPlots::MakeOutputCanvas()
+{
+
+  //------------------------------------------------------------------------
+  // Setup canvases 
+  //------------------------------------------------------------------------
+  for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
+    // draw first with  log scale
+    Bool_t isLogY = true;
+    StackPlots::DrawUpperPad(th1f,isLogY); // upper pad is stack
+    StackPlots::DrawLowerPad(th1f);        // lower pad is ratio
+    StackPlots::SaveCanvas(th1f,isLogY);   // now save the canvas, w/ logy
+
+    // draw second with lin scale
+    isLogY = false;
+    StackPlots::DrawUpperPad(th1f,isLogY); // upper pad is stack
+    StackPlots::DrawLowerPad(th1f);        // lower pad is ratio
+    StackPlots::SaveCanvas(th1f,isLogY);   // now save the canvas, w/o logy
+  }// end th1f loop
+
+}
+
+void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY) {    
+  // pad gymnastics
+  fOutTH1FCanvases[th1f]->cd();
+  fOutTH1FStackPads[th1f]->Draw(); // draw upper pad   
+  fOutTH1FStackPads[th1f]->cd();   // upper pad is current pad
+  
+  // set maximum by comparing added mc vs added data
+  Float_t min = StackPlots::GetMinimum(th1f);
+  Float_t max = StackPlots::GetMaximum(th1f);
+
+  if (isLogY) { // set min for log only... maybe consider min for linear eventually
+    //fOutDataTH1FHists[th1f]->SetMinimum(min/1.5);
+    // set max with 2.0 scale to give enough space 
+    fOutDataTH1FHists[th1f]->SetMaximum(max*1.5);
+  }
+  else {
+    fOutDataTH1FHists[th1f]->SetMaximum( max > 0 ? max*1.05 : max/1.05 );      
+    //fOutDataTH1FHists[th1f]->SetMinimum( min > 0 ? min/1.05 : min*1.05 );
+  }
+  
+  // now draw the plots for upper pad in absurd order because ROOT is dumb
+  fOutDataTH1FHists[th1f]->Draw("PE"); // draw first so labels appear
+
+  // again, have to scale TDR style values by height of upper pad
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.07); 
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.07);
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.8);
+
+  fOutMCTH1FStacks[th1f]->Draw("HIST SAME"); 
+  fOutTH1FStackPads[th1f]->RedrawAxis("SAME"); // stack kills axis
+  //Draw MC sum total error as well on top of stack --> E2 makes error appear as rectangle
+  fOutBkgTH1FHists[th1f]->Draw("E2 SAME");
+  for ( Int_t mc = 0; mc < fNSig; mc++){
+    fInSigTH1FHists[th1f][mc]->Draw("HIST SAME");
+  }
+
+  // redraw data (ROOT IS SO DUMBBBBBB)
+  fOutDataTH1FHists[th1f]->Draw("PE SAME"); 
+  fTH1FLegends[th1f]->Draw("SAME"); // make sure to include the legend!
+}
+
+Float_t StackPlots::GetMaximum(const Int_t th1f) {
+  Float_t max = -1e9;
+  if (fOutDataTH1FHists[th1f]->GetBinContent(fOutDataTH1FHists[th1f]->GetMaximumBin()) > fOutBkgTH1FHists[th1f]->GetBinContent(fOutBkgTH1FHists[th1f]->GetMaximumBin())) {
+    max = fOutDataTH1FHists[th1f]->GetBinContent(fOutDataTH1FHists[th1f]->GetMaximumBin());
+  }
+  else {
+    max = fOutBkgTH1FHists[th1f]->GetBinContent(fOutBkgTH1FHists[th1f]->GetMaximumBin());
+  }
+  return max;
+}
+
+Float_t StackPlots::GetMinimum(const Int_t th1f) {
+  // need to loop through to check bin != 0
+  Float_t datamin  = 1e9;
+  Bool_t newdatamin = false;
+
+  for (Int_t bin = 1; bin <= fOutDataTH1FHists[th1f]->GetNbinsX(); bin++){
+    Float_t tmpmin = fOutDataTH1FHists[th1f]->GetBinContent(bin);
+    if ((tmpmin < datamin) && (tmpmin > 0)) {
+      datamin    = tmpmin;
+      newdatamin = true;
+    }
+    else if ((tmpmin < datamin)) {
+      datamin    = tmpmin;
+      newdatamin = true;
+    }
+  }
+
+  Float_t mcmin  = 1e9;
+  Bool_t newmcmin = false;
+  for (Int_t bin = 1; bin <= fOutBkgTH1FHists[th1f]->GetNbinsX(); bin++){
+    Float_t tmpmin = fOutBkgTH1FHists[th1f]->GetBinContent(bin);
+    if ((tmpmin < mcmin) && (tmpmin > 0)) {
+      mcmin    = tmpmin;
+      newmcmin = true;
+    }
+    else if ((tmpmin < mcmin)) {
+      mcmin    = tmpmin;
+      newmcmin = true;
+    }
+  }
+  
+  // now set return variable min
+  Float_t min = 1; // to not royally mess up logy plots in case where plots have no fill and no new min is set for data or mc
+  if (newdatamin || newmcmin) {
+    if (datamin < mcmin) {
+      min = datamin;
+    }
+    else {
+      min = mcmin;
+    }
+  }
+  return min;
+}
+
+void StackPlots::DrawLowerPad(const Int_t th1f) {    
+  // pad gymnastics
+  fOutTH1FCanvases[th1f]->cd();   // Go back to the main canvas before defining pad2
+  fOutTH1FRatioPads[th1f]->Draw(); // draw lower pad
+  fOutTH1FRatioPads[th1f]->cd(); // lower pad is current pad
+
+  // make red line at ratio of 1.0
+  StackPlots::SetLines(th1f);
+
+  // draw th1 first so line can appear, then draw over it (and set Y axis divisions)
+  fOutRatioTH1FHists[th1f]->Draw("EP"); // draw first so line can appear
+  fOutTH1FRatioLines[th1f]->Draw("SAME");
+
+  // some style since apparently TDR Style is crapping out --> would really not like this here
+  fOutRatioTH1FHists[th1f]->GetYaxis()->SetNdivisions(505);
+
+  // X
+  fOutRatioTH1FHists[th1f]->GetXaxis()->SetLabelSize  (0.157); 
+  fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitleSize  (0.16);
+  fOutRatioTH1FHists[th1f]->GetXaxis()->SetTickLength (0.07);
+  fOutRatioTH1FHists[th1f]->GetXaxis()->SetTickSize   (0.11);
+  fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitleOffset(1.02);
+  // Y
+  fOutRatioTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.15); 
+  fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.14);
+  fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.38);
+  fOutRatioTH1FHists[th1f]->GetYaxis()->CenterTitle();
+
+  // redraw to go over line
+  fOutRatioTH1FHists[th1f]->Draw("EP SAME"); 
+  
+  // plots MC error copy
+  fOutRatioMCErrs[th1f]->Draw("E2 SAME");
+}
+
+void StackPlots::SetLines(const Int_t th1f){
+
+  // have line held at ratio of 1.0 over whole x range
+  fOutTH1FRatioLines[th1f]->SetX1(fOutRatioTH1FHists[th1f]->GetXaxis()->GetXmin());
+  fOutTH1FRatioLines[th1f]->SetX2(fOutRatioTH1FHists[th1f]->GetXaxis()->GetXmax());
+  fOutTH1FRatioLines[th1f]->SetY1(1.0);
+  fOutTH1FRatioLines[th1f]->SetY2(1.0);
+
+  // customize appearance
+  fOutTH1FRatioLines[th1f]->SetLineColor(kBlack);
+  fOutTH1FRatioLines[th1f]->SetLineWidth(2);
+}
+
+void StackPlots::SaveCanvas(const Int_t th1f, const Bool_t isLogY){
+  TString suffix;
+
+  if   (isLogY) {suffix = "log";}
+  else          {suffix = "lin";}
+
+  Int_t log = (isLogY)? 1:0;
+
+  // cd to upper pad to make it log or not
+  fOutTH1FStackPads[th1f]->cd(); // upper pad is current pad
+  fOutTH1FStackPads[th1f]->SetLogy(log); //  set logy on this pad
+
+  fOutTH1FCanvases[th1f]->cd();    // Go back to the main canvas before saving
+  //CMSLumi(fOutTH1FCanvases[th1f]); // write out Lumi info
+ 
+  TString writePlots = Form("%s/%s/%s_%s.%s",fOutDir.Data(),fTH1FSubDMap[fTH1FNames[th1f]].Data(),fTH1FNames[th1f].Data(),suffix.Data(),Config::outtype.Data());
+  fOutTH1FCanvases[th1f]->SaveAs(writePlots);
+  fOutFile->cd();
+  if (!isLogY) fOutTH1FCanvases[th1f]->Write(Form("%s",fTH1FNames[th1f].Data()));
+}
+
 
 void StackPlots::MakeStackPlots()
 {
@@ -76,6 +266,13 @@ void StackPlots::MakeStackPlots()
     }
     fTH1FLegends[th1f]->AddEntry(fOutDataTH1FHists[th1f],"Data","epl");
  
+    ////------------------------------------------------------------------------
+    //// Copy sig 
+    ////------------------------------------------------------------------------
+    //for (Int_t mc = 0; mc < fNSig; mc++){
+    //  fOutSigTH1FHists[th1f][mc] = (TH1F*)fInSigTH1FHists[th1f][mc]->Clone();
+    //}
+
     //------------------------------------------------------------------------
     // Copy bkg 
     //------------------------------------------------------------------------
@@ -184,6 +381,35 @@ void StackPlots::MakeStackPlots()
 
   }// end th1f loop
 
+}
+
+void StackPlots::MakeRatioPlots()
+{
+
+  //------------------------------------------------------------------------
+  // Setup ratio plots 
+  //------------------------------------------------------------------------
+  for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
+    if( fNData > 0 ) fOutRatioTH1FHists[th1f] = (TH1F*)fOutDataTH1FHists[th1f]->Clone();
+    else             fOutRatioTH1FHists[th1f] = (TH1F*)fOutBkgTH1FHists[th1f]->Clone();
+
+    fOutRatioTH1FHists[th1f]->Add(fOutBkgTH1FHists[th1f],-1.0);  
+    fOutRatioTH1FHists[th1f]->Divide(fOutBkgTH1FHists[th1f]);  
+    fOutRatioTH1FHists[th1f]->SetTitle("");
+    fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitle("Data/MC");
+    TString ytitle  = fOutBkgTH1FHists[th1f]->GetYaxis()->GetTitle();
+    fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitle(ytitle);
+    fOutRatioTH1FHists[th1f]->SetLineColor(kBlack);
+    fOutRatioTH1FHists[th1f]->SetMinimum(-0.1); // Define Y ..
+    fOutRatioTH1FHists[th1f]->SetMaximum(2.2);  // .. range
+    fOutRatioTH1FHists[th1f]->SetStats(0);      // No statistics on lower plot
+
+    //------------------------------------------------------------------------
+    // ratio MC error plot
+    //------------------------------------------------------------------------
+    fOutRatioMCErrs[th1f] = (TH1F*)fOutBkgTH1FHists[th1f]->Clone();
+    fOutRatioMCErrs[th1f]->Divide(fOutBkgTH1FHists[th1f]);
+  }// end th1f loop
 }
 
 void StackPlots::InitRatioPlots()
