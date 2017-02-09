@@ -83,48 +83,50 @@ void StackPlots::MakeOutputCanvas()
 
 }
 
-void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY) {    
-  // pad gymnastics
+void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY) 
+{    
+
+  //------------------------------------------------------------------------
+  // Setup the pad for the stack plots 
+  //------------------------------------------------------------------------
   fOutTH1FCanvases[th1f]->cd();
   fOutTH1FStackPads[th1f]->Draw(); // draw upper pad   
   fOutTH1FStackPads[th1f]->cd();   // upper pad is current pad
   
-  // set maximum by comparing added mc vs added data
+  //------------------------------------------------------------------------
+  // Set maximum by comparing added mc vs added data
+  //------------------------------------------------------------------------
   Float_t min = StackPlots::GetMinimum(th1f);
   Float_t max = StackPlots::GetMaximum(th1f);
-
-  if (isLogY) { // set min for log only... maybe consider min for linear eventually
-    //fOutDataTH1FHists[th1f]->SetMinimum(min/1.5);
-    // set max with 2.0 scale to give enough space 
-    fOutDataTH1FHists[th1f]->SetMaximum(max*1.5);
-  }
-  else {
-    fOutDataTH1FHists[th1f]->SetMaximum( max > 0 ? max*1.05 : max/1.05 );      
-    //fOutDataTH1FHists[th1f]->SetMinimum( min > 0 ? min/1.05 : min*1.05 );
-  }
+  if (isLogY) fOutDataTH1FHists[th1f]->SetMaximum(max*1E4);
+  else        fOutDataTH1FHists[th1f]->SetMaximum(max*1.5);      
   
-  // now draw the plots for upper pad in absurd order because ROOT is dumb
+  //------------------------------------------------------------------------
+  // Draw the data, stack, sig histos, legend
+  //------------------------------------------------------------------------
   fOutDataTH1FHists[th1f]->Draw("PE"); // draw first so labels appear
 
-  // again, have to scale TDR style values by height of upper pad
   fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.07); 
   fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.07);
   fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.8);
 
   fOutMCTH1FStacks[th1f]->Draw("HIST SAME"); 
-  fOutTH1FStackPads[th1f]->RedrawAxis("SAME"); // stack kills axis
-  //Draw MC sum total error as well on top of stack --> E2 makes error appear as rectangle
-  fOutBkgTH1FHists[th1f]->Draw("E2 SAME");
+  fOutTH1FStackPads[th1f]->RedrawAxis("SAME");    // redraw axis (stack kills it)
+  fOutBkgTH1FHists[th1f]->Draw("E2 SAME");        // draw MC error
   for ( Int_t mc = 0; mc < fNSig; mc++){
-    fInSigTH1FHists[th1f][mc]->Draw("HIST SAME");
+    fInSigTH1FHists[th1f][mc]->Draw("HIST SAME"); // overlay signals
   }
-
-  // redraw data (ROOT IS SO DUMBBBBBB)
-  fOutDataTH1FHists[th1f]->Draw("PE SAME"); 
-  fTH1FLegends[th1f]->Draw("SAME"); // make sure to include the legend!
+  fOutDataTH1FHists[th1f]->Draw("PE SAME");       // redraw data 
+  fTH1FLegends[th1f]->Draw("SAME");               // draw the legend
+  fSigLegends[th1f]->Draw("SAME");                // draw sig legend
 }
 
-Float_t StackPlots::GetMaximum(const Int_t th1f) {
+Float_t StackPlots::GetMaximum(const Int_t th1f) 
+{
+
+  //------------------------------------------------------------------------
+  // Calculate max 
+  //------------------------------------------------------------------------
   Float_t max = -1e9;
   if (fOutDataTH1FHists[th1f]->GetBinContent(fOutDataTH1FHists[th1f]->GetMaximumBin()) > fOutBkgTH1FHists[th1f]->GetBinContent(fOutBkgTH1FHists[th1f]->GetMaximumBin())) {
     max = fOutDataTH1FHists[th1f]->GetBinContent(fOutDataTH1FHists[th1f]->GetMaximumBin());
@@ -135,7 +137,11 @@ Float_t StackPlots::GetMaximum(const Int_t th1f) {
   return max;
 }
 
-Float_t StackPlots::GetMinimum(const Int_t th1f) {
+Float_t StackPlots::GetMinimum(const Int_t th1f) 
+{
+  //------------------------------------------------------------------------
+  // Calculate min 
+  //------------------------------------------------------------------------
   // need to loop through to check bin != 0
   Float_t datamin  = 1e9;
   Bool_t newdatamin = false;
@@ -179,22 +185,24 @@ Float_t StackPlots::GetMinimum(const Int_t th1f) {
   return min;
 }
 
-void StackPlots::DrawLowerPad(const Int_t th1f) {    
-  // pad gymnastics
-  fOutTH1FCanvases[th1f]->cd();   // Go back to the main canvas before defining pad2
-  fOutTH1FRatioPads[th1f]->Draw(); // draw lower pad
-  fOutTH1FRatioPads[th1f]->cd(); // lower pad is current pad
+void StackPlots::DrawLowerPad(const Int_t th1f) 
+{    
 
-  // make red line at ratio of 1.0
-  StackPlots::SetLines(th1f);
+  //------------------------------------------------------------------------
+  // Draw the ratio plot 
+  //------------------------------------------------------------------------
+  fOutTH1FCanvases[th1f]->cd();          // Go back to the main canvas before defining pad2
+  fOutTH1FRatioPads[th1f]->Draw();       // draw lower pad
+  fOutTH1FRatioPads[th1f]->cd();         // lower pad is current pad
 
-  // draw th1 first so line can appear, then draw over it (and set Y axis divisions)
-  fOutRatioTH1FHists[th1f]->Draw("EP"); // draw first so line can appear
+  StackPlots::SetLines(th1f);            // make line at 1 
+  fOutRatioTH1FHists[th1f]->Draw("EP");  // draw first so line can appear
   fOutTH1FRatioLines[th1f]->Draw("SAME");
 
-  // some style since apparently TDR Style is crapping out --> would really not like this here
+  //------------------------------------------------------------------------
+  // Style for the ratio plot 
+  //------------------------------------------------------------------------
   fOutRatioTH1FHists[th1f]->GetYaxis()->SetNdivisions(505);
-
   // X
   fOutRatioTH1FHists[th1f]->GetXaxis()->SetLabelSize  (0.157); 
   fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitleSize  (0.16);
@@ -207,41 +215,49 @@ void StackPlots::DrawLowerPad(const Int_t th1f) {
   fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.38);
   fOutRatioTH1FHists[th1f]->GetYaxis()->CenterTitle();
 
-  // redraw to go over line
-  fOutRatioTH1FHists[th1f]->Draw("EP SAME"); 
-  
-  // plots MC error copy
-  fOutRatioMCErrs[th1f]->Draw("E2 SAME");
+  fOutRatioTH1FHists[th1f]->Draw("EP SAME"); // redraw to go over line
+  fOutRatioMCErrs[th1f]->Draw("E2 SAME");    // plots MC error copy
 }
 
-void StackPlots::SetLines(const Int_t th1f){
+void StackPlots::SetLines(const Int_t th1f)
+{
 
-  // have line held at ratio of 1.0 over whole x range
+  //------------------------------------------------------------------------
+  // Make line at ratio of 1.0 over whole x range
+  //------------------------------------------------------------------------
   fOutTH1FRatioLines[th1f]->SetX1(fOutRatioTH1FHists[th1f]->GetXaxis()->GetXmin());
   fOutTH1FRatioLines[th1f]->SetX2(fOutRatioTH1FHists[th1f]->GetXaxis()->GetXmax());
   fOutTH1FRatioLines[th1f]->SetY1(1.0);
   fOutTH1FRatioLines[th1f]->SetY2(1.0);
 
-  // customize appearance
+  //------------------------------------------------------------------------
+  // Customize appearance of line
+  //------------------------------------------------------------------------
   fOutTH1FRatioLines[th1f]->SetLineColor(kBlack);
   fOutTH1FRatioLines[th1f]->SetLineWidth(2);
 }
 
-void StackPlots::SaveCanvas(const Int_t th1f, const Bool_t isLogY){
-  TString suffix;
+void StackPlots::SaveCanvas(const Int_t th1f, const Bool_t isLogY)
+{
 
+  //------------------------------------------------------------------------
+  // Write out the canvases 
+  //------------------------------------------------------------------------
+  TString suffix;
   if   (isLogY) {suffix = "log";}
   else          {suffix = "lin";}
 
   Int_t log = (isLogY)? 1:0;
 
-  // cd to upper pad to make it log or not
-  fOutTH1FStackPads[th1f]->cd(); // upper pad is current pad
-  fOutTH1FStackPads[th1f]->SetLogy(log); //  set logy on this pad
+  fOutTH1FStackPads[th1f]->cd();         // upper pad is current pad
+  fOutTH1FStackPads[th1f]->SetLogy(log); // set logy on this pad
 
-  fOutTH1FCanvases[th1f]->cd();    // Go back to the main canvas before saving
-  //CMSLumi(fOutTH1FCanvases[th1f]); // write out Lumi info
+  fOutTH1FCanvases[th1f]->cd();          // go back to the main canvas before saving
+  //CMSLumi(fOutTH1FCanvases[th1f]);     // write out Lumi info
  
+  //------------------------------------------------------------------------
+  // SAVE 
+  //------------------------------------------------------------------------
   TString writePlots = Form("%s/%s/%s_%s.%s",fOutDir.Data(),fTH1FSubDMap[fTH1FNames[th1f]].Data(),fTH1FNames[th1f].Data(),suffix.Data(),Config::outtype.Data());
   fOutTH1FCanvases[th1f]->SaveAs(writePlots);
   fOutFile->cd();
