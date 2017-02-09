@@ -211,6 +211,8 @@ struct diphoTree_struc_ {
   int eleveto2;
   int presel1;
   int presel2;
+  int hlt1;
+  int hlt2;
   int sel1;
   int sel2;
   int tightsel1;
@@ -900,7 +902,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	float leadSieie  = diphoPtr->leadingPhoton()->full5x5_sigmaIetaIeta();
 	float leadHoE    = diphoPtr->leadingPhoton()->hadronicOverEm();
 	float leadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
-	//bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
+	bool leadPresel  = isGammaPresel( leadScEta, leadPt, leadR9noZS, leadChIso, leadHoE); 
 
 	float subleadScEta  = (diphoPtr->subLeadingPhoton()->superCluster())->eta(); 
 	float subleadR9noZS = diphoPtr->subLeadingPhoton()->full5x5_r9();              
@@ -909,13 +911,13 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	float subleadSieie  = diphoPtr->subLeadingPhoton()->full5x5_sigmaIetaIeta(); 
 	float subleadHoE    = diphoPtr->subLeadingPhoton()->hadronicOverEm();
 	float subleadChIso  = diphoPtr->subLeadingPhoton()->egChargedHadronIso()- rho * getChargedHadronEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());      
-	//bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
+	bool subleadPresel  = isGammaPresel( subleadScEta, subleadPt, subleadR9noZS, subleadChIso, subleadHoE); 
 
 	//rediscovery HLT
 	float leadPfPhIso = diphoPtr->leadingPhoton()->pfPhoIso03();
 	//float leadTrkSum03 = diphoPtr->leadingPhoton()->trkSumPtHollowConeDR03();
-	float subleadPfPhIso = diphoPtr->leadingPhoton()->pfPhoIso03();
-	float subleadTrkSum03 = diphoPtr->leadingPhoton()->trkSumPtHollowConeDR03();
+	float subleadPfPhIso = diphoPtr->subLeadingPhoton()->pfPhoIso03();
+	float subleadTrkSum03 = diphoPtr->subLeadingPhoton()->trkSumPtHollowConeDR03();
 	//bool leadHLTok = rediscoveryHLT( leadScEta,leadPt, leadR9noZS,leadSieie,leadPfPhIso,leadTrkSum03 );
 	//bool subleadHLTok = rediscoveryHLT( subleadScEta,subleadPt, subleadR9noZS,subleadSieie,subleadPfPhIso,subleadTrkSum03 );
 
@@ -939,8 +941,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	    }
 	  }
 	}
-	//if (/*!passesTrigger ||*/ !leadPresel || !subleadPresel) continue;   
-	//preselDipho.push_back(diphotonlooper);
+	if (/*!passesTrigger ||*/ !leadPresel || !subleadPresel) continue;   
+	preselDipho.push_back(diphotonlooper);
 	//if(!leadHLTok || !subleadHLTok)continue;
 	//preselHLTDipho.push_back(diphotonlooper);
 	if ( !leadPassTrig || !subleadPassTrig) continue;
@@ -1257,7 +1259,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      float sceta2;
 		      float r92, sieie2, hoe2, scRawEne2;
 		      float chiso2, phoiso2, neuiso2;
-		      int presel1, presel2, sel1, sel2, tightsel1, tightsel2, loosesel1, loosesel2;
+		      int presel1, presel2, sel1, sel2, tightsel1, tightsel2, loosesel1, loosesel2, hlt1, hlt2;
 		      int vtxIndex;
 		      float vtxX, vtxY, vtxZ;
 		      float vtx0Z;
@@ -1409,7 +1411,14 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 		      //-------> photon selection (should be on, may be useful for extra studies
 		      presel1 = isGammaPresel( sceta1, pt1, r91, chiso1, hoe1 ); 
-		      presel2 = isGammaPresel( sceta2, pt2, r92, chiso2, hoe2 ); 
+		      presel2 = isGammaPresel( sceta2, pt2, r92, chiso2, hoe2 );
+                      //-------> hlt rediscovery requirements (not used, but stored for extra studies)
+	              float leadPfPhIso = candDiphoPtr->leadingPhoton()->pfPhoIso03();
+	              float leadTrkSum03 = candDiphoPtr->leadingPhoton()->trkSumPtHollowConeDR03();
+	              float subleadPfPhIso = candDiphoPtr->subLeadingPhoton()->pfPhoIso03();
+	              float subleadTrkSum03 = candDiphoPtr->subLeadingPhoton()->trkSumPtHollowConeDR03();
+	              hlt1 = rediscoveryHLT( sceta1, pt1, r91, sieie1, leadPfPhIso, leadTrkSum03 );
+	              hlt2 = rediscoveryHLT( sceta2, pt2, r92, sieie2, subleadPfPhIso, subleadTrkSum03 );
 		
 		      //-------> smear up and down for systematics
 		      float leadSmearing        = getSmearingValue( sceta1, r91, 0 );
@@ -2115,6 +2124,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      treeDipho_.eleveto2 = eleveto2;
 		      treeDipho_.presel1 = presel1;
 		      treeDipho_.presel2 = presel2;
+		      treeDipho_.hlt1 = hlt1;
+		      treeDipho_.hlt2 = hlt2;
 		      treeDipho_.sel1 = sel1;
 		      treeDipho_.sel2 = sel2;
 		      treeDipho_.tightsel1 = tightsel1;
@@ -2489,6 +2500,8 @@ void NewDiPhoAnalyzer::beginJob() {
   DiPhotonTree->Branch("eleveto2",&(treeDipho_.eleveto2),"eleveto2/I");
   DiPhotonTree->Branch("presel1",&(treeDipho_.presel1),"presel1/I");
   DiPhotonTree->Branch("presel2",&(treeDipho_.presel2),"presel2/I");
+  DiPhotonTree->Branch("hlt1",&(treeDipho_.hlt1),"hlt1/I");
+  DiPhotonTree->Branch("hlt2",&(treeDipho_.hlt2),"hlt2/I");
   DiPhotonTree->Branch("sel1",&(treeDipho_.sel1),"sel1/I");
   DiPhotonTree->Branch("sel2",&(treeDipho_.sel2),"sel2/I");
   DiPhotonTree->Branch("tightsel1",&(treeDipho_.tightsel1),"tightsel1/I");
@@ -2769,6 +2782,8 @@ void NewDiPhoAnalyzer::initTreeStructure() {
   treeDipho_.eleveto2 = -500;
   treeDipho_.presel1 = -500;
   treeDipho_.presel2 = -500;
+  treeDipho_.hlt1 = -500;
+  treeDipho_.hlt2 = -500;
   treeDipho_.sel1 = -500;
   treeDipho_.sel2 = -500;
   treeDipho_.tightsel1 = -500;
