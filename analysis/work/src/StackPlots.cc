@@ -262,7 +262,7 @@ void StackPlots::SaveCanvas(const Int_t th1f, const Bool_t isLogY)
   fOutTH1FStackPads[th1f]->SetLogy(log); // set logy on this pad
 
   fOutTH1FCanvases[th1f]->cd();          // go back to the main canvas before saving
-  //CMSLumi(fOutTH1FCanvases[th1f]);     // write out Lumi info
+  CMSLumi(fOutTH1FCanvases[th1f]);       // write out Lumi info
  
   //------------------------------------------------------------------------
   // SAVE 
@@ -489,11 +489,16 @@ void StackPlots::InitOutputCanvPads()
     fOutTH1FCanvases[th1f]->cd();
     
     fOutTH1FStackPads[th1f] = new TPad(Form("%s_upad",fTH1FNames[th1f].Data()),"",0.0,0.3,1.0,1.0);
-    fOutTH1FStackPads[th1f]->SetBottomMargin(0); // Upper and lower plot are joined
-    
+    fOutTH1FStackPads[th1f]->SetBottomMargin(0.03);
+    fOutTH1FStackPads[th1f]->SetTopMargin(0.06);
+    fOutTH1FStackPads[th1f]->SetRightMargin(0.05040323); 
+    fOutTH1FStackPads[th1f]->SetLeftMargin(0.1290323);    
+ 
     fOutTH1FRatioPads[th1f] = new TPad(Form("%s_lpad",fTH1FNames[th1f].Data()),"",0.0,0.0,1.0,0.3);
-    fOutTH1FRatioPads[th1f]->SetTopMargin(0);
-    fOutTH1FRatioPads[th1f]->SetBottomMargin(0.3);
+    fOutTH1FRatioPads[th1f]->SetTopMargin(0.0);
+    fOutTH1FRatioPads[th1f]->SetRightMargin(0.05040323);
+    fOutTH1FRatioPads[th1f]->SetLeftMargin(0.1290323);
+    fOutTH1FRatioPads[th1f]->SetBottomMargin(0.366666678814);
   }
 }
 
@@ -509,7 +514,7 @@ void StackPlots::InitOutputLegends()
   fSigLegends.resize(fNTH1F);
 
   for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
-    fTH1FLegends[th1f] = new TLegend(0.49,0.69,0.83,0.92,NULL,"brNDC"); // x1,y1,x2,y2
+    fTH1FLegends[th1f] = new TLegend(0.55,0.69,0.91,0.92,NULL,"brNDC"); // x1,y1,x2,y2
     fTH1FLegends[th1f]->SetTextSize(0.036);
     fTH1FLegends[th1f]->SetNColumns(2);
     fTH1FLegends[th1f]->SetBorderSize(0);
@@ -520,7 +525,7 @@ void StackPlots::InitOutputLegends()
     fTH1FLegends[th1f]->SetFillStyle(0);
     fTH1FLegends[th1f]->SetTextFont(42);
 
-    fSigLegends[th1f] = new TLegend(0.49,0.60,0.83,0.69); // (x1,y1,x2,y2)
+    fSigLegends[th1f] = new TLegend(0.55,0.60,0.91,0.69); // (x1,y1,x2,y2)
     fSigLegends[th1f]->SetHeader("m_{A} = 300 GeV with #sigma = 1pb");
     fSigLegends[th1f]->SetTextSize(0.036);
     fSigLegends[th1f]->SetNColumns(1);

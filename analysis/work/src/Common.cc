@@ -94,116 +94,158 @@ void CheckValidTH1D(TH1D *& plot, TString pname, TString fname){
   }
 }
 
-void CMSLumi(TCanvas *& canv, Int_t iPosX) {
-  TString  cmsText     = "CMS";
-  Double_t cmsTextFont = 61;  // default is helvetic-bold
-  
-  // extraText is either "Simulation" or "Preliminary"
-  Bool_t   writeExtraText  = (Config::extraText.EqualTo("",TString::kExact)?false:true);
-  Double_t extraTextFont   = 52;  // default is helvetica-italics
 
-  TString lumiText = Form("%5.2f fb^{-1} (13 TeV)", Config::lumi);
-  
-  // text sizes and text offsets with respect to the top frame
-  // in unit of the top margin size
-  Double_t lumiTextSize     = 0.6;
-  Double_t lumiTextOffset   = 0.2;
-  Double_t cmsTextSize      = 0.75;
-  Double_t cmsTextOffset    = 0.1;  // only used in outOfFrame version
+void CMSLumi(TCanvas *& canv){
 
-  Double_t relPosX    = 0.045;
-  Double_t relPosY    = 0.035;
-  Double_t relExtraDY = 1.2;
- 
-  // ratio of "CMS" and extra text size
-  Double_t extraOverCmsTextSize  = 0.76;
- 
-  Bool_t outOfFrame    = false;
-  if ( iPosX/10 == 0 ) {
-    outOfFrame = true;
-  }
+  TString  latexCMS	= "CMS";
+  TString  extraText	= "Preliminary";
+  Bool_t   doExtraText	= (Config::extraText.EqualTo("",TString::kExact)?false:true);
+  TString  latexHgg	= "Z' #rightarrow DM + h(#gamma#gamma)";
+  TString  latexLumi	= Form("%1.1f fb^{-1} (13 TeV)",Config::lumi);
 
-  Int_t alignY_=3;
-  Int_t alignX_=2;
-  if (iPosX/10 == 0) {alignX_ = 1;}
-  if (iPosX == 0)    {alignY_ = 1;}
-  if (iPosX/10 == 1) {alignX_ = 1;}
-  if (iPosX/10 == 2) {alignX_ = 2;}
-  if (iPosX/10 == 3) {alignX_ = 3;}
-  Int_t align_ = 10*alignX_ + alignY_;
+  TLatex *l1 = new TLatex(0.17,0.92,latexCMS);
+  l1->SetTextSize(0.036);
+  l1->SetTextAlign(12);
+  l1->SetNDC(kTRUE);
+  l1->SetTextFont(62);
 
-  Double_t H = canv->GetWh();
-  Double_t W = canv->GetWw();
-  Double_t l = canv->GetLeftMargin();
-  Double_t t = canv->GetTopMargin();
-  Double_t r = canv->GetRightMargin();
-  Double_t b = canv->GetBottomMargin();
-  Double_t e = 0.025;
+  TLatex *l2 = new TLatex(0.25,0.92,extraText);
+  if (doExtraText){
+    l2->SetTextSize(0.036);
+    l2->SetTextAlign(12);
+    l2->SetNDC(kTRUE);
+    l2->SetTextFont(52);
+  } 
 
-  TLatex latex;
-  latex.SetNDC();
-  latex.SetTextAngle(0);
-  latex.SetTextColor(kBlack);    
+  TLatex *l3 = new TLatex(0.17,0.88,latexHgg);
+  l3->SetTextSize(0.036);
+  l3->SetTextAlign(12);
+  l3->SetNDC(kTRUE);
+  l3->SetTextFont(42);
 
-  Double_t extraTextSize = extraOverCmsTextSize*cmsTextSize;
+  TLatex *l4 = new TLatex(0.715,0.98,latexLumi); 
+  l4->SetTextSize(0.034);
+  l4->SetTextAlign(12);
+  l4->SetNDC(kTRUE);
+  l4->SetTextFont(42);
 
-  latex.SetTextFont(42);
-  latex.SetTextAlign(31); 
-  latex.SetTextSize(lumiTextSize*t);    
-  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
-
-  if (outOfFrame) {
-    latex.SetTextFont(cmsTextFont);
-    latex.SetTextAlign(11); 
-    latex.SetTextSize(cmsTextSize*t);    
-    latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
-  }
-  
-  Double_t posX_;
-  if (iPosX%10 <= 1) {
-    posX_ =   l + relPosX*(1-l-r);
-  }
-  else if (iPosX%10 == 2) {
-    posX_ =  l + 0.5*(1-l-r);
-  }
-  else if (iPosX%10 == 3) {
-    posX_ =  1-r - relPosX*(1-l-r);
-  }
-
-  Double_t posY_ = 1-t - relPosY*(1-t-b);
-
-  if (!outOfFrame) {
-    latex.SetTextFont(cmsTextFont);
-    latex.SetTextSize(cmsTextSize*t);
-    latex.SetTextAlign(align_);
-    latex.DrawLatex(posX_, posY_, cmsText);
-    
-    if (writeExtraText) {
-      latex.SetTextFont(extraTextFont);
-      latex.SetTextAlign(align_);
-      latex.SetTextSize(extraTextSize*t);
-      latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, Config::extraText);
-    }
-  }
-  
-  else if (outOfFrame && writeExtraText){
-    if (iPosX == 0) {
-      posX_ = l +  relPosX*(1-l-r)+0.05;
-      posY_ = 1-t+lumiTextOffset*t;
-    }
-    latex.SetTextFont(extraTextFont);
-    latex.SetTextSize(extraTextSize*t);
-    latex.SetTextAlign(align_);
-    latex.DrawLatex(posX_, posY_, Config::extraText);      
-  }
+  l1->Draw("same");
+  if (doExtraText) l2->Draw("same");
+  l3->Draw("same");
+  l4->Draw("same");
 }
+
+
+//void CMSLumi(TCanvas *& canv, Int_t iPosX) {
+//  TString  cmsText     = "CMS";
+//  Double_t cmsTextFont = 61;  // default is helvetic-bold
+//  
+//  // extraText is either "Simulation" or "Preliminary"
+//  Bool_t   writeExtraText  = (Config::extraText.EqualTo("",TString::kExact)?false:true);
+//  Double_t extraTextFont   = 52;  // default is helvetica-italics
+//
+//  TString lumiText = Form("%5.1f fb^{-1} (13 TeV)", Config::lumi);
+//  
+//  // text sizes and text offsets with respect to the top frame
+//  // in unit of the top margin size
+//  Double_t lumiTextSize     = 0.6;
+//  Double_t lumiTextOffset   = 0.2;
+//  Double_t cmsTextSize      = 0.75;
+//  Double_t cmsTextOffset    = 0.1;  // only used in outOfFrame version
+//
+//  Double_t relPosX    = 0.045;
+//  Double_t relPosY    = 0.035;
+//  Double_t relExtraDY = 1.2;
+// 
+//  // ratio of "CMS" and extra text size
+//  Double_t extraOverCmsTextSize  = 0.76;
+// 
+//  Bool_t outOfFrame    = false;
+//  if ( iPosX/10 == 0 ) {
+//    outOfFrame = true;
+//  }
+//
+//  Int_t alignY_=3;
+//  Int_t alignX_=2;
+//  if (iPosX/10 == 0) {alignX_ = 1;}
+//  if (iPosX == 0)    {alignY_ = 1;}
+//  if (iPosX/10 == 1) {alignX_ = 1;}
+//  if (iPosX/10 == 2) {alignX_ = 2;}
+//  if (iPosX/10 == 3) {alignX_ = 3;}
+//  Int_t align_ = 10*alignX_ + alignY_;
+//
+//  Double_t H = canv->GetWh();
+//  Double_t W = canv->GetWw();
+//  Double_t l = canv->GetLeftMargin();
+//  Double_t t = canv->GetTopMargin();
+//  Double_t r = canv->GetRightMargin();
+//  Double_t b = canv->GetBottomMargin();
+//  Double_t e = 0.025;
+//
+//  TLatex latex;
+//  latex.SetNDC();
+//  latex.SetTextAngle(0);
+//  latex.SetTextColor(kBlack);    
+//
+//  Double_t extraTextSize = extraOverCmsTextSize*cmsTextSize;
+//
+//  latex.SetTextFont(42);
+//  latex.SetTextAlign(31); 
+//  latex.SetTextSize(lumiTextSize*t);    
+//  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+//
+//  if (outOfFrame) {
+//    latex.SetTextFont(cmsTextFont);
+//    latex.SetTextAlign(11); 
+//    latex.SetTextSize(cmsTextSize*t);    
+//    latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+//  }
+//  
+//  Double_t posX_;
+//  if (iPosX%10 <= 1) {
+//    posX_ =   l + relPosX*(1-l-r);
+//  }
+//  else if (iPosX%10 == 2) {
+//    posX_ =  l + 0.5*(1-l-r);
+//  }
+//  else if (iPosX%10 == 3) {
+//    posX_ =  1-r - relPosX*(1-l-r);
+//  }
+//
+//  Double_t posY_ = 1-t - relPosY*(1-t-b);
+//
+//  if (!outOfFrame) {
+//    latex.SetTextFont(cmsTextFont);
+//    latex.SetTextSize(cmsTextSize*t);
+//    latex.SetTextAlign(align_);
+//    latex.DrawLatex(posX_, posY_, cmsText);
+//    
+//    if (writeExtraText) {
+//      latex.SetTextFont(extraTextFont);
+//      latex.SetTextAlign(align_);
+//      latex.SetTextSize(extraTextSize*t);
+//      latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, Config::extraText);
+//    }
+//  }
+//  
+//  else if (outOfFrame && writeExtraText){
+//    if (iPosX == 0) {
+//      posX_ = l +  relPosX*(1-l-r)+0.05;
+//      posY_ = 1-t+lumiTextOffset*t;
+//    }
+//    latex.SetTextFont(extraTextFont);
+//    latex.SetTextSize(extraTextSize*t);
+//    latex.SetTextAlign(align_);
+//    latex.DrawLatex(posX_, posY_, Config::extraText);      
+//  }
+//}
 
 void SetTDRStyle(TStyle *& tdrStyle){  
   // For the canvas:
   tdrStyle->SetCanvasBorderMode(0);
   tdrStyle->SetCanvasColor(kWhite);
-  tdrStyle->SetCanvasDefH(600); //Height of canvas
-  tdrStyle->SetCanvasDefW(700); //Width of canvas
+  //tdrStyle->SetCanvasDefH(600); //Height of canvas
+  //tdrStyle->SetCanvasDefW(700); //Width of canvas
   tdrStyle->SetCanvasDefX(0);   //Position on screen
   tdrStyle->SetCanvasDefY(0);
 
