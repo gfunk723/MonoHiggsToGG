@@ -58,7 +58,40 @@ void StackPlots::DoStack()
   gStyle->SetOptStat(0);
   StackPlots::MakeStackPlots();
   StackPlots::MakeRatioPlots();
+
   StackPlots::MakeOutputCanvas();
+
+}
+
+void StackPlots::FixPlotStyling(const Int_t th1f)
+{
+
+  //------------------------------------------------------------------------
+  // Make axis labels pretty 
+  //------------------------------------------------------------------------
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.05); 
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.07);
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.8);
+  fOutDataTH1FHists[th1f]->GetXaxis()->SetTitleOffset(999);
+  fOutDataTH1FHists[th1f]->GetXaxis()->SetLabelSize  (0);
+
+  //------------------------------------------------------------------------
+  // Make the bkgs pretty 
+  //------------------------------------------------------------------------
+  fOutBkgTH1FHists[th1f]->SetMarkerSize(0);
+  fOutBkgTH1FHists[th1f]->SetFillColor(kGray+3);
+  fOutBkgTH1FHists[th1f]->SetFillStyle(3013);
+
+  //------------------------------------------------------------------------
+  // Make the signals pretty 
+  //------------------------------------------------------------------------
+  for ( Int_t mc = 0; mc < fNSig; mc++ ){
+    fInSigTH1FHists[th1f][mc]->SetFillStyle(0);
+    fInSigTH1FHists[th1f][mc]->SetLineWidth(2);
+    fInSigTH1FHists[th1f][mc]->SetLineStyle(8);
+    fInSigTH1FHists[th1f][mc]->SetLineColor(Config::colorMap[fSigNames[mc]]);
+  }
+
 
 }
 
@@ -69,6 +102,8 @@ void StackPlots::MakeOutputCanvas()
   // Setup canvases 
   //------------------------------------------------------------------------
   for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
+    StackPlots::FixPlotStyling(th1f);      // make histos pretty 
+
     // draw first with  log scale
     Bool_t isLogY = true;
     StackPlots::DrawUpperPad(th1f,isLogY); // upper pad is stack
@@ -108,23 +143,10 @@ void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY)
   //------------------------------------------------------------------------
   fOutDataTH1FHists[th1f]->Draw("PE"); // draw first so labels appear
 
-  fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.05); 
-  fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.07);
-  fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.8);
-  fOutDataTH1FHists[th1f]->GetXaxis()->SetTitleOffset(999);
-  fOutDataTH1FHists[th1f]->GetXaxis()->SetLabelSize  (0);
-
   fOutMCTH1FStacks[th1f]->Draw("HIST SAME");
   fOutTH1FStackPads[th1f]->RedrawAxis("SAME");    // redraw axis (stack kills it)
-  fOutBkgTH1FHists[th1f]->SetMarkerSize(0);
-  fOutBkgTH1FHists[th1f]->SetFillColor(kGray+3);
-  fOutBkgTH1FHists[th1f]->SetFillStyle(3013);
   fOutBkgTH1FHists[th1f]->Draw("E2 SAME");        // draw MC error
   for ( Int_t mc = 0; mc < fNSig; mc++){
-    fInSigTH1FHists[th1f][mc]->SetFillStyle(0);
-    fInSigTH1FHists[th1f][mc]->SetLineWidth(2);
-    fInSigTH1FHists[th1f][mc]->SetLineStyle(8);
-    fInSigTH1FHists[th1f][mc]->SetLineColor(Config::colorMap[fSigNames[mc]]);
     fInSigTH1FHists[th1f][mc]->Draw("HIST SAME"); // overlay signals
   }
   fOutDataTH1FHists[th1f]->Draw("PE SAME");       // redraw data 
@@ -245,7 +267,7 @@ void StackPlots::SetLines(const Int_t th1f)
   // Customize appearance of line
   //------------------------------------------------------------------------
   fOutTH1FRatioLines[th1f]->SetLineColor(kBlack);
-  fOutTH1FRatioLines[th1f]->SetLineWidth(2);
+  fOutTH1FRatioLines[th1f]->SetLineWidth(1);
 }
 
 void StackPlots::SaveCanvas(const Int_t th1f, const Bool_t isLogY)

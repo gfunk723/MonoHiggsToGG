@@ -38,6 +38,7 @@ public:
   void MakeRatioPlots();
   void MakeOutputCanvas();
 
+  void FixPlotStyling(const Int_t th1f); 
   void DrawUpperPad(const Int_t th1f, const Bool_t isLogY);
   void DrawLowerPad(const Int_t th1f);
   void SetLines(const Int_t th1f);
