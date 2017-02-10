@@ -55,6 +55,7 @@ void StackPlots::DoStack()
   //------------------------------------------------------------------------
   // Start running
   //------------------------------------------------------------------------
+  gStyle->SetOptStat(0);
   StackPlots::MakeStackPlots();
   StackPlots::MakeRatioPlots();
   StackPlots::MakeOutputCanvas();
@@ -99,21 +100,29 @@ void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY)
   Float_t min = StackPlots::GetMinimum(th1f);
   Float_t max = StackPlots::GetMaximum(th1f);
   if (isLogY) fOutDataTH1FHists[th1f]->SetMaximum(max*1E4);
-  else        fOutDataTH1FHists[th1f]->SetMaximum(max*1.5);      
+  else        fOutDataTH1FHists[th1f]->SetMaximum(max*1.5);     
+  fOutDataTH1FHists[th1f]->SetMinimum(0.005); 
   
   //------------------------------------------------------------------------
   // Draw the data, stack, sig histos, legend
   //------------------------------------------------------------------------
   fOutDataTH1FHists[th1f]->Draw("PE"); // draw first so labels appear
 
-  fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.07); 
+  fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.05); 
   fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.07);
   fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.8);
 
-  fOutMCTH1FStacks[th1f]->Draw("HIST SAME"); 
+  fOutMCTH1FStacks[th1f]->Draw("HIST SAME");
   fOutTH1FStackPads[th1f]->RedrawAxis("SAME");    // redraw axis (stack kills it)
+  fOutBkgTH1FHists[th1f]->SetMarkerSize(0);
+  fOutBkgTH1FHists[th1f]->SetFillColor(kGray+3);
+  fOutBkgTH1FHists[th1f]->SetFillStyle(3013);
   fOutBkgTH1FHists[th1f]->Draw("E2 SAME");        // draw MC error
   for ( Int_t mc = 0; mc < fNSig; mc++){
+    fInSigTH1FHists[th1f][mc]->SetFillStyle(0);
+    fInSigTH1FHists[th1f][mc]->SetLineWidth(2);
+    fInSigTH1FHists[th1f][mc]->SetLineStyle(8);
+    fInSigTH1FHists[th1f][mc]->SetLineColor(Config::colorMap[fSigNames[mc]]);
     fInSigTH1FHists[th1f][mc]->Draw("HIST SAME"); // overlay signals
   }
   fOutDataTH1FHists[th1f]->Draw("PE SAME");       // redraw data 
@@ -210,7 +219,7 @@ void StackPlots::DrawLowerPad(const Int_t th1f)
   fOutRatioTH1FHists[th1f]->GetXaxis()->SetTickSize   (0.11);
   fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitleOffset(1.02);
   // Y
-  fOutRatioTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.15); 
+  fOutRatioTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.13); 
   fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.14);
   fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.38);
   fOutRatioTH1FHists[th1f]->GetYaxis()->CenterTitle();
@@ -280,20 +289,31 @@ void StackPlots::MakeStackPlots()
       if (data==0) fOutDataTH1FHists[th1f] = (TH1F*)fInDataTH1FHists[th1f][data]->Clone();
       else         fOutDataTH1FHists[th1f]->Add(fInDataTH1FHists[th1f][data]);
     }
-    fTH1FLegends[th1f]->AddEntry(fOutDataTH1FHists[th1f],"Data","epl");
+    fTH1FLegends[th1f]->AddEntry(fOutDataTH1FHists[th1f],"Data","EPL");
  
-    ////------------------------------------------------------------------------
-    //// Copy sig 
-    ////------------------------------------------------------------------------
-    //for (Int_t mc = 0; mc < fNSig; mc++){
-    //  fOutSigTH1FHists[th1f][mc] = (TH1F*)fInSigTH1FHists[th1f][mc]->Clone();
-    //}
+    //------------------------------------------------------------------------
+    // Copy sig 
+    //------------------------------------------------------------------------
+    for (Int_t mc = 0; mc < fNSig; mc++){
+      fSigLegends[th1f]->AddEntry(fInSigTH1FHists[th1f][mc],fSigNames[mc],"L");
+    }
 
     //------------------------------------------------------------------------
-    // Copy bkg 
+    // Use Gjets weighted to QCD as QCD
+    //------------------------------------------------------------------------
+    if (Config::doQCDrewgt){
+      Double_t qcdint  = fInBkgTH1FHists[th1f][fBkgIndicesMap["QCD"]]->Integral();
+      Double_t gjetint = fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Integral();
+      fGJetsClone[th1f] = (TH1F*)fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Clone();
+      fGJetsClone[th1f]->Scale(qcdint/gjetint);
+    }  
+
+    //------------------------------------------------------------------------
+    // Copy bkg -- to use as unc. 
     //------------------------------------------------------------------------
     for (Int_t mc = 0; mc < fNBkg; mc++){
       if (mc==0) fOutBkgTH1FHists[th1f] = (TH1F*)fInBkgTH1FHists[th1f][mc]->Clone();
+      else if (fBkgNames[mc]=="QCD" && Config::doQCDrewgt) fOutBkgTH1FHists[th1f]->Add(fGJetsClone[th1f]);
       else       fOutBkgTH1FHists[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
     }
 
@@ -314,20 +334,11 @@ void StackPlots::MakeStackPlots()
       }
       Double_t scale = dataint/bkgint;
       fOutBkgTH1FHists[th1f]->Scale(scale);
+      if (Config::doQCDrewgt) fGJetsClone[th1f]->Scale(scale);
       for (Int_t mc = 0; mc < fNBkg; mc++ ){
         fInBkgTH1FHists[th1f][mc]->Scale(scale);
       }
     }
- 
-    //------------------------------------------------------------------------
-    // Use Gjets weighted to QCD as QCD
-    //------------------------------------------------------------------------
-    if (Config::doQCDrewgt){
-      Double_t qcdint  = fInBkgTH1FHists[th1f][fBkgIndicesMap["QCD"]]->Integral();
-      Double_t gjetint = fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Integral();
-      fGJetsClone[th1f] = (TH1F*)fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Clone();
-      fGJetsClone[th1f]->Scale(qcdint/gjetint);
-    }  
 
     //------------------------------------------------------------------------
     // Merge backgrounds
@@ -354,16 +365,16 @@ void StackPlots::MakeStackPlots()
       fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["TTJets"]]);
       fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["WGToLNuG"]]);
       fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZGTo2LG"]]);
-      fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZGTo2NuG"]]);
-      fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["WJetsToLNu"]]);
+      //fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZGTo2NuG"]]);
+      //fOutEWK1BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["WJetsToLNu"]]);
 
       //------------------------------------------------------------------------
       // merge EWK+2pho bkg 
       //------------------------------------------------------------------------
       fOutEWK2BkgHists[th1f] = (TH1F*)fInBkgTH1FHists[th1f][fBkgIndicesMap["TTGG_0Jets"]]->Clone();
-      fOutEWK2BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZZTo2L2Nu"]]);
-      fOutEWK2BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZZTo2L2Q"]]);
-      fOutEWK2BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["WZTo2L2Q"]]);
+      //fOutEWK2BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZZTo2L2Nu"]]);
+      //fOutEWK2BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["ZZTo2L2Q"]]);
+      //fOutEWK2BkgHists[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["WZTo2L2Q"]]);
 
       //------------------------------------------------------------------------
       // merge QCD and Gjets 
@@ -374,16 +385,24 @@ void StackPlots::MakeStackPlots()
     }
 
     //------------------------------------------------------------------------
-    // Add bkgs to stack after scaling 
+    // Add bkgs to stack after scaling & ordered legend entries  
     //------------------------------------------------------------------------
-    if (Config::mergeBkgs){ // add merged bkgs
+    if (Config::mergeBkgs){ // add merged bkgs -- ordered
       fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["VHToGG"]]);
       fOutMCTH1FStacks[th1f]->Add(fOutHiggsBkgHists[th1f]);
-      fOutMCTH1FStacks[th1f]->Add(fOutDYBkgHists[th1f]);
       fOutMCTH1FStacks[th1f]->Add(fOutEWK2BkgHists[th1f]);
+      fOutMCTH1FStacks[th1f]->Add(fOutDYBkgHists[th1f]);
       fOutMCTH1FStacks[th1f]->Add(fOutEWK1BkgHists[th1f]);
       fOutMCTH1FStacks[th1f]->Add(fOutJetsBkgHists[th1f]);
       fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["DiPhoton"]]);
+
+      fTH1FLegends[th1f]->AddEntry(fOutDYBkgHists[th1f],   "DY + Jets","f"); 
+      fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][fBkgIndicesMap["VHToGG"]],"VH","f");
+      fTH1FLegends[th1f]->AddEntry(fOutEWK1BkgHists[th1f], "EWK + #gamma","f");
+      fTH1FLegends[th1f]->AddEntry(fOutHiggsBkgHists[th1f],"SM H#rightarrow#gamma#gamma","f");
+      fTH1FLegends[th1f]->AddEntry(fOutJetsBkgHists[th1f], "QCD, #gamma+Jets","f");
+      fTH1FLegends[th1f]->AddEntry(fOutEWK2BkgHists[th1f], "EWK + #gamma#gamma","f");
+      fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][fBkgIndicesMap["DiPhoton"]],"#gamma#gamma","f");
     }
     else { // if not merging, just add all bkgs
       for (Int_t mc = 0; mc < fNBkg; mc++){
@@ -392,8 +411,11 @@ void StackPlots::MakeStackPlots()
           else fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
         } 
         else fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
+        fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][mc],fBkgNames[mc],"f");
       }
     }
+
+    fTH1FLegends[th1f]->AddEntry(fOutBkgTH1FHists[th1f],"Stat. Unc.","F");
 
   }// end th1f loop
 
@@ -409,13 +431,13 @@ void StackPlots::MakeRatioPlots()
     if( fNData > 0 ) fOutRatioTH1FHists[th1f] = (TH1F*)fOutDataTH1FHists[th1f]->Clone();
     else             fOutRatioTH1FHists[th1f] = (TH1F*)fOutBkgTH1FHists[th1f]->Clone();
 
-    fOutRatioTH1FHists[th1f]->Add(fOutBkgTH1FHists[th1f],-1.0);  
+    //fOutRatioTH1FHists[th1f]->Add(fOutBkgTH1FHists[th1f],-1.0);  
     fOutRatioTH1FHists[th1f]->Divide(fOutBkgTH1FHists[th1f]);  
     fOutRatioTH1FHists[th1f]->SetTitle("");
     fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitle("Data/MC");
-    TString ytitle  = fOutBkgTH1FHists[th1f]->GetYaxis()->GetTitle();
-    fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitle(ytitle);
-    fOutRatioTH1FHists[th1f]->SetLineColor(kBlack);
+    TString xtitle  = fOutBkgTH1FHists[th1f]->GetXaxis()->GetTitle();
+    fOutRatioTH1FHists[th1f]->GetXaxis()->SetTitle(xtitle);
+    fOutRatioTH1FHists[th1f]->SetLineColor(kGray+3);
     fOutRatioTH1FHists[th1f]->SetMinimum(-0.1); // Define Y ..
     fOutRatioTH1FHists[th1f]->SetMaximum(2.2);  // .. range
     fOutRatioTH1FHists[th1f]->SetStats(0);      // No statistics on lower plot
@@ -425,6 +447,9 @@ void StackPlots::MakeRatioPlots()
     //------------------------------------------------------------------------
     fOutRatioMCErrs[th1f] = (TH1F*)fOutBkgTH1FHists[th1f]->Clone();
     fOutRatioMCErrs[th1f]->Divide(fOutBkgTH1FHists[th1f]);
+    fOutRatioMCErrs[th1f]->SetFillColor(kGray+3);
+    fOutRatioMCErrs[th1f]->SetFillStyle(3013);
+    fOutRatioMCErrs[th1f]->SetMarkerSize(0);
   }// end th1f loop
 }
 
@@ -484,7 +509,7 @@ void StackPlots::InitOutputLegends()
   fSigLegends.resize(fNTH1F);
 
   for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
-    fTH1FLegends[th1f] = new TLegend(0.56,0.69,0.92,0.92,NULL,"brNDC"); // x1,y1,x2,y2
+    fTH1FLegends[th1f] = new TLegend(0.49,0.69,0.83,0.92,NULL,"brNDC"); // x1,y1,x2,y2
     fTH1FLegends[th1f]->SetTextSize(0.036);
     fTH1FLegends[th1f]->SetNColumns(2);
     fTH1FLegends[th1f]->SetBorderSize(0);
@@ -495,7 +520,7 @@ void StackPlots::InitOutputLegends()
     fTH1FLegends[th1f]->SetFillStyle(0);
     fTH1FLegends[th1f]->SetTextFont(42);
 
-    fSigLegends[th1f] = new TLegend(0.56,0.55,0.74,0.68); // (x1,y1,x2,y2)
+    fSigLegends[th1f] = new TLegend(0.49,0.60,0.83,0.69); // (x1,y1,x2,y2)
     fSigLegends[th1f]->SetHeader("m_{A} = 300 GeV with #sigma = 1pb");
     fSigLegends[th1f]->SetTextSize(0.036);
     fSigLegends[th1f]->SetNColumns(1);

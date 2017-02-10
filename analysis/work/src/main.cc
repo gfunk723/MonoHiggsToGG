@@ -35,8 +35,19 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
   if (Config::doAnalysis || Config::doStack)
   {
-    Config::SampleMap["DiPhoton"]		= false; // !isData 
+    Config::SampleMap["VHToGG"]			= false; // !isData
+    Config::SampleMap["GluGluHToGG"]		= false; // !isData
+    Config::SampleMap["ttHJetToGG"]		= false; // !isData
+    Config::SampleMap["VBFHToGG"]		= false; // !isData
+    Config::SampleMap["TGJets"]			= false; // !isData
+    Config::SampleMap["TTGJets"]		= false; // !isData
+    Config::SampleMap["TTGG_0Jets"]		= false; // !isData
+    Config::SampleMap["TTJets"]			= false; // !isData
+    Config::SampleMap["ZGTo2LG"]		= false; // !isData
+    Config::SampleMap["WGToLNuG"]		= false; // !isData
     Config::SampleMap["QCD"]			= false; // !isData
+    Config::SampleMap["GJets"]			= false; // !isData
+    Config::SampleMap["DiPhoton"]		= false; // !isData 
     Config::SampleMap["2HDM_mZP600_mA0300"]	= false; // !isData 
   }
 
