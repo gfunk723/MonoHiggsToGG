@@ -111,6 +111,8 @@ void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY)
   fOutDataTH1FHists[th1f]->GetYaxis()->SetLabelSize  (0.05); 
   fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleSize  (0.07);
   fOutDataTH1FHists[th1f]->GetYaxis()->SetTitleOffset(0.8);
+  fOutDataTH1FHists[th1f]->GetXaxis()->SetTitleOffset(999);
+  fOutDataTH1FHists[th1f]->GetXaxis()->SetLabelSize  (0);
 
   fOutMCTH1FStacks[th1f]->Draw("HIST SAME");
   fOutTH1FStackPads[th1f]->RedrawAxis("SAME");    // redraw axis (stack kills it)
