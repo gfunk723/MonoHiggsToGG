@@ -22,7 +22,7 @@ namespace Config{
 
   TStrBoolMap SampleMap;      // set in main.cc
   ColorMap    colorMap;       // set in main.cc
-  TStrMap     SampleTitleMap; // set in main.cc
+  TStrMap     nameMap;        // set in main.cc
   TStrMap     SampleLatexMap; // set in main.cc
 
 }

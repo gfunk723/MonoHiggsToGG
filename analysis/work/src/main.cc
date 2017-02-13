@@ -45,6 +45,7 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
     Config::SampleMap["TTJets"]			= false; // !isData
     Config::SampleMap["ZGTo2LG"]		= false; // !isData
     Config::SampleMap["WGToLNuG"]		= false; // !isData
+    Config::SampleMap["DYJetsToLL"]		= false; // !isData
     Config::SampleMap["QCD"]			= false; // !isData
     Config::SampleMap["GJets"]			= false; // !isData
     Config::SampleMap["DiPhoton"]		= false; // !isData 
@@ -60,15 +61,19 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set color map 
   //------------------------------------------------------------------------
   Config::colorMap["DoubleEG"]		   = kBlack;
+  Config::colorMap["2HDM_mZP600_mA0300"]   = kBlue;
+  Config::colorMap["2HDM_mZP800_mA0300"]   = kMagenta;
+  Config::colorMap["2HDM_mZP1000_mA0300"]  = kGreen;
   Config::colorMap["DiPhoton"]		   = kTeal-1;
-  Config::colorMap["SMHiggs"]		   = kOrange-2;
+  Config::colorMap["SMHiggs"]		   = kOrange+1;
   Config::colorMap["EWK1pho"]		   = kAzure+8;
   Config::colorMap["EWK2pho"]		   = kAzure+2;
   Config::colorMap["Jetspho"]		   = kGreen-9;
+  Config::colorMap["DYJetsToLL"]	   = kTeal-7;
+  Config::colorMap["VHToGG"]		   = kRed-10;
+  // colors only used if writing out all samples separately
   Config::colorMap["QCD"] 		   = kYellow+8;
   Config::colorMap["GJets"] 		   = kGreen-9;
-  Config::colorMap["DYJetsToLL"]	   = kTeal-7;
-  Config::colorMap["VHToGG"]		   = kOrange-3;
   Config::colorMap["GluGluHToGG"]	   = kOrange-2;
   Config::colorMap["ttHJetToGG"]	   = kOrange-4;
   Config::colorMap["VBFHToGG"]		   = kYellow-7;
@@ -83,9 +88,40 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   Config::colorMap["ZZTo2L2Nu"]		   = kTeal+1;
   Config::colorMap["ZZTo2L2Q"]		   = kTeal+5;
   Config::colorMap["WGToLNuG"]		   = kAzure+8;
-  Config::colorMap["2HDM_mZP600_mA0300"]   = kPink-2;
-  Config::colorMap["2HDM_mZP800_mA0300"]   = kMagenta+2;
-  Config::colorMap["2HDM_mZP1000_mA0300"]  = kMagenta;
+
+  //------------------------------------------------------------------------
+  // Set outputname map 
+  //------------------------------------------------------------------------
+  Config::nameMap["DoubleEG"]              = "Data";
+  Config::nameMap["2HDM_mZP600_mA0300"]    = "m_{Z'} = 600 GeV";
+  Config::nameMap["2HDM_mZP800_mA0300"]    = "m_{Z'} = 800 GeV";
+  Config::nameMap["2HDM_mZP1000_mA0300"]   = "m_{Z'} = 1000 GeV";
+  Config::nameMap["DiPhoton"]              = "#gamma#gamma";
+  Config::nameMap["SMHiggs"]               = "SM h #rightarrow #gamma#gamma";
+  Config::nameMap["EWK1pho"]               = "EWK + #gamma";
+  Config::nameMap["EWK2pho"]               = "EWK + #gamma#gamma";
+  Config::nameMap["Jetspho"]               = "QCD, #gamma + jets";
+  Config::nameMap["DYJetsToLL"]            = "DY + jets";
+  Config::nameMap["VHToGG"]                = "Vh"; 
+  // names only used if writing out all samples separately
+  Config::nameMap["QCD"]                   = "QCD"; 
+  Config::nameMap["GJets"]                 = "#gamma + jets"; 
+  Config::nameMap["GluGluHToGG"]           = "SM h (GluGlu)"; 
+  Config::nameMap["ttHJetToGG"]            = "SM h (tth)"; 
+  Config::nameMap["VBFHToGG"]              = "SM h (VBF)"; 
+  Config::nameMap["TGJets"]                = "T + #gamma"; 
+  Config::nameMap["TTGJets"]               = "TT + #gamma"; 
+  Config::nameMap["TTGG_0Jets"]	           = "TT + #gamma#gamma"; 
+  Config::nameMap["TTJets"]                = "TT"; 
+  Config::nameMap["ZJets"]                 = "Z + jets"; 
+  Config::nameMap["ZGTo2LG"]               = "Z(ll) + #gamma"; 
+  Config::nameMap["WZTo2L2Nu"]             = "WZ #rightarrow ll#nu#nu"; 
+  Config::nameMap["WJetsToLNu"]            = "W(l#nu) + jets"; 
+  Config::nameMap["ZZTo2L2Nu"]             = "ZZ #rightarrow ll#nu#nu"; 
+  Config::nameMap["ZZTo2L2Q"]              = "ZZ #rightarrow llqq"; 
+  Config::nameMap["WGToLNuG"]              = "W(l#nu) + #gamma"; 
+  
+
 
 }// end initializing
 
@@ -167,7 +203,7 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   // Initialization
   //------------------------------------------------------------------------
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v5/";
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v6/";
   std::ofstream yields; TStyle * tdrStyle; 
   InitializeMain(yields, tdrStyle);
 

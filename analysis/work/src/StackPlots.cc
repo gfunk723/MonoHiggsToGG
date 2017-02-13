@@ -420,13 +420,13 @@ void StackPlots::MakeStackPlots()
       fOutMCTH1FStacks[th1f]->Add(fOutJetsBkgHists[th1f]);
       fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][fBkgIndicesMap["DiPhoton"]]);
 
-      fTH1FLegends[th1f]->AddEntry(fOutDYBkgHists[th1f],   "DY + Jets","f"); 
-      fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][fBkgIndicesMap["VHToGG"]],"VH","f");
-      fTH1FLegends[th1f]->AddEntry(fOutEWK1BkgHists[th1f], "EWK + #gamma","f");
-      fTH1FLegends[th1f]->AddEntry(fOutHiggsBkgHists[th1f],"SM H#rightarrow#gamma#gamma","f");
-      fTH1FLegends[th1f]->AddEntry(fOutJetsBkgHists[th1f], "QCD, #gamma+Jets","f");
-      fTH1FLegends[th1f]->AddEntry(fOutEWK2BkgHists[th1f], "EWK + #gamma#gamma","f");
-      fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][fBkgIndicesMap["DiPhoton"]],"#gamma#gamma","f");
+      fTH1FLegends[th1f]->AddEntry(fOutDYBkgHists[th1f],Config::nameMap["DYJetsToLL"],"f"); 
+      fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][fBkgIndicesMap["VHToGG"]],Config::nameMap["VHToGG"],"f");
+      fTH1FLegends[th1f]->AddEntry(fOutEWK1BkgHists[th1f],Config::nameMap["EWK1pho"],"f");
+      fTH1FLegends[th1f]->AddEntry(fOutHiggsBkgHists[th1f],Config::nameMap["SMHiggs"],"f");
+      fTH1FLegends[th1f]->AddEntry(fOutJetsBkgHists[th1f],Config::nameMap["Jetspho"],"f");
+      fTH1FLegends[th1f]->AddEntry(fOutEWK2BkgHists[th1f],Config::nameMap["EWK2pho"],"f");
+      fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][fBkgIndicesMap["DiPhoton"]],Config::nameMap["DiPhoton"],"f");
     }
     else { // if not merging, just add all bkgs
       for (Int_t mc = 0; mc < fNBkg; mc++){
@@ -435,7 +435,7 @@ void StackPlots::MakeStackPlots()
           else fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
         } 
         else fOutMCTH1FStacks[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
-        fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][mc],fBkgNames[mc],"f");
+        fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][mc],Config::nameMap[fBkgNames[mc]],"f");
       }
     }
 

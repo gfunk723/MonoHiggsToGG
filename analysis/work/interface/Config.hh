@@ -53,7 +53,7 @@ namespace Config{
 
   extern TStrBoolMap  SampleMap;
   extern ColorMap     colorMap;
-  extern TStrMap      SampleTitleMap;
+  extern TStrMap      nameMap;
   extern TStrMap      SampleLatexMap;
  
 };
