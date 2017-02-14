@@ -64,7 +64,9 @@ void skim(TString path, TString sample){
   Int_t   genmatch2; 		intree->SetBranchAddress("genmatch2",&genmatch2);
   // leptons
   Int_t   nEle;			intree->SetBranchAddress("nEle",&nEle);
+  Int_t   nEleMed;		intree->SetBranchAddress("nEleMed",&nEleMed);
   Int_t   nMuons;		intree->SetBranchAddress("nMuons",&nMuons);
+  Int_t   nMuTight;		intree->SetBranchAddress("nMuTight",&nMuTight);
   // jet variables
   Int_t   nJets20;		intree->SetBranchAddress("nJets20",&nJets20);
   Int_t   nJets30;		intree->SetBranchAddress("nJets30",&nJets30);
@@ -233,7 +235,8 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
 
     const Bool_t triggered        = (isMC)?true:hltDiphoton30Mass95; // trigger for data only
-    const Bool_t passMetFil_All   = (metF_GV && metF_globalTightHalo && metF_HBHENoise && metF_HBHENoiseIso && metF_EcalDeadCell && metF_badMuon && metF_badChargedHadron);
+    const Bool_t passMetFil_All   = (metF_GV && metF_globalTightHalo && metF_HBHENoise && metF_HBHENoiseIso 
+                                    && metF_EcalDeadCell && metF_badMuon && metF_badChargedHadron);
     const Bool_t passMetFil_Data  = (isMC)?true:(metF_eeBadSC); // filter for data only
     const Bool_t passMETfilters   = (passMetFil_All && passMetFil_Data);
 
@@ -242,10 +245,10 @@ void skim(TString path, TString sample){
     const Bool_t pass_GJet_DupRem = (!doGJet_DupRem || (doGJet_DupRem && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t pass_QCD_DupRem  = (!doQCD_DupRem  || (doQCD_DupRem  && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t passDupRemoval   = (pass_QCD_DupRem && pass_GJet_DupRem);
-    const Bool_t passLepVetos     = (nEle<2 && nMuons==0);
+    //const Bool_t passLepVetos     = (nEleMed < 2 && nMuTight==0);
+    const Bool_t passLepVetos     = (nEle==0 && nMuons==0);
     const Bool_t passJetVetos     = (nJets30 < 3);
     const Bool_t passDphiCuts     = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
-    //const Bool_t passDphiCuts     = true;
 
     if (nMuons!=0)       num_mufails++;
     if (!passMETfilters) num_failing++;
