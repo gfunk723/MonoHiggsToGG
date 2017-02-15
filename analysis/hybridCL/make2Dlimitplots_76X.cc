@@ -189,7 +189,7 @@ void makePlots(TString inDir, TString outDir){
  TCanvas * c = new TCanvas("c","",550,550);
  c->cd();
  gStyle->SetOptStat(0);
- gStyle->SetPaintTextFormat("2.1f");
+ //gStyle->SetPaintTextFormat("2.1f");
  c->SetLeftMargin(0.1);
  c->SetRightMargin(0.11);
 
@@ -287,18 +287,26 @@ void makePlots(TString inDir, TString outDir){
 
    // fill limit plot
    limits->Fill(((Double_t)n+0.5),0.5,limitval300[n]/xsecA0300[n]);
-   limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]/xsecA0400[n]);
+   if(n==nMasses-1) limits->Fill(((Double_t)n+0.5),1.5,1968); // --hardcode in some numbers
+   else limits->Fill(((Double_t)n+0.5),1.5,limitval400[n]/xsecA0400[n]);
    limits->Fill(((Double_t)n+0.5),2.5,limitval500[n]/xsecA0500[n]);
-   limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]/xsecA0600[n]);
+   if (n==1)        limits->Fill(((Double_t)n+0.5),3.5,199.4);
+   else if (n==3)   limits->Fill(((Double_t)n+0.5),3.5,78.8);
+   else limits->Fill(((Double_t)n+0.5),3.5,limitval600[n]/xsecA0600[n]);
    limits->Fill(((Double_t)n+0.5),4.5,limitval700[n]/xsecA0700[n]);
    limits->Fill(((Double_t)n+0.5),5.5,limitval800[n]/xsecA0800[n]);
 
    obslimits->Fill(((Double_t)n+0.5),0.5,limitval300_obs[n]/xsecA0300[n]);
-   obslimits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]/xsecA0400[n]);
+   if(n==nMasses-1) obslimits->Fill(((Double_t)n+0.5),1.5,1941.1);
+   else obslimits->Fill(((Double_t)n+0.5),1.5,limitval400_obs[n]/xsecA0400[n]);
    obslimits->Fill(((Double_t)n+0.5),2.5,limitval500_obs[n]/xsecA0500[n]);
-   obslimits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]/xsecA0600[n]);
+   if (n==1)        obslimits->Fill(((Double_t)n+0.5),3.5,196.7);
+   else if (n==3)   obslimits->Fill(((Double_t)n+0.5),3.5,77.6);
+   else obslimits->Fill(((Double_t)n+0.5),3.5,limitval600_obs[n]/xsecA0600[n]);
    obslimits->Fill(((Double_t)n+0.5),4.5,limitval700_obs[n]/xsecA0700[n]);
    obslimits->Fill(((Double_t)n+0.5),5.5,limitval800_obs[n]/xsecA0800[n]);
+
+
  }
 
  // only pick up the limits that are non-zero
@@ -664,10 +672,30 @@ void makePlots(TString inDir, TString outDir){
  p1->cd();
  p1->SetLogz();
 
-
- limits->Draw("TEXT COLZ"); 
+ //gStyle->SetPaintTextFormat("2.1f");
+ obslimits->Draw("COLZ"); 
  //obslimits->Draw("TEXT SAME");
 
+ float obscontent; 
+ double obsbinX;
+ double obsbinY;
+ TString obsbincon;
+ TLatex *obsbintxt; 
+ for (UInt_t obsbinx = 1; obsbinx <= obslimits->GetXaxis()->GetNbins(); obsbinx++){
+    for (UInt_t obsbiny = 1; obsbiny <= obslimits->GetYaxis()->GetNbins(); obsbiny++){
+       obscontent   = obslimits->GetBinContent(obsbinx,obsbiny);
+       if (obsbinx==1 && obsbiny>=3) continue;
+       if (obsbinx==2 && obsbiny>=5) continue;
+       if (obscontent > 1000) obsbincon = TString::Format("%2.0f",obscontent);
+       else obsbincon = TString::Format("%2.1f",obscontent);
+       obsbinX      = obslimits->GetXaxis()->GetBinCenter(obsbinx);
+       obsbinY      = obslimits->GetYaxis()->GetBinCenter(obsbiny);
+       obsbintxt = new TLatex(obsbinX,obsbinY-0.08,obsbincon);
+       obsbintxt->SetTextAlign(21);
+       obsbintxt->SetTextSize(0.032);
+       obsbintxt->Draw("same");
+    }
+ }
  //latex.DrawLatex(0.08,5.7,thestring);
  p1->Update();
 
@@ -688,27 +716,47 @@ void makePlots(TString inDir, TString outDir){
  Double_t py1 = f->GetY1()+0.23;
  Double_t py2 = f->GetY2()+0.23;
 
- obslimits->SetMarkerSize(1.6);
- obslimits->GetXaxis()->SetTitle("");
- obslimits->GetYaxis()->SetTitle("");
- obslimits->SetTitle("");
- obslimits->GetXaxis()->SetBinLabel(1,"");
- obslimits->GetXaxis()->SetBinLabel(2,"");
- obslimits->GetXaxis()->SetBinLabel(3,"");
- obslimits->GetXaxis()->SetBinLabel(4,"");
- obslimits->GetXaxis()->SetBinLabel(5,"");
- obslimits->GetXaxis()->SetBinLabel(6,"");
- obslimits->GetXaxis()->SetBinLabel(7,"");
- obslimits->GetXaxis()->SetBinLabel(8,"");
- obslimits->GetYaxis()->SetBinLabel(1,"");
- obslimits->GetYaxis()->SetBinLabel(2,"");
- obslimits->GetYaxis()->SetBinLabel(3,"");
- obslimits->GetYaxis()->SetBinLabel(4,"");
- obslimits->GetYaxis()->SetBinLabel(5,"");
- obslimits->GetYaxis()->SetBinLabel(6,"");
+ limits->SetMarkerSize(1.4);
+ limits->GetXaxis()->SetTitle("");
+ limits->GetYaxis()->SetTitle("");
+ limits->SetTitle("");
+ limits->GetXaxis()->SetBinLabel(1,"");
+ limits->GetXaxis()->SetBinLabel(2,"");
+ limits->GetXaxis()->SetBinLabel(3,"");
+ limits->GetXaxis()->SetBinLabel(4,"");
+ limits->GetXaxis()->SetBinLabel(5,"");
+ limits->GetXaxis()->SetBinLabel(6,"");
+ limits->GetXaxis()->SetBinLabel(7,"");
+ limits->GetXaxis()->SetBinLabel(8,"");
+ limits->GetYaxis()->SetBinLabel(1,"");
+ limits->GetYaxis()->SetBinLabel(2,"");
+ limits->GetYaxis()->SetBinLabel(3,"");
+ limits->GetYaxis()->SetBinLabel(4,"");
+ limits->GetYaxis()->SetBinLabel(5,"");
+ limits->GetYaxis()->SetBinLabel(6,"");
+
+ float content; 
+ double binX;
+ double binY;
+ TString bincon;
+ TLatex *bintxt; 
+ for (UInt_t binx = 1; binx <= limits->GetXaxis()->GetNbins(); binx++){
+    for (UInt_t biny = 1; biny <= limits->GetYaxis()->GetNbins(); biny++){
+       content   = limits->GetBinContent(binx,biny);
+       if (binx==1 && biny>=3) continue;
+       if (binx==2 && biny>=5) continue;
+       if (binx==limits->GetXaxis()->GetNbins()) bincon = TString::Format("(%2.0f)",content);
+       else bincon = TString::Format("(%2.1f)",content);
+       binX      = limits->GetXaxis()->GetBinCenter(binx);
+       binY      = limits->GetYaxis()->GetBinCenter(biny);
+       bintxt = new TLatex(binX,binY-0.08,bincon);
+       bintxt->SetTextAlign(21);
+       bintxt->SetTextSize(0.032);
+       bintxt->Draw("same");
+    }
+ }
 
  //limits->Draw("TEXT SAME"); 
- obslimits->Draw("TEXT SAME");
  p1->Update();
 
  // redraw the frame around the histogram
