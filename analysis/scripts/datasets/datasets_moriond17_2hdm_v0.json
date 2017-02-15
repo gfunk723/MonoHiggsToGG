@@ -1,0 +1,607 @@
+{
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 34916, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_184321/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 34916, 
+                "totEvents": 34916, 
+                "weights": 34916.0
+            }, 
+            {
+                "bad": false, 
+                "events": 65084, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_184321/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 65084, 
+                "totEvents": 65084, 
+                "weights": 65084.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-800_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 36000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185431/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 36000, 
+                "totEvents": 36000, 
+                "weights": 36000.0
+            }, 
+            {
+                "bad": false, 
+                "events": 64000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1000_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185431/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 64000, 
+                "totEvents": 64000, 
+                "weights": 64000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 37995, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_184519/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 37995, 
+                "totEvents": 37995, 
+                "weights": 37995.0
+            }, 
+            {
+                "bad": false, 
+                "events": 61260, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_184519/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 61260, 
+                "totEvents": 61260, 
+                "weights": 61260.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-400_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 72400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185610/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 72400, 
+                "totEvents": 72400, 
+                "weights": 72400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 27200, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185610/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 27200, 
+                "totEvents": 27200, 
+                "weights": 27200.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 2600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_10.root", 
+                "nevents": 2600, 
+                "totEvents": 2600, 
+                "weights": 2600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 4000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 4000, 
+                "totEvents": 4000, 
+                "weights": 4000.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 2400, 
+                "totEvents": 2400, 
+                "weights": 2400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 8600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_5.root", 
+                "nevents": 8600, 
+                "totEvents": 8600, 
+                "weights": 8600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_7.root", 
+                "nevents": 2600, 
+                "totEvents": 2600, 
+                "weights": 2600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 8800, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_8.root", 
+                "nevents": 8800, 
+                "totEvents": 8800, 
+                "weights": 8800.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_185750/0000/myMicroAODOutputFile_9.root", 
+                "nevents": 2000, 
+                "totEvents": 2000, 
+                "weights": 2000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-700_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 69200, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190155/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 69200, 
+                "totEvents": 69200, 
+                "weights": 69200.0
+            }, 
+            {
+                "bad": false, 
+                "events": 30400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1200_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190155/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 30400, 
+                "totEvents": 30400, 
+                "weights": 30400.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-400_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 71400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190348/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 71400, 
+                "totEvents": 71400, 
+                "weights": 71400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 28600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190348/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 28600, 
+                "totEvents": 28600, 
+                "weights": 28600.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-500_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 10400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190529/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 10400, 
+                "totEvents": 10400, 
+                "weights": 10400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 2400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190529/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 2400, 
+                "totEvents": 2400, 
+                "weights": 2400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 4000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190529/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 4000, 
+                "totEvents": 4000, 
+                "weights": 4000.0
+            }, 
+            {
+                "bad": false, 
+                "events": 61600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190529/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 61600, 
+                "totEvents": 61600, 
+                "weights": 61600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 21600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1400_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_190529/0000/myMicroAODOutputFile_5.root", 
+                "nevents": 21600, 
+                "totEvents": 21600, 
+                "weights": 21600.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-300_13TeV-madgraph-pythia8/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 69440, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_183749/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 69440, 
+                "totEvents": 69440, 
+                "weights": 69440.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-400_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 20800, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191212/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 20800, 
+                "totEvents": 20800, 
+                "weights": 20800.0
+            }, 
+            {
+                "bad": false, 
+                "events": 78800, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191212/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 78800, 
+                "totEvents": 78800, 
+                "weights": 78800.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-500_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 59600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191436/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 59600, 
+                "totEvents": 59600, 
+                "weights": 59600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 39600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191436/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 39600, 
+                "totEvents": 39600, 
+                "weights": 39600.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-600_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 59600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191618/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 59600, 
+                "totEvents": 59600, 
+                "weights": 59600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 40400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191618/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 40400, 
+                "totEvents": 40400, 
+                "weights": 40400.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-700_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 71400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191753/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 71400, 
+                "totEvents": 71400, 
+                "weights": 71400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 28600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191753/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 28600, 
+                "totEvents": 28600, 
+                "weights": 28600.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-800_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 44400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191945/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 44400, 
+                "totEvents": 44400, 
+                "weights": 44400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 55600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_191945/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 55600, 
+                "totEvents": 55600, 
+                "weights": 55600.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-400_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 64600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192202/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 64600, 
+                "totEvents": 64600, 
+                "weights": 64600.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-500_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 73600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192343/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 73600, 
+                "totEvents": 73600, 
+                "weights": 73600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 26400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192343/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 26400, 
+                "totEvents": 26400, 
+                "weights": 26400.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-600_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 1600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192522/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 1600, 
+                "totEvents": 1600, 
+                "weights": 1600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 5400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192522/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 5400, 
+                "totEvents": 5400, 
+                "weights": 5400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 45800, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192522/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 45800, 
+                "totEvents": 45800, 
+                "weights": 45800.0
+            }, 
+            {
+                "bad": false, 
+                "events": 47000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192522/0000/myMicroAODOutputFile_4.root", 
+                "nevents": 47000, 
+                "totEvents": 47000, 
+                "weights": 47000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-700_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 32400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192704/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 32400, 
+                "totEvents": 32400, 
+                "weights": 32400.0
+            }, 
+            {
+                "bad": false, 
+                "events": 66000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192704/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 66000, 
+                "totEvents": 66000, 
+                "weights": 66000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-800_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 60000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192842/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 60000, 
+                "totEvents": 60000, 
+                "weights": 60000.0
+            }, 
+            {
+                "bad": false, 
+                "events": 40000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2000_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_192842/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 40000, 
+                "totEvents": 40000, 
+                "weights": 40000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 14188, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/170212_185001/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 14188, 
+                "totEvents": 14188, 
+                "weights": 14188.0
+            }, 
+            {
+                "bad": false, 
+                "events": 35878, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/170212_185001/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 35878, 
+                "totEvents": 35878, 
+                "weights": 35878.0
+            }, 
+            {
+                "bad": false, 
+                "events": 49934, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-300_13TeV-madgraph-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/170212_185001/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 49934, 
+                "totEvents": 49934, 
+                "weights": 49934.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-700_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 36600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_193149/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 36600, 
+                "totEvents": 36600, 
+                "weights": 36600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 62400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-700_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_193149/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 62400, 
+                "totEvents": 62400, 
+                "weights": 62400.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-800_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 82200, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_193343/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 82200, 
+                "totEvents": 82200, 
+                "weights": 82200.0
+            }, 
+            {
+                "bad": false, 
+                "events": 17400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-2500_MA0-800_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_193343/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 17400, 
+                "totEvents": 17400, 
+                "weights": 17400.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-400_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 35000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_193524/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 35000, 
+                "totEvents": 35000, 
+                "weights": 35000.0
+            }, 
+            {
+                "bad": false, 
+                "events": 65000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-400_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_193524/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 65000, 
+                "totEvents": 65000, 
+                "weights": 65000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-500_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 85200, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_194032/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 85200, 
+                "totEvents": 85200, 
+                "weights": 85200.0
+            }, 
+            {
+                "bad": false, 
+                "events": 14000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-500_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_194032/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 14000, 
+                "totEvents": 14000, 
+                "weights": 14000.0
+            }
+        ], 
+        "vetted": true
+    }, 
+    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-600_13TeV-madgraph/soffi-RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-c4e54b2927a099e37ea7864244e26d82/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "events": 1600, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_194210/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 1600, 
+                "totEvents": 1600, 
+                "weights": 1600.0
+            }, 
+            {
+                "bad": false, 
+                "events": 67000, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_194210/0000/myMicroAODOutputFile_2.root", 
+                "nevents": 67000, 
+                "totEvents": 67000, 
+                "weights": 67000.0
+            }, 
+            {
+                "bad": false, 
+                "events": 31400, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026/2_4_1/ZprimeToA0hToA0chichihAA_2HDM_MZp-800_MA0-600_13TeV-madgraph/RunIISummer16-2_4_1-25ns_Moriond17_DMHiggs_2HDM_8026-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170212_194210/0000/myMicroAODOutputFile_3.root", 
+                "nevents": 31400, 
+                "totEvents": 31400, 
+                "weights": 31400.0
+            }
+        ], 
+        "vetted": true
+    }
+}
