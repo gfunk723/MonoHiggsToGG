@@ -55,7 +55,8 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   //------------------------------------------------------------------------
   // Make a yields table to sort samples 
   //------------------------------------------------------------------------
-  yields.open(Form("%s/yields.txt",Config::outdir.Data()),std::ios_base::app);
+  //yields.open(Form("%s/yields.txt",Config::outdir.Data()),std::ios_base::app); // open the file in append mode
+  yields.open(Form("%s/yields.txt",Config::outdir.Data())); // overwrite the file
 
   //------------------------------------------------------------------------
   // Set color map 
@@ -157,6 +158,7 @@ int main(int argc, const char* argv[])
         "  --mergebkgs     <bool>        merge bkgs into categories (def: %s)\n"
         "  --doQCDrewgt    <bool>        use GJets rewgt to QCD int as QCD (def: %s)\n"
         "  --scaletodata   <bool>        scale bkg int to int of data (def: %s)\n"
+        "  --yieldsplot    <string>      name of the plot from which to extract yield (def: %s)\n"
         "  --which-sel     <int>         choose which selection to apply (def: %s)\n"
         "  --do-standard   <bool>        make standard plots (def: %s)\n"
         "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
@@ -173,6 +175,7 @@ int main(int argc, const char* argv[])
         (Config::mergeBkgs  ? "true" : "false"),
         (Config::doQCDrewgt ? "true" : "false"),
         (Config::scaleToData? "true" : "false"),
+        Config::yieldsPlot.Data(),
         Config::whichSel,
         (Config::doStandard ? "true" : "false"),
         (Config::doNminus1  ? "true" : "false"),
@@ -182,6 +185,7 @@ int main(int argc, const char* argv[])
       );
       exit(0);
     }
+
     else if (*i == "--outdir")      { next_arg_or_die(mArgs, i); Config::outdir = i->c_str(); }
     else if (*i == "--unblind")     { Config::doBlind      = false; }
     else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
@@ -190,6 +194,7 @@ int main(int argc, const char* argv[])
     else if (*i == "--mergebkgs")   { Config::mergeBkgs    = true; }
     else if (*i == "--doQCDrewgt")  { Config::doQCDrewgt   = true; }
     else if (*i == "--scaletodata") { Config::scaleToData  = true; }
+    else if (*i == "--yieldsplot")  { next_arg_or_die(mArgs, i); Config::yieldsPlot = std::atoi(i->c_str()); }
     else if (*i == "--which-sel")   { next_arg_or_die(mArgs, i); Config::whichSel = std::atoi(i->c_str()); }
     else if (*i == "--do-standard") { Config::doStandard   = true; }
     else if (*i == "--do-nminus1")  { Config::doNminus1    = true; }
@@ -288,7 +293,7 @@ int main(int argc, const char* argv[])
   if (Config::doStack)  
   {
     StackPlots * stack = new StackPlots();
-    stack->DoStack();
+    stack->DoStack(yields);
     delete stack;    
   }
 

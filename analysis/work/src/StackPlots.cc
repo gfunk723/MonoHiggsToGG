@@ -49,16 +49,15 @@ StackPlots::StackPlots()
 
 }
 
-void StackPlots::DoStack()
+void StackPlots::DoStack(std::ofstream & yields)
 {
 
   //------------------------------------------------------------------------
   // Start running
   //------------------------------------------------------------------------
   gStyle->SetOptStat(0);
-  StackPlots::MakeStackPlots();
+  StackPlots::MakeStackPlots(yields);
   StackPlots::MakeRatioPlots();
-
   StackPlots::MakeOutputCanvas();
 
 }
@@ -298,7 +297,7 @@ void StackPlots::SaveCanvas(const Int_t th1f, const Bool_t isLogY)
 }
 
 
-void StackPlots::MakeStackPlots()
+void StackPlots::MakeStackPlots(std::ofstream & yields)
 {
 
   //------------------------------------------------------------------------
@@ -438,8 +437,75 @@ void StackPlots::MakeStackPlots()
         fTH1FLegends[th1f]->AddEntry(fInBkgTH1FHists[th1f][mc],Config::nameMap[fBkgNames[mc]],"f");
       }
     }
-
     fTH1FLegends[th1f]->AddEntry(fOutBkgTH1FHists[th1f],"Stat. Unc.","F");
+
+    //------------------------------------------------------------------------
+    // Make yields table  
+    //------------------------------------------------------------------------
+    if (fTH1FNames[th1f] == Config::yieldsPlot){
+      //------------------------------------------------------------------------
+      // Calculate yields
+      //------------------------------------------------------------------------
+      float m0 = 105; float m1 = 115; float m2 = 135; float m3 = 180; // region to perform integrals
+      //------------------------------------------------------------------------
+      // Data 
+      //------------------------------------------------------------------------
+      double dataint1, dataerr1, dataint2, dataerr2, dataint, dataerr; 
+      dataint1 = GetIntegralAndError(fOutDataTH1FHists[th1f],m0,m1,dataerr1);
+      dataint2 = GetIntegralAndError(fOutDataTH1FHists[th1f],m2,m3,dataerr2);
+      if (Config::doBlind){ dataint = dataint1 + dataint2; dataerr = TMath::Sqrt(dataint); }
+      else{ dataint = GetIntegralAndError(fOutDataTH1FHists[th1f],m0,m3,dataerr); }
+
+      //------------------------------------------------------------------------
+      // Bkg MC 
+      //------------------------------------------------------------------------
+      DblVec bkgints, bkgerrs; bkgints.resize(fNBkg); bkgerrs.resize(fNBkg);
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+        bkgints[mc] = GetIntegralAndError(fInBkgTH1FHists[th1f][mc],m0,m3,bkgerrs[mc]);
+      }
+
+      //------------------------------------------------------------------------
+      // Total Bkg 
+      //------------------------------------------------------------------------
+      double bkgint1, bkgerr1, bkgint2, bkgerr2, bkgintSB, bkgerrSB, bkgint, bkgerr;
+      bkgint1 = GetIntegralAndError(fOutBkgTH1FHists[th1f],m0,m1,bkgerr1);
+      bkgint2 = GetIntegralAndError(fOutBkgTH1FHists[th1f],m2,m3,bkgerr2);
+      if (Config::doBlind){ bkgintSB = bkgint1 + bkgint2; bkgerrSB = TMath::Sqrt(bkgerr1*bkgerr1+bkgerr2*bkgerr2); }
+      bkgint = GetIntegralAndError(fOutBkgTH1FHists[th1f],m0,m3,bkgerr); 
+ 
+      //------------------------------------------------------------------------
+      // Write out the table
+      //------------------------------------------------------------------------
+      yields << "\\documentclass[a4paper,landscape]{article}" << std::endl;
+      yields << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
+      yields << "\\begin{document}" << std::endl;
+      yields << "\% Integrals " << std::endl; // start summary of results table 
+      yields << "" << std::endl;
+      yields << "\\begin{table}[bthp]" <<std::endl;
+      yields << "\\begin{tabular}{|l|r|}" <<std::endl;
+      yields << "\\hline \\hline" <<std::endl;
+      yields << "\\multicolumn{2}{|c|}{" << fTH1FNames[th1f] << "} \\\\" << std::endl;
+      yields << "\\multicolumn{2}{|c|}{" << Form("$\\sqrt{s}$ = 13 TeV; L = %1.1f $fb^{-1}$",Config::lumi) <<"} \\\\" <<std::endl;
+      yields << "\\hline \\hline" << std::endl;
+      yields << "Sample & Integral \\\\" << std::endl;
+      yields << "\\hline" <<std::endl;
+    
+      for (UInt_t mc = 0; mc < fNBkg; mc++){
+        yields << fBkgNames[mc] << " & " << TString::Format("%2.1f",bkgints[mc]) << " $\\pm$ " << TString::Format("%2.1f",bkgerrs[mc]) << " \\\\ " << std::endl;
+      } 
+      yields << "\\hline" <<std::endl;
+      if (Config::doBlind) yields << " Total Bkg (sideband) & " << bkgintSB << " $\\pm$ " << TString::Format("%2.1f",bkgerrSB) << " \\\\ " << std::endl;
+                           yields << " Total Bkg & "            << bkgint   << " $\\pm$ " << TString::Format("%2.1f",bkgerr)   << " \\\\ " << std::endl;
+      yields << "\\hline" <<std::endl;
+      if (Config::doBlind) yields << " Data (sideband) & "      << dataint  << " $\\pm$ " << TString::Format("%2.1f",dataerr)  << " \\\\" << std::endl; 
+      else                 yields << " Data & "                 << dataint  << " $\\pm$ " << TString::Format("%2.1f",dataerr)  << " \\\\" << std::endl; 
+
+      yields << "\\hline" << std::endl;
+      yields << "\\end{tabular}" <<std::endl;
+      yields << "\\end{table}" <<std::endl; // end summary of results table
+      yields << "" << std::endl;
+      yields << "\\end{document}" <<std::endl;
+    }
 
   }// end th1f loop
 

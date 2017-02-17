@@ -11,6 +11,7 @@
 #include "TLegend.h"
 #include "TLine.h"
 #include "TLatex.h"
+#include "TMath.h"
 
 typedef std::vector<TFile*>	TFileVec;
 typedef std::vector<TH1F*>	TH1FVec;
@@ -33,8 +34,8 @@ public:
   void InitRatioLines();
   void InitOutputCanvPads();
 
-  void DoStack();
-  void MakeStackPlots();
+  void DoStack(std::ofstream & yields);
+  void MakeStackPlots(std::ofstream & yields);
   void MakeRatioPlots();
   void MakeOutputCanvas();
 

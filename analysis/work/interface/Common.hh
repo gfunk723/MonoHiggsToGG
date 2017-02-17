@@ -24,6 +24,7 @@ void CheckValidFile(TFile *& file, TString fname);
 void CheckValidTree(TTree *& tree, TString tname, TString fname);
 void CheckValidTH1F(TH1F *& plot, TString pname, TString fname);
 void CheckValidTH1D(TH1D *& plot, TString pname, TString fname);
+double GetIntegralAndError(TH1F *& plot, float xlow, float xhigh, double & err);
 void CMSLumi(TCanvas *& canv);
 //void CMSLumi(TCanvas *& canv, Int_t iPosX = 10);
 void SetTDRStyle(TStyle *& tdrStyle);

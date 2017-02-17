@@ -44,6 +44,7 @@ namespace Config{
   extern Bool_t       mergeBkgs;
   extern Bool_t       doQCDrewgt;
   extern Bool_t       scaleToData;
+  extern TString      yieldsPlot;
   extern Int_t        whichSel;
   extern Bool_t       doStandard;
   extern Bool_t       doNminus1;

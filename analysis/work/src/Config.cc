@@ -13,6 +13,7 @@ namespace Config{
   Bool_t  mergeBkgs   = true;
   Bool_t  doQCDrewgt  = true;
   Bool_t  scaleToData = false;
+  TString yieldsPlot  = "mgg";
   Int_t   whichSel    = 0;
   Bool_t  doStandard  = false;
   Bool_t  doNminus1   = false;

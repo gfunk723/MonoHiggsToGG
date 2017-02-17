@@ -94,6 +94,13 @@ void CheckValidTH1D(TH1D *& plot, TString pname, TString fname){
   }
 }
 
+double GetIntegralAndError(TH1F* & plot, float xlow, float xhigh, double & err){
+  int binlo = plot->FindBin(xlow);
+  int binhi = plot->FindBin(xhigh);
+  double integral = 0;
+  integral = plot->IntegralAndError(binlo,binhi,err,"");
+  return integral;
+}
 
 void CMSLumi(TCanvas *& canv){
 
