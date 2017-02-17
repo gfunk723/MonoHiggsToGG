@@ -279,6 +279,11 @@ void Analysis::DoPlots(int prompt)
 
 }// end Analysis::DoPlots
 
+//void Analysis::SetupEfficiencyPlots()
+//{
+//  effTH1Map["eff_sel"]                  = Analysis::MakeTH1Plot(standardSubDirMap,"eff","eff_sel","",10,0.,10,"","");
+//
+//}// end Analysis:SetupEfficienyPlots
 
 void Analysis::SetupStandardPlots()
 {
@@ -310,6 +315,7 @@ void Analysis::SetupStandardPlots()
   standardTH1Map["jetInfo_mass1"]	= Analysis::MakeTH1Plot(standardSubDirMap,"jet","jetInfo_mass1","",50,0,100,"mass [GeV]","");
 
 }// end Analysis::SetupStandardPlots
+
 void Analysis::SetupNminus1Plots()
 {
   nminus1TH1Map["n1_mgg"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_mgg","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");

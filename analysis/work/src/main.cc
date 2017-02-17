@@ -9,6 +9,7 @@
 #include "../interface/Config.hh"
 #include "../interface/Analysis.hh"
 #include "../interface/StackPlots.hh"
+#include "../interface/CardMaker.hh"
 #include "../interface/METcorr.hh"
 
 #include "TROOT.h"
@@ -33,7 +34,7 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set sample map 
   //------------------------------------------------------------------------
   if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
-  if (Config::doAnalysis || Config::doStack)
+  if (Config::doAnalysis || Config::doStack || Config::makeCards)
   {
     Config::SampleMap["VHToGG"]			= false; // !isData
     Config::SampleMap["GluGluHToGG"]		= false; // !isData
@@ -154,12 +155,15 @@ int main(int argc, const char* argv[])
         "  --unblind       <bool>        unblind the data (def: %s)\n"
         "  --do-analysis   <bool>        run analysis cuts (def: %s)\n"
         "  --do-stack      <bool>        run stacking for plots (def: %s)\n"
+        "  --do-comb       <bool>        run overlay for plots (def: %s)\n"
+        "  --make-cards    <bool>        make data cards with 2015 c&c approach (def: %s)\n"
         "  --plotnames     <string>      list of plots to stack (def: %s)\n"
         "  --mergebkgs     <bool>        merge bkgs into categories (def: %s)\n"
         "  --doQCDrewgt    <bool>        use GJets rewgt to QCD int as QCD (def: %s)\n"
         "  --scaletodata   <bool>        scale bkg int to int of data (def: %s)\n"
         "  --yieldsplot    <string>      name of the plot from which to extract yield (def: %s)\n"
         "  --which-sel     <int>         choose which selection to apply (def: %s)\n"
+        "  --do-effplots   <bool>        make efficiency plots (def: %s)\n"
         "  --do-standard   <bool>        make standard plots (def: %s)\n"
         "  --do-nminus1    <bool>        make n minus 1 plots (def: %s)\n"
 	"  --do-metcor     <bool>        calculate MET-phi corr (def: %s)\n"
@@ -171,12 +175,15 @@ int main(int argc, const char* argv[])
         (Config::doBlind    ? "false" : "true"),
         (Config::doAnalysis ? "true" : "false"),
         (Config::doStack    ? "true" : "false"),
+        (Config::doComb     ? "true" : "false"),
+        (Config::makeCards  ? "true" : "false"),
         Config::plotnames.Data(),
         (Config::mergeBkgs  ? "true" : "false"),
         (Config::doQCDrewgt ? "true" : "false"),
         (Config::scaleToData? "true" : "false"),
         Config::yieldsPlot.Data(),
         Config::whichSel,
+        (Config::doEffPlots ? "true" : "false"),
         (Config::doStandard ? "true" : "false"),
         (Config::doNminus1  ? "true" : "false"),
 	(Config::useData    ? "true" : "false"),
@@ -190,12 +197,15 @@ int main(int argc, const char* argv[])
     else if (*i == "--unblind")     { Config::doBlind      = false; }
     else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
     else if (*i == "--do-stack")    { Config::doStack      = true; }
+    else if (*i == "--do-comb")     { Config::doComb       = true; }
+    else if (*i == "--make-cards")  { Config::makeCards    = true; }
     else if (*i == "--plotnames")   { next_arg_or_die(mArgs, i); Config::plotnames = std::atoi(i->c_str()); }
     else if (*i == "--mergebkgs")   { Config::mergeBkgs    = true; }
     else if (*i == "--doQCDrewgt")  { Config::doQCDrewgt   = true; }
     else if (*i == "--scaletodata") { Config::scaleToData  = true; }
     else if (*i == "--yieldsplot")  { next_arg_or_die(mArgs, i); Config::yieldsPlot = std::atoi(i->c_str()); }
     else if (*i == "--which-sel")   { next_arg_or_die(mArgs, i); Config::whichSel = std::atoi(i->c_str()); }
+    else if (*i == "--do-effplots") { Config::doEffPlots   = true; }
     else if (*i == "--do-standard") { Config::doStandard   = true; }
     else if (*i == "--do-nminus1")  { Config::doNminus1    = true; }
     else if (*i == "--use-Data")    { Config::useData      = true; }
@@ -295,6 +305,16 @@ int main(int argc, const char* argv[])
     StackPlots * stack = new StackPlots();
     stack->DoStack(yields);
     delete stack;    
+  }
+
+  //------------------------------------------------------------------------
+  // Make data cards with c&c approach 
+  //------------------------------------------------------------------------
+  if (Config::makeCards)  
+  {
+    CardMaker * cards = new CardMaker(inDir);
+    cards->MakeCards();
+    delete cards;    
   }
 
   DestroyMain(yields,tdrStyle);
