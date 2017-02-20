@@ -1,0 +1,20 @@
+    "/WW_TuneCUETP8M1_13TeV-pythia8/soffi-RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-ab894eb9cc72c18e3151d41dbecb8ec7/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/WW_TuneCUETP8M1_13TeV-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_223559/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 32540, 
+                "totEvents": 32540, 
+                "weights": 32540.078125
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/WW_TuneCUETP8M1_13TeV-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_223559/0000/myMicroAODOutputFile_7.root", 
+                "nevents": 88964, 
+                "totEvents": 88964, 
+                "weights": 88966.2265625
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/WW_TuneCUETP8M1_13TeV-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_223559/0000/myMicroAODOutputFile_8.root", 
+                "nevents": 85452, 
+                "totEvents": 85452, 
+                "weights": 85453.6875
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/WW_TuneCUETP8M1_13TeV-pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_223559/0000/myMicroAODOutputFile_9.root", 
+                "nevents": 97412, 
+                "totEvents": 97412, 
+                "weights": 97414.4375

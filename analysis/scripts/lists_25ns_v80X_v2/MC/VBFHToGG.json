@@ -1,0 +1,24 @@
+    "/VBFHToGG_M-125_13TeV_powheg_pythia8/soffi-RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1-6634d643d553fc0e820c35ce2dcb1009/USER": {
+        "files": [
+            {
+                "bad": false, 
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_222806/0000/myMicroAODOutputFile_1.root", 
+                "nevents": 1600, 
+                "totEvents": 1600, 
+                "weights": 5968.39794921875
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_222806/0000/myMicroAODOutputFile_12.root", 
+                "nevents": 6510, 
+                "totEvents": 6510, 
+                "weights": 24315.416015625
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_222806/0000/myMicroAODOutputFile_18.root", 
+                "nevents": 8065, 
+                "totEvents": 8065, 
+                "weights": 30167.73828125
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_222806/0000/myMicroAODOutputFile_19.root", 
+                "nevents": 800, 
+                "totEvents": 800, 
+                "weights": 2980.454833984375
+                "name": "/store/user/soffi/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs/2_4_1/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISummer16-2_4_1-25ns_Moriond17_BkgForDMHiggs-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170211_222806/0000/myMicroAODOutputFile_7.root", 
+                "nevents": 13265, 
+                "totEvents": 13265, 
+                "weights": 49615.609375
