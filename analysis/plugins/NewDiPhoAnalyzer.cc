@@ -420,7 +420,7 @@ private:
   int passLooseCHisoCuts(float sceta, float chiso, float pt);
   int passLooseNHisoCuts(float sceta, float nhiso, float pt);
   int passLoosePHisoCuts(float sceta, float phiso, float pt);
-  int passPHisoCorr(double phoiso1, double phi1, double phi2, double eta1, double eta2, double pt1, double pt2);
+  int passPHisoCorr(double phoiso1, double phi1, double phi2, double eta1, double eta2, double pt1, double pt2, int isleading);
   int passLooseHoeCuts(float sceta, float hoe);
   bool passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso);
  
@@ -1020,14 +1020,15 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
           //-------------------------------------------------------	
 	  // Foot print removal 
           //-------------------------------------------------------	
-	  float PhoIso1 = diphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
-	  float PhoIso2 = diphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());
-          float phi1    = diphoPtr->leadingPhoton()->phi();
-          float phi2    = diphoPtr->subLeadingPhoton()->phi();
-          float eta1    = diphoPtr->leadingPhoton()->eta();
-          float eta2    = diphoPtr->subLeadingPhoton()->eta();
-          int passLooseCorrPHiso1 = passPHisoCorr(PhoIso1, phi1, phi2, eta1, eta2, leadPt, subleadPt);
-          int passLooseCorrPHiso2 = passPHisoCorr(PhoIso2, phi2, phi1, eta2, eta1, subleadPt, leadPt);
+          float phi1     = diphoPtr->leadingPhoton()->phi();
+          float phi2     = diphoPtr->subLeadingPhoton()->phi();
+          float eta1     = diphoPtr->leadingPhoton()->eta();
+          float eta2     = diphoPtr->subLeadingPhoton()->eta();
+          float deltaR12 = deltaR(eta1,phi1,eta2,phi2);
+	  //float PhoIso1  = diphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->leadingPhoton()->superCluster())->eta());
+	  //float PhoIso2  = diphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((diphoPtr->subLeadingPhoton()->superCluster())->eta());
+          //int passLooseCorrPHiso1 = passPHisoCorr(PhoIso1, phi1, phi2, eta1, eta2, leadPt, subleadPt, 1.);
+          //int passLooseCorrPHiso2 = passPHisoCorr(PhoIso2, phi2, phi1, eta2, eta1, subleadPt, leadPt, 0.);
 
           //-------------------------------------------------------
           // Leading photon ID	
@@ -1048,7 +1049,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  int passLooseLeadSieie = passLooseSieieCuts( leadScEta, leadSieienoZS );
 	  int passLooseLeadCHiso = passLooseCHisoCuts( leadScEta, leadChIso, leadPt );
 	  int passLooseLeadNHiso = passLooseNHisoCuts( leadScEta, leadNeuIso, leadPt );
-	  //int passLooseLeadPHiso = passLoosePHisoCuts( leadScEta, leadPhoIso, leadPt );
+	  int passLooseLeadPHiso = passLoosePHisoCuts( leadScEta, leadPhoIso, leadPt );
 	  int passLooseLeadHoe   = passLooseHoeCuts( leadScEta, leadHoE );
 	  //eleveto -- this is applied later
 	  int passLeadElVeto = 0;
@@ -1058,8 +1059,12 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
           // FINAL SELECTION
 	  bool leadSelel      = testPhotonIsolation( passLeadSieie,      passLeadCHiso,      passLeadNHiso,      passLeadPHiso,       passLeadHoe,      1); 
 	  bool leadTightSelel = testPhotonIsolation( passTightLeadSieie, passTightLeadCHiso, passTightLeadNHiso, passTightLeadPHiso,  passTightLeadHoe, 1); 
-	  bool leadLooseSelel = testPhotonIsolation( passLooseLeadSieie, passLooseLeadCHiso, passLooseLeadNHiso, passLooseCorrPHiso1, passLooseLeadHoe, 1); 
+	  //bool leadLooseSelel = testPhotonIsolation( passLooseLeadSieie, passLooseLeadCHiso, passLooseLeadNHiso, 1,                   passLooseLeadHoe, 1); 
+	  bool leadLooseSelel = false;
 
+          if (deltaR12 > 0.3) leadLooseSelel = testPhotonIsolation( passLooseLeadSieie, passLooseLeadCHiso, passLooseLeadNHiso, passLooseLeadPHiso,  passLooseLeadHoe, 1);
+          else                leadLooseSelel = testPhotonIsolation( passLooseLeadSieie, passLooseLeadCHiso, passLooseLeadNHiso, 1,                   passLooseLeadHoe, 1);
+          
           //-------------------------------------------------------
           // SubLeading photon ID	
           //-------------------------------------------------------	
@@ -1079,7 +1084,7 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	  int passLooseSubLeadSieie = passLooseSieieCuts( subleadScEta, subleadSieienoZS );
 	  int passLooseSubLeadCHiso = passLooseCHisoCuts( subleadScEta, subleadChIso, subleadPt );
 	  int passLooseSubLeadNHiso = passLooseNHisoCuts( subleadScEta, subleadNeuIso, subleadPt );
-	  //int passLooseSubLeadPHiso = passLoosePHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
+	  int passLooseSubLeadPHiso = passLoosePHisoCuts( subleadScEta, subleadPhoIso, subleadPt );
 	  int passLooseSubLeadHoe   = passLooseHoeCuts( subleadScEta, subleadHoE );
 	  // high pt selection (from high mass diphotn)
 	  float rawleadChIso  = diphoPtr->leadingPhoton()->egChargedHadronIso();
@@ -1098,7 +1103,11 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
           // FINAL SELECTION
 	  bool subleadSelel      = testPhotonIsolation( passSubLeadSieie,      passSubLeadCHiso,      passSubLeadNHiso,      passSubLeadPHiso,      passSubLeadHoe,      1);
 	  bool subleadTightSelel = testPhotonIsolation( passTightSubLeadSieie, passTightSubLeadCHiso, passTightSubLeadNHiso, passTightSubLeadPHiso, passTightSubLeadHoe, 1);
-	  bool subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, passLooseCorrPHiso2,   passLooseSubLeadHoe, 1);
+	  //bool subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, passLooseCorrPHiso2,   passLooseSubLeadHoe, 1);
+	  //bool subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, 1,                     passLooseSubLeadHoe, 1);
+	  bool subleadLooseSelel = false;
+	  if (deltaR12 > 0.3) subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, passLooseSubLeadPHiso, passLooseSubLeadHoe, 1);
+	  else                subleadLooseSelel = testPhotonIsolation( passLooseSubLeadSieie, passLooseSubLeadCHiso, passLooseSubLeadNHiso, 1,                     passLooseSubLeadHoe, 1);
 
 	  int numpassingmed = 0;
 	  int numpassing = 0;
@@ -1119,8 +1128,8 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //if (abs(thepfcand->pdgId()) == 211 && deltaR(photons_iter->eta(), rndphi, thepfcand->eta(), thepfcand->phi()) <= 0.3) chisoval += thepfcand->pt();
           //}
 
-	  if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
 	  //if (!leadHighPtSel || !subLeadHighPtSel) continue; //high pt photon id
+	  if (!leadLooseSelel || !subleadLooseSelel ) continue; //loose cut based id
 	  selectedDipho.push_back(theDiphoton); 
 	
 	  //// ADDED MVA PHOTON SELECTION
@@ -1452,9 +1461,9 @@ void NewDiPhoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		      //-------> photon corr iso stored: should be on, but useful for extra studies
 		      int phoiso1corr = candDiphoPtr->leadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((candDiphoPtr->leadingPhoton()->superCluster())->eta());
 		      int phoiso2corr = candDiphoPtr->subLeadingPhoton()->egPhotonIso()- rho * getGammaEAForPhotonIso((candDiphoPtr->subLeadingPhoton()->superCluster())->eta());
-                      int passLooseCorrPHiso1 = passPHisoCorr(phoiso1corr, phi1, phi2, eta1, eta2, pt1, pt2);
-                      int passLooseCorrPHiso2 = passPHisoCorr(phoiso2corr, phi2, phi1, eta2, eta1, pt2, pt1);
-	
+                      int passLooseCorrPHiso1 = passPHisoCorr(phoiso1corr, phi1, phi2, eta1, eta2, pt1, pt2, 1.);
+                      int passLooseCorrPHiso2 = passPHisoCorr(phoiso2corr, phi2, phi1, eta2, eta1, pt2, pt1, 0.);
+
 		      //-------> smear up and down for systematics
 		      float leadSmearing        = getSmearingValue( sceta1, r91, 0 );
                       float subleadSmearing     = getSmearingValue( sceta2, r92, 0 );
@@ -3254,16 +3263,35 @@ bool NewDiPhoAnalyzer::testPhotonIsolation(int passSieie, int passCHiso, int pas
   else return false;
 }
 
-int NewDiPhoAnalyzer::passPHisoCorr(double phoiso1,double phi1, double phi2,double eta1,double eta2,double pt1,double pt2){
-  double deltaR12=deltaR(phi1,phi2,eta1,eta2);
+
+int NewDiPhoAnalyzer::passPHisoCorr(double phoiso1, double phi1, double phi2, double eta1, double eta2, double pt1, double pt2, int isLeading){
+  double deltaR12=deltaR(eta1,phi1,eta2,phi2);
   double phoiso=phoiso1;
-  if(deltaR12<0.3)phoiso=phoiso1-pt2;
-  double newphoiso=TMath::Max(phoiso,0.);
+  double m,q;
+  if(isLeading)m=1.;
+  if(isLeading)q=0.;
+  if(!isLeading)m=1.;
+  //if(!isLeading)q=+9;
+  if(!isLeading)q=0.;
+  if(deltaR12<0.3)phoiso=phoiso1-m*pt2-q;
+  //  double newphoiso=TMath::Max(phoiso,0.);                                                                                                                
   int passes = 1;
-  if (fabs(eta1)<1.4442 && newphoiso > (3.630 + 0.0047*pt1)) passes = 0;
-  if ((fabs(eta1)>1.566 && fabs(eta1)<2.5) &&  newphoiso > (6.641 + 0.0034*pt1)) passes = 0;
+  if (fabs(eta1)<1.4442 && phoiso > (3.630 + 0.0047*pt1)) passes = 0;
+  if ((fabs(eta1)>1.566 && fabs(eta1)<2.5) &&  phoiso > (6.641 + 0.0034*pt1)) passes = 0;
   return passes;
 }
+
+//int NewDiPhoAnalyzer::passPHisoCorr(double phoiso1,double phi1, double phi2,double eta1,double eta2,double pt1,double pt2){
+//  double deltaR12=deltaR(eta1,phi1,eta2,phi2);
+//  double deltaR12=deltaR(phi1,phi2,eta1,eta2);
+//  double phoiso=phoiso1;
+//  if(deltaR12<0.3)phoiso=phoiso1-pt2;
+//  double newphoiso=TMath::Max(phoiso,0.);
+//  int passes = 1;
+//  if (fabs(eta1)<1.4442 && newphoiso > (3.630 + 0.0047*pt1)) passes = 0;
+//  if ((fabs(eta1)>1.566 && fabs(eta1)<2.5) &&  newphoiso > (6.641 + 0.0034*pt1)) passes = 0;
+//  return passes;
+//}
 
 
 bool NewDiPhoAnalyzer::passHighPtSelection(float rho, float pt, float sceta, float hoe, float sieie, float chiso, float phoiso){
