@@ -26,7 +26,7 @@ do
 	srcfile=$(echo $srcfile | sed "s/$logg/$src/g")
 	logfile=$(echo $logfile | sed "s/logOld/log/g")
 	echo bsub -q 8nh -o $logfile source /afs/cern.ch/user/m/mzientek/private/MonoHggCMSSW80X/CMSSW_8_0_8_patch1/src/MonoHiggsToGG/analysis/scripts/$srcfile 
-	bsub -q 8nh -o $logfile source /afs/cern.ch/user/m/mzientek/private/MonoHggCMSSW80Xwork/CMSSW_8_0_8_patch1/src/MonoHiggsToGG/analysis/scripts/$srcfile 
+	bsub -q 8nh -o $logfile source /afs/cern.ch/user/m/mzientek/private/MonoHggCMSSW80X/CMSSW_8_0_8_patch1/src/MonoHiggsToGG/analysis/scripts/$srcfile 
 	let COUNTER=COUNTER+1 
     fi
 #, for src in list: system(bsub %s -q 2nd, src.replace(log,src)”
