@@ -5,6 +5,7 @@
 #include "TString.h"
 #include "TBranch.h"
 #include <iostream>
+#include "../../../../DataFormats/Math/interface/deltaR.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ void addWeights(float lumiForWgt, TString path, TString sample){
      intree      = (TTree*)infile->Get("diPhoAna/DiPhotonTree");
      if (!intree){
        cout << "Tree diPhoAna/DiPhotonTree does not exist! Exiting..." << endl;
-       exit(1);
+       return;
      }
      h_entries         = (TH1F*)infile->Get("diPhoAna/h_entries");
      h_sumW            = (TH1F*)infile->Get("diPhoAna/h_sumW");
@@ -47,6 +48,10 @@ void addWeights(float lumiForWgt, TString path, TString sample){
      float pu_weight;		intree->SetBranchAddress("pu_weight",&pu_weight);
      float SF1;			intree->SetBranchAddress("SF1",&SF1);
      float SF2;			intree->SetBranchAddress("SF2",&SF2);
+     float eta1;		intree->SetBranchAddress("eta1",&eta1);
+     float eta2;		intree->SetBranchAddress("eta2",&eta2);
+     float phi1;		intree->SetBranchAddress("phi1",&phi1);
+     float phi2;		intree->SetBranchAddress("phi2",&phi2);
 
      // ----------------------------------------------------------------  
      // other info needed to do weights 
@@ -71,6 +76,7 @@ void addWeights(float lumiForWgt, TString path, TString sample){
 
      float xsecWeight;	outtree->Branch("xsecWeight",&xsecWeight, "xsecWeight/F");
      float weight;	outtree->Branch("weight",&weight, "weight/F");
+     float deltaR12;    outtree->Branch("deltaR12",&deltaR12,"deltaR12/F");     
 
      // ----------------------------------------------------------------  
      // loop over output tree 
@@ -84,7 +90,6 @@ void addWeights(float lumiForWgt, TString path, TString sample){
         // ----------------------------------------------------------------  
         // apply weighting 
         // ----------------------------------------------------------------  
-
         if (entry==0) xsecToWeight = totXsec;// pick up total xsec 
         if (sampleID>0 && sampleID<10000){// MC
           xsecWeight = SF1 * SF2 * perEveW * lumiForWgt * totXsec / sampleSumWgt;
@@ -95,6 +100,11 @@ void addWeights(float lumiForWgt, TString path, TString sample){
           xsecWeight = 1.;
           weight     = 1.;
         }
+        
+        // ----------------------------------------------------------------  
+        // add deltaR of the photons 
+        // ---------------------------------------------------------------- 
+        deltaR12 = deltaR(eta1,phi1,eta2,phi2); 
 
         outtree->Fill();// fill output tree
 

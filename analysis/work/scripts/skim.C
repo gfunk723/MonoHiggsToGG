@@ -133,8 +133,12 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   // Initialize any counters wanted
   // ----------------------------------------------------------------
-  Int_t num_failing = 0;
-  Int_t num_mufails = 0;
+  Int_t num_failing  = 0;
+  Int_t num_kinfail  = 0;
+  Int_t num_dphifail = 0;
+  Int_t num_lepfail  = 0;
+  Int_t num_jetfail  = 0;
+  Int_t num_passing  = 0;
 
   // ----------------------------------------------------------------
   // loop over input tree
@@ -250,19 +254,28 @@ void skim(TString path, TString sample){
     const Bool_t passJetVetos     = (nJets30 < 3);
     const Bool_t passDphiCuts     = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
 
-    if (nMuons!=0)       num_mufails++;
     if (!passMETfilters) num_failing++;
+    if (!passKinematics) num_kinfail++;
+    if (!passDphiCuts)   num_dphifail++;
+    if (!passLepVetos)   num_lepfail++;
+    if (!passJetVetos)   num_jetfail++;
 
     // skim cut
     if (triggered && passMETfilters && passKinematics && passDupRemoval && passLepVetos && passDphiCuts && passJetVetos)
     {
       outtree->Fill(); // fill output tree
+      num_passing++;   // count how many pass
     }
 
   }// finish event loop
 
-  cout << num_failing << " events fail met filters of " << intree->GetEntries() << " original events " << endl;
-  cout << num_mufails << " events fail muon cut " << endl;
+  cout << num_failing  << " events fail met filters of " << intree->GetEntries() << " original events " << endl;
+  cout << num_kinfail  << " events fail kinematic cuts"  << endl;
+  cout << num_dphifail << " events fail dphi cuts"       << endl;
+  cout << num_lepfail  << " events fail lepton cuts"     << endl;
+  cout << num_jetfail  << " events fail jet cuts"        << endl;
+  cout << num_passing  << " events pass all cuts of "    << intree->GetEntries() << " original events " << endl; 
+
 
 
   // ----------------------------------------------------------------
