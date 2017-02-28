@@ -498,11 +498,15 @@ def AllGlobal(fname):
 
 
   # WRITE OUT TO A NEW TABLE
-
+  fout.write("\\begin{table}[bthp] \n")
+  fout.write("\\centering \n")
+  fout.write("\\begin{tabular}{|c|c|c|c|c|c|c| \n"}
   fout.write("\\hline \n")
+
   fout.write("% 2HDM Efficiencies \n")
   fout.write("$m_{A}$ [GeV] & 300 & 400 & 500 & 600 & 700 & 800 \\\\   \n")
   fout.write("$m_{Z'}$ [GeV] &    &     &     &     &     &     \\\\   \n")
+  fout.write("\\hline \n")
   fout.write("600 & "+eff2hdm600[0]+" & "+eff2hdm600[1]+" & "+eff2hdm600[2]+" & "+eff2hdm600[3]+" & "+eff2hdm600[4]+" & "+eff2hdm600[5]+" \\\\ \n")
   fout.write("800 & "+eff2hdm800[0]+" & "+eff2hdm800[1]+" & "+eff2hdm800[2]+" & "+eff2hdm800[3]+" & "+eff2hdm800[4]+" & "+eff2hdm800[5]+" \\\\ \n")
   fout.write("1000 & "+eff2hdm1000[0]+" & "+eff2hdm1000[1]+" & "+eff2hdm1000[2]+" & "+eff2hdm1000[3]+" & "+eff2hdm1000[4]+" & "+eff2hdm1000[5]+" \\\\ \n")
@@ -513,9 +517,11 @@ def AllGlobal(fname):
   fout.write("2500 & "+eff2hdm2500[0]+" & "+eff2hdm2500[1]+" & "+eff2hdm2500[2]+" & "+eff2hdm2500[3]+" & "+eff2hdm2500[4]+" & "+eff2hdm2500[5]+" \\\\ \n")
   fout.write("\\hline \n")
   fout.write("\\hline \n")
+
   fout.write("% Baryonic Model Efficiencies \n")
   fout.write("$m_{\\chi}$ [GeV] & 1 & 10 & 50 & 150 & 500 & 1000 \\\\   \n")
   fout.write("$m_{Z'}$ [GeV]    &   &    &    &     &     &      \\\\   \n")
+  fout.write("\\hline \n")
   fout.write("10 & "+effbary10[0]+" & "+effbary10[1]+" & "+effbary10[2]+" & "+effbary10[3]+" & "+effbary10[4]+" & "+effbary10[5]+" \\\\ \n")
   fout.write("15 & "+effbary15[0]+" & "+effbary15[1]+" & "+effbary15[2]+" & "+effbary15[3]+" & "+effbary15[4]+" & "+effbary15[5]+" \\\\ \n")
   fout.write("20 & "+effbary20[0]+" & "+effbary20[1]+" & "+effbary20[2]+" & "+effbary20[3]+" & "+effbary20[4]+" & "+effbary20[5]+" \\\\ \n")
@@ -532,9 +538,11 @@ def AllGlobal(fname):
   fout.write("10000 & "+effbary10000[0]+" & "+effbary10000[1]+" & "+effbary10000[2]+" & "+effbary10000[3]+" & "+effbary10000[4]+" & "+effbary10000[5]+" \\\\ \n")
   fout.write("\\hline \n")
   fout.write("\\hline \n")
+
   fout.write("% Scalar Model Efficiencies \n")
   fout.write("$m_{\\chi}$ [GeV] & 1 & 10 & 50 & 150 & 500 & 1000 \\\\   \n")
   fout.write("$m_{Z'}$ [GeV]    &   &    &    &     &     &      \\\\   \n")
+  fout.write("\\hline \n")
   fout.write("10 & "+effscal10[0]+" & "+effscal10[1]+" & "+effscal10[2]+" & "+effscal10[3]+" & "+effscal10[4]+" & "+effscal10[5]+" \\\\ \n")
   fout.write("20 & "+effscal20[0]+" & "+effscal20[1]+" & "+effscal20[2]+" & "+effscal20[3]+" & "+effscal20[4]+" & "+effscal20[5]+" \\\\ \n")
   fout.write("50 & "+effscal50[0]+" & "+effscal50[1]+" & "+effscal50[2]+" & "+effscal50[3]+" & "+effscal50[4]+" & "+effscal50[5]+" \\\\ \n")
@@ -548,6 +556,8 @@ def AllGlobal(fname):
   fout.write("1000 & "+effscal1000[0]+" & "+effscal1000[1]+" & "+effscal1000[2]+" & "+effscal1000[3]+" & "+effscal1000[4]+" & "+effscal1000[5]+" \\\\ \n")
   fout.write("10000 & "+effscal10000[0]+" & "+effscal10000[1]+" & "+effscal10000[2]+" & "+effscal10000[3]+" & "+effscal10000[4]+" & "+effscal10000[5]+" \\\\ \n")
   fout.write("\\hline \n")
+  fout.write("\\end{tabular} \n")
+  fout.write("\\end{table} \n")
 
 if __name__ == "__main__":
   AllGlobal("PlainEff.tex")

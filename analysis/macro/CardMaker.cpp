@@ -55,15 +55,15 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0300",107));//mA0_300   
 
   Samples.push_back(SamplePair("2HDM_mZP600_mA0400",108)); 
-  //Samples.push_back(SamplePair("2HDM_mZP800_mA0400",109)); 
+  Samples.push_back(SamplePair("2HDM_mZP800_mA0400",109)); 
   Samples.push_back(SamplePair("2HDM_mZP1000_mA0400",110)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0400",111)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0400",112)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0400",113)); 
   Samples.push_back(SamplePair("2HDM_mZP2000_mA0400",114));  
-  //Samples.push_back(SamplePair("2HDM_mZP2500_mA0400",115));  
+  Samples.push_back(SamplePair("2HDM_mZP2500_mA0400",115));  
 
-  //Samples.push_back(SamplePair("2HDM_mZP600_mA0500",116)); 
+  //Samples.push_back(SamplePair("2HDM_mZP600_mA0500",116)); // NOT VALID  
   Samples.push_back(SamplePair("2HDM_mZP800_mA0500",117)); 
   //Samples.push_back(SamplePair("2HDM_mZP1000_mA0500",118)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0500",119)); 
@@ -72,32 +72,33 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("2HDM_mZP2000_mA0500",122));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0500",123));  
 
-  //Samples.push_back(SamplePair("2HDM_mZP600_mA0600",124)); 
-  //Samples.push_back(SamplePair("2HDM_mZP800_mA0600",125)); 
+  //Samples.push_back(SamplePair("2HDM_mZP600_mA0600",124)); // NOT VALID 
+  Samples.push_back(SamplePair("2HDM_mZP800_mA0600",125)); 
   //Samples.push_back(SamplePair("2HDM_mZP1000_mA0600",126)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0600",127)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0600",128)); 
-  //Samples.push_back(SamplePair("2HDM_mZP1700_mA0600",129)); 
-  //Samples.push_back(SamplePair("2HDM_mZP2000_mA0600",130));  
+  Samples.push_back(SamplePair("2HDM_mZP1700_mA0600",129)); 
+  Samples.push_back(SamplePair("2HDM_mZP2000_mA0600",130));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0600",131));  
 
-  //Samples.push_back(SamplePair("2HDM_mZP600_mA0700",132)); 
-  //Samples.push_back(SamplePair("2HDM_mZP800_mA0700",133)); 
-  Samples.push_back(SamplePair("2HDM_mZP1000_mA0700",134)); 
-  //Samples.push_back(SamplePair("2HDM_mZP1200_mA0700",135)); 
+  //Samples.push_back(SamplePair("2HDM_mZP600_mA0700",132)); // NOT VALID 
+  //Samples.push_back(SamplePair("2HDM_mZP800_mA0700",133)); // NOT VALID 
+  //Samples.push_back(SamplePair("2HDM_mZP1000_mA0700",134)); 
+  Samples.push_back(SamplePair("2HDM_mZP1200_mA0700",135)); 
   Samples.push_back(SamplePair("2HDM_mZP1400_mA0700",136)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0700",137)); 
-  //Samples.push_back(SamplePair("2HDM_mZP2000_mA0700",138));  
+  Samples.push_back(SamplePair("2HDM_mZP2000_mA0700",138));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0700",139));  
 
-  //Samples.push_back(SamplePair("2HDM_mZP600_mA0800",140)); 
-  //Samples.push_back(SamplePair("2HDM_mZP800_mA0800",141)); 
-  //Samples.push_back(SamplePair("2HDM_mZP1000_mA0800",141)); 
+  //Samples.push_back(SamplePair("2HDM_mZP600_mA0800",140)); // NOT VALID 
+  //Samples.push_back(SamplePair("2HDM_mZP800_mA0800",141)); // NOT VALID
+  Samples.push_back(SamplePair("2HDM_mZP1000_mA0800",141)); 
   Samples.push_back(SamplePair("2HDM_mZP1200_mA0800",142)); 
-  //Samples.push_back(SamplePair("2HDM_mZP1400_mA0800",143)); 
+  Samples.push_back(SamplePair("2HDM_mZP1400_mA0800",143)); 
   Samples.push_back(SamplePair("2HDM_mZP1700_mA0800",144)); 
-  //Samples.push_back(SamplePair("2HDM_mZP2000_mA0800",145));  
+  Samples.push_back(SamplePair("2HDM_mZP2000_mA0800",145));  
   Samples.push_back(SamplePair("2HDM_mZP2500_mA0800",146));  
+
 
   Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi1000",150));
   Samples.push_back(SamplePair("BaryonicZp_mZP10000_mChi10"  ,151));
@@ -114,7 +115,7 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi10"     ,162));
   Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi1"      ,163));
   Samples.push_back(SamplePair("BaryonicZp_mZP10_mChi50"     ,164));
-  Samples.push_back(SamplePair("BaryonicZp_mZP15_mChi10"     ,165));
+  //Samples.push_back(SamplePair("BaryonicZp_mZP15_mChi10"     ,165));
   Samples.push_back(SamplePair("BaryonicZp_mZP1995_mChi1000" ,166));
   Samples.push_back(SamplePair("BaryonicZp_mZP2000_mChi1"    ,167));
   Samples.push_back(SamplePair("BaryonicZp_mZP2000_mChi500"  ,168));
@@ -130,6 +131,39 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("BaryonicZp_mZP50_mChi10"     ,178));
   Samples.push_back(SamplePair("BaryonicZp_mZP50_mChi1"      ,179));
   Samples.push_back(SamplePair("BaryonicZp_mZP995_mChi500"   ,180));
+
+  Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi1"     ,181));
+  Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi10"    ,182));
+  Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi1000"  ,183));
+  Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi150"   ,184));
+  Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi50"    ,185));
+  Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi500"   ,186));
+  Samples.push_back(SamplePair("ScalarZp_mZP1000_mChi1"      ,187));
+  Samples.push_back(SamplePair("ScalarZp_mZP1000_mChi150"    ,188));
+  Samples.push_back(SamplePair("ScalarZp_mZP100_mChi1"       ,189));
+  Samples.push_back(SamplePair("ScalarZp_mZP100_mChi10"      ,190));
+  Samples.push_back(SamplePair("ScalarZp_mZP10_mChi1"        ,191));
+  Samples.push_back(SamplePair("ScalarZp_mZP10_mChi10"       ,192));
+  Samples.push_back(SamplePair("ScalarZp_mZP10_mChi1000"     ,193));
+  Samples.push_back(SamplePair("ScalarZp_mZP10_mChi500"      ,194));
+  Samples.push_back(SamplePair("ScalarZp_mZP200_mChi1"       ,195));
+  Samples.push_back(SamplePair("ScalarZp_mZP200_mChi150"     ,196));
+  Samples.push_back(SamplePair("ScalarZp_mZP200_mChi50"      ,197));
+  Samples.push_back(SamplePair("ScalarZp_mZP20_mChi1"        ,198));
+  Samples.push_back(SamplePair("ScalarZp_mZP295_mChi150"     ,199));
+  Samples.push_back(SamplePair("ScalarZp_mZP300_mChi1"       ,200));
+  Samples.push_back(SamplePair("ScalarZp_mZP300_mChi50"      ,201));
+  Samples.push_back(SamplePair("ScalarZp_mZP500_mChi1"       ,202));
+  Samples.push_back(SamplePair("ScalarZp_mZP500_mChi150"     ,203));
+  Samples.push_back(SamplePair("ScalarZp_mZP500_mChi500"     ,204));
+  Samples.push_back(SamplePair("ScalarZp_mZP50_mChi1"        ,205));
+  Samples.push_back(SamplePair("ScalarZp_mZP50_mChi10"       ,206));
+  Samples.push_back(SamplePair("ScalarZp_mZP50_mChi50"       ,207));
+  Samples.push_back(SamplePair("ScalarZp_mZP95_mChi50"       ,208));
+  Samples.push_back(SamplePair("ScalarZp_mZP995_mChi500"     ,209));
+
+
+
 
   //Samples.push_back(SamplePair("DMHtoGG_M1",0)); 
   //Samples.push_back(SamplePair("DMHtoGG_M10",0)); 
@@ -529,7 +563,7 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
     if (min_dphi_JetMET < 0.5) continue; 
     //if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
 
-    if (nMuons > 0 || nEle > 1) continue;
+    if (nMuons > 0 || nEle > 0) continue;
 
     if (nJets30 > 2) continue;
 

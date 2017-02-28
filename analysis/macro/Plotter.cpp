@@ -1,6 +1,7 @@
 #include "Plotter.hh"
 #include "Style.hh"
 #include "../../../DataFormats/Math/interface/deltaPhi.h"
+#include "deltaR.h"
 #include "mkPlotsLivia/CMS_lumi.C"
 
 Plotter::Plotter( TString inName, TString outName, TString inSpecies, const DblVec puweights, const Double_t lumi, Bool_t Data, Bool_t Blind, TString type, const DblVec metCorr, const int whichSelection){
@@ -300,6 +301,7 @@ void Plotter::DoPlots(int prompt){
     if (passMETfil){ //Data passes MET filter
       //numMargaretMETfil++;
       numMargaretMETfil += Weight;
+
       /////////////////////////////////////////////////////////////////
       // OptSel1 = using ptgg 	  & optimized w/o requirement on number of events 
       // OptSel2 = using ptgg/MET & optimized w/o requirement on number of events
@@ -333,7 +335,7 @@ void Plotter::DoPlots(int prompt){
 
           if (nJets30 > 2) continue; // test jet veto
 
-	  if (nEle >= 2 || nMuons >= 1) continue; //reject events with leptons
+	  if (nEle >= 1 || nMuons >= 1) continue; //reject events with leptons
 	  //numMargaretLepVeto++;
 	  numMargaretLepVeto+=Weight;
 
@@ -482,8 +484,8 @@ void Plotter::DoPlots(int prompt){
 
 	  double delta_eta = eta1-eta2;
 	  double delta_phi = deltaPhi(phi1,phi2);
-          double deltaR = TMath::Sqrt(delta_eta*delta_eta + delta_phi*delta_phi);
-	  fTH1DMap["deltaRphotons"]->Fill(deltaR,Weight);
+          double deltaRtest = TMath::Sqrt(delta_eta*delta_eta + delta_phi*delta_phi);
+	  fTH1DMap["deltaRphotons"]->Fill(deltaRtest,Weight);
 
           fTH1DMap["nvtx"]->Fill(nvtx,Weight);
           fTH1DMap["pt1"]->Fill(pt1,Weight);
@@ -906,7 +908,6 @@ void Plotter::DoPlots(int prompt){
 	        fTH1DMap["ptgg_IsolateALLmetCUT"]->Fill(ptgg,Weight);
 	        fTH1DMap["nvtx_IsolateALLmetCUT"]->Fill(nvtx,Weight);
 		fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
-
 	    	fTH1DMap["mgg_metCUT_forShape"]->Fill(mgg,Weight);
 	    }
 	    else fTH1DMap["mgg_IsolateALLlowCUT"]->Fill(mgg,Weight);
@@ -961,6 +962,12 @@ void Plotter::DoPlots(int prompt){
                   if (pt1 > 0.50*mgg && pt2 > 0.25*mgg) fTH1DMap["mgg_IsolateALL_woPtgg"]->Fill(mgg,Weight);
                   if (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90) fTH1DMap["mgg_IsolateALL_wPtgg"]->Fill(mgg,Weight);
 		  if (t1pfmetCorr > METcut) fTH1DMap["mgg_IsolateALLmetCUT"]->Fill(mgg,Weight);
+		  if (t1pfmetCorr > METcut && mgg >= 105 && mgg <= 180){
+		    float deltaR12 = reco::deltaR(eta1,phi1,eta2,phi2);
+		    std::cout << " Lumi = " << lumi << " run " << run << " event " << event << ": ---- DR: " << deltaR12 << std::endl;
+		  }
+
+
 		  else fTH1DMap["mgg_IsolateALLlowCUT"]->Fill(mgg,Weight);
 		  if (t1pfmet > METcut) fTH1DMap["mgg_IsolateALLUncorrmetCUT"]->Fill(mgg,Weight);
 		}

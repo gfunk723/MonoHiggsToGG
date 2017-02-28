@@ -56,31 +56,31 @@ int main(){
 
   //////////////////////////////////////////////////////////////////////////////////////
 
-  //TString inDir = "data/25ns_v80X_v3/"; 					// input directory of the samples
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v3/"; 		// input directory of the samples
-  TString outDir = Form("./diPhoPlots/25ns_v80X_v3_%s_ScaleToData/",selName.Data());	// output directory to send results
-  TString origDir = "./diPhoPlots/25ns_v80X_v3_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
+  //TString inDir = "data/25ns_v80X_moriond17_v1/"; 					// input directory of the samples
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v1/"; 		// input directory of the samples
+  TString outDir = Form("./diPhoPlots/25ns_v80X_moriond17_v1_%s_ScaleToData/",selName.Data());	// output directory to send results
+  TString origDir = "./diPhoPlots/25ns_v80X_moriond17_v1_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
 
   //////////////////////////////////////////////////////////////////////////////////////
 
   TString type = "png";		// type of plots to be made
   bool doMETCorr = false;	// redo the MET correction for MC and data, else take the Corr from the root file
   bool doPlots = false;		// make plots for each sample individually
-  bool doComb = false;		// make stack/overlay plots
+  bool doComb = true;		// make stack/overlay plots
   bool doABCD = false;		// run ABCD method, NB: it crashes first time making output file but will run fine next time - this should be fixed. 
-  bool makeDataCards = true;	// make datacards for hybrid method
+  bool makeDataCards = false;	// make datacards for hybrid method
   bool useOneSel = true;	// for datacards making: use m600 sel for all points (false uses optimized sel)
   bool doMergeBkgs = true;      // merge the Higgs,EWK bkgs to make combined plots nicer
   bool doQCDrescale = true;	// use the GJets sample reweighted to the QCD integral for the QCD (avoids events with big weights)
 
   bool doFakeData = false;	// use FakeData to test combiner (mimicks data)
   bool sortMC = false;		// use if want to sort bkg smallest to biggest, else uses order given
-  bool doBlind = true;		// use to blind the analysis for Data (don't use distributions for 115<mgg<135)
+  bool doBlind = false;		// use to blind the analysis for Data (don't use distributions for 115<mgg<135)
   bool makePURWfiles = false;	// recompute PURW and make files (need also doReweightPU=true for this to run)
   bool doReweightPU = false;	// use PURW from old files if !makePURWfiles
 
-  Double_t lumi =  34.7;  // in fb^-1  
-  UInt_t nBins_vtx = 60; // number of bins for PURW 
+  Double_t lumi =  35.8;  // in fb^-1  
+  UInt_t nBins_vtx = 100; // number of bins for PURW 
   
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -318,6 +318,12 @@ int main(){
     delete WZTo2L2Q;
     std::cout << "Finished WZTo2L2Q sample" << std::endl;
 
+    std::cout << "Working on ZGTo2NuG sample" << std::endl;
+    Plotter * ZGTo2NuG = new Plotter(inDir,outDir,"ZGTo2NuG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    ZGTo2NuG->DoPlots(0);
+    delete ZGTo2NuG;
+    std::cout << "Finished ZGTo2NuG sample" << std::endl;
+
     std::cout << "Working on ZGTo2LG sample" << std::endl;
     Plotter * ZGTo2LG = new Plotter(inDir,outDir,"ZGTo2LG",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     ZGTo2LG->DoPlots(0);
@@ -498,6 +504,7 @@ int main(){
   colorMap["TTGJets"]			= kAzure+2;
   colorMap["TTGG_0Jets"]		= kBlue-9;
   colorMap["TTJets"]			= kBlue-7;
+  colorMap["ZGTo2NuG"]			= kCyan+1;
   colorMap["ZGTo2LG"]			= kCyan;
   colorMap["WZTo2L2Nu"]			= kTeal;
   colorMap["WJetsToLNu"]		= kBlue+5;
@@ -540,6 +547,7 @@ int main(){
   Samples.push_back(SamplePair("WJetsToLNu",1));
   Samples.push_back(SamplePair("WZTo2L2Q",1));
   //Samples.push_back(SamplePair("ZZTo2L2Nu",1));
+  Samples.push_back(SamplePair("ZGTo2NuG",1));
   Samples.push_back(SamplePair("ZGTo2LG",1));
   Samples.push_back(SamplePair("ZZTo2L2Q",1));
   //Samples.push_back(SamplePair("ZJets",1)); 
