@@ -65,6 +65,7 @@ Combiner::Combiner( SamplePairVec Samples, const Double_t inLumi, const ColorMap
   fSampleTitleMap["WGToLNuG"]		= "#gamma + W #rightarrow l #nu";
   fSampleTitleMap["WJetsToLNu"]		= "W + Z #rightarrow l#nu";
   fSampleTitleMap["WZTo2L2Q"]		= "W + Z #rightarrow llqq";
+  fSampleTitleMap["ZGTo2NuG"]		= "#gamma + Z #rightarrow #nu#nu";
   fSampleTitleMap["ZGTo2LG"]		= "#gamma + Z #rightarrow ll";
   fSampleTitleMap["ZJets"]		= "Z #rightarrow #nu#nu + Jets";
   fSampleTitleMap["ZZTo2L2Q"]		= "Z + Z #rightarrow llqq";
@@ -147,9 +148,9 @@ void Combiner::DoComb(){
       }
     //}// end if ndata>0
 
-    //// ---------------------------------
-    //// scale to the integral of the data
-    //// ---------------------------------
+    ////// ---------------------------------
+    ////// scale to the integral of the data
+    ////// ---------------------------------
     Double_t data_integral = fOutDataTH1DHists[th1d]->Integral();
     TH1D *allBkgHisto;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
@@ -160,9 +161,9 @@ void Combiner::DoComb(){
     Double_t binMggLo = allBkgHisto->FindBin(115);
     Double_t binMggHi = allBkgHisto->FindBin(135); 
     Double_t blinded_part = allBkgHisto->Integral(binMggLo,binMggHi);
-    if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg" || fTH1DNames[th1d]=="mgg_IsolateALLmetCUT" || fTH1DNames[th1d]=="mgg_IsolateALLlowCUT") data_integral += blinded_part;
+    //  if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg" || fTH1DNames[th1d]=="mgg_IsolateALLmetCUT" || fTH1DNames[th1d]=="mgg_IsolateALLlowCUT") data_integral += blinded_part;
     Double_t new_integral = data_integral/bkg_integral;
-    //std::cout << fTH1DNames[th1d] << " Ratio = " << data_integral/bkg_integral << std::endl;
+    std::cout << fTH1DNames[th1d] << "Data= " << data_integral << "Bkg= " << bkg_integral << " Ratio = " << data_integral/bkg_integral << std::endl;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
      if (new_integral > 0) fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
     }
@@ -211,7 +212,7 @@ void Combiner::DoComb(){
 	if (fBkgNames[mc]=="TGJets"){
 	  fOutEWK1phoBkgTH1DHists[th1d] = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
 	}
-        else if (fBkgNames[mc]=="TTGJets" || fBkgNames[mc]=="TTJets" || fBkgNames[mc]=="WGToLNuG" || fBkgNames[mc]=="ZGTo2LG" || fBkgNames[mc]=="WJetsToLNu"){
+        else if (fBkgNames[mc]=="TTGJets" || fBkgNames[mc]=="TTJets" || fBkgNames[mc]=="WGToLNuG" || fBkgNames[mc]=="ZGTo2LG" || fBkgNames[mc]=="WJetsToLNu" || fBkgNames[mc]=="ZGTo2NuG"){
 	  fOutEWK1phoBkgTH1DHists[th1d]->Add(fInBkgTH1DHists[th1d][mc]);
 	}
 	// add EWK + 2pho bkgs together
@@ -336,10 +337,10 @@ void Combiner::DoComb(){
 
     
 
-    //if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
+    if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
     //if (fTH1DNames[th1d]=="mgg_IsolateALLlowCUT"){
     //if (fTH1DNames[th1d]=="mgg_lowmet"){
-    if (fTH1DNames[th1d]=="mgg_IsolateALL"){
+    //if (fTH1DNames[th1d]=="mgg_IsolateALL"){
       std::ofstream	fOutTableTxtFile2;
       fOutTableTxtFile2.open(Form("%s/comb/IntegralsAfterAllCuts.tex",fOutDir.Data()));
 
@@ -354,6 +355,7 @@ void Combiner::DoComb(){
       fLatexSampleTitleMap["VBFHToGG"]			= "VBF $h \\rightarrow \\gamma\\gamma$";
       fLatexSampleTitleMap["WGToLNuG"]			= "$\\gamma$ + W $\\rightarrow l \\nu$";
       fLatexSampleTitleMap["WJetsToLNu"]		= "W + Jets $\\rightarrow l\\nu$";
+      fLatexSampleTitleMap["ZGTo2NuG"]			= "$\\gamma$ + Z $\\rightarrow \\nu\\nu$";
       fLatexSampleTitleMap["ZGTo2LG"]			= "$\\gamma$ + Z $\\rightarrow ll$";
       fLatexSampleTitleMap["ZJets"]			= "Z $\\rightarrow \\nu \\nu$ + Jets";
       fLatexSampleTitleMap["ZZTo2L2Nu"]			= "ZZ $\\rightarrow ll \\nu \\nu$";
@@ -475,8 +477,12 @@ void Combiner::DoComb(){
         DataInt2 = fOutDataTH1DHists[th1d]->IntegralAndError(bin2,bin3,DataErr2);
         DataInt = DataInt1 + DataInt2;
         DataIntErr = TMath::Sqrt(DataInt);
+
+        Double_t DataErrTot = 0; 
+        Double_t DataIntTot = fOutDataTH1DHists[th1d]->IntegralAndError(bin0,bin3,DataErrTot);
         fOutTableTxtFile2 << "\\hline" << std::endl;
-        fOutTableTxtFile2 << " Data (sideband) & " << DataInt << " $\\pm$ " << DataIntErr << " \\\\" << std::endl; 
+        fOutTableTxtFile2 << "Total Data & "   << DataIntTot << " $\\pm$ " << DataErrTot << " \\\\" << std::endl; 
+        fOutTableTxtFile2 << "Data (sideband) & " << DataInt << " $\\pm$ " << DataIntErr << " \\\\" << std::endl; 
         fOutTableTxtFile2 << "\\hline" << std::endl;
 
         // calculate integrals for signal
@@ -890,6 +896,7 @@ void Combiner::FindMETEfficiencies(){
   fSampleTitleMap["ttHJetToGG"]		= "tt $+ H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["VBFHToGG"]		= "VBF $H \\rightarrow \\gamma\\gamma$";
   fSampleTitleMap["WGToLNuG"]		= "$\\gamma$ + W $\\rightarrow l \\nu$";
+  fSampleTitleMap["ZGTo2NuG"]		= "$\\gamma$ + Z $\\rightarrow \\nu\\nu$";
   fSampleTitleMap["ZGTo2LG"]		= "$\\gamma$ + Z $\\rightarrow ll$";
   fSampleTitleMap["ZJets"]		= "Z $\\rightarrow \\nu \\nu$ + Jets";
   fSampleTitleMap["ZZTo2L2Nu"]		= "Z + Z $\\rightarrow ll \\nu\\nu$";
@@ -2262,8 +2269,8 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("t1pfmetCorr_selmgg_Varbin");
     fTH1DNames.push_back("t1pfmetCorr_selmgg");
     fTH1DNames.push_back("phigg");
-    fTH1DNames.push_back("ggphi_metCUT");
-    fTH1DNames.push_back("metphi_metCUT");
+    //fTH1DNames.push_back("ggphi_metCUT");
+    //fTH1DNames.push_back("metphi_metCUT");
     fTH1DNames.push_back("dphi_ggmet");
     fTH1DNames.push_back("absdphi_ggJet1");
     fTH1DNames.push_back("absdphiUncorr_ggmet");
