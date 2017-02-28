@@ -544,6 +544,7 @@ def AllGlobal(fname):
   fout.write("$m_{Z'}$ [GeV]    &   &    &    &     &     &      \\\\   \n")
   fout.write("\\hline \n")
   fout.write("10 & "+effscal10[0]+" & "+effscal10[1]+" & "+effscal10[2]+" & "+effscal10[3]+" & "+effscal10[4]+" & "+effscal10[5]+" \\\\ \n")
+  fout.write("15 & "+effscal15[0]+" & "+effscal15[1]+" & "+effscal15[2]+" & "+effscal15[3]+" & "+effscal15[4]+" & "+effscal15[5]+" \\\\ \n")
   fout.write("20 & "+effscal20[0]+" & "+effscal20[1]+" & "+effscal20[2]+" & "+effscal20[3]+" & "+effscal20[4]+" & "+effscal20[5]+" \\\\ \n")
   fout.write("50 & "+effscal50[0]+" & "+effscal50[1]+" & "+effscal50[2]+" & "+effscal50[3]+" & "+effscal50[4]+" & "+effscal50[5]+" \\\\ \n")
   fout.write("95 & "+effscal95[0]+" & "+effscal95[1]+" & "+effscal95[2]+" & "+effscal95[3]+" & "+effscal95[4]+" & "+effscal95[5]+" \\\\ \n")
