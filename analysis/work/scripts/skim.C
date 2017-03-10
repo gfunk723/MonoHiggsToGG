@@ -14,10 +14,18 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   // get input full trees
   // ----------------------------------------------------------------
-  
+
   cout << "Running sample: " << sample << endl;
   TFile * infile = TFile::Open(Form("%s/%s.root",path.Data(),sample.Data()));
+  if (!infile){
+    cout << "Sample does not exist! Exiting..." << endl;
+    return;
+  }
   TTree * intree = (TTree*)infile->Get("DiPhotonTree");
+  if (!intree){
+    cout << "Tree does not exist! Exiting..." << endl;
+    return;
+  }
   const Bool_t isMC = !sample.Contains("DoubleEG",TString::kExact);
   const Bool_t doQCD_DupRem  = (sample.Contains("QCD",TString::kExact));
   const Bool_t doGJet_DupRem = (sample.Contains("GJets",TString::kExact));
@@ -131,8 +139,17 @@ void skim(TString path, TString sample){
   outtree = intree->CloneTree(0);
   
   // ----------------------------------------------------------------
+  // additional variables to store in the tree
+  // ----------------------------------------------------------------
+
+  Float_t phigg;          outtree->Branch("phigg",&phigg,"phigg/F");
+  Float_t dphiggmet;      outtree->Branch("dphiggmet",&dphiggmet,"dphiggmet/F");
+  Float_t mindphijmet;    outtree->Branch("mindphijmet",&mindphijmet,"mindphijmet/F");
+
+  // ----------------------------------------------------------------
   // Initialize any counters wanted
   // ----------------------------------------------------------------
+
   Int_t num_failing  = 0;
   Int_t num_kinfail  = 0;
   Int_t num_dphifail = 0;
@@ -187,11 +204,14 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
     // look at deltaPhi(gg,MET)
     // ----------------------------------------------------------------
-    Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhiCorr));
+
+    phigg = fLorenzVecGG.Phi();
+    dphiggmet = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhiCorr));
 
     // ----------------------------------------------------------------
     // look at deltaPhi(jet,MET)
     // ----------------------------------------------------------------
+
     Double_t min_dphi_JetMET = 10.;
     Double_t max_dphi_JetMET = 0.;
 
@@ -233,6 +253,7 @@ void skim(TString path, TString sample){
       if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
       if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
+    mindphijmet = min_dphi_JetMET; // store the min_dphi(j,met) as variable in tree
 
     // ----------------------------------------------------------------
     // Apply the cuts 
@@ -252,7 +273,8 @@ void skim(TString path, TString sample){
     //const Bool_t passLepVetos     = (nEleMed < 2 && nMuTight==0);
     const Bool_t passLepVetos     = (nEle==0 && nMuons==0);
     const Bool_t passJetVetos     = (nJets30 < 3);
-    const Bool_t passDphiCuts     = (dphi_ggMET>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
+    const Bool_t passDphiCuts     = true;
+    //const Bool_t passDphiCuts     = (dphiggmet>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
 
     if (!passMETfilters) num_failing++;
     if (!passKinematics) num_kinfail++;
@@ -281,7 +303,6 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   // write the output skim tree
   // ----------------------------------------------------------------
-
   outfile->cd();
   h_entries->Write();
   h_sumW->Write();
@@ -289,7 +310,9 @@ void skim(TString path, TString sample){
   h_selection_unwgt->Write();
   outtree->Write();
 
+  // ----------------------------------------------------------------
   // now delete (close) everything
+  // ----------------------------------------------------------------
   delete intree;
   delete infile;
   delete outtree;
