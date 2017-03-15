@@ -500,7 +500,7 @@ def AllGlobal(fname):
   # WRITE OUT TO A NEW TABLE
   fout.write("\\begin{table}[bthp] \n")
   fout.write("\\centering \n")
-  fout.write("\\begin{tabular}{|c|c|c|c|c|c|c| \n"}
+  fout.write("\\begin{tabular}{|c|c|c|c|c|c|c|} \n")
   fout.write("\\hline \n")
 
   fout.write("% 2HDM Efficiencies \n")
