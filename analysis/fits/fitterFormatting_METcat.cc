@@ -4,21 +4,27 @@
 #include <TH1.h>
 #include <TLorentzVector.h>
 #include <iostream>
-#include "../../../DataFormats/Math/interface/deltaPhi.h"
+//#include "../../../DataFormats/Math/interface/deltaPhi.h"
 
 using namespace std;
 
 // fitterFormatting_METcat input arguements:
-//   1st: input directory
-//   2nd: output directory
-//   3rd: type (sig, bkg, data)
-//   4th: prompt (for duplicate removal)
-//   5th: input filename 
-//   6th: sample name
+//   1st: whichDphi cuts to apply
+//   2nd: highMET cut to apply
+//   3rd: input directory
+//   4th: output directory
+//   5th: type (sig, bkg, data)
+//   6th: prompt (for duplicate removal)
+//   7th: input filename 
+//   8th: sample name
 
-void fitterFormatting(float masscut, TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample) {
+void fitterFormatting(float whichDphi, float masscut, TString inDir, TString outDir, TString type, Int_t prompt, const char* filename, TString theSample) {
   cout << "Formatting " << inDir << filename << endl;
   cout << "Move to Pasquale's format for fit." << endl;
+  if (whichDphi==0) cout << " Without dphi cuts" << endl;
+  if (whichDphi==1) cout << " With dphi ggMET cut" << endl;
+  if (whichDphi==2) cout << " With dphi jMET cut" << endl;
+  if (whichDphi==3) cout << " With both dphi cuts" << endl;
 
   TFile *fileOrig = 0;
   TTree *treeOrig = 0;
@@ -46,13 +52,11 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   UInt_t nentriesOrig = treeOrig->GetEntries();
 
   // vector for new photon categories out
-  vector<TString> thePhotonCat;
-  thePhotonCat.push_back("all");
-  thePhotonCat.push_back("EBHighR9");
-  thePhotonCat.push_back("EBLowR9");
-  thePhotonCat.push_back("EEHighR9");
-  thePhotonCat.push_back("EELowR9");
-  UInt_t numPhoCat = thePhotonCat.size();
+  vector<TString> thePhoCat;
+  thePhoCat.push_back("all");
+  thePhoCat.push_back("EB");
+  thePhoCat.push_back("EE");
+  UInt_t numPhoCat = thePhoCat.size();
 
   // setup for the met categories out
   // vector to store values of selection
@@ -77,8 +81,11 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
 
   // vector to store names for met cat out
   std::vector<TString> theMetCat;
-  theMetCat.push_back(TString::Format("met%d",MetCut[0]));
-  theMetCat.push_back(TString::Format("met%d-%d",MetCut[0],MetCut[1]));
+  //theMetCat.push_back(TString::Format("met%d",MetCut[0]));
+  //theMetCat.push_back(TString::Format("met%d-%d",MetCut[0],MetCut[1]));
+  //theMetCat.push_back(TString::Format("met%d",MetCut[1]));
+  theMetCat.push_back("met0");
+  theMetCat.push_back(TString::Format("met0-%d",MetCut[1]));
   theMetCat.push_back(TString::Format("met%d",MetCut[1]));
   //theMetCat.push_back(TString::Format("met%d-%d",MetCut[1],MetCut[2]));
   //theMetCat.push_back(TString::Format("met%d",MetCut[2]));
@@ -101,8 +108,9 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
     cout << "OutputFile: " << outDir << "/" << theSample << "_new.root" << endl;
     fileNew = TFile::Open(TString::Format("%s/%s_new.root",outDir.Data(),theSample.Data()),"RECREATE");
   }
-  vector<TTree*> trees;
+  vector< vector<TTree*> > trees;
   trees.resize(numMetCat);
+  for (UInt_t met=0; met < numMetCat; met++){ trees[met].resize(numPhoCat); }
   //vector<TDirectory*> newDir;
   //newDir.resize(numMetCat);  
 
@@ -124,9 +132,12 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   // make a separate tree for each photon category
   TString fullTreeName = "";
   for (UInt_t met = 0; met<numMetCat; met++){
-    fullTreeName = TString::Format("%s%s",treeName.Data(),theMetCat[met].Data());
-    TTree *treeNew = new TTree(fullTreeName,fullTreeName);
-    trees[met]=treeNew;
+    for (UInt_t pho = 0; pho<numPhoCat; pho++){
+      if (pho==0) fullTreeName = TString::Format("%s%s",treeName.Data(),theMetCat[met].Data());
+      else        fullTreeName = TString::Format("%s%s%s",treeName.Data(),theMetCat[met].Data(),thePhoCat[pho].Data());
+      TTree *treeNew = new TTree(fullTreeName,fullTreeName);
+      trees[met][pho]=treeNew;
+    }
   }
 
   //// make a tree for each photon category and each met category
@@ -143,19 +154,21 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   //  newDir[met] = Dir;
   //  newDir[met]->cd();
   //  for (UInt_t pho = 0; pho<numPhoCat; pho++){
-  //    TString theNewTree = TString::Format("%s_%s_%s",type.Data(),theSample.Data(),thePhotonCat[pho].Data());
+  //    TString theNewTree = TString::Format("%s_%s_%s",type.Data(),theSample.Data(),thePhoCat[pho].Data());
   //    TTree *treeNew = new TTree(theNewTree,theNewTree); 
   //    trees[met][pho]=treeNew;
   //  }
   //}
 
   // original tree leaves
+  Int_t   lumi		= 0.;
   Int_t   run		= 0.;
-  Int_t   event		= 0.;   
+  UInt_t  event		= 0.;   
   Int_t	  nvtx		= 0.;
   Float_t weight	= 0.;
   Float_t rho		= 0.;
   Float_t mgg		= 0.;
+  Float_t massCorrScale = 0.;
   Float_t eta1		= 0.;
   Float_t eta2		= 0.;
   Float_t r91		= 0.;
@@ -213,14 +226,19 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   Float_t phiJet4	= 0.;
   Float_t massJet4	= 0.;
   Float_t t1pfmetSumEt	= 0.;
+  Float_t phigg         = 0.;
+  Float_t dphiggmet     = 0.;
+  Float_t mindphijmet   = 0.;
 
   // branches from original tree
+  TBranch *b_lumi;
   TBranch *b_run;
   TBranch *b_event;
   TBranch *b_nvtx;
   TBranch *b_rho;
   TBranch *b_weight;
   TBranch *b_mgg;
+  TBranch *b_massCorrScale;
   TBranch *b_ptgg;
   TBranch *b_eta1;
   TBranch *b_eta2;
@@ -278,14 +296,19 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   TBranch *b_phiJet4;
   TBranch *b_massJet4; 
   TBranch *b_t1pfmetSumEt;
+  TBranch *b_phigg;
+  TBranch *b_dphiggmet;
+  TBranch *b_mindphijmet;
 
   // set branch addresses and branch pointers
+  treeOrig->SetBranchAddress("lumi",		&lumi,		&b_lumi);
   treeOrig->SetBranchAddress("run",		&run,		&b_run);
   treeOrig->SetBranchAddress("event",		&event,		&b_event);
   treeOrig->SetBranchAddress("weight",		&weight,	&b_weight);
   treeOrig->SetBranchAddress("nvtx",		&nvtx,		&b_nvtx);
   treeOrig->SetBranchAddress("rho",		&rho,		&b_rho);
   treeOrig->SetBranchAddress("mgg", 		&mgg,		&b_mgg);
+  treeOrig->SetBranchAddress("massCorrScale",	&massCorrScale,	&b_massCorrScale);
   treeOrig->SetBranchAddress("eta1",		&eta1,		&b_eta1); 
   treeOrig->SetBranchAddress("eta2",		&eta2,		&b_eta2); 
   treeOrig->SetBranchAddress("r91",		&r91,		&b_r91);
@@ -343,6 +366,9 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   treeOrig->SetBranchAddress("phiJet4", 	&phiJet4, 	&b_phiJet4);
   treeOrig->SetBranchAddress("massJet4",	&massJet4,	&b_massJet4);
   treeOrig->SetBranchAddress("t1pfmetSumEt",	&t1pfmetSumEt,	&b_t1pfmetSumEt);
+  treeOrig->SetBranchAddress("phigg",		&phigg,		&b_phigg);
+  treeOrig->SetBranchAddress("dphiggmet",	&dphiggmet,	&b_dphiggmet);
+  treeOrig->SetBranchAddress("mindphijmet",	&mindphijmet,	&b_mindphijmet);
 
 
   // new variables (needed if variable has diff name in new tree) 
@@ -355,52 +381,56 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   float leadNeutIso, subleadNeutIso; 
   float leadPhi, subleadPhi;
   float leadHoE, subleadHoE;
+  float leadR9, subleadR9;
   float leadSigmaIeIe, subleadSigmaIeIe;
   int   leadPassEleVeto, subleadPassEleVeto;
   int   passHlt;
  
   // setup new trees
-  vector<TTree*> theTreeNew;
+  vector< vector<TTree*> > theTreeNew;
   theTreeNew.resize(numMetCat);
   //theTreeNew.resize(numMetCat);
-  //for (UInt_t i=0; i<numMetCat;i++) {
-  //  theTreeNew[i].resize(numPhoCat);
-    for (UInt_t j=0; j<numMetCat;j++) {
-      theTreeNew[j] = trees[j];
-      theTreeNew[j]->Branch("run",		&run,			"run/I");
-      theTreeNew[j]->Branch("event",		&event,			"event/I");
-      theTreeNew[j]->Branch("weight", 		&weight, 		"weight/F");
-      theTreeNew[j]->Branch("rho",		&rho,			"rho/F");
-      theTreeNew[j]->Branch("mass", 		&mass, 			"mass/F");
-      theTreeNew[j]->Branch("nvtx",		&nvtx,			"nvtx/I");
-      theTreeNew[j]->Branch("leadEta", 		&leadEta, 		"leadEta/F");
-      theTreeNew[j]->Branch("subleadEta", 	&subleadEta, 		"subleadEta/F");
-      theTreeNew[j]->Branch("leadPt",		&leadPt,		"leadPt/F");
-      theTreeNew[j]->Branch("subleadPt",	&subleadPt,		"subleadPt/F");
-      theTreeNew[j]->Branch("ptgg",		&ptgg,			"ptgg/F");
-      theTreeNew[j]->Branch("t1pfmet",		&t1pfmet,		"t1pfmet/F");     
-      theTreeNew[j]->Branch("t1pfmetCorr",	&t1pfmetCorr,		"t1pfmetCorr/F");     
-      theTreeNew[j]->Branch("t1pfmetSumEt",	&t1pfmetSumEt,		"t1pfmetSumEt/F");     
-      theTreeNew[j]->Branch("t1pfmetPhi",	&t1pfmetPhi,		"t1pfmetPhi/F");
-      theTreeNew[j]->Branch("leadChIso",  	&leadChIso,  		"leadChIso/F"); 
-      theTreeNew[j]->Branch("subleadChIso",  	&subleadChIso, 		"subleadChIso/F");  
-      theTreeNew[j]->Branch("leadPhoIso", 	&leadPhoIso, 		"leadPhoIso/F");  
-      theTreeNew[j]->Branch("subleadPhoIso", 	&subleadPhoIso, 	"subleadPhoIso/F");
-      theTreeNew[j]->Branch("leadNeutIso", 	&leadNeutIso,	 	"leadNeutIso/F"); 
-      theTreeNew[j]->Branch("subleadNeutIso",	&subleadNeutIso, 	"subleadNeutIso/F"); 
-      theTreeNew[j]->Branch("leadPhi",    	&leadPhi,    		"leadPhi/F");    
-      theTreeNew[j]->Branch("subleadPhi",   	&subleadPhi,    	"subleadPhi/F");    
-      theTreeNew[j]->Branch("leadHoE",    	&leadHoE,    		"leadHoE/F");    
-      theTreeNew[j]->Branch("subleadHoE",   	&subleadHoE,    	"subleadHoE/F");    
-      theTreeNew[j]->Branch("leadSigmaIeIe",	&leadSigmaIeIe,  	"leadSigmaIeIe/F");  
-      theTreeNew[j]->Branch("subleadSigmaIeIe",	&subleadSigmaIeIe,  	"subleadSigmaIeIe/F");
-      theTreeNew[j]->Branch("leadScEta",	&leadScEta,		"leadScEta/F"); 
-      theTreeNew[j]->Branch("subleadScEta",	&subleadScEta,		"subleadScEta/F"); 
-      theTreeNew[j]->Branch("leadPassEleVeto",	&leadPassEleVeto,	"leadPassEleVeto/I");
-      theTreeNew[j]->Branch("subleadPassEleVeto",	&subleadPassEleVeto,	"subleadPassEleVeto/I");
-      theTreeNew[j]->Branch("passHlt",		&passHlt,		"passHlt/I");
+  for (UInt_t i=0; i<numMetCat;i++) {
+    theTreeNew[i].resize(numPhoCat);
+    for (UInt_t j=0; j<numPhoCat;j++) {
+      theTreeNew[i][j] = trees[i][j];
+      theTreeNew[i][j]->Branch("lumi",		&lumi,			"lumi/I");
+      theTreeNew[i][j]->Branch("run",		&run,			"run/I");
+      theTreeNew[i][j]->Branch("event",		&event,			"event/i");
+      theTreeNew[i][j]->Branch("weight", 	&weight, 		"weight/F");
+      theTreeNew[i][j]->Branch("rho",		&rho,			"rho/F");
+      theTreeNew[i][j]->Branch("mass", 		&mass, 			"mass/F");
+      theTreeNew[i][j]->Branch("nvtx",		&nvtx,			"nvtx/I");
+      theTreeNew[i][j]->Branch("leadEta", 	&leadEta, 		"leadEta/F");
+      theTreeNew[i][j]->Branch("subleadEta", 	&subleadEta, 		"subleadEta/F");
+      theTreeNew[i][j]->Branch("leadPt",	&leadPt,		"leadPt/F");
+      theTreeNew[i][j]->Branch("subleadPt",	&subleadPt,		"subleadPt/F");
+      theTreeNew[i][j]->Branch("ptgg",		&ptgg,			"ptgg/F");
+      theTreeNew[i][j]->Branch("t1pfmet",	&t1pfmet,		"t1pfmet/F");     
+      theTreeNew[i][j]->Branch("t1pfmetCorr",	&t1pfmetCorr,		"t1pfmetCorr/F");     
+      theTreeNew[i][j]->Branch("t1pfmetSumEt",	&t1pfmetSumEt,		"t1pfmetSumEt/F");     
+      theTreeNew[i][j]->Branch("t1pfmetPhi",	&t1pfmetPhi,		"t1pfmetPhi/F");
+      theTreeNew[i][j]->Branch("leadChIso",  	&leadChIso,  		"leadChIso/F"); 
+      theTreeNew[i][j]->Branch("subleadChIso",  &subleadChIso, 		"subleadChIso/F");  
+      theTreeNew[i][j]->Branch("leadPhoIso", 	&leadPhoIso, 		"leadPhoIso/F");  
+      theTreeNew[i][j]->Branch("subleadPhoIso", &subleadPhoIso, 	"subleadPhoIso/F");
+      theTreeNew[i][j]->Branch("leadNeutIso", 	&leadNeutIso,	 	"leadNeutIso/F"); 
+      theTreeNew[i][j]->Branch("subleadNeutIso",&subleadNeutIso, 	"subleadNeutIso/F"); 
+      theTreeNew[i][j]->Branch("leadPhi",    	&leadPhi,    		"leadPhi/F");    
+      theTreeNew[i][j]->Branch("subleadPhi",   	&subleadPhi,    	"subleadPhi/F");    
+      theTreeNew[i][j]->Branch("leadHoE",    	&leadHoE,    		"leadHoE/F");    
+      theTreeNew[i][j]->Branch("subleadHoE",   	&subleadHoE,    	"subleadHoE/F");    
+      theTreeNew[i][j]->Branch("leadR9",    	&leadR9,    		"leadR9/F");    
+      theTreeNew[i][j]->Branch("subleadR9",   	&subleadR9, 	   	"subleadR9/F");    
+      theTreeNew[i][j]->Branch("leadSigmaIeIe",	&leadSigmaIeIe,  	"leadSigmaIeIe/F");  
+      theTreeNew[i][j]->Branch("subleadSigmaIeIe",	&subleadSigmaIeIe,  	"subleadSigmaIeIe/F");
+      theTreeNew[i][j]->Branch("leadScEta",	&leadScEta,		"leadScEta/F"); 
+      theTreeNew[i][j]->Branch("subleadScEta",	&subleadScEta,		"subleadScEta/F"); 
+      theTreeNew[i][j]->Branch("leadPassEleVeto",	&leadPassEleVeto,	"leadPassEleVeto/I");
+      theTreeNew[i][j]->Branch("subleadPassEleVeto",	&subleadPassEleVeto,	"subleadPassEleVeto/I");
+      theTreeNew[i][j]->Branch("passHlt",		&passHlt,		"passHlt/I");
     }// end loop oever new trees in pho cat 
-  //}// end loop over new trees in met cat
+  }// end loop over new trees in met cat
 
   // make vectors to store if passing different met cuts
   vector<bool> passMet;
@@ -425,11 +455,11 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   std::vector< Double_t > fMETCorrMC;
   std::vector< Double_t > fMETCorrData;
   // pick up MC metCorr
-  TString metStudyMC = Form("%s/metCorr_MC.root",inDir.Data());
+  TString metStudyMC = Form("%smetCorr_MC.root",inDir.Data());
   TFile *fmetCorrMC = TFile::Open(metStudyMC.Data());
   TH1D *MCmet = (TH1D*)fmetCorrMC->Get("metCorr");  
   // pick up Data metCorr
-  TString metStudyData = Form("%s/metCorr_Data.root",inDir.Data());
+  TString metStudyData = Form("%smetCorr_Data.root",inDir.Data());
   TFile *fmetCorrDATA = TFile::Open(metStudyData.Data());
   TH1D *DATAmet = (TH1D*)fmetCorrDATA->Get("metCorr");  
   for (UInt_t i=0; i<4; i++){
@@ -438,13 +468,13 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   }
 
   //-------------------------------------------------------------
-  //
   // Loop over the entries in the ntuple
-  //
   //-------------------------------------------------------------
 
   for (UInt_t i=0; i<nentriesOrig; i++){
     treeOrig->GetEntry(i);
+
+    //if (type!="data") weight *= 1.33;
 
     //// check that data passes METfilters
     //if (type=="data" && (metF_GV!=1 || metF_HBHENoise!=1 || metF_HBHENoiseIso!=1 /*|| metF_CSC!=1*/ || metF_eeBadSC!=1)) continue; 
@@ -555,15 +585,19 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
       //if (min_dphi_JetMET < 0.5) continue; 
 
       //if (nMuons > 0 || nEle > 1) continue;
-      //if (nJets > 2) continue;
+      if (whichDphi==1 && dphiggmet < 2.1)                        continue;
+      if (whichDphi==2 && mindphijmet < 0.5)                      continue;
+      if (whichDphi==3 && (dphiggmet < 2.1 || mindphijmet < 0.5)) continue;
 
       for (UInt_t met=0; met<numMetCat; met++){
+        //std::cout << "i = " << met << " cut = " << MetCut[met] << std::endl;
+        //if (met==0) std::cout << "cut = " << MetCut[met] << std::endl;
+        //else if (met==numMetCat-1) std::cout << " cut = " << MetCut[met-1]  << std::endl;
+        //else std::cout << "cut > " << MetCut[met-1] << " & cut < " << MetCut[met] << std::endl;
 	passMet[met]=false;
-        if (met==0 && t1pfmetCorr>=MetCut[met]) passMet[met]=true;
-        else if (met==numMetCat-1 && t1pfmetCorr>=MetCut[met-1]) passMet[met]=true;
-        else{
-          if (t1pfmetCorr>=MetCut[met-1] && t1pfmetCorr<MetCut[met]) passMet[met]=true;
-        }
+        if (met==0){               if (t1pfmetCorr>=MetCut[met]) passMet[met]=true; }
+        else if (met==numMetCat-1){if (t1pfmetCorr>=MetCut[met-1]) passMet[met]=true; }
+        else{if (t1pfmetCorr>=MetCut[met-1] && t1pfmetCorr<MetCut[met]) passMet[met]=true; }
         //if (met==0 && ptgg>=MetCut[met]) passMet[met]=true;
         //else if (met==numMetCat-1 && ptgg>=MetCut[met-1]) passMet[met]=true;
         //else{
@@ -574,6 +608,7 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
 
       // set the new variables (i.e. renamed from old tree)
       mass = mgg;
+      //mass = massCorrScale;
       leadPt = pt1;			subleadPt = pt2;
       leadEta = eta1;			subleadEta = eta2;  
       leadPhi = phi1;			subleadPhi = phi2;
@@ -584,6 +619,7 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
       leadHoE = hoe1;			subleadHoE = hoe2;
       leadPassEleVeto = eleveto1;	subleadPassEleVeto = eleveto2;
       leadScEta = sceta1;		subleadScEta = sceta2;
+      leadR9 = r91;			subleadR9 = r92;
       passHlt = hltDiphoton30Mass95;
       
       // fill the trees for events in the different categories
@@ -591,8 +627,10 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
         //newDir[met]->cd();
         if (passMet[met]){
             TDir1->cd();
-            TDir2->cd();     
-            theTreeNew[met]->Fill();//noPhoSel
+            TDir2->cd();    
+            theTreeNew[met][0]->Fill();//noPhoSel
+            if (inEB) theTreeNew[met][1]->Fill();
+            else      theTreeNew[met][2]->Fill();
             //if (met==0)       theTreeNew[met][0]->Fill();// pho=0 noPhoSel 
 	    //if (inEB && hiR9) theTreeNew[met][1]->Fill();// pho=1 EBHighR9
 	    //if (inEB && loR9) theTreeNew[met][2]->Fill();// pho=2 EBLowR9
@@ -608,9 +646,11 @@ void fitterFormatting(float masscut, TString inDir, TString outDir, TString type
   fileNew->ls();
   fileNew->cd();
   for (UInt_t met=0; met<numMetCat; met++){
-    TDir1->cd();
-    TDir2->cd();
-    theTreeNew[met]->Write();
+    for (UInt_t pho=0; pho<numPhoCat; pho++){
+      TDir1->cd();
+      TDir2->cd();
+      theTreeNew[met][pho]->Write();
+    }
   }
   
   // close files
