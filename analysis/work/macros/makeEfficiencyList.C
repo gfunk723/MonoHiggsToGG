@@ -6,26 +6,32 @@
 
 using namespace std;
 
-void GetEfficiencies(TString, TString, Float_t);
-void CalculateAnalyzerEff();
-void CalculateSelectionEff(TTree*);
-void CalculateOverallEff(TString, TString, Float_t &, Float_t &);
+void    GetEfficiencies(TString, TString, Float_t, Bool_t);
+void    GetEfficiency(TString, TString, Float_t, Bool_t, Bool_t, Float_t &, Float_t &);
+void    CalculateNumbers(TTree*, TH1D*, Int_t &, Int_t &, Float_t &, Float_t &);
+Float_t CalculateEff(Int_t, Float_t, Int_t, Float_t, Float_t &);
 
-void makeEfficiencyList(){
+void makeEfficiencyList()
+{
 
-  cout << "Computing Efficiency for Samples" << endl;
   TString indir   = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v2/";
-  TString outfile = "PlainEff.tex";
-  Float_t lumi    = 35.8;
+  Float_t lumi    = 35821.4; //in pb^-1 (for weighting)
+  TString outfile;
 
-  GetEfficiencies(indir,outfile,lumi);
+  cout << "Computing Efficiency highMET region" << endl;
+  outfile = "PlainEff_highMET.tex";
+  GetEfficiencies(indir,outfile,lumi,true);
 
+  cout << "Computing Efficiency lowMET region" << endl;
+  outfile = "PlainEff_lowMET.tex";
+  GetEfficiencies(indir,outfile,lumi,false); 
 }
 
-void GetEfficiencies(TString indir, TString outfile, Float_t lumi){
+void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETeff)
+{
 
   // ----------------------------------------------------------------
-  // What samples to use 
+  // samples to use 
   // ----------------------------------------------------------------
   vector< TString > Samples;
   Samples.push_back("2HDM_mZP600_mA0300"); 
@@ -47,20 +53,20 @@ void GetEfficiencies(TString indir, TString outfile, Float_t lumi){
     outResults << "\% Efficiencies listed for each signal" << std::endl;
     outResults << "\\begin{table}[bthp]" <<std::endl;
     outResults << "\\begin{tabular}{|l|r|}" <<std::endl;
-    outResults << "\\hline \\hline" <<std::endl;
+    outResults << "\\hline " <<std::endl;
 
     // ----------------------------------------------------------------
     // get efficiency for each sample & write to table 
     // ----------------------------------------------------------------
     for (UInt_t n=0; n < nSamples; n++){
-      CalculateOverallEff(indir,Samples[n],Eff[n],Err[n]);
+      GetEfficiency(indir,Samples[n],lumi,true,hiMETeff,Eff[n],Err[n]);
       outResults << Samples[n] << " & " << Form("%1.3f",Eff[n]) << " $ \\pm $ " << Form("%1.3f",Err[n]) << " \\\\" << endl;
     }
 
     // ----------------------------------------------------------------
     // finish latex doc 
     // ----------------------------------------------------------------
-    outResults << "\\hline \\hline" <<std::endl;
+    outResults << "\\hline" <<std::endl;
     outResults << "\\end{tabular}" <<std::endl;
     outResults << "\\end{table}" <<std::endl;
     outResults << "\\end{document}" <<std::endl;
@@ -69,11 +75,64 @@ void GetEfficiencies(TString indir, TString outfile, Float_t lumi){
 
 }
 
-void CalculateAnalyzerEff(){
+Float_t CalculateEff(Int_t iden, Float_t fden, Int_t inum, Float_t fnum, Float_t & err)
+{
+   Float_t eff  = fnum/fden;
+   err = eff*(1.0-eff)/fden;
 
+   Float_t ieff = (Float_t)inum/(Float_t)iden;
+   Float_t ierr = ieff*(1.0-ieff)/(Double_t)iden;
+   cout << "den = " << iden << " OR " << fden << endl;
+   cout << "num = " << inum << " OR " << fnum << endl;
+   cout << "Eff = " << ieff << " OR " << eff << endl; 
+   cout << "Err = " << ierr << " OR " << err << endl;
+ 
+   return eff;
 }
 
-void CalculateSelectionEff(TTree* tree){
+
+void GetEfficiency(TString indir, TString name, Float_t lumi, Bool_t totEff, Bool_t hiMETeff, Float_t & Eff, Float_t & Err)
+{
+
+  cout << " Working on Sample: " << name << endl;
+  // ----------------------------------------------------------------
+  // get file, tree, h_selection histos 
+  // ----------------------------------------------------------------
+  TFile *file = TFile::Open(Form("%s%s_skimmedtree.root",indir.Data(),name.Data()));
+  if (!file){ cout << "Sample does not exist! Exiting..." << endl; return;} 
+  TTree *tree = (TTree*)file->Get("DiPhotonTree");
+  if (!tree){ cout << "Tree does not exist! Exiting..." << endl; return;} 
+  TH1D *fSel_wgt   = (TH1D*)file->Get("h_selection");
+  TH1D *fSel_unwgt = (TH1D*)file->Get("h_selection_unwgt");  
+  TH1D *fNum       = (TH1D*)file->Get("h_numbers"); 
+  if (!fSel_wgt || !fSel_unwgt || !fNum){ cout << "Histo does not exist! Exiting..." << endl; return;}
+ 
+  // ----------------------------------------------------------------
+  // Calculate all numbers needed for efficiency 
+  // ----------------------------------------------------------------
+  Int_t   i_anlyz = fSel_unwgt->GetBinContent(1);
+  Float_t f_anlyz = fSel_wgt->GetBinContent(1)*lumi; // NOT WEIGHTED BY PU or SF
+  Int_t   i_begin = fNum->GetBinContent(1);
+  Float_t f_begin = fNum->GetBinContent(2);
+  Int_t   i_loMET = 0;
+  Int_t   i_hiMET = 0;
+  Float_t f_loMET = 0;
+  Float_t f_hiMET = 0;
+  CalculateNumbers(tree,fNum,i_loMET,i_hiMET,f_loMET,f_hiMET);
+
+  // ----------------------------------------------------------------
+  // Calculate efficiency 
+  // ----------------------------------------------------------------
+  if ( totEff  && hiMETeff  ) Eff = CalculateEff(i_anlyz,f_anlyz,i_hiMET,f_hiMET,Err);
+  if ( totEff  && !hiMETeff ) Eff = CalculateEff(i_anlyz,f_anlyz,i_loMET,f_loMET,Err);
+  if ( !totEff && hiMETeff  ) Eff = CalculateEff(i_begin,f_begin,i_hiMET,f_hiMET,Err);
+  if ( !totEff && !hiMETeff ) Eff = CalculateEff(i_begin,f_begin,i_loMET,f_loMET,Err);
+ 
+}
+
+
+void CalculateNumbers(TTree* tree, TH1D* hNum, Int_t & numi_loMET, Int_t & numi_hiMET, Float_t & numf_loMET, Float_t & numf_hiMET)
+{
 
   // ----------------------------------------------------------------
   // set up branches - weight & those needed to apply the selection 
@@ -91,31 +150,19 @@ void CalculateSelectionEff(TTree* tree){
   {
     tree->GetEntry(entry);
 
+    // ----------------------------------------------------------------
+    // apply the cuts 
+    // ----------------------------------------------------------------
+    if (dphiggmet < 2.1)        continue;
+    if (mindphijmet < 0.5)      continue;
+    if (mgg < 115 || mgg > 135) continue; 
+
+    // ----------------------------------------------------------------
+    // store the final number of events 
+    // ----------------------------------------------------------------
+    if (t1pfmetCorr <= 130){ numi_loMET++; numf_loMET+=weight; }
+    if (t1pfmetCorr >  130){ numi_hiMET++; numf_hiMET+=weight; }
   }
 }
-
-void CalculateOverallEff(TString indir, TString name, Float_t & Eff, Float_t & Err){
-  cout << " Working on Sample: " << name << endl;
-  // ----------------------------------------------------------------
-  // get file, tree, h_selection histos 
-  // ----------------------------------------------------------------
-  TFile *file = TFile::Open(Form("%s%s_skimmedtree.root",indir.Data(),name.Data()));
-  if (!file){ cout << "Sample does not exist! Exiting..." << endl; return;} 
-  TTree *tree = (TTree*)file->Get("DiPhotonTree");
-  if (!tree){ cout << "Tree does not exist! Exiting..." << endl; return;} 
-  TH1D *fSel_wgt   = (TH1D*)file->Get("h_selection");
-  TH1D *fSel_unwgt = (TH1D*)file->Get("h_selection_unwgt");  
-  TH1D *fNum       = (TH1D*)file->Get("h_numbers"); 
-  if (!fSel_wgt || !fSel_unwgt || !fNum){ cout << "Histo does not exist! Exiting..." << endl; return;}
- 
-  // ----------------------------------------------------------------
-  // Calculate efficiencies 
-  // ----------------------------------------------------------------
-  CalculateSelectionEff(tree);
-
- 
-}
-
-
 
 
