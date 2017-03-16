@@ -41,6 +41,10 @@ void skim(TString path, TString sample){
 
   // trigger
   Int_t   hltDiphoton30Mass95;	intree->SetBranchAddress("hltDiphoton30Mass95",&hltDiphoton30Mass95);
+
+  // weight
+  Float_t weight;		intree->SetBranchAddress("weight",&weight);
+
   // pho variables 
   Float_t mgg;			intree->SetBranchAddress("mgg",&mgg);
   Float_t ptgg;			intree->SetBranchAddress("ptgg",&ptgg);
@@ -150,12 +154,33 @@ void skim(TString path, TString sample){
   // Initialize any counters wanted
   // ----------------------------------------------------------------
 
-  Int_t num_failing  = 0;
-  Int_t num_kinfail  = 0;
-  Int_t num_dphifail = 0;
-  Int_t num_lepfail  = 0;
-  Int_t num_jetfail  = 0;
-  Int_t num_passing  = 0;
+  Int_t num_failing   = 0;
+  Int_t num_kinfail   = 0;
+  Int_t num_dphifail  = 0;
+  Int_t num_lepfail   = 0;
+  Int_t num_jetfail   = 0;
+  Int_t num_passing   = 0;
+
+  Int_t trig_passing  = 0;
+  Int_t metf_passing  = 0;
+  Int_t kin12_passing = 0;
+  Int_t kingg_passing = 0;
+  Int_t dum_passing   = 0;
+  Int_t lep_passing   = 0;
+  Int_t dphi_passing  = 0;
+  Int_t dphiJ_passing = 0;
+  Int_t fnum_passing  = 0;
+
+  TH1F* htrig_passing =new TH1F("htrig_passing","htrig_passing",      40,80,120);
+  TH1F* hmetf_passing =new TH1F("hmetf_passing","hmetf_passing",      40,80,120);
+  TH1F* hkin12_passing =new TH1F("hkin12_passing","hkin12_passing",   40,80,120);
+  TH1F* hkingg_passing =new TH1F("hkingg_passing","hkingg_passing",   40,80,120);
+  TH1F* hdum_passing =new TH1F("hdum_passing","hdum_passing",         40,80,120);
+  TH1F* hlep_passing =new TH1F("hlep_passing","hlep_passing",         40,80,120);
+  TH1F* hdphi_passing =new TH1F("hdphi_passing","hdphi_passing",      40,80,120);
+  TH1F* hdphiGG_passing =new TH1F("hdphiGG_passing","hdphiGG_passing",40,80,120);
+  TH1F* hdphiJ_passing =new TH1F("hdphiJ_passing","hdphiJ_passing",   40,80,120);
+  TH1F* hnum_passing =new TH1F("hnum_passing","hnum_passing",         40,80,120);
 
   // ----------------------------------------------------------------
   // loop over input tree
@@ -169,7 +194,6 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
     // Fill TLorentzVector
     // ----------------------------------------------------------------
-
     fLorenzVecPho1.SetPtEtaPhiM(pt1,eta1,phi1,0.);
     fLorenzVecPho2.SetPtEtaPhiM(pt2,eta2,phi2,0.);
     fLorenzVecGG = fLorenzVecPho1 + fLorenzVecPho2;
@@ -181,7 +205,6 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
     // Apply the t1pfmet phi Correction (old method)
     // ----------------------------------------------------------------
-
     Float_t t1pfmetPhiCorr = 0;
     //-----> now just take the official corr from ntuple
     t1pfmetPhiCorr = t1pfmetCorrPhi; 
@@ -204,14 +227,12 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
     // look at deltaPhi(gg,MET)
     // ----------------------------------------------------------------
-
     phigg = fLorenzVecGG.Phi();
     dphiggmet = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetPhiCorr));
 
     // ----------------------------------------------------------------
     // look at deltaPhi(jet,MET)
     // ----------------------------------------------------------------
-
     Double_t min_dphi_JetMET = 10.;
     Double_t max_dphi_JetMET = 0.;
 
@@ -258,7 +279,6 @@ void skim(TString path, TString sample){
     // ----------------------------------------------------------------
     // Apply the cuts 
     // ----------------------------------------------------------------
-
     const Bool_t triggered        = (isMC)?true:hltDiphoton30Mass95; // trigger for data only
     const Bool_t passMetFil_All   = (metF_GV && metF_globalTightHalo && metF_HBHENoise && metF_HBHENoiseIso 
                                     && metF_EcalDeadCell && metF_badMuon && metF_badChargedHadron);
@@ -266,13 +286,14 @@ void skim(TString path, TString sample){
     const Bool_t passMETfilters   = (passMetFil_All && passMetFil_Data);
 
     const Bool_t passKinematics   = (pt1>0.5*mgg && pt2>0.25*mgg && ptgg>90 && mgg>=100 && mgg<=200);
-    //const Bool_t passKinematics   = (pt1>0.33*mgg && pt2>0.25*mgg && ((mgg>=100 && mgg<=115) || (mgg >=135 && mgg<=200)));
     const Bool_t pass_GJet_DupRem = (!doGJet_DupRem || (doGJet_DupRem && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t pass_QCD_DupRem  = (!doQCD_DupRem  || (doQCD_DupRem  && (genmatch1!=1 || genmatch2!=1)));
     const Bool_t passDupRemoval   = (pass_QCD_DupRem && pass_GJet_DupRem);
     //const Bool_t passLepVetos     = (nEleMed < 2 && nMuTight==0);
     const Bool_t passLepVetos     = (nEle==0 && nMuons==0);
     const Bool_t passJetVetos     = (nJets30 < 3);
+    const Bool_t passDphiCutsJ    = (min_dphi_JetMET >= 0.5);
+    const Bool_t passDphiCutsGG   = (dphiggmet >= 2.1);
     const Bool_t passDphiCuts     = true;
     //const Bool_t passDphiCuts     = (dphiggmet>=2.1 && min_dphi_JetMET>=0.5 /* && max_dphi_JetMET <= 2.7 */);
 
@@ -281,6 +302,46 @@ void skim(TString path, TString sample){
     if (!passDphiCuts)   num_dphifail++;
     if (!passLepVetos)   num_lepfail++;
     if (!passJetVetos)   num_jetfail++;
+
+    if (triggered){
+      trig_passing++;
+      htrig_passing->Fill(mgg,weight);
+      if (passMETfilters){ 
+        metf_passing++;
+        hmetf_passing->Fill(mgg, weight);
+        if(pt1>(0.3)*mgg &&pt2>0.25*mgg&&mgg>=80 &&mgg<=120){
+          kin12_passing++;
+          hkin12_passing->Fill(mgg, weight);
+          if(ptgg>0){
+            kingg_passing++;
+            hkingg_passing->Fill(mgg, weight);
+            if(passDupRemoval){
+              dum_passing++;
+              hdum_passing->Fill(mgg, weight);
+              if( passLepVetos){
+                lep_passing++;
+                hlep_passing->Fill(mgg, weight);
+                //if(passDphiCutsGG){
+                if(true){
+                  dphi_passing++;
+                  hdphiGG_passing->Fill(mgg, weight);
+                  //if(passDphiCutsJ){
+                  if(true){
+                    hdphiJ_passing->Fill(mgg, weight);
+                    dphiJ_passing++;
+                    if( passJetVetos){
+                      hnum_passing->Fill(mgg, weight);
+                      fnum_passing++;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }// met fil
+    }// trig 
+
 
     // skim cut
     if (triggered && passMETfilters && passKinematics && passDupRemoval && passLepVetos && passDphiCuts && passJetVetos)
@@ -292,12 +353,22 @@ void skim(TString path, TString sample){
   }// finish event loop
 
   cout << num_failing  << " events fail met filters of " << intree->GetEntries() << " original events " << endl;
-  cout << num_kinfail  << " events fail kinematic cuts"  << endl;
-  cout << num_dphifail << " events fail dphi cuts"       << endl;
-  cout << num_lepfail  << " events fail lepton cuts"     << endl;
-  cout << num_jetfail  << " events fail jet cuts"        << endl;
-  cout << num_passing  << " events pass all cuts of "    << intree->GetEntries() << " original events " << endl; 
+  cout << num_passing  << " events pass all cuts of "    << intree->GetEntries() << " original events " << endl;
+ 
+  //cout<< htrig_passing->Integral()   << " trig OK" <<endl;
+  //cout<< hmetf_passing->Integral()   << " METF OK" <<endl;
+  //cout<< hkin12_passing->Integral()  << " KIN12"   <<endl;
+  //cout<< hkingg_passing->Integral()  << " KINGG"   <<endl;
+  //cout<< hdum_passing->Integral()    << " DUM"     <<endl;
+  //cout<< hlep_passing->Integral()    << " LEPV"    <<endl;
+  //cout<< hdphiGG_passing->Integral() << " DPHI GG" <<endl;
+  //cout<< hdphiJ_passing->Integral()  << " DPHI J"  <<endl;
+  //cout<< hnum_passing->Integral()    << " JVETO"   <<endl;  
 
+  //cout << num_kinfail  << " events fail kinematic cuts"  << endl;
+  //cout << num_dphifail << " events fail dphi cuts"       << endl;
+  //cout << num_lepfail  << " events fail lepton cuts"     << endl;
+  //cout << num_jetfail  << " events fail jet cuts"        << endl;
 
 
   // ----------------------------------------------------------------
