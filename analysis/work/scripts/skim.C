@@ -14,7 +14,6 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   // get input full trees
   // ----------------------------------------------------------------
-
   cout << "Running sample: " << sample << endl;
   TFile * infile = TFile::Open(Form("%s/%s.root",path.Data(),sample.Data()));
   if (!infile){
@@ -34,6 +33,7 @@ void skim(TString path, TString sample){
   TH1F * h_sumW            = (TH1F*)infile->Get("h_sumW");
   TH1F * h_selection       = (TH1F*)infile->Get("h_selection");
   TH1F * h_selection_unwgt = (TH1F*)infile->Get("h_selection_unwgt");
+  TH1F * h_numbers         = new TH1F("h_numbers","h_numbers", 4, 0, 4);
 
   // ----------------------------------------------------------------
   // set branch addresses of input needed to apply cuts
@@ -136,7 +136,6 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   // declare output skim files
   // ----------------------------------------------------------------
-
   TFile * outfile = new TFile(Form("%s/%s_skimmedtree.root",path.Data(),sample.Data()),"RECREATE");
   TTree * outtree = (TTree*)infile->Get("DiPhotonTree");
   // clone structure of input tree, but storing no events
@@ -145,15 +144,17 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   // additional variables to store in the tree
   // ----------------------------------------------------------------
-
   Float_t phigg;          outtree->Branch("phigg",&phigg,"phigg/F");
   Float_t dphiggmet;      outtree->Branch("dphiggmet",&dphiggmet,"dphiggmet/F");
   Float_t mindphijmet;    outtree->Branch("mindphijmet",&mindphijmet,"mindphijmet/F");
+  Int_t   effnumi_start;  outtree->Branch("effnumi_start",&effnumi_start,"effnumi_start/I");
+  Float_t effnumf_start;  outtree->Branch("effnumf_start",&effnumf_start,"effnumf_start/F");
+  Int_t   effnumi_finish; outtree->Branch("effnumi_finish",&effnumi_finish,"effnumi_finish/I");
+  Float_t effnumf_finish; outtree->Branch("effnumf_finish",&effnumf_finish,"effnumf_finish/F");
 
   // ----------------------------------------------------------------
   // Initialize any counters wanted
   // ----------------------------------------------------------------
-
   Int_t num_failing   = 0;
   Int_t num_kinfail   = 0;
   Int_t num_dphifail  = 0;
@@ -187,9 +188,11 @@ void skim(TString path, TString sample){
   // ----------------------------------------------------------------
   for (UInt_t entry = 0; entry < intree->GetEntries(); entry++)
   {
-
-    intree->GetEntry(entry);
     //if (entry%10000 == 0) cout << " Working on event # " << entry << " / " << intree->GetEntries() << " entries" << endl;
+    intree->GetEntry(entry);
+
+    effnumi_start++;
+    effnumf_start+=weight;
 
     // ----------------------------------------------------------------
     // Fill TLorentzVector
@@ -348,9 +351,16 @@ void skim(TString path, TString sample){
     {
       outtree->Fill(); // fill output tree
       num_passing++;   // count how many pass
+      effnumi_finish++;
+      effnumf_finish+=weight;
     }
 
   }// finish event loop
+
+  h_numbers->Fill(0.5,effnumi_start);
+  h_numbers->Fill(1.5,effnumf_start);
+  h_numbers->Fill(2.5,effnumi_finish);
+  h_numbers->Fill(3.5,effnumf_finish);
 
   cout << num_failing  << " events fail met filters of " << intree->GetEntries() << " original events " << endl;
   cout << num_passing  << " events pass all cuts of "    << intree->GetEntries() << " original events " << endl;
@@ -379,6 +389,7 @@ void skim(TString path, TString sample){
   h_sumW->Write();
   h_selection->Write();
   h_selection_unwgt->Write();
+  h_numbers->Write();
   outtree->Write();
 
   // ----------------------------------------------------------------
