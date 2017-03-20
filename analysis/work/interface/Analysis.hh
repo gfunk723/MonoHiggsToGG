@@ -98,7 +98,7 @@ private:
   Int_t           hltDiphoton30Mass55PV;
   Int_t           hltDiphoton30Mass55EB;
   Int_t           run;
-  Int_t           event;
+  UInt_t          event;
   Int_t           nvtx;
   Float_t         rho;
   Int_t           sampleID;

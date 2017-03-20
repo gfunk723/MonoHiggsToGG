@@ -163,12 +163,6 @@ void Analysis::DoPlots(int prompt)
     if (prompt==2 /*QCD */ && (genmatch1==1 && genmatch2==1)) continue; 
 
     //------------------------------------------------------------------------
-    // Lepton and jet vetos 
-    //------------------------------------------------------------------------
-    if (nEle >= 1 || nMuons >= 1) continue;
-    if (nJets30 > 2) continue;
-
-    //------------------------------------------------------------------------
     // DeltaPhi (higgs,MET) 
     //------------------------------------------------------------------------
     Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetCorrPhi));
@@ -178,50 +172,26 @@ void Analysis::DoPlots(int prompt)
     // DeltaPhi(jet,MET)
     //------------------------------------------------------------------------
     Double_t min_dphi_JetMET = 10.;
-    Double_t max_dphi_JetMET = 0.;
-
     if (nJets50 > 0){
       Double_t dphiJet1METmin = 10;
       Double_t dphiJet2METmin = 10;
       Double_t dphiJet3METmin = 10;
       Double_t dphiJet4METmin = 10;
-      Double_t dphiJet1METmax = 0;
-      Double_t dphiJet2METmax = 0;
-      Double_t dphiJet3METmax = 0;
-      Double_t dphiJet4METmax = 0;
-      if ( ptJetLead > 50 ){
-        dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
-        dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
-      }
-      if ( ptJetSubLead > 50 ){
-        dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
-        dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
-      }
-      if ( ptJet3 > 50 ){
-        dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
-        dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
-      }
-      if ( ptJet4 > 50 ){
-        dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
-        dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
-      }
+      if ( ptJetLead > 50 )    dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetCorrPhi));
+      if ( ptJetSubLead > 50 ) dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetCorrPhi));
+      if ( ptJet3 > 50 )       dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetCorrPhi));
+      if ( ptJet4 > 50 )       dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetCorrPhi));
 
       // find the min_dphi_JetMET 
       if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
       if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
       if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
       if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
-
-      // find the max_dphi_JetMET 
-      if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
-      if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
-      if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
-      if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
    
-    Bool_t pass_dphi_jMET = (min_dphi_JetMET >= 0.5 /* && max_dphi_JetMET <= 2.7*/)? true:false; 
+    Bool_t pass_dphi_jMET = (min_dphi_JetMET >= 0.5)? true:false; 
     Bool_t pass_dphi = (pass_dphi_hMET && pass_dphi_jMET); 
-    
+
     //------------------------------------------------------------------------
     // Deal with the blinding 
     //------------------------------------------------------------------------
@@ -236,14 +206,40 @@ void Analysis::DoPlots(int prompt)
     if (fWhichSel==0) passSel = true; // original selection
     if (fWhichSel==1 && (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90)) passSel = true;   
     if (!passSel) continue;
+
+    //------------------------------------------------------------------------
+    // Fill the histograms -- before final cuts
+    //------------------------------------------------------------------------
+    
+    //--------> Fill the standard plots
+    if (Config::doStandard){
+       if (t1pfmetCorr >= metCut) standardTH1Map["nElec"]->Fill(nEle,wgt);
+       if (t1pfmetCorr >= metCut) standardTH1Map["nMuon"]->Fill(nMuons,wgt);
+       if (t1pfmetCorr >= metCut) standardTH1Map["nJets"]->Fill(nJets30,wgt);
+       standardTH1Map["jetInfo_CHfrac1"]->Fill(CHfracJet1,wgt);
+       standardTH1Map["jetInfo_NHfrac1"]->Fill(NHfracJet1,wgt);
+       standardTH1Map["jetInfo_pt1"]->Fill(ptJetLead,wgt);
+       standardTH1Map["jetInfo_eta1"]->Fill(etaJetLead,wgt);
+       standardTH1Map["jetInfo_phi1"]->Fill(phiJetLead,wgt);
+       standardTH1Map["jetInfo_mass1"]->Fill(massJetLead,wgt);
+    }
+
+    //------------------------------------------------------------------------
+    // Apply all other selection 
+    //------------------------------------------------------------------------
+    if (nEle >= 1 || nMuons >= 1) continue; // lepton veto
+    if (nJets30 > 2) continue;              // jet veto
+    if (!pass_dphi) continue;               // dphi cuts
  
     //------------------------------------------------------------------------
-    // Fill the histograms 
+    // Fill the histograms -- after final cuts 
     //------------------------------------------------------------------------
     
     //--------> Fill the standard plots
     if (Config::doStandard){
        if (mggPlot) standardTH1Map["mgg"]->Fill(mgg,wgt);
+       if (mggPlot && t1pfmetCorr < metCut)  standardTH1Map["mgg_loMET"]->Fill(mgg,wgt);
+       if (mggPlot && t1pfmetCorr >= metCut) standardTH1Map["mgg_hiMET"]->Fill(mgg,wgt);
        if (mggOkay) standardTH1Map["t1pfmetCorr"]->Fill(t1pfmetCorr,wgt);
        if (mggOkay) standardTH1Map["t1pfmet"]->Fill(t1pfmet,wgt);
        standardTH1Map["nvtx"]->Fill(nvtx,wgt);
@@ -254,13 +250,6 @@ void Analysis::DoPlots(int prompt)
        standardTH1Map["phi2"]->Fill(phi2,wgt);
        standardTH1Map["eta1"]->Fill(eta1,wgt);
        standardTH1Map["eta2"]->Fill(eta2,wgt);
-       standardTH1Map["nJets"]->Fill(nJets30,wgt);
-       standardTH1Map["jetInfo_CHfrac1"]->Fill(CHfracJet1,wgt);
-       standardTH1Map["jetInfo_NHfrac1"]->Fill(NHfracJet1,wgt);
-       standardTH1Map["jetInfo_pt1"]->Fill(ptJetLead,wgt);
-       standardTH1Map["jetInfo_eta1"]->Fill(etaJetLead,wgt);
-       standardTH1Map["jetInfo_phi1"]->Fill(phiJetLead,wgt);
-       standardTH1Map["jetInfo_mass1"]->Fill(massJetLead,wgt);
     }
 
     //--------> Fill the n minus 1 plots
@@ -292,7 +281,9 @@ void Analysis::SetupStandardPlots()
   // Photon or general event variables 
   //------------------------------------------------------------------------
   standardTH1Map["nvtx"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nvtx","",50,0.,50.,"nVertices","");
-  standardTH1Map["mgg"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");
+  standardTH1Map["mgg"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");
+  standardTH1Map["mgg_loMET"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg_loMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");
+  standardTH1Map["mgg_hiMET"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg_hiMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");
   standardTH1Map["ptgg"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","ptgg","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");
   standardTH1Map["phi1"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","phi1","",20,-4.,4.,"#phi(#gamma1)","");
   standardTH1Map["phi2"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","phi2","",20,-4.,4.,"#phi(#gamma2)","");
@@ -302,6 +293,8 @@ void Analysis::SetupStandardPlots()
   standardTH1Map["pt2"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","pt2","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
   standardTH1Map["t1pfmet"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","t1pfmet","",70,0.,350.,"p_{T}^{miss} [GeV]","");
   standardTH1Map["t1pfmetCorr"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","t1pfmetCorr","",70,0.,350.,"p_{T}^{miss} [GeV]","");
+  standardTH1Map["nElec"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nElec","",10,0.,10.,"nElec","");
+  standardTH1Map["nMuon"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nMuon","",10,0.,10.,"nMuon","");
 
   //------------------------------------------------------------------------
   // Jet info plots 

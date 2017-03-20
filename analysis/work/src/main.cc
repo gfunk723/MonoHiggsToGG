@@ -45,12 +45,18 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
     Config::SampleMap["TTGG_0Jets"]		= false; // !isData
     Config::SampleMap["TTJets"]			= false; // !isData
     Config::SampleMap["ZGTo2LG"]		= false; // !isData
+    Config::SampleMap["ZGTo2NuG"]		= false; // !isData
+    Config::SampleMap["ZZTo2L2Q"]		= false; // !isData
     Config::SampleMap["WGToLNuG"]		= false; // !isData
+    Config::SampleMap["WJetsToLNu"]		= false; // !isData
+    Config::SampleMap["WZTo2L2Q"]		= false; // !isData
     Config::SampleMap["DYJetsToLL"]		= false; // !isData
     Config::SampleMap["QCD"]			= false; // !isData
     Config::SampleMap["GJets"]			= false; // !isData
     Config::SampleMap["DiPhoton"]		= false; // !isData 
-    Config::SampleMap["2HDM_mZP600_mA0300"]	= false; // !isData 
+    Config::SampleMap["2HDM_mZP600_mA0300"]	= false; // !isData
+    Config::SampleMap["2HDM_mZP800_mA0300"]     = false; // !isData
+    Config::SampleMap["2HDM_mZP1000_mA0300"]    = false; // !isData 
   }
 
   //------------------------------------------------------------------------
@@ -67,7 +73,7 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   Config::colorMap["2HDM_mZP800_mA0300"]   = kMagenta;
   Config::colorMap["2HDM_mZP1000_mA0300"]  = kGreen;
   Config::colorMap["DiPhoton"]		   = kTeal-1;
-  Config::colorMap["SMHiggs"]		   = kOrange+1;
+  Config::colorMap["SMHiggs"]		   = kOrange-2;
   Config::colorMap["EWK1pho"]		   = kAzure+8;
   Config::colorMap["EWK2pho"]		   = kAzure+2;
   Config::colorMap["Jetspho"]		   = kGreen-9;
@@ -85,8 +91,9 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   Config::colorMap["TTJets"]		   = kBlue-7;
   Config::colorMap["ZJets"]		   = kBlue;
   Config::colorMap["ZGTo2LG"]		   = kCyan;
-  Config::colorMap["WZTo2L2Nu"]		   = kTeal;
-  Config::colorMap["WJetsToLNu"]	   = kBlue+5;
+  Config::colorMap["ZGTo2NuG"]		   = kCyan+2;
+  Config::colorMap["WZTo2L2Q"]		   = kTeal;
+  Config::colorMap["WJetsToLNu"]	   = kBlue+1;
   Config::colorMap["ZZTo2L2Nu"]		   = kTeal+1;
   Config::colorMap["ZZTo2L2Q"]		   = kTeal+5;
   Config::colorMap["WGToLNuG"]		   = kAzure+8;
@@ -95,13 +102,13 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set outputname map 
   //------------------------------------------------------------------------
   Config::nameMap["DoubleEG"]              = "Data";
-  Config::nameMap["2HDM_mZP600_mA0300"]    = "m_{Z'} = 600 GeV";
-  Config::nameMap["2HDM_mZP800_mA0300"]    = "m_{Z'} = 800 GeV";
-  Config::nameMap["2HDM_mZP1000_mA0300"]   = "m_{Z'} = 1000 GeV";
+  Config::nameMap["2HDM_mZP600_mA0300"]    = "m_{A} = 300 GeV, m_{Z'} = 600 GeV";
+  Config::nameMap["2HDM_mZP800_mA0300"]    = "m_{A} = 300 GeV, m_{Z'} = 800 GeV";
+  Config::nameMap["2HDM_mZP1000_mA0300"]   = "m_{A} = 300 GeV, m_{Z'} = 1000 GeV";
   Config::nameMap["DiPhoton"]              = "#gamma#gamma";
   Config::nameMap["SMHiggs"]               = "SM h #rightarrow #gamma#gamma";
-  Config::nameMap["EWK1pho"]               = "EWK + #gamma";
-  Config::nameMap["EWK2pho"]               = "EWK + #gamma#gamma";
+  Config::nameMap["EWK1pho"]               = "EW + #gamma";
+  Config::nameMap["EWK2pho"]               = "EW + #gamma#gamma";
   Config::nameMap["Jetspho"]               = "QCD, #gamma + jets";
   Config::nameMap["DYJetsToLL"]            = "DY + jets";
   Config::nameMap["VHToGG"]                = "Vh"; 
@@ -117,13 +124,13 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   Config::nameMap["TTJets"]                = "TT"; 
   Config::nameMap["ZJets"]                 = "Z + jets"; 
   Config::nameMap["ZGTo2LG"]               = "Z(ll) + #gamma"; 
-  Config::nameMap["WZTo2L2Nu"]             = "WZ #rightarrow ll#nu#nu"; 
+  Config::nameMap["ZGTo2NuG"]              = "Z(#nu#nu) + #gamma"; 
+  Config::nameMap["WZTo2L2Q"]              = "WZ #rightarrow llqq"; 
   Config::nameMap["WJetsToLNu"]            = "W(l#nu) + jets"; 
   Config::nameMap["ZZTo2L2Nu"]             = "ZZ #rightarrow ll#nu#nu"; 
   Config::nameMap["ZZTo2L2Q"]              = "ZZ #rightarrow llqq"; 
   Config::nameMap["WGToLNuG"]              = "W(l#nu) + #gamma"; 
   
-
 
 }// end initializing
 
@@ -218,7 +225,7 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   // Initialization
   //------------------------------------------------------------------------
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_v6/";
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v2/";
   std::ofstream yields; TStyle * tdrStyle; 
   InitializeMain(yields, tdrStyle);
 
@@ -285,8 +292,9 @@ int main(int argc, const char* argv[])
     Int_t prompt = 0; //Do prompt removal
     for (TStrBoolMapIter iter = Config::SampleMap.begin(); iter != Config::SampleMap.end(); ++iter){
       std::cout << "Working on " << (*iter).first << " sample" << std::endl;
-      if ( (*iter).first=="GJets") prompt==1;
-      if ( (*iter).first=="QCD")   prompt==2;
+      if ( (*iter).first=="GJets")    prompt=1;
+      else if ( (*iter).first=="QCD") prompt=2;
+      else prompt=0;
       // input arguments: inputdir,outputdir,sample,lumi,isData,doBlind,png/pdf,metCorr,whichSel
       Analysis * plot = new Analysis(inDir,Config::outdir,(*iter).first,Config::lumi,(*iter).second,Config::doBlind,Config::outtype,metCorrMC,Config::whichSel);
       plot->DoPlots(prompt);

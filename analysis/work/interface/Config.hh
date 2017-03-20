@@ -9,7 +9,7 @@ namespace Config{
   // General configuration
   //------------------------------------------------------------------------
 
-  constexpr    Float_t lumi = 34.7; // fb^-1
+  constexpr    Float_t lumi = 35.8; // fb^-1
   static const TString extraText = "Preliminary";
 
   //------------------------------------------------------------------------

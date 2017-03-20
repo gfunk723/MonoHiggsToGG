@@ -85,6 +85,7 @@ private:
   TStrIntMap	fBkgIndicesMap;
   TLegVec	fTH1FLegends;
   TLegVec	fSigLegends;
+  TLegVec	fRatioLegends;
 
   TCanvVec	fOutTH1FCanvases;
   TPadVec	fOutTH1FStackPads;

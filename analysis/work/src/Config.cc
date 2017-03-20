@@ -12,10 +12,10 @@ namespace Config{
   Bool_t  doComb      = false;
   Bool_t  makeCards   = false;
   TString plotnames   = "plotnames.txt";
-  Bool_t  mergeBkgs   = true;
-  Bool_t  doQCDrewgt  = true;
+  Bool_t  mergeBkgs   = false;
+  Bool_t  doQCDrewgt  = false;
   Bool_t  scaleToData = false;
-  TString yieldsPlot  = "mgg";
+  TString yieldsPlot  = "mgg_loMET";
   Int_t   whichSel    = 0;
   Bool_t  doEffPlots  = false;
   Bool_t  doStandard  = false;
