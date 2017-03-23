@@ -357,6 +357,7 @@ struct diphoTree_struc_ {
   int metF_badChargedHadron;
   int metF_globalTightHalo;
 
+  float massCorrSmear_old; 
   float massCorrSmear; 
   float massCorrSmearUp; 
   float massCorrSmearDown; 
@@ -366,6 +367,14 @@ struct diphoTree_struc_ {
   float massCorrScaleDown;
   float massRaw;
   float massOrig;
+  float leadScale;
+  float subleadScale;
+  float old_leadScale;
+  float old_subleadScale;
+  float old_leadSmear;
+  float old_subleadSmear;
+  float leadSmear;
+  float subleadSmear;
   float ptggOrig;
   int genZ;
   float ptZ;
@@ -952,9 +961,12 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
         if (diphoPtr->leadingPhoton()->hasSwitchToGain6()) leadGain = 6;	
 
         EnergyScaleCorrection_class c(corrFileName_);
-        if (sampleID >= 10000) c.doScale=true;
-        float leadScaling  = c.ScaleCorrection(run, leadIsEB, leadR9_SSRew, leadScEta, diphoPtr->leadingPhoton()->et(), leadGain, bit_stat);
-        float leadSmearing = getSmearingValue(leadScEta, leadR9_SSRew, 0 );
+        if (sampleID > 0 && sampleID < 10000) c.doSmearings=true;
+        else                                  c.doScale=true;
+        float leadScaling  = c.ScaleCorrection(run,  leadIsEB, leadR9_SSRew, leadScEta, diphoPtr->leadingPhoton()->et(), leadGain, bit_stat);
+        float leadSigma    = c.getSmearingSigma(run, leadIsEB, leadR9_SSRew, leadScEta, diphoPtr->leadingPhoton()->et(), leadGain, 0, 0);
+        TRandom3 * rgen1 = new TRandom3(0);
+        float leadSmearing = rgen1->Gaus(1,leadSigma);
 
         float leadCorr;
         if (sampleID > 0 && sampleID < 10000) leadCorr = leadSmearing;
@@ -994,13 +1006,16 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
         if (diphoPtr->subLeadingPhoton()->hasSwitchToGain1()) leadGain = 1;	
         if (diphoPtr->subLeadingPhoton()->hasSwitchToGain6()) leadGain = 6;
 	
-        float subleadScaling  = c.ScaleCorrection(run, subleadIsEB, subleadR9_SSRew, subleadScEta, diphoPtr->subLeadingPhoton()->et(), subleadGain, bit_stat);
-        float subleadSmearing = getSmearingValue(leadScEta, leadR9_SSRew, 0 );
+        float subleadScaling  = c.ScaleCorrection(run,  subleadIsEB, subleadR9_SSRew, subleadScEta, diphoPtr->subLeadingPhoton()->et(), subleadGain, bit_stat);
+        float subleadSigma    = c.getSmearingSigma(run, subleadIsEB, subleadR9_SSRew, subleadScEta, diphoPtr->subLeadingPhoton()->et(), subleadGain, 0, 0);
+        TRandom3 * rgen2 = new TRandom3(0);
+        float subleadSmearing = rgen2->Gaus(1,subleadSigma);
 
         float subleadCorr;
         if (sampleID > 0 && sampleID < 10000) subleadCorr = subleadSmearing;
         else                                  subleadCorr = subleadScaling; 
         float subleadPt = diphoPtr->subLeadingPhoton()->et()*subleadCorr;
+
 	//float subleadPt = getPtCorrected(diphoPtr->subLeadingPhoton()->et(),subleadScEta,subleadR9_SSRew,run,sampleID,diphoPtr->subLeadingPhoton()->seedEnergy(),event,0);
         mapPt2Corr[diphoPtr] = subleadPt;       
 
@@ -1444,7 +1459,7 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
 		      int vhtruth;
 
                       float ptggOrig, massOrig;
-		      float massCorrSmear, massCorrScale, massCorrScale_old, massRaw;
+		      float massCorrSmear, massCorrSmear_old, massCorrScale, massCorrScale_old, massRaw;
 		      float massCorrSmearUp, massCorrSmearDown;
 		      float massCorrScaleUp, massCorrScaleDown;
 		      int genZ;
@@ -1617,30 +1632,7 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
                       int passLooseCorrPHiso1 = passPHisoCorr(phoiso1corr, phi1, phi2, eta1, eta2, pt1, pt2, 1.);
                       int passLooseCorrPHiso2 = passPHisoCorr(phoiso2corr, phi2, phi1, eta2, eta1, pt2, pt1, 0.);
 
-		      //-------> smear up and down for systematics
-		      float leadSmearing        = getSmearingValue( sceta1, r91, 0 );
-                      float subleadSmearing     = getSmearingValue( sceta2, r92, 0 );
-		      float leadSmearingUp	= getSmearingValue( sceta1, r91, 1 );
-		      float subleadSmearingUp	= getSmearingValue( sceta2, r92, 1 );
-		      float leadSmearingDown	= getSmearingValue( sceta1, r91, -1 );
-		      float subleadSmearingDown	= getSmearingValue( sceta2, r92, -1 );
-		      float gaussMean		= 1.0;
-
-		      TRandom Rand1(event);
-                      float Smear1              = Rand1.Gaus(gaussMean,leadSmearing);
-		      float Smear1Up         	= Rand1.Gaus(gaussMean,leadSmearingUp);
-		      float Smear1Down		= Rand1.Gaus(gaussMean,leadSmearingDown);
-
-		      TRandom Rand2(event+83941);
-                      float Smear2              = Rand1.Gaus(gaussMean,subleadSmearing);
-		      float Smear2Up	        = Rand2.Gaus(gaussMean,subleadSmearingUp);
-		      float Smear2Down		= Rand2.Gaus(gaussMean,subleadSmearingDown);
-
-		      massCorrSmear		= massOrig*sqrt(Smear1*Smear2);
-		      massCorrSmearUp	        = massOrig*sqrt(Smear1Up*Smear2Up);
-		      massCorrSmearDown		= massOrig*sqrt(Smear1Down*Smear2Down);
-
-		      //-------> scaling -- already applied, but store this for comparison plots
+		      //-------> scaling old method -- already applied, but store this for comparison plots
 		      float leadScaling_old	= getScalingValue(sampleID, sceta1, r91, run, 0);
 		      float subleadScaling_old	= getScalingValue(sampleID, sceta2, r92, run, 0);
 		      float Scaling_old		= leadScaling_old*subleadScaling_old;
@@ -1665,7 +1657,8 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
                       //std::bitset<6> bit_gain(bit_string_gain);
 
                       EnergyScaleCorrection_class c(corrFileName_);
-                      if (sampleID >= 10000) c.doScale=true;
+                      if (sampleID > 0 && sampleID < 10000) c.doSmearings=true;
+                      else                                  c.doScale=true;
                       float leadScaling		= c.ScaleCorrection(run,leadIsEB,r91,sceta1,pt1,leadGain,bit_stat);
                       float subleadScaling	= c.ScaleCorrection(run,subleadIsEB,r92,sceta2,pt2,subleadGain,bit_stat);
                       float Scaling		= leadScaling*subleadScaling;
@@ -1696,6 +1689,40 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
 
 		      massCorrScaleUp		= massRaw*sqrt(ScalingUp);
 		      massCorrScaleDown		= massRaw*sqrt(ScalingDown);
+
+		      //-------> smearing up and down for systematics
+		      float leadSigma		= c.getSmearingSigma(run, leadIsEB,    r91, sceta1, leadGain,    pt1, 0, 0);
+		      float leadSigmaUp		= c.getSmearingSigma(run, leadIsEB,    r91, sceta1, leadGain,    pt1, 0, 1);
+		      float leadSigmaDown	= c.getSmearingSigma(run, leadIsEB,    r91, sceta1, leadGain,    pt1, 0, -1);
+                      float subleadSigma	= c.getSmearingSigma(run, subleadIsEB, r92, sceta2, subleadGain, pt2, 0, 0);
+                      float subleadSigmaUp	= c.getSmearingSigma(run, subleadIsEB, r92, sceta2, subleadGain, pt2, 0, 1);
+                      float subleadSigmaDown	= c.getSmearingSigma(run, subleadIsEB, r92, sceta2, subleadGain, pt2, 0, -1);
+
+                      TRandom3 * rgen1 = new TRandom3(0);
+                      float Smear1              = rgen1->Gaus(1,leadSigma); 
+		      float Smear1Up         	= rgen1->Gaus(1,leadSigmaUp); 
+		      float Smear1Down		= rgen1->Gaus(1,leadSigmaDown); 
+
+                      TRandom3 * rgen2 = new TRandom3(0);
+                      float Smear2              = rgen2->Gaus(1,subleadSigma); 
+		      float Smear2Up	        = rgen2->Gaus(1,subleadSigmaUp); 
+		      float Smear2Down		= rgen2->Gaus(1,subleadSigmaDown); 
+
+		      massCorrSmear		= massOrig*sqrt(Smear1*Smear2);
+		      massCorrSmearUp	        = massOrig*sqrt(Smear1Up*Smear2Up);
+		      massCorrSmearDown		= massOrig*sqrt(Smear1Down*Smear2Down);
+
+		      //-------> smearing old method up and down for systematics
+		      float old_leadSmearing	= getSmearingValue( sceta1, r91, 0 );
+                      float old_subleadSmearing	= getSmearingValue( sceta2, r92, 0 );
+
+		      TRandom Rand1(event);
+		      TRandom Rand2(event+83941);
+
+                      float old_Smear1          = Rand1.Gaus(1.0,old_leadSmearing);
+                      float old_Smear2          = Rand2.Gaus(1.0,old_subleadSmearing);
+
+		      massCorrSmear_old		= massOrig*sqrt(old_Smear1*old_Smear2);
 
 		      //------> final mgg (has Smearing or Scaling applied)
 		      mgg = mapMggCorr[candDiphoPtr]; 
@@ -2508,6 +2535,7 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
                       treeDipho_.metF_badMuon = metF_badMuon;
                       treeDipho_.metF_badChargedHadron = metF_badChargedHadron;
                       treeDipho_.metF_globalTightHalo = metF_globalTightHalo;
+		      treeDipho_.massCorrSmear_old = massCorrSmear_old;
 		      treeDipho_.massCorrSmear = massCorrSmear;
 		      treeDipho_.massCorrSmearUp = massCorrSmearUp;
 		      treeDipho_.massCorrSmearDown = massCorrSmearDown;
@@ -2517,6 +2545,14 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
 		      treeDipho_.massCorrScaleDown = massCorrScaleDown;
 		      treeDipho_.massRaw = massRaw;
 		      treeDipho_.massOrig = massOrig;
+		      treeDipho_.leadScale    = leadScaling;
+		      treeDipho_.subleadScale = subleadScaling;
+		      treeDipho_.old_leadScale    = leadScaling_old;
+		      treeDipho_.old_subleadScale = subleadScaling_old;
+		      treeDipho_.old_leadSmear    = old_Smear1;
+		      treeDipho_.old_subleadSmear = old_Smear2;
+		      treeDipho_.leadSmear    = Smear1;
+		      treeDipho_.subleadSmear = Smear2;
 		      treeDipho_.ptggOrig = ptggOrig;
 		      treeDipho_.genZ	= genZ;
 		      treeDipho_.ptZ = ptZ;
@@ -2897,6 +2933,7 @@ void DiPhoAnalyzer_Moriond17::beginJob() {
   DiPhotonTree->Branch("metF_badMuon",&(treeDipho_.metF_badMuon),"metF_badMuon/I");
   DiPhotonTree->Branch("metF_badChargedHadron",&(treeDipho_.metF_badChargedHadron),"metF_badChargedHadron/I");
   DiPhotonTree->Branch("metF_globalTightHalo",&(treeDipho_.metF_globalTightHalo),"metF_globalTightHalo/I");
+  DiPhotonTree->Branch("massCorrSmear_old",&(treeDipho_.massCorrSmear_old),"massCorrSmear_old/F");
   DiPhotonTree->Branch("massCorrSmear",&(treeDipho_.massCorrSmear),"massCorrSmear/F");
   DiPhotonTree->Branch("massCorrSmearUp",&(treeDipho_.massCorrSmearUp),"massCorrSmearUp/F");
   DiPhotonTree->Branch("massCorrSmearDown",&(treeDipho_.massCorrSmearDown),"massCorrSmearDown/F");
@@ -2906,6 +2943,14 @@ void DiPhoAnalyzer_Moriond17::beginJob() {
   DiPhotonTree->Branch("massCorrScaleDown",&(treeDipho_.massCorrScaleDown),"massCorrScaleDown/F");
   DiPhotonTree->Branch("massRaw",&(treeDipho_.massRaw),"massRaw/F");
   DiPhotonTree->Branch("massOrig",&(treeDipho_.massOrig),"massOrig/F");
+  DiPhotonTree->Branch("leadScale",&(treeDipho_.leadScale),"leadScale/F");
+  DiPhotonTree->Branch("subleadScale",&(treeDipho_.subleadScale),"subleadScale/F");
+  DiPhotonTree->Branch("old_leadScale",&(treeDipho_.old_leadScale),"old_leadScale/F");
+  DiPhotonTree->Branch("old_subleadScale",&(treeDipho_.old_subleadScale),"old_subleadScale/F");
+  DiPhotonTree->Branch("old_leadSmear",&(treeDipho_.old_leadSmear),"old_leadSmear/F");
+  DiPhotonTree->Branch("old_subleadSmear",&(treeDipho_.old_subleadSmear),"old_subleadSmear/F");
+  DiPhotonTree->Branch("leadSmear",&(treeDipho_.leadSmear),"leadSmear/F");
+  DiPhotonTree->Branch("subleadSmear",&(treeDipho_.subleadSmear),"subleadSmear/F");
   DiPhotonTree->Branch("ptggOrig",&(treeDipho_.ptggOrig),"ptggOrig/F");
   DiPhotonTree->Branch("genZ",&(treeDipho_.genZ),"genZ/I");
   DiPhotonTree->Branch("ptZ",&(treeDipho_.ptZ),"ptZ/F");
@@ -3189,6 +3234,7 @@ void DiPhoAnalyzer_Moriond17::initTreeStructure() {
   treeDipho_.metF_badMuon = -500;
   treeDipho_.metF_badChargedHadron = -500;
   treeDipho_.metF_globalTightHalo = -500;
+  treeDipho_.massCorrSmear_old = -500;
   treeDipho_.massCorrSmear = -500;
   treeDipho_.massCorrSmearUp = -500;
   treeDipho_.massCorrSmearDown = -500;
@@ -3198,6 +3244,14 @@ void DiPhoAnalyzer_Moriond17::initTreeStructure() {
   treeDipho_.massCorrScaleDown = -500;
   treeDipho_.massRaw = -500;
   treeDipho_.massOrig = -500;
+  treeDipho_.leadScale = -500;
+  treeDipho_.subleadScale = -500;
+  treeDipho_.old_leadScale = -500;
+  treeDipho_.old_subleadScale = -500;
+  treeDipho_.old_leadSmear = -500;
+  treeDipho_.old_subleadSmear = -500;
+  treeDipho_.leadSmear = -500;
+  treeDipho_.subleadSmear = -500;
   treeDipho_.ptggOrig = -500;
   treeDipho_.genZ = -500;
   treeDipho_.ptZ = -500;
