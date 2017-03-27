@@ -9,6 +9,7 @@
 #include "../interface/Config.hh"
 #include "../interface/Analysis.hh"
 #include "../interface/StackPlots.hh"
+#include "../interface/OverlayPlots.hh"
 #include "../interface/CardMaker.hh"
 #include "../interface/METcorr.hh"
 
@@ -34,7 +35,7 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set sample map 
   //------------------------------------------------------------------------
   if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
-  if (Config::doAnalysis || Config::doStack || Config::makeCards)
+  if (Config::doAnalysis || Config::doStack || Config::makeCards || Config::doComb)
   {
     Config::SampleMap["VHToGG"]			= false; // !isData
     Config::SampleMap["GluGluHToGG"]		= false; // !isData
@@ -313,6 +314,16 @@ int main(int argc, const char* argv[])
     StackPlots * stack = new StackPlots();
     stack->DoStack(yields);
     delete stack;    
+  }
+
+  //------------------------------------------------------------------------
+  // Make overlay plots 
+  //------------------------------------------------------------------------
+  if (Config::doComb)  
+  {
+    OverlayPlots * comb = new OverlayPlots();
+    comb->DoComb();
+    delete comb;    
   }
 
   //------------------------------------------------------------------------

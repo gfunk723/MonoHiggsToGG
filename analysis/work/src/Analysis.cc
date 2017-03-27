@@ -208,7 +208,7 @@ void Analysis::DoPlots(int prompt)
     if (!passSel) continue;
 
     //------------------------------------------------------------------------
-    // Fill the histograms -- before final cuts
+    // Fill the histograms -- after kin. cuts, before lep,jet,dphi cuts
     //------------------------------------------------------------------------
     
     //--------> Fill the standard plots

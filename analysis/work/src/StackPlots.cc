@@ -91,11 +91,13 @@ void StackPlots::FixPlotStyling(const Int_t th1f)
   fOutBkgTH1FHists[th1f]->SetMarkerSize(0);
   fOutBkgTH1FHists[th1f]->SetFillColor(kGray+3);
   fOutBkgTH1FHists[th1f]->SetFillStyle(3013);
-  fOutHiggsBkgHists[th1f]->SetFillColor(Config::colorMap["SMHiggs"]);
-  fOutEWK1BkgHists[th1f]->SetFillColor(Config::colorMap["EWK1pho"]);
-  fOutEWK2BkgHists[th1f]->SetFillColor(Config::colorMap["EWK2pho"]);
-  fOutJetsBkgHists[th1f]->SetFillColor(Config::colorMap["Jetspho"]);
-  fOutDYBkgHists[th1f]->SetFillColor(Config::colorMap["DYJetsToLL"]);
+  if (Config::mergeBkgs){
+    fOutHiggsBkgHists[th1f]->SetFillColor(Config::colorMap["SMHiggs"]);
+    fOutEWK1BkgHists[th1f]->SetFillColor(Config::colorMap["EWK1pho"]);
+    fOutEWK2BkgHists[th1f]->SetFillColor(Config::colorMap["EWK2pho"]);
+    fOutJetsBkgHists[th1f]->SetFillColor(Config::colorMap["Jetspho"]);
+    fOutDYBkgHists[th1f]->SetFillColor(Config::colorMap["DYJetsToLL"]);
+  }
 
   //------------------------------------------------------------------------
   // Make the signals pretty 
