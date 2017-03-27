@@ -111,7 +111,9 @@ void addWeights(float lumiForWgt, TString path, TString sample){
      }// finish event loop
 
      // weight h_selection
-     h_selection->Scale( xsecToWeight / sampleSumWgt);
+     if (sampleID>0 && sampleID<10000){
+       h_selection->Scale( lumiForWgt * xsecToWeight / sampleSumWgt); // no SF included
+     }
 
      // ----------------------------------------------------------------  
      // write the output tree 

@@ -541,7 +541,7 @@ def AllGlobal(fname):
 
   fout.write("% Scalar Model Efficiencies \n")
   fout.write("$m_{\\chi}$ [GeV] & 1 & 10 & 50 & 150 & 500 & 1000 \\\\   \n")
-  fout.write("$m_{Z'}$ [GeV]    &   &    &    &     &     &      \\\\   \n")
+  fout.write("$m_{S}$ [GeV]    &   &    &    &     &     &       \\\\   \n")
   fout.write("\\hline \n")
   fout.write("10 & "+effscal10[0]+" & "+effscal10[1]+" & "+effscal10[2]+" & "+effscal10[3]+" & "+effscal10[4]+" & "+effscal10[5]+" \\\\ \n")
   fout.write("15 & "+effscal15[0]+" & "+effscal15[1]+" & "+effscal15[2]+" & "+effscal15[3]+" & "+effscal15[4]+" & "+effscal15[5]+" \\\\ \n")
