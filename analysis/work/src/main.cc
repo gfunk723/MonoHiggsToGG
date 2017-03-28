@@ -52,9 +52,9 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
     Config::SampleMap["WJetsToLNu"]		= false; // !isData
     Config::SampleMap["WZTo2L2Q"]		= false; // !isData
     Config::SampleMap["DYJetsToLL"]		= false; // !isData
+    Config::SampleMap["DiPhoton"]		= false; // !isData 
     Config::SampleMap["QCD"]			= false; // !isData
     Config::SampleMap["GJets"]			= false; // !isData
-    Config::SampleMap["DiPhoton"]		= false; // !isData 
     Config::SampleMap["2HDM_mZP600_mA0300"]	= false; // !isData
     Config::SampleMap["2HDM_mZP800_mA0300"]     = false; // !isData
     Config::SampleMap["2HDM_mZP1000_mA0300"]    = false; // !isData 
@@ -226,7 +226,7 @@ int main(int argc, const char* argv[])
   //------------------------------------------------------------------------
   // Initialization
   //------------------------------------------------------------------------
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v2/";
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/";
   std::ofstream yields; TStyle * tdrStyle; 
   InitializeMain(yields, tdrStyle);
 

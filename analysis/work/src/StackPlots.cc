@@ -354,10 +354,16 @@ void StackPlots::MakeStackPlots(std::ofstream & yields)
     //------------------------------------------------------------------------
     // Copy bkg -- to use as unc. 
     //------------------------------------------------------------------------
+    Double_t index_non0int = 0;
     for (Int_t mc = 0; mc < fNBkg; mc++){
-      if (mc==0) fOutBkgTH1FHists[th1f] = (TH1F*)fInBkgTH1FHists[th1f][mc]->Clone();
+      if (fInBkgTH1FHists[th1f][mc]->Integral() <= 0) continue;
+      else{ index_non0int = mc; break; }
+    }
+    for (Int_t mc = 0; mc < fNBkg; mc++){
+      if      (fInBkgTH1FHists[th1f][mc]->Integral() <= 0) continue;
+      else if (mc == index_non0int) fOutBkgTH1FHists[th1f] = (TH1F*)fInBkgTH1FHists[th1f][mc]->Clone();
       else if (fBkgNames[mc]=="QCD" && Config::doQCDrewgt) fOutBkgTH1FHists[th1f]->Add(fGJetsClone[th1f]);
-      else       fOutBkgTH1FHists[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
+      else    fOutBkgTH1FHists[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
     }
 
     //------------------------------------------------------------------------
@@ -740,7 +746,9 @@ void StackPlots::InitTH1FNamesAndSubDNames()
   // Choose the histograms to run 
   //------------------------------------------------------------------------
   std::ifstream plots_to_run;
-  plots_to_run.open(Form("%s/%s",Config::outdir.Data(),Config::plotnames.Data()),std::ios::in);
+  TString plotpath = Form("%s/%s",Config::outdir.Data(),Config::plotnames.Data());
+  std::cout << "Looking for plots in : " << plotpath << std::endl;
+  plots_to_run.open(plotpath,std::ios::in);
 
   TString plotname;
   TString subdir;
