@@ -1,6 +1,6 @@
 #! /bin/sh
 
-path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v1/"
+path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/"
 #path="../macro/data/25ns_v80X_v5/"
 
 root -l -b << EOF
@@ -18,12 +18,14 @@ skim("${path}","QCD");
 skim("${path}","GJets");
 skim("${path}","DYJetsToLL");
 skim("${path}","NonResBkg");
+skim("${path}","EWKBkg");
 skim("${path}","TGJets");
 skim("${path}","TTGG_0Jets");
 skim("${path}","TTGJets");
 skim("${path}","TTJets");
 skim("${path}","WGToLNuG");
 skim("${path}","ZGTo2LG");
+skim("${path}","ZGTo2NuG");
 skim("${path}","ZZTo2L2Q");
 skim("${path}","WJetsToLNu");
 skim("${path}","WZTo2L2Q");
