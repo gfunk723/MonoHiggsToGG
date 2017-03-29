@@ -173,7 +173,7 @@ void Plotter::DoPlots(int prompt){
     fLorenzVecJet4.SetPtEtaPhiM(ptJet4,etaJet4,phiJet4,massJet4);
 
     // calculate the weight
-    Double_t Weight = (weight)*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
+    Double_t Weight = (weight);//*fPUWeights[nvtx];// PURW[0] corresponds to bin1=0vtx
 
     if (hltPhoton26Photon16Mass60 == 1) fTH1DMap["hlt"]->Fill(1.5,1);
     if (hltPhoton36Photon22Mass15 == 1) fTH1DMap["hlt"]->Fill(2.5,1);
@@ -310,7 +310,7 @@ void Plotter::DoPlots(int prompt){
       /////////////////////////////////////////////////////////////////
       bool passTheSel = false;
       if (fWhichSel==0) passTheSel = true; // Orignal Selection
-      if (fWhichSel==1 && (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)) 		passTheSel = true;// OptSel1 (for M600 point)
+      if (fWhichSel==1 && (pt1 > 0.50*mgg && pt2 > 0.25*mgg /*&& ptgg > 90*/)) 		passTheSel = true;// OptSel1 (for M600 point)
       if (fWhichSel==2 && (pt1 > 0.55*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.5)) passTheSel = true;// OptSel2 (for M600 point)
       if (fWhichSel==3 && (pt1 > 0.55*mgg && pt2 > 0.25*mgg && ptgg > 90)) 		passTheSel = true;// OptSel3
       if (fWhichSel==4 && (pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg/t1pfmetCorr > 0.2)) passTheSel = true;// OptSel4
@@ -333,8 +333,128 @@ void Plotter::DoPlots(int prompt){
 	  fTH1DMap["nElec"]->Fill(nEle,Weight);
 	  fTH1DMap["nMuon"]->Fill(nMuons,Weight);
 
-          if (nJets30 > 2) continue; // test jet veto
+	  Bool_t max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
+	  Bool_t min_dphiJETMETpass = true;	// min dphi Jet-MET > 0.5 
+	  Double_t min_dphi_JetMET = 10.;
+          Double_t max_dphi_JetMET = 0.;
+	  // UNCORRECTED MET VERSIONS
+	  Bool_t max_dphiJETMETpassUncorr = true;	// max dphi Jet-MET < 2.7 
+	  Bool_t min_dphiJETMETpassUncorr = true;	// min dphi Jet-MET > 0.5 
+	  Double_t min_dphi_JetMETUncorr = 10.;
+          Double_t max_dphi_JetMETUncorr = 0.;
 
+	  if ( nJets50 > 0 ){
+	    Double_t dphiJet1METmin = 10;
+	    Double_t dphiJet2METmin = 10;
+	    Double_t dphiJet3METmin = 10;
+	    Double_t dphiJet4METmin = 10;
+	    Double_t dphiJet1METmax = 0;
+	    Double_t dphiJet2METmax = 0;
+	    Double_t dphiJet3METmax = 0;
+	    Double_t dphiJet4METmax = 0;
+	    Double_t dphiJet1METminUncorr = 10;
+	    Double_t dphiJet2METminUncorr = 10;
+	    Double_t dphiJet3METminUncorr = 10;
+	    Double_t dphiJet4METminUncorr = 10;
+	    Double_t dphiJet1METmaxUncorr = 0;
+	    Double_t dphiJet2METmaxUncorr = 0;
+	    Double_t dphiJet3METmaxUncorr = 0;
+	    Double_t dphiJet4METmaxUncorr = 0;
+	    if ( ptJetLead > 50 ){
+	      dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
+	      dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
+	      dphiJet1METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+	      dphiJet1METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
+	    }
+	    if ( ptJetSubLead > 50 ){
+	      dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
+	      dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
+	      dphiJet2METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+	      dphiJet2METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
+	    }
+	    if ( ptJet3 > 50 ){
+	      dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
+	      dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
+	      dphiJet3METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
+	      dphiJet3METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
+	    }
+	    if ( ptJet4 > 50 ){
+ 	      dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
+ 	      dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
+ 	      dphiJet4METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+ 	      dphiJet4METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
+	    }
+
+	    // find the min_dphi_JetMET 
+	    if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
+	    if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
+	    if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
+	    if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
+
+	    // find the max_dphi_JetMET 
+	    if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
+	    if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
+	    if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
+	    if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
+
+	    // UNCORRECTED MET VERSIONS
+	    // find the min_dphi_JetMET 
+	    if (dphiJet1METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet1METminUncorr;	   
+	    if (dphiJet2METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet2METminUncorr;	   
+	    if (dphiJet3METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet3METminUncorr;	   
+	    if (dphiJet4METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet4METminUncorr;	   
+
+	    // find the max_dphi_JetMET 
+	    if (dphiJet1METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet1METmaxUncorr;	   
+	    if (dphiJet2METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet2METmaxUncorr;	   
+	    if (dphiJet3METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet3METmaxUncorr;	   
+	    if (dphiJet4METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet4METmaxUncorr;	   
+	  }// end if njets > 0
+
+	  //if (isData) std::cout << entry << " max_dphi_JetMET = " << max_dphi_JetMET << std::endl;
+	  //if (isData) std::cout << entry << " min_dphi_JetMET = " << min_dphi_JetMET << std::endl;
+
+	  //if (max_dphi_JetMET > 2.7) max_dphiJETMETpass = false;// max dphi Jet-MET < 2.7 
+	  max_dphiJETMETpass = true;// max dphi Jet-MET < 2.7 
+	  if (min_dphi_JetMET < 0.5) min_dphiJETMETpass = false;// min dphi Jet-MET > 0.5 
+	  // UNCORRECTED MET VERSIONS
+	  //if (max_dphi_JetMETUncorr > 2.7) max_dphiJETMETpassUncorr = false;// max dphi Jet-MET < 2.7 
+	  max_dphiJETMETpassUncorr = true;// max dphi Jet-MET < 2.7 
+	  if (min_dphi_JetMETUncorr < 0.5) min_dphiJETMETpassUncorr = false;// min dphi Jet-MET > 0.5 
+
+	  // DeltaPhi between Jet1 and gg 
+	  Double_t dphiJet1gg = 0;
+	  dphiJet1gg = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),fLorenzVecgg.Phi()));
+	  Bool_t dphiJet1ggpass = false; // dphi gg-Jet1 < 2.7
+	  if ( dphiJet1gg < 2.7 ) dphiJet1ggpass = true;
+
+	  // Max DeltaPhi between each photon and MET
+	  Double_t dphig1MET = 0;
+	  Double_t dphig2MET = 0;
+ 	  dphig1MET = TMath::Abs(deltaPhi(fLorenzVec1.Phi(),t1pfmetPhiCorr));
+ 	  dphig2MET = TMath::Abs(deltaPhi(fLorenzVec2.Phi(),t1pfmetPhiCorr));
+	  Double_t maxdphigMET = TMath::Max(dphig1MET,dphig2MET);
+          Double_t mindphigMET = TMath::Min(dphig1MET,dphig2MET);
+
+	  // DeltaPhi between gg and MET
+	  Double_t dphiggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhiCorr));
+	  Bool_t dphiggMETpass = false; // dphi gg-MET > 2.1
+	  if ( dphiggMET >= 2.1 ) dphiggMETpass = true;
+	  // UNCORRECTED MET VERSIONS
+	  Double_t dphiggMETUncorr = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi));
+	  Bool_t dphiggMETpassUncorr = false; // dphi gg-MET > 2.1
+	  if ( dphiggMETUncorr >= 2.1 ) dphiggMETpassUncorr = true;
+
+	  // make a set of bools for easier comparison
+	  Bool_t outsideMgg = false; // event lies outside mgg range
+	  if ( mgg < 115 || mgg > 135 ) outsideMgg = true;
+
+          if (dphiggMETpass && min_dphiJETMETpass && t1pfmetCorr >= METcut && ptgg > 90){
+	    fTH1DMap["nElec_metCUT"]->Fill(nEle,Weight);
+	    fTH1DMap["nMuon_metCUT"]->Fill(nMuons,Weight);
+            fTH1DMap["nJets_metCUT"]->Fill(nJets30,Weight);
+          }
+          
 	  if (nEle >= 1 || nMuons >= 1) continue; //reject events with leptons
 	  //numMargaretLepVeto++;
 	  numMargaretLepVeto+=Weight;
@@ -358,6 +478,72 @@ void Plotter::DoPlots(int prompt){
           loR9 = false;
           if (r91 > 0.94 && r92 > 0.94) hiR9 = true;
           else if (r91 <= 0.94 || r92 <= 0.94) loR9 = true;
+
+          //-------------------------------------------------
+          // plots for studies: n-1 
+          //-------------------------------------------------
+          if ( ptgg > 90 ){
+            //if (Weight > 10) std::cout << "Weight = " << Weight << " weight = " << weight << std::endl; 
+            fTH1DMap["newstudies_mgg_addptgg"]->Fill(mgg,Weight);
+            if ( nJets30 <= 2 ){
+              fTH1DMap["newstudies_mgg_addnjet"]->Fill(mgg,Weight);
+              if ( min_dphiJETMETpass ){
+                fTH1DMap["newstudies_mgg_adddphijMET"]->Fill(mgg,Weight);
+                if ( dphiggMETpass ){
+                  fTH1DMap["newstudies_mgg_adddphihMET"]->Fill(mgg,Weight);
+                }
+              }
+            }
+          }
+          if ( dphiggMETpass && min_dphiJETMETpass && ptgg > 90 && nJets30 <= 2 ){
+            if ( EB1 && EB2 ) fTH1DMap["newstudies_mgg_barrel"]->Fill(mgg,Weight);
+            else              fTH1DMap["newstudies_mgg_else"]->Fill(mgg,Weight);
+            if ( outsideMgg ) fTH1DMap["newstudies_MET_outmgg"]->Fill(t1pfmetCorr,Weight);
+            else              fTH1DMap["newstudies_MET_selmgg"]->Fill(t1pfmetCorr,Weight);
+            if ( mgg < 115 )  fTH1DMap["newstudies_MET_lowmgg"]->Fill(t1pfmetCorr,Weight);
+            if ( mgg > 135 )  fTH1DMap["newstudies_MET_highmgg"]->Fill(t1pfmetCorr,Weight);
+          } 
+          if ( dphiggMETpass && min_dphiJETMETpass && nJets30 <= 2 ){
+            fTH1DMap["newstudies_mgg_ptgg"]->Fill(mgg,Weight);
+            if ( t1pfmetCorr < 130) fTH1DMap["newstudies_ptgg_lowMET"]->Fill(ptgg,Weight);
+            else                    fTH1DMap["newstudies_ptgg_highMET"]->Fill(ptgg,Weight);
+          }         
+          if ( dphiggMETpass && min_dphiJETMETpass && ptgg > 90 ){
+            fTH1DMap["newstudies_mgg_njet"]->Fill(mgg,Weight);
+            if ( t1pfmetCorr < 130) fTH1DMap["newstudies_njet_lowMET"]->Fill(nJets30,Weight);
+            else                    fTH1DMap["newstudies_njet_highMET"]->Fill(nJets30,Weight);
+          }
+          if ( dphiggMETpass && ptgg > 90 && nJets30 <= 2 ){
+            fTH1DMap["newstudies_mgg_dphijMET"]->Fill(mgg,Weight);
+            if ( t1pfmetCorr < 130) fTH1DMap["newstudies_dphijMET_lowMET"]->Fill(min_dphi_JetMET,Weight);
+            else                    fTH1DMap["newstudies_dphijMET_highMET"]->Fill(min_dphi_JetMET,Weight);
+          }
+          if ( min_dphiJETMETpass && ptgg > 90 && nJets30 <= 2 ){
+            fTH1DMap["newstudies_mgg_dphihMET"]->Fill(mgg,Weight);
+            if ( t1pfmetCorr < 130) fTH1DMap["newstudies_dphihMET_lowMET"]->Fill(dphiggMET,Weight);
+            else                    fTH1DMap["newstudies_dphihMET_highMET"]->Fill(dphiggMET,Weight);
+          }
+          if ( ptgg > 90 && nJets30 <= 2 ){
+            if ( t1pfmetCorr < 130){
+              if ( outsideMgg ) fTH1DMap["newstudies_dphihMET_lowMET_outmgg"]->Fill(dphiggMET,Weight);
+              else              fTH1DMap["newstudies_dphihMET_lowMET_selmgg"]->Fill(dphiggMET,Weight);
+              if ( outsideMgg ) fTH1DMap["newstudies_dphijMET_lowMET_outmgg"]->Fill(min_dphi_JetMET,Weight);
+              else              fTH1DMap["newstudies_dphijMET_lowMET_selmgg"]->Fill(min_dphi_JetMET,Weight);
+            }
+            else{
+              if ( outsideMgg ) fTH1DMap["newstudies_dphihMET_highMET_outmgg"]->Fill(dphiggMET,Weight);
+              else              fTH1DMap["newstudies_dphihMET_highMET_selmgg"]->Fill(dphiggMET,Weight);
+              if ( outsideMgg ) fTH1DMap["newstudies_dphijMET_highMET_outmgg"]->Fill(min_dphi_JetMET,Weight);
+              else              fTH1DMap["newstudies_dphijMET_highMET_selmgg"]->Fill(min_dphi_JetMET,Weight);
+            }
+          }
+   
+          //-------------------------------------------------
+
+          if (nJets30 > 2) continue; // jet veto
+
+          if (ptgg <= 90) continue;
+
 
           //if (passEV1 && passEV2){
 	  //  if (inEB && hiR9){  
@@ -508,6 +694,10 @@ void Plotter::DoPlots(int prompt){
           fTH1DMap["phoiso2"]->Fill(phoiso2,Weight);
           fTH1DMap["sieie1"]->Fill(sieie1,Weight);
           fTH1DMap["sieie2"]->Fill(sieie2,Weight);
+          if (inEB) fTH1DMap["sieie1EB"]->Fill(sieie1,Weight);
+          if (inEB) fTH1DMap["sieie2EB"]->Fill(sieie2,Weight);
+          if (inEE) fTH1DMap["sieie1EE"]->Fill(sieie1,Weight);
+          if (inEE) fTH1DMap["sieie2EE"]->Fill(sieie2,Weight);
           fTH1DMap["hoe1"]->Fill(hoe1,Weight);
           fTH1DMap["hoe2"]->Fill(hoe2,Weight);
           fTH1DMap["r91"]->Fill(r91,Weight);
@@ -535,15 +725,6 @@ void Plotter::DoPlots(int prompt){
 	  // set these values to true for events w/o jets
 	  //Bool_t dphiJet1METpass = true;	// dphi Jet1-MET < 2.7
 	  //Bool_t dphiJet2METpass = true;	// dphi Jet2-MET < 2.7
-	  Bool_t max_dphiJETMETpass = true;	// max dphi Jet-MET < 2.7 
-	  Bool_t min_dphiJETMETpass = true;	// min dphi Jet-MET > 0.5 
-	  Double_t min_dphi_JetMET = 10.;
-          Double_t max_dphi_JetMET = 0.;
-	  // UNCORRECTED MET VERSIONS
-	  Bool_t max_dphiJETMETpassUncorr = true;	// max dphi Jet-MET < 2.7 
-	  Bool_t min_dphiJETMETpassUncorr = true;	// min dphi Jet-MET > 0.5 
-	  Double_t min_dphi_JetMETUncorr = 10.;
-          Double_t max_dphi_JetMETUncorr = 0.;
 
 	  //if(run==260538&& lumi==245 && event==413101759)	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
 	  //if(run==260426&& lumi==49  && event==81336845) 	std::cout <<lumi<<" *** Event njets = "<< nJets <<std::endl;
@@ -568,84 +749,7 @@ void Plotter::DoPlots(int prompt){
 	  //  }
 	  //}
 	  // if more than one high pt jet, find min & max dphi of the top 4 jets
-	  if ( nJets50 > 0 ){
-	    Double_t dphiJet1METmin = 10;
-	    Double_t dphiJet2METmin = 10;
-	    Double_t dphiJet3METmin = 10;
-	    Double_t dphiJet4METmin = 10;
-	    Double_t dphiJet1METmax = 0;
-	    Double_t dphiJet2METmax = 0;
-	    Double_t dphiJet3METmax = 0;
-	    Double_t dphiJet4METmax = 0;
-	    Double_t dphiJet1METminUncorr = 10;
-	    Double_t dphiJet2METminUncorr = 10;
-	    Double_t dphiJet3METminUncorr = 10;
-	    Double_t dphiJet4METminUncorr = 10;
-	    Double_t dphiJet1METmaxUncorr = 0;
-	    Double_t dphiJet2METmaxUncorr = 0;
-	    Double_t dphiJet3METmaxUncorr = 0;
-	    Double_t dphiJet4METmaxUncorr = 0;
-	    if ( ptJetLead > 50 ){
-	      dphiJet1METmin = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
-	      dphiJet1METmax = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhiCorr));
-	      dphiJet1METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-	      dphiJet1METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),t1pfmetPhi));
-	    }
-	    if ( ptJetSubLead > 50 ){
-	      dphiJet2METmin = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
-	      dphiJet2METmax = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhiCorr));
-	      dphiJet2METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
-	      dphiJet2METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet2.Phi(),t1pfmetPhi));
-	    }
-	    if ( ptJet3 > 50 ){
-	      dphiJet3METmin = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
-	      dphiJet3METmax = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhiCorr));
-	      dphiJet3METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
-	      dphiJet3METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet3.Phi(),t1pfmetPhi));
-	    }
-	    if ( ptJet4 > 50 ){
- 	      dphiJet4METmin = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
- 	      dphiJet4METmax = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhiCorr));
- 	      dphiJet4METminUncorr = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
- 	      dphiJet4METmaxUncorr = TMath::Abs(deltaPhi(fLorenzVecJet4.Phi(),t1pfmetPhi));
-	    }
 
-	    // find the min_dphi_JetMET 
-	    if (dphiJet1METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet1METmin;	   
-	    if (dphiJet2METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet2METmin;	   
-	    if (dphiJet3METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet3METmin;	   
-	    if (dphiJet4METmin < min_dphi_JetMET) min_dphi_JetMET = dphiJet4METmin;	   
-
-	    // find the max_dphi_JetMET 
-	    if (dphiJet1METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet1METmax;	   
-	    if (dphiJet2METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet2METmax;	   
-	    if (dphiJet3METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet3METmax;	   
-	    if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
-
-	    // UNCORRECTED MET VERSIONS
-	    // find the min_dphi_JetMET 
-	    if (dphiJet1METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet1METminUncorr;	   
-	    if (dphiJet2METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet2METminUncorr;	   
-	    if (dphiJet3METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet3METminUncorr;	   
-	    if (dphiJet4METminUncorr < min_dphi_JetMETUncorr) min_dphi_JetMETUncorr = dphiJet4METminUncorr;	   
-
-	    // find the max_dphi_JetMET 
-	    if (dphiJet1METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet1METmaxUncorr;	   
-	    if (dphiJet2METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet2METmaxUncorr;	   
-	    if (dphiJet3METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet3METmaxUncorr;	   
-	    if (dphiJet4METmaxUncorr > max_dphi_JetMETUncorr) max_dphi_JetMETUncorr = dphiJet4METmaxUncorr;	   
-	  }// end if njets > 0
-
-	  //if (isData) std::cout << entry << " max_dphi_JetMET = " << max_dphi_JetMET << std::endl;
-	  //if (isData) std::cout << entry << " min_dphi_JetMET = " << min_dphi_JetMET << std::endl;
-
-	  //if (max_dphi_JetMET > 2.7) max_dphiJETMETpass = false;// max dphi Jet-MET < 2.7 
-	  max_dphiJETMETpass = true;// max dphi Jet-MET < 2.7 
-	  if (min_dphi_JetMET < 0.5) min_dphiJETMETpass = false;// min dphi Jet-MET > 0.5 
-	  // UNCORRECTED MET VERSIONS
-	  //if (max_dphi_JetMETUncorr > 2.7) max_dphiJETMETpassUncorr = false;// max dphi Jet-MET < 2.7 
-	  max_dphiJETMETpassUncorr = true;// max dphi Jet-MET < 2.7 
-	  if (min_dphi_JetMETUncorr < 0.5) min_dphiJETMETpassUncorr = false;// min dphi Jet-MET > 0.5 
 
 	  if (nJets50 > 0){
 	    fTH1DMap["absdphi_maxJetMET"]->Fill(TMath::Abs(max_dphi_JetMET),Weight);
@@ -670,35 +774,6 @@ void Plotter::DoPlots(int prompt){
 	    fTH1DMap["jetInfo_phi1"]->Fill(phiJetLead,Weight);
 	    fTH1DMap["jetInfo_mass1"]->Fill(massJetLead,Weight);
 	  }
-
-	  // DeltaPhi between Jet1 and gg 
-	  Double_t dphiJet1gg = 0;
-	  dphiJet1gg = TMath::Abs(deltaPhi(fLorenzVecJet1.Phi(),fLorenzVecgg.Phi()));
-	  Bool_t dphiJet1ggpass = false; // dphi gg-Jet1 < 2.7
-	  if ( dphiJet1gg < 2.7 ) dphiJet1ggpass = true;
-
-	  // Max DeltaPhi between each photon and MET
-	  Double_t dphig1MET = 0;
-	  Double_t dphig2MET = 0;
- 	  dphig1MET = TMath::Abs(deltaPhi(fLorenzVec1.Phi(),t1pfmetPhiCorr));
- 	  dphig2MET = TMath::Abs(deltaPhi(fLorenzVec2.Phi(),t1pfmetPhiCorr));
-	  Double_t maxdphigMET = TMath::Max(dphig1MET,dphig2MET);
-          Double_t mindphigMET = TMath::Min(dphig1MET,dphig2MET);
-
-	  // DeltaPhi between gg and MET
-	  Double_t dphiggMET = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhiCorr));
-	  Bool_t dphiggMETpass = false; // dphi gg-MET > 2.1
-	  if ( dphiggMET >= 2.1 ) dphiggMETpass = true;
-	  // UNCORRECTED MET VERSIONS
-	  Double_t dphiggMETUncorr = TMath::Abs(deltaPhi(fLorenzVecgg.Phi(),t1pfmetPhi));
-	  Bool_t dphiggMETpassUncorr = false; // dphi gg-MET > 2.1
-	  if ( dphiggMETUncorr >= 2.1 ) dphiggMETpassUncorr = true;
-
-	  // make a set of bools for easier comparison
-	  Bool_t outsideMgg = false; // event lies outside mgg range
-	  if ( mgg < 115 || mgg > 135 ) outsideMgg = true;
-
-
 
 
           if (min_dphiJETMETpass && dphiggMETpass && t1pfmetCorr <= METcut){
@@ -726,15 +801,27 @@ void Plotter::DoPlots(int prompt){
             if (dphiggMETpass)      fTH1DMap["test_mgg_dphiGGmet"]->Fill(mgg,Weight);
           }
  
-
-
-
-
-
-
-
-
-
+          if (outsideMgg && t1pfmetCorr < METcut){
+            fTH1DMap["studies_dphi_minjMET_lowMET"]->Fill(min_dphi_JetMET,Weight);
+            fTH1DMap["studies_dphi_hMET_lowMET"]->Fill(dphiggMET,Weight);
+            if (t1pfmetCorr < 10){
+              fTH1DMap["studies_dphi_minjMET_lowMET10"]->Fill(min_dphi_JetMET,Weight);
+              fTH1DMap["studies_dphi_hMET_lowMET10"]->Fill(dphiggMET,Weight);
+            }
+            if (t1pfmetCorr < 20){
+              fTH1DMap["studies_dphi_minjMET_lowMET20"]->Fill(min_dphi_JetMET,Weight);
+              fTH1DMap["studies_dphi_hMET_lowMET20"]->Fill(dphiggMET,Weight);
+            }
+            if (t1pfmetCorr < 30){
+              fTH1DMap["studies_dphi_minjMET_lowMET30"]->Fill(min_dphi_JetMET,Weight);
+              fTH1DMap["studies_dphi_hMET_lowMET30"]->Fill(dphiggMET,Weight);
+            }
+            if (t1pfmetCorr < 40){
+              fTH1DMap["studies_dphi_minjMET_lowMET40"]->Fill(min_dphi_JetMET,Weight);
+              fTH1DMap["studies_dphi_hMET_lowMET40"]->Fill(dphiggMET,Weight);
+            }
+          }
+ 
 
 	  Bool_t dphigMETpass = false; // dphi g1-JET && g2-JET < 2.7
 
@@ -847,11 +934,7 @@ void Plotter::DoPlots(int prompt){
             }
           }
 
-          if (dphiggMETpass && min_dphiJETMETpass && t1pfmetCorr >= METcut){
-	    fTH1DMap["nElec_metCUT"]->Fill(nEle,Weight);
-	    fTH1DMap["nMuon_metCUT"]->Fill(nMuons,Weight);
-            fTH1DMap["nJets_metCUT"]->Fill(nJets30,Weight);
-          }
+
 
 	  if ( !isData && dphiggMETpass /*&& max_dphiJETMETpass*/ && min_dphiJETMETpass  ){
 	    //-------------- 
@@ -1333,6 +1416,10 @@ void Plotter::SetUpPlots(){
   fTH1DMap["phoiso2"]			= Plotter::MakeTH1DPlot("phoiso2","",75,-5.,15.,"PHiso(#gamma2)",""); 
   fTH1DMap["sieie1"]			= Plotter::MakeTH1DPlot("sieie1","",75,0.,0.03,"#sigma_{i#eta i#eta}(#gamma1)",""); 
   fTH1DMap["sieie2"]			= Plotter::MakeTH1DPlot("sieie2","",75,0.,0.03,"#sigma_{i#eta i#eta}(#gamma2)",""); 
+  fTH1DMap["sieie1EB"]			= Plotter::MakeTH1DPlot("sieie1EB","",75,0.,0.03,"#sigma_{i#eta i#eta}(#gamma1)",""); 
+  fTH1DMap["sieie2EB"]			= Plotter::MakeTH1DPlot("sieie2EB","",75,0.,0.03,"#sigma_{i#eta i#eta}(#gamma2)",""); 
+  fTH1DMap["sieie1EE"]			= Plotter::MakeTH1DPlot("sieie1EE","",75,0.,0.03,"#sigma_{i#eta i#eta}(#gamma1)",""); 
+  fTH1DMap["sieie2EE"]			= Plotter::MakeTH1DPlot("sieie2EE","",75,0.,0.03,"#sigma_{i#eta i#eta}(#gamma2)",""); 
   fTH1DMap["hoe1"]			= Plotter::MakeTH1DPlot("hoe1","",25,0.,0.025,"H/E(#gamma1)","");
   fTH1DMap["hoe2"]			= Plotter::MakeTH1DPlot("hoe2","",25,0.,0.025,"H/E(#gamma2)","");
   fTH1DMap["r91"]			= Plotter::MakeTH1DPlot("r91","",50,0.,1.1,"R9(#gamma1)","");
@@ -1364,6 +1451,49 @@ void Plotter::SetUpPlots(){
   fTH1DMap["test_mgg_nocuts"]		 = Plotter::MakeTH1DPlot("mgg_nocuts","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
   fTH1DMap["test_mgg_dphiJmet"]		 = Plotter::MakeTH1DPlot("mgg_dphiJmet","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
   fTH1DMap["test_mgg_dphiGGmet"]	 = Plotter::MakeTH1DPlot("mgg_dphiGGmet","",41,99.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+
+  fTH1DMap["newstudies_MET_lowmgg"]	   = Plotter::MakeTH1DPlot("newstudies_MET_lowmgg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
+  fTH1DMap["newstudies_MET_highmgg"]	   = Plotter::MakeTH1DPlot("newstudies_MET_highmgg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
+  fTH1DMap["newstudies_MET_outmgg"]	   = Plotter::MakeTH1DPlot("newstudies_MET_outmgg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
+  fTH1DMap["newstudies_MET_selmgg"]	   = Plotter::MakeTH1DPlot("newstudies_MET_selmgg","",60,0.,300.,"p_{T}^{miss} [GeV]","");
+  fTH1DMap["newstudies_ptgg_lowMET"]       = Plotter::MakeTH1DPlot("newstudies_ptgg_lowMET","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");  
+  fTH1DMap["newstudies_ptgg_highMET"]      = Plotter::MakeTH1DPlot("newstudies_ptgg_highMET","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");  
+  fTH1DMap["newstudies_njet_lowMET"]       = Plotter::MakeTH1DPlot("newstudies_njet_lowMET","",10,0.,10.,"Num Jets","");
+  fTH1DMap["newstudies_njet_highMET"]      = Plotter::MakeTH1DPlot("newstudies_njet_highMET","",10,0.,10.,"Num Jets","");
+  fTH1DMap["newstudies_mgg_njet"]          = Plotter::MakeTH1DPlot("newstudies_mgg_njet","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_ptgg"]          = Plotter::MakeTH1DPlot("newstudies_mgg_ptgg","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_dphihMET"]      = Plotter::MakeTH1DPlot("newstudies_mgg_dphihMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_dphijMET"]      = Plotter::MakeTH1DPlot("newstudies_mgg_dphijMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_dphihMET_lowMET"]   = Plotter::MakeTH1DPlot("newstudies_dphihMET_lowMET","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["newstudies_dphihMET_highMET"]  = Plotter::MakeTH1DPlot("newstudies_dphihMET_highMET","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["newstudies_dphijMET_lowMET"]   = Plotter::MakeTH1DPlot("newstudies_dphijMET_lowMET","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["newstudies_dphijMET_highMET"]  = Plotter::MakeTH1DPlot("newstudies_dphijMET_highMET","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["newstudies_dphihMET_lowMET_selmgg"]   = Plotter::MakeTH1DPlot("newstudies_dphihMET_lowMET_selmgg","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["newstudies_dphihMET_highMET_selmgg"]  = Plotter::MakeTH1DPlot("newstudies_dphihMET_highMET_selmgg","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["newstudies_dphijMET_lowMET_selmgg"]   = Plotter::MakeTH1DPlot("newstudies_dphijMET_lowMET_selmgg","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["newstudies_dphijMET_highMET_selmgg"]  = Plotter::MakeTH1DPlot("newstudies_dphijMET_highMET_selmgg","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["newstudies_dphihMET_lowMET_outmgg"]   = Plotter::MakeTH1DPlot("newstudies_dphihMET_lowMET_outmgg","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["newstudies_dphihMET_highMET_outmgg"]  = Plotter::MakeTH1DPlot("newstudies_dphihMET_highMET_outmgg","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["newstudies_dphijMET_lowMET_outmgg"]   = Plotter::MakeTH1DPlot("newstudies_dphijMET_lowMET_outmgg","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["newstudies_dphijMET_highMET_outmgg"]  = Plotter::MakeTH1DPlot("newstudies_dphijMET_highMET_outmgg","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["newstudies_mgg_addptgg"]       = Plotter::MakeTH1DPlot("newstudies_mgg_addptgg","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_addnjet"]       = Plotter::MakeTH1DPlot("newstudies_mgg_addnjet","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_adddphijMET"]   = Plotter::MakeTH1DPlot("newstudies_mgg_adddphijMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_adddphihMET"]   = Plotter::MakeTH1DPlot("newstudies_mgg_adddphihMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events"); 
+  fTH1DMap["newstudies_mgg_barrel"]        = Plotter::MakeTH1DPlot("newstudies_mgg_barrel","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+  fTH1DMap["newstudies_mgg_else"]          = Plotter::MakeTH1DPlot("newstudies_mgg_else","",38,105.,181.,"m_{#gamma#gamma} [GeV]","Events");  
+
+
+  fTH1DMap["studies_dphi_minjMET_lowMET"]	= Plotter::MakeTH1DPlot("studies_dphi_minjMET_lowMET","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["studies_dphi_hMET_lowMET"]	 	= Plotter::MakeTH1DPlot("studies_dphi_hMET_lowMET","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["studies_dphi_minjMET_lowMET10"]	= Plotter::MakeTH1DPlot("studies_dphi_minjMET_lowMET10","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["studies_dphi_hMET_lowMET10"]	= Plotter::MakeTH1DPlot("studies_dphi_hMET_lowMET10","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["studies_dphi_minjMET_lowMET20"]	= Plotter::MakeTH1DPlot("studies_dphi_minjMET_lowMET20","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["studies_dphi_hMET_lowMET20"]	= Plotter::MakeTH1DPlot("studies_dphi_hMET_lowMET20","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["studies_dphi_minjMET_lowMET30"]	= Plotter::MakeTH1DPlot("studies_dphi_minjMET_lowMET30","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["studies_dphi_hMET_lowMET30"]	= Plotter::MakeTH1DPlot("studies_dphi_hMET_lowMET30","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
+  fTH1DMap["studies_dphi_minjMET_lowMET40"]	= Plotter::MakeTH1DPlot("studies_dphi_minjMET_lowMET40","",10,0.,4.,"Min|#Delta#phi(Jet,E_{T}^{miss})|","");
+  fTH1DMap["studies_dphi_hMET_lowMET40"]	= Plotter::MakeTH1DPlot("studies_dphi_hMET_lowMET40","",20,0.,4.,"|#Delta#phi(#gamma#gamma,MET)|","");
 
   fTH1DMap["absdphi_g1MET"]		= Plotter::MakeTH1DPlot("absdphi_g1MET","",10,0.,4.,"|#Delta#phi(Pho1,E_{T}^{miss})|","");
   fTH1DMap["absdphi_maxgMET"]		= Plotter::MakeTH1DPlot("absdphi_maxgMET","",10,0.,4.,"Max|#Delta#phi(Pho,E_{T}^{miss})|","");

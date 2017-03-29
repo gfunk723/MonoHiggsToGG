@@ -93,7 +93,7 @@ private:
 
   // variables for branches
   Int_t         run;
-  Int_t         event;
+  UInt_t        event;
   Int_t         lumi;
   Float_t       rho;
   Int_t 	nvtx;

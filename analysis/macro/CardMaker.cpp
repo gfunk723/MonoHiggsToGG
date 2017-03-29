@@ -45,14 +45,14 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("DoubleEG",2)); 
 
   // signals
-  Samples.push_back(SamplePair("2HDM_mZP600_mA0300",100)); //mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP800_mA0300",101)); //mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1000_mA0300",102));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1200_mA0300",103));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1400_mA0300",104));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP1700_mA0300",105));//mA0_300 
-  Samples.push_back(SamplePair("2HDM_mZP2000_mA0300",106));//mA0_300  
-  Samples.push_back(SamplePair("2HDM_mZP2500_mA0300",107));//mA0_300   
+  Samples.push_back(SamplePair("2HDM_mZP600_mA0300",100)); 
+  Samples.push_back(SamplePair("2HDM_mZP800_mA0300",101)); 
+  Samples.push_back(SamplePair("2HDM_mZP1000_mA0300",102));
+  Samples.push_back(SamplePair("2HDM_mZP1200_mA0300",103));
+  Samples.push_back(SamplePair("2HDM_mZP1400_mA0300",104));
+  Samples.push_back(SamplePair("2HDM_mZP1700_mA0300",105));
+  Samples.push_back(SamplePair("2HDM_mZP2000_mA0300",106)); 
+  Samples.push_back(SamplePair("2HDM_mZP2500_mA0300",107));  
 
   Samples.push_back(SamplePair("2HDM_mZP600_mA0400",108)); 
   Samples.push_back(SamplePair("2HDM_mZP800_mA0400",109)); 
@@ -138,12 +138,15 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi150"   ,184));
   Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi50"    ,185));
   Samples.push_back(SamplePair("ScalarZp_mZP10000_mChi500"   ,186));
+  Samples.push_back(SamplePair("ScalarZp_mZP1000_mChi1000"   ,210));
   Samples.push_back(SamplePair("ScalarZp_mZP1000_mChi1"      ,187));
   Samples.push_back(SamplePair("ScalarZp_mZP1000_mChi150"    ,188));
   Samples.push_back(SamplePair("ScalarZp_mZP100_mChi1"       ,189));
   Samples.push_back(SamplePair("ScalarZp_mZP100_mChi10"      ,190));
   Samples.push_back(SamplePair("ScalarZp_mZP10_mChi1"        ,191));
   Samples.push_back(SamplePair("ScalarZp_mZP10_mChi10"       ,192));
+  Samples.push_back(SamplePair("ScalarZp_mZP10_mChi150"      ,211));
+  Samples.push_back(SamplePair("ScalarZp_mZP10_mChi50"       ,212));
   Samples.push_back(SamplePair("ScalarZp_mZP10_mChi1000"     ,193));
   Samples.push_back(SamplePair("ScalarZp_mZP10_mChi500"      ,194));
   Samples.push_back(SamplePair("ScalarZp_mZP200_mChi1"       ,195));
@@ -161,6 +164,7 @@ CardMaker::CardMaker(const Double_t scalefactor, const Double_t inLumi, const Db
   Samples.push_back(SamplePair("ScalarZp_mZP50_mChi50"       ,207));
   Samples.push_back(SamplePair("ScalarZp_mZP95_mChi50"       ,208));
   Samples.push_back(SamplePair("ScalarZp_mZP995_mChi500"     ,209));
+  Samples.push_back(SamplePair("ScalarZp_mZP15_mChi10"       ,213));
 
 
 
@@ -423,8 +427,8 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
   AnalyzerEff_unwgt[sampleNumber]	= fSelection_unwgt[7]/fSelection_unwgt[0];
   AnalyzerEffErr_unwgt[sampleNumber]	= TMath::Sqrt(AnalyzerEff_unwgt[sampleNumber]*(1-AnalyzerEff_unwgt[sampleNumber])/fSelection_unwgt[0]); 
 
-  //std::cout << "Analyzer Eff         = " << AnalyzerEff[sampleNumber] << " \\pm " << AnalyzerEffErr[sampleNumber] << std::endl;
-  //std::cout << "Analyzer Eff (unwgt) = " << AnalyzerEff_unwgt[sampleNumber] << " \\pm " << AnalyzerEffErr_unwgt[sampleNumber] << std::endl;
+  std::cout << "Analyzer Eff         = " << AnalyzerEff[sampleNumber] << " \\pm " << AnalyzerEffErr[sampleNumber] << std::endl;
+  std::cout << "Analyzer Eff (unwgt) = " << AnalyzerEff_unwgt[sampleNumber] << " \\pm " << AnalyzerEffErr_unwgt[sampleNumber] << std::endl;
 
   // Initialize variables for the tree
   CardMaker::SetBranchAddresses( treeOrig );
@@ -515,7 +519,6 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
 
     // check if passing deltaPhi(gg,MET) cut
     Double_t dphi_ggMET = TMath::Abs(deltaPhi(fLorenzVecGG.Phi(),t1pfmetCorrPhi));
-    if (dphi_ggMET < 2.1) continue;
 
     // look at deltaPhi(jet,MET)
     Double_t min_dphi_JetMET = 10.;
@@ -560,8 +563,9 @@ void CardMaker::ApplyCommonSelection( const TString fSample, const UInt_t sample
       if (dphiJet4METmax > max_dphi_JetMET) max_dphi_JetMET = dphiJet4METmax;	   
     }
 
+    if (dphi_ggMET < 2.1) continue;
+
     if (min_dphi_JetMET < 0.5) continue; 
-    //if (min_dphi_JetMET < 0.5 || max_dphi_JetMET > 2.7) continue; 
 
     if (nMuons > 0 || nEle > 0) continue;
 

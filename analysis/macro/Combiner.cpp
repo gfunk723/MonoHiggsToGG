@@ -154,7 +154,8 @@ void Combiner::DoComb(){
     Double_t data_integral = fOutDataTH1DHists[th1d]->Integral();
     TH1D *allBkgHisto;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
-      if (mc==0) allBkgHisto = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone(); 
+      //if (fTH1DNames[th1d]=="mgg_IsolateALLlowCUT") std::cout << "------ Sample : " << fBkgNames[mc] << " ------- integral = " << fInBkgTH1DHists[th1d][mc]->Integral() << std::endl;
+      if (mc==0) allBkgHisto = (TH1D*)fInBkgTH1DHists[th1d][mc]->Clone();
       else allBkgHisto->Add(fInBkgTH1DHists[th1d][mc]);
     }
     Double_t bkg_integral = allBkgHisto->Integral();
@@ -163,9 +164,14 @@ void Combiner::DoComb(){
     Double_t blinded_part = allBkgHisto->Integral(binMggLo,binMggHi);
     //  if (fTH1DNames[th1d]=="mgg_IsolateALL" || fTH1DNames[th1d]=="mgg" || fTH1DNames[th1d]=="mgg_IsolateALLmetCUT" || fTH1DNames[th1d]=="mgg_IsolateALLlowCUT") data_integral += blinded_part;
     Double_t new_integral = data_integral/bkg_integral;
-    std::cout << fTH1DNames[th1d] << "Data= " << data_integral << "Bkg= " << bkg_integral << " Ratio = " << data_integral/bkg_integral << std::endl;
+    std::cout << fTH1DNames[th1d] << ": Data = " << data_integral << "Bkg = " << bkg_integral << " ----- Ratio = " << data_integral/bkg_integral << std::endl;
     for (UInt_t mc = 0; mc < fNBkg; mc++){
-     if (new_integral > 0) fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
+     //if ( fBkgNames[mc]=="GluGluHToGG")     fInBkgTH1DHists[th1d][mc]->Scale(0.1001978*1.33/0.0952946);
+     //else if ( fBkgNames[mc]=="VBFHToGG")   fInBkgTH1DHists[th1d][mc]->Scale(0.00858514*1.33/0.00890975); 
+     //else if ( fBkgNames[mc]=="ttHJetToGG") fInBkgTH1DHists[th1d][mc]->Scale(0.001151117*1.33/0.001132049); 
+     //else if ( fBkgNames[mc]=="VHToGG")     fInBkgTH1DHists[th1d][mc]->Scale(0.00512339*1.33/0.002050718);
+     if (new_integral > 0 && fBkgNames[mc]!="GluGluHToGG" && fBkgNames[mc]!="VBFHToGG" && fBkgNames[mc]!="ttHJetToGG" && fBkgNames[mc]!="VHToGG") fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
+    // if (new_integral > 0) fInBkgTH1DHists[th1d][mc]->Scale(new_integral);
     }
     delete allBkgHisto;
  
@@ -337,8 +343,8 @@ void Combiner::DoComb(){
 
     
 
-    if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
-    //if (fTH1DNames[th1d]=="mgg_IsolateALLlowCUT"){
+    //if (fTH1DNames[th1d]=="mgg_IsolateALLmetCUT"){
+    if (fTH1DNames[th1d]=="mgg_IsolateALLlowCUT"){
     //if (fTH1DNames[th1d]=="mgg_lowmet"){
     //if (fTH1DNames[th1d]=="mgg_IsolateALL"){
       std::ofstream	fOutTableTxtFile2;
@@ -768,6 +774,8 @@ void Combiner::FindMETEfficiencies(){
   // Integrals are computed also including the overflow bin
   // Also plots for each sample the MET shape for the different corrections to visualize the effect
 
+  Float_t metcut = 130;
+
   fNMETPlots = 15;
   UInt_t fNMETCat = fNMETPlots*2;
 
@@ -789,7 +797,7 @@ void Combiner::FindMETEfficiencies(){
     fSigMET[mc].resize(fNMETCat); 
     for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
       UInt_t maxbin = fInSigTH1DHists[th1d][mc]->GetSize(); 
-      UInt_t minbin = fInSigTH1DHists[th1d][mc]->GetXaxis()->FindBin(80.0);
+      UInt_t minbin = fInSigTH1DHists[th1d][mc]->GetXaxis()->FindBin(metcut);
       UInt_t zerbin = fInSigTH1DHists[th1d][mc]->GetXaxis()->FindBin(0.0);
       UInt_t effbin1 = th1d-fIndexMET;
       UInt_t effbin2 = th1d-fIndexMET+fNMETPlots;
@@ -804,7 +812,7 @@ void Combiner::FindMETEfficiencies(){
     fBkgMET[mc].resize(fNMETCat); 
     for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
       UInt_t maxbin = fInBkgTH1DHists[th1d][mc]->GetSize(); 
-      UInt_t minbin = fInBkgTH1DHists[th1d][mc]->GetXaxis()->FindBin(80.0);
+      UInt_t minbin = fInBkgTH1DHists[th1d][mc]->GetXaxis()->FindBin(metcut);
       UInt_t effbin1 = th1d-fIndexMET;
       UInt_t effbin2 = th1d-fIndexMET+fNMETPlots;
       fBkgMETEff[mc][th1d-fIndexMET+fNMETPlots] = fInBkgTH1DHists[th1d][mc]->Integral(minbin,maxbin);// events above 80 GeV
@@ -817,7 +825,7 @@ void Combiner::FindMETEfficiencies(){
   fDataMET.resize(fNMETCat);
   for (UInt_t th1d = fIndexMET; th1d < (fIndexMET+fNMETPlots); th1d++){
     UInt_t maxbin = fOutDataTH1DHists[th1d]->GetSize(); 
-    UInt_t minbin = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(80.0);
+    UInt_t minbin = fOutDataTH1DHists[th1d]->GetXaxis()->FindBin(metcut);
     UInt_t effbin1 = th1d-fIndexMET;
     UInt_t effbin2 = th1d-fIndexMET+fNMETPlots;
     fDataMETEff[th1d-fIndexMET+fNMETPlots] = fOutDataTH1DHists[th1d]->Integral(minbin,maxbin);// events above 80 GeV
@@ -1671,7 +1679,9 @@ void Combiner::DrawCanvasStack(const UInt_t th1d, const Bool_t isLogY){
       else fInSigTH1DHists[th1d][0]->SetMinimum(0.5E-1);
     }
     else {
-      fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1.5);
+      if (fTH1DNames[th1d]=="newstudies_mgg_dphijMET") fInSigTH1DHists[th1d][0]->SetMaximum(400);
+      else if (fTH1DNames[th1d]=="newstudies_mgg_ptgg") fInSigTH1DHists[th1d][0]->SetMaximum(8000);
+      else fInSigTH1DHists[th1d][0]->SetMaximum(maxval*1.5);
       fInSigTH1DHists[th1d][0]->SetMinimum(0);
     }
     fInSigTH1DHists[th1d][0]->GetYaxis()->SetTitleSize(0.07);
@@ -2123,6 +2133,10 @@ void Combiner::InitTH1DNames(){
   fTH1DNames.push_back("hoe2");
   fTH1DNames.push_back("sieie1");
   fTH1DNames.push_back("sieie2");
+  fTH1DNames.push_back("sieie1EB");
+  fTH1DNames.push_back("sieie2EB");
+  fTH1DNames.push_back("sieie1EE");
+  fTH1DNames.push_back("sieie2EE");
   fTH1DNames.push_back("phoiso1");
   fTH1DNames.push_back("phoiso2");
   fTH1DNames.push_back("chiso1");
@@ -2139,7 +2153,7 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("nJets");
     fTH1DNames.push_back("nElec");
     fTH1DNames.push_back("nMuon");
-    //fTH1DNames.push_back("nJets_metCUT");
+    fTH1DNames.push_back("nJets_metCUT");
     fTH1DNames.push_back("nElec_metCUT");
     fTH1DNames.push_back("nMuon_metCUT");
     fTH1DNames.push_back("BDTindex");
@@ -2263,6 +2277,48 @@ void Combiner::InitTH1DNames(){
     fTH1DNames.push_back("clean_dphi_min_jMET_metCUT");
     fTH1DNames.push_back("clean_dphi_hMET_metCUT");
 
+    fTH1DNames.push_back("studies_dphi_minjMET_lowMET");
+    fTH1DNames.push_back("studies_dphi_hMET_lowMET");
+    fTH1DNames.push_back("studies_dphi_minjMET_lowMET10");
+    fTH1DNames.push_back("studies_dphi_hMET_lowMET10");
+    fTH1DNames.push_back("studies_dphi_minjMET_lowMET20");
+    fTH1DNames.push_back("studies_dphi_hMET_lowMET20");
+    fTH1DNames.push_back("studies_dphi_minjMET_lowMET30");
+    fTH1DNames.push_back("studies_dphi_hMET_lowMET30");
+    fTH1DNames.push_back("studies_dphi_minjMET_lowMET40");
+    fTH1DNames.push_back("studies_dphi_hMET_lowMET40");
+
+    fTH1DNames.push_back("newstudies_MET_outmgg");	 
+    fTH1DNames.push_back("newstudies_MET_selmgg");	 
+    fTH1DNames.push_back("newstudies_MET_lowmgg");	 
+    fTH1DNames.push_back("newstudies_MET_highmgg");	 
+    fTH1DNames.push_back("newstudies_ptgg_lowMET");       
+    fTH1DNames.push_back("newstudies_ptgg_highMET");      
+    fTH1DNames.push_back("newstudies_njet_lowMET");     
+    fTH1DNames.push_back("newstudies_njet_highMET");      
+    fTH1DNames.push_back("newstudies_mgg_barrel");     
+    fTH1DNames.push_back("newstudies_mgg_else");     
+    fTH1DNames.push_back("newstudies_mgg_njet");     
+    fTH1DNames.push_back("newstudies_mgg_ptgg");         
+    fTH1DNames.push_back("newstudies_mgg_dphihMET");      
+    fTH1DNames.push_back("newstudies_mgg_dphijMET");     
+    fTH1DNames.push_back("newstudies_mgg_addnjet");     
+    fTH1DNames.push_back("newstudies_mgg_addptgg");         
+    fTH1DNames.push_back("newstudies_mgg_adddphihMET");      
+    fTH1DNames.push_back("newstudies_mgg_adddphijMET");     
+    fTH1DNames.push_back("newstudies_dphihMET_lowMET");   
+    fTH1DNames.push_back("newstudies_dphihMET_highMET"); 
+    fTH1DNames.push_back("newstudies_dphijMET_lowMET"); 
+    fTH1DNames.push_back("newstudies_dphijMET_highMET");  
+    fTH1DNames.push_back("newstudies_dphihMET_lowMET_outmgg");
+    fTH1DNames.push_back("newstudies_dphihMET_lowMET_selmgg");
+    fTH1DNames.push_back("newstudies_dphijMET_lowMET_outmgg");
+    fTH1DNames.push_back("newstudies_dphijMET_lowMET_selmgg");
+    fTH1DNames.push_back("newstudies_dphihMET_highMET_outmgg");
+    fTH1DNames.push_back("newstudies_dphihMET_highMET_selmgg");
+    fTH1DNames.push_back("newstudies_dphijMET_highMET_outmgg");
+    fTH1DNames.push_back("newstudies_dphijMET_highMET_selmgg");
+
     //fTH1DNames.push_back("t1pfmet_zoom_wofil");
     fTH1DNames.push_back("mgg_selt1pfmet");
     fTH1DNames.push_back("t1pfmet_selmgg");
@@ -2284,14 +2340,14 @@ void Combiner::InitTH1DNames(){
     fIndexEff = fTH1DNames.size()-1;
     fTH1DNames.push_back("eff_sel");
  
-    //fTH1DNames.push_back("vtx_eff_ptzp_n");
-    //fTH1DNames.push_back("vtx_eff_ptzp_d");
-    //fTH1DNames.push_back("vtx_eff_nvtx_n");
-    //fTH1DNames.push_back("vtx_eff_nvtx_d");
-    //fTH1DNames.push_back("vtx_eff_met_n");
-    //fTH1DNames.push_back("vtx_eff_met_d");
-    //fTH1DNames.push_back("vtx_eff_njet_n");
-    //fTH1DNames.push_back("vtx_eff_njet_d");
+    fTH1DNames.push_back("vtx_eff_ptzp_n");
+    fTH1DNames.push_back("vtx_eff_ptzp_d");
+    fTH1DNames.push_back("vtx_eff_nvtx_n");
+    fTH1DNames.push_back("vtx_eff_nvtx_d");
+    fTH1DNames.push_back("vtx_eff_met_n");
+    fTH1DNames.push_back("vtx_eff_met_d");
+    fTH1DNames.push_back("vtx_eff_njet_n");
+    fTH1DNames.push_back("vtx_eff_njet_d");
 
     //fTH1DNames.push_back("EBHighR9_mgg");
     //fTH1DNames.push_back("EBHighR9_ptgg");

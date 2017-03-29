@@ -56,10 +56,10 @@ int main(){
 
   //////////////////////////////////////////////////////////////////////////////////////
 
-  //TString inDir = "data/25ns_v80X_moriond17_v1/"; 					// input directory of the samples
-  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v1/"; 		// input directory of the samples
-  TString outDir = Form("./diPhoPlots/25ns_v80X_moriond17_v1_%s_ScaleToData/",selName.Data());	// output directory to send results
-  TString origDir = "./diPhoPlots/25ns_v80X_moriond17_v1_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
+  //TString inDir = "data/25ns_v80X_moriond17_v2/"; 					// input directory of the samples
+  TString inDir = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v2/"; 		// input directory of the samples
+  TString outDir = Form("./diPhoPlots/25ns_v80X_moriond17_v2_%s_ScaleToData/",selName.Data());	// output directory to send results
+  TString origDir = "./diPhoPlots/25ns_v80X_moriond17_v2_OrigSel/";			// output with original sel. for ABCD with OptSel 1 or 2
 
   //////////////////////////////////////////////////////////////////////////////////////
 
@@ -444,12 +444,12 @@ int main(){
     //delete DMH_mZP2000;
     //std::cout << "Finished DMHgg 2HDM MZP2000 sample" << std::endl;
 
-    std::cout << "Working on DMHgg 2HDM MZP2500 sample" << std::endl;
-    Plotter * DMH_mZP2500 = new Plotter(inDir,outDir,"2HDM_mZP2500_mA0300",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    DMH_mZP2500->DoPlots(0);
-    delete DMH_mZP2500;
-    std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
-    
+    //std::cout << "Working on DMHgg 2HDM MZP2500 sample" << std::endl;
+    //Plotter * DMH_mZP2500 = new Plotter(inDir,outDir,"2HDM_mZP2500_mA0300",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
+    //DMH_mZP2500->DoPlots(0);
+    //delete DMH_mZP2500;
+    //std::cout << "Finished DMHgg 2HDM MZP2500 sample" << std::endl;
+    //
     //std::cout << "Working on DMHgg 2HDM MZP600 MA0-400 sample" << std::endl;
     //Plotter * DMH_mZP600_mA0400 = new Plotter(inDir,outDir,"2HDM_mZP600_mA0400",puweights_MC,lumi,false,doBlind,type,metCorrMC,whichSelection);
     //DMH_mZP600_mA0400->DoPlots(0);
@@ -468,23 +468,6 @@ int main(){
     //delete DMH_M1000;
     //std::cout << "Finished DMHgg M1000 sample" << std::endl;
   
-    //std::cout << "Working on DMHgg M100 sample" << std::endl;
-    //Plotter * DMH_M100 = new Plotter(inDir,outDir,"DMHtoGG_M100",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    //DMH_M100->DoPlots(0);
-    //delete DMH_M100;
-    //std::cout << "Finished DMHgg M100 sample" << std::endl;
-  
-    //std::cout << "Working on DMHgg M10 sample" << std::endl;
-    //Plotter * DMH_M10 = new Plotter(inDir,outDir,"DMHtoGG_M10",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    //DMH_M10->DoPlots(0);
-    //delete DMH_M10;
-    //std::cout << "Finished DMHgg M10 sample" << std::endl;
-  
-    //std::cout << "Working on DMHgg M1 sample" << std::endl;
-    //Plotter * DMH_M1 = new Plotter(inDir,outDir,"DMHtoGG_M1",puweights_sig,lumi,false,doBlind,type,metCorrMC,whichSelection);
-    //DMH_M1->DoPlots(0);
-    //delete DMH_M1;
-    //std::cout << "Finished DMHgg M1 sample" << std::endl;
 
   }// end doPlots
 
