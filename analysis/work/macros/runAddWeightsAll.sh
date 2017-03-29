@@ -1,6 +1,6 @@
 #! /bin/sh
 
-path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v1/"
+path="/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/"
 #path="../../macro/data/25ns_v80X_v5/"
 weight=$1
 
@@ -14,16 +14,20 @@ addWeights(${weight},"${path}","Run2016D");
 addWeights(${weight},"${path}","Run2016E");
 addWeights(${weight},"${path}","Run2016F");
 addWeights(${weight},"${path}","Run2016G");
-addWeights(${weight},"${path}","Run2016H");
+addWeights(${weight},"${path}","Run2016H_ver2");
+addWeights(${weight},"${path}","Run2016H_ver3");
 
 addWeights(${weight},"${path}","GluGluHToGG");
 addWeights(${weight},"${path}","VHToGG");
 addWeights(${weight},"${path}","VBFHToGG");
 addWeights(${weight},"${path}","ttHToGG");
 
-addWeights(${weight},"${path}","DiPhoton");
+addWeights(${weight},"${path}","DiPhoton_M40");
+addWeights(${weight},"${path}","DiPhoton_M80");
 addWeights(${weight},"${path}","QCD_Pt-30toInf");
+addWeights(${weight},"${path}","QCD_Pt-30to40");
 addWeights(${weight},"${path}","QCD_Pt-40toInf");
+addWeights(${weight},"${path}","GJet_Pt-20toInf");
 addWeights(${weight},"${path}","GJet_Pt-20to40");
 addWeights(${weight},"${path}","GJet_Pt-40toInf");
 addWeights(${weight},"${path}","DYJetsToLL");
@@ -35,6 +39,7 @@ addWeights(${weight},"${path}","WGToLNuG");
 addWeights(${weight},"${path}","WJetsToLNu");
 addWeights(${weight},"${path}","WZTo2L2Q");
 addWeights(${weight},"${path}","ZGTo2LG");
+addWeights(${weight},"${path}","ZGTo2NuG");
 addWeights(${weight},"${path}","ZZTo2L2Q");
 
 addWeights(${weight},"${path}","ScalarZp_mZP10000_mChi1000");
