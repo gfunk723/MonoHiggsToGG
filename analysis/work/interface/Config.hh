@@ -38,6 +38,8 @@ namespace Config{
 
   extern TString      outdir;
   extern Bool_t       doBlind;
+  extern Bool_t       doOptimize;
+  extern TString      variable;
   extern Bool_t       doAnalysis;
   extern Bool_t       doStack;
   extern Bool_t       doComb;

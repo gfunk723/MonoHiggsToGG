@@ -12,6 +12,7 @@
 #include "../interface/OverlayPlots.hh"
 #include "../interface/CardMaker.hh"
 #include "../interface/METcorr.hh"
+#include "../interface/Optimization.hh"
 
 #include "TROOT.h"
 #include <iostream>
@@ -35,7 +36,7 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set sample map 
   //------------------------------------------------------------------------
   if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
-  if (Config::doAnalysis || Config::doStack || Config::makeCards || Config::doComb)
+  if (Config::doAnalysis || Config::doStack || Config::makeCards || Config::doComb || Config::doOptimize)
   {
     Config::SampleMap["VHToGG"]			= false; // !isData
     Config::SampleMap["GluGluHToGG"]		= false; // !isData
@@ -161,6 +162,8 @@ int main(int argc, const char* argv[])
         "Options:\n"
 	"  --outdir        <string>      name of ouput directory (def: %s)\n"
         "  --unblind       <bool>        unblind the data (def: %s)\n"
+        "  --optimize      <bool>        run optimization (def: %s)\n" 
+        "  --variable      <string>      which variable to run optimization on (def: %s)\n" 
         "  --do-analysis   <bool>        run analysis cuts (def: %s)\n"
         "  --do-stack      <bool>        run stacking for plots (def: %s)\n"
         "  --do-comb       <bool>        run overlay for plots (def: %s)\n"
@@ -181,6 +184,8 @@ int main(int argc, const char* argv[])
         argv[0],
         Config::outdir.Data(),
         (Config::doBlind    ? "false" : "true"),
+        (Config::doOptimize ? "true" : "false"),
+        Config::variable.Data(),
         (Config::doAnalysis ? "true" : "false"),
         (Config::doStack    ? "true" : "false"),
         (Config::doComb     ? "true" : "false"),
@@ -203,6 +208,8 @@ int main(int argc, const char* argv[])
 
     else if (*i == "--outdir")      { next_arg_or_die(mArgs, i); Config::outdir = i->c_str(); }
     else if (*i == "--unblind")     { Config::doBlind      = false; }
+    else if (*i == "--optimize")    { Config::doOptimize   = true; }
+    else if (*i == "--variable")    { next_arg_or_die(mArgs, i); Config::variable = i->c_str(); }
     else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
     else if (*i == "--do-stack")    { Config::doStack      = true; }
     else if (*i == "--do-comb")     { Config::doComb       = true; }
@@ -243,6 +250,17 @@ int main(int argc, const char* argv[])
     if (input == "y") std::cout << "Proceeding" << std::endl;
     else{ std::cout << "Please do not use flag: --unblind ... exiting..." << std::endl; exit(1); }
   }
+
+  //------------------------------------------------------------------------
+  // Run optimization
+  //------------------------------------------------------------------------
+  if (Config::doOptimize)
+  {
+    std::cout << "Running optimization on variable: " << Config::variable << std::endl;
+    Optimization * opt = new Optimization(inDir);
+    opt->RunOptimization();
+    delete opt;
+  } 
 
   //------------------------------------------------------------------------
   // Get the MET correction

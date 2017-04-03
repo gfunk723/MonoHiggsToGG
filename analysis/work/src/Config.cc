@@ -6,7 +6,9 @@ namespace Config{
   // Default Config parameters
   //------------------------------------------------------------------------
   TString outdir      = "diPhoPlots";
-  Bool_t  doBlind     = true;
+  Bool_t  doBlind     = true; 
+  Bool_t  doOptimize  = false;
+  TString variable    = "ptgg";
   Bool_t  doAnalysis  = false;
   Bool_t  doStack     = false;
   Bool_t  doComb      = false;
@@ -15,7 +17,7 @@ namespace Config{
   Bool_t  mergeBkgs   = false;
   Bool_t  doQCDrewgt  = false;
   Bool_t  scaleToData = false;
-  TString yieldsPlot  = "mgg_loMET";
+  TString yieldsPlot  = "mgg_hiMET";
   Int_t   whichSel    = 0;
   Bool_t  doEffPlots  = false;
   Bool_t  doStandard  = false;
