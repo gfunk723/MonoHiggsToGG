@@ -638,10 +638,8 @@ void ABCDMethod::FillTable(const UInt_t mass){
           *(fRooData[5][0]->format(2,"XPF")) << " &  " <<
           *(fRooData[0][0]->format(2,"EXPF")) << " &  " << 
           *(fRooData[1][0]->format(2,"EXPF")) << " &  " << 
-          *(fRooData[3][0]->format(2,"EXPF")) << " &  " << 
-	  " - " << " &  " << // remove the N_D from printout
-          *(fRooData[7][0]->format(2,"EXPF")) << " &  $" <<
-          " - " << " &  " << // remove the Diff from printout
+          *(fRooData[3][0]->format(2,"EXPF")) << " &  " << " - " << " &  " << // remove the N_D from printout
+          *(fRooData[7][0]->format(2,"EXPF")) << " &  $" << " - " << " &  " << // remove the Diff from printout
        fOutTableTxtFile << "\\hline" << std::endl;
      }	
 
