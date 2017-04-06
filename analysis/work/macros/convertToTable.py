@@ -561,12 +561,8 @@ def AllGlobal(fname):
   fout.write("\\end{table} \n")
 
 if __name__ == "__main__":
-  AllGlobal("PlainEff.tex")
-
-
-
-
-
-
-
+  AllGlobal("PlainEff_highMET.tex")
+  AllGlobal("PlainEff_lowMET.tex")
+  AllGlobal("Yields_highMET.tex")
+  AllGlobal("Yields_lowMET.tex")
 

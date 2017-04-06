@@ -6,28 +6,37 @@
 
 using namespace std;
 
-void    GetEfficiencies(TString, TString, Float_t, Bool_t);
-void    GetEfficiency(TString, TString, Float_t, Bool_t, Bool_t, Float_t &, Float_t &);
+void    GetEfficiencies(TString, TString, Float_t, Bool_t, Bool_t);
+void    GetEfficiency(TString, TString, Float_t, Bool_t, Bool_t, Bool_t, Float_t &, Float_t &);
 void    CalculateNumbers(TTree*, TH1D*, Int_t &, Int_t &, Float_t &, Float_t &);
 Float_t CalculateEff(Int_t, Float_t, Int_t, Float_t, Float_t &);
 
 void makeEfficiencyList()
 {
 
-  TString indir   = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v2/";
+  TString indir   = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/";
   Float_t lumi    = 35821.4; //in pb^-1 (for weighting)
   TString outfile;
 
-  cout << "Computing Efficiency highMET region" << endl;
-  outfile = "PlainEff_highMET.tex";
-  GetEfficiencies(indir,outfile,lumi,true);
+  //cout << "Computing Efficiency highMET region" << endl;
+  //outfile = "PlainEff_highMET.tex";
+  //GetEfficiencies(indir,outfile,lumi,true,false);
 
-  cout << "Computing Efficiency lowMET region" << endl;
-  outfile = "PlainEff_lowMET.tex";
-  GetEfficiencies(indir,outfile,lumi,false); 
+  //cout << "Computing Efficiency lowMET region" << endl;
+  //outfile = "PlainEff_lowMET.tex";
+  //GetEfficiencies(indir,outfile,lumi,false,false); 
+
+  cout << "Computing Yields highMET region" << endl;
+  outfile = "Yields_highMET.tex";
+  GetEfficiencies(indir,outfile,lumi,true,true);
+
+  cout << "Computing Yields lowMET region" << endl;
+  outfile = "Yields_lowMET.tex";
+  GetEfficiencies(indir,outfile,lumi,false,true);
+
 }
 
-void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETeff)
+void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETeff, Bool_t yields)
 {
 
   // ----------------------------------------------------------------
@@ -152,14 +161,16 @@ void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETe
   // ----------------------------------------------------------------
   // setup latex doc
   // ----------------------------------------------------------------
-  cout << "Writing efficiencies to: " << outfile << endl;
+  if (yields) cout << "Writing yields to: " << outfile << endl;
+  else        cout << "Writing efficiencies to: " << outfile << endl;
   std::ofstream outResults;
   outResults.open(outfile);
   if (outResults.is_open()){
     outResults << "\\documentclass[a4paper,landscape]{article}" << std::endl;
     outResults << "\\usepackage[paperheight=15.0in,paperwidth=6.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry}" << std::endl;
     outResults << "\\begin{document}" << std::endl;
-    outResults << "\% Efficiencies listed for each signal" << std::endl;
+    if (yields) outResults << "\% Yields listed for each signal" << std::endl; 
+    else        outResults << "\% Efficiencies listed for each signal" << std::endl;
     outResults << "\\begin{table}[bthp]" <<std::endl;
     outResults << "\\begin{tabular}{|l|r|}" <<std::endl;
     outResults << "\\hline " <<std::endl;
@@ -168,8 +179,10 @@ void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETe
     // get efficiency for each sample & write to table 
     // ----------------------------------------------------------------
     for (UInt_t n=0; n < nSamples; n++){
-      GetEfficiency(indir,Samples[n],lumi,true,hiMETeff,Eff[n],Err[n]);
-      outResults << Samples[n] << " & " << Form("%1.3f",Eff[n]) << " $ \\pm $ " << Form("%1.3f",Err[n]) << " \\\\" << endl;
+      GetEfficiency(indir,Samples[n],lumi,true,hiMETeff,yields,Eff[n],Err[n]);
+      if (yields && hiMETeff) outResults << Samples[n] << " & " << Form("%1.1f",Eff[n]) << " $ \\pm $ " << Form("%1.1f",Err[n]) << " \\\\" << endl;
+      else if (yields)        outResults << Samples[n] << " & " << Form("%1.2f",Eff[n]) << " $ \\pm $ " << Form("%1.2f",Err[n]) << " \\\\" << endl;
+      else                    outResults << Samples[n] << " & " << Form("%1.3f",Eff[n]) << " $ \\pm $ " << Form("%1.3f",Err[n]) << " \\\\" << endl;
     }
 
     // ----------------------------------------------------------------
@@ -199,8 +212,7 @@ Float_t CalculateEff(Int_t iden, Float_t fden, Int_t inum, Float_t fnum, Float_t
    return eff;
 }
 
-
-void GetEfficiency(TString indir, TString name, Float_t lumi, Bool_t totEff, Bool_t hiMETeff, Float_t & Eff, Float_t & Err)
+void GetEfficiency(TString indir, TString name, Float_t lumi, Bool_t totEff, Bool_t hiMETeff, Bool_t yields, Float_t & Eff, Float_t & Err)
 {
 
   cout << " Working on Sample: " << name << endl;
@@ -220,7 +232,7 @@ void GetEfficiency(TString indir, TString name, Float_t lumi, Bool_t totEff, Boo
   // Calculate all numbers needed for efficiency 
   // ----------------------------------------------------------------
   Int_t   i_anlyz = fSel_unwgt->GetBinContent(1);
-  Float_t f_anlyz = fSel_wgt->GetBinContent(1)*lumi; // NOT WEIGHTED BY PU or SF
+  Float_t f_anlyz = fSel_wgt->GetBinContent(1);//*lumi; // NOT WEIGHTED BY PU or SF
   Int_t   i_begin = fNum->GetBinContent(1);
   Float_t f_begin = fNum->GetBinContent(2);
   Int_t   i_loMET = 0;
@@ -230,12 +242,19 @@ void GetEfficiency(TString indir, TString name, Float_t lumi, Bool_t totEff, Boo
   CalculateNumbers(tree,fNum,i_loMET,i_hiMET,f_loMET,f_hiMET);
 
   // ----------------------------------------------------------------
-  // Calculate efficiency 
+  // Calculate yields or efficiency 
   // ----------------------------------------------------------------
-  if ( totEff  && hiMETeff  ) Eff = CalculateEff(i_anlyz,f_anlyz,i_hiMET,f_hiMET,Err);
-  if ( totEff  && !hiMETeff ) Eff = CalculateEff(i_anlyz,f_anlyz,i_loMET,f_loMET,Err);
-  if ( !totEff && hiMETeff  ) Eff = CalculateEff(i_begin,f_begin,i_hiMET,f_hiMET,Err);
-  if ( !totEff && !hiMETeff ) Eff = CalculateEff(i_begin,f_begin,i_loMET,f_loMET,Err);
+  if ( yields ){ // yields
+    if (hiMETeff) Eff = f_hiMET;
+    else          Eff = f_loMET;
+    Err = TMath::Sqrt(Eff);
+  }
+  else{ // calculate efficiencies 
+    if ( totEff  && hiMETeff  ) Eff = CalculateEff(i_anlyz,f_anlyz,i_hiMET,f_hiMET,Err);
+    if ( totEff  && !hiMETeff ) Eff = CalculateEff(i_anlyz,f_anlyz,i_loMET,f_loMET,Err);
+    if ( !totEff && hiMETeff  ) Eff = CalculateEff(i_begin,f_begin,i_hiMET,f_hiMET,Err);
+    if ( !totEff && !hiMETeff ) Eff = CalculateEff(i_begin,f_begin,i_loMET,f_loMET,Err);
+  }
  
 }
 
