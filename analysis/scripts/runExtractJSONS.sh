@@ -60,14 +60,14 @@ python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-2000_MA0-400		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm2_v0.json		-o 2HDM_MZp-2500_MA0-400		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-800_MA0-500			-d lists_25ns_v80X_v2/MC
-python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-1000_MA0-500		-d lists_25ns_v80X_v2/MC
+python extractJSONS.py -i datasets/datasets_moriond17_add2hdm3_v0.json		-o 2HDM_MZp-1000_MA0-500		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-1200_MA0-500		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-1400_MA0-500		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-1700_MA0-500		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-2000_MA0-500		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm2_v0.json		-o 2HDM_MZp-2500_MA0-500		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-800_MA0-600			-d lists_25ns_v80X_v2/MC
-python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-1000_MA0-600		-d lists_25ns_v80X_v2/MC
+python extractJSONS.py -i datasets/datasets_moriond17_add2hdm3_v0.json		-o 2HDM_MZp-1000_MA0-600		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm2_v0.json		-o 2HDM_MZp-1200_MA0-600		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm2_v0.json		-o 2HDM_MZp-1400_MA0-600		-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_2hdm_v0.json		-o 2HDM_MZp-1700_MA0-600		-d lists_25ns_v80X_v2/MC
