@@ -498,12 +498,18 @@ def AllGlobal(fname):
 
 
   # WRITE OUT TO A NEW TABLE
+  fout.write("\\documentclass[a4paper,landscape]{article} \n")
+  fout.write("\\usepackage[paperheight=8.0in,paperwidth=11.0in,margin=1.0in,headheight=0.0in,footskip=0.5in,includehead,includefoot]{geometry} \n")
+  fout.write("\\begin{document} \n")
+  fout.write("\n")
   fout.write("\\begin{table}[bthp] \n")
   fout.write("\\centering \n")
   fout.write("\\begin{tabular}{|c|c|c|c|c|c|c|} \n")
   fout.write("\\hline \n")
 
   fout.write("% 2HDM Efficiencies \n")
+  fout.write("\\multicolumn{7}{|c|}{ 2HDM } \\\\ \n")
+  fout.write("\\hline \n")
   fout.write("$m_{A}$ [GeV] & 300 & 400 & 500 & 600 & 700 & 800 \\\\   \n")
   fout.write("$m_{Z'}$ [GeV] &    &     &     &     &     &     \\\\   \n")
   fout.write("\\hline \n")
@@ -519,6 +525,8 @@ def AllGlobal(fname):
   fout.write("\\hline \n")
 
   fout.write("% Baryonic Model Efficiencies \n")
+  fout.write("\\multicolumn{7}{|c|}{ Baryonic } \\\\ \n")
+  fout.write("\\hline \n")
   fout.write("$m_{\\chi}$ [GeV] & 1 & 10 & 50 & 150 & 500 & 1000 \\\\   \n")
   fout.write("$m_{Z'}$ [GeV]    &   &    &    &     &     &      \\\\   \n")
   fout.write("\\hline \n")
@@ -540,6 +548,8 @@ def AllGlobal(fname):
   fout.write("\\hline \n")
 
   fout.write("% Scalar Model Efficiencies \n")
+  fout.write("\\multicolumn{7}{|c|}{ Scalar } \\\\ \n")
+  fout.write("\\hline \n")
   fout.write("$m_{\\chi}$ [GeV] & 1 & 10 & 50 & 150 & 500 & 1000 \\\\   \n")
   fout.write("$m_{S}$ [GeV]    &   &    &    &     &     &       \\\\   \n")
   fout.write("\\hline \n")
@@ -559,10 +569,12 @@ def AllGlobal(fname):
   fout.write("\\hline \n")
   fout.write("\\end{tabular} \n")
   fout.write("\\end{table} \n")
+  fout.write("\n")
+  fout.write("\\end{document} \n")
 
 if __name__ == "__main__":
-  AllGlobal("PlainEff_highMET.tex")
-  AllGlobal("PlainEff_lowMET.tex")
-  AllGlobal("Yields_highMET.tex")
-  AllGlobal("Yields_lowMET.tex")
+  AllGlobal("EffandYieldsTables/PlainEff_optB_highMET.tex")
+  AllGlobal("EffandYieldsTables/PlainEff_optB_lowMET.tex")
+  AllGlobal("EffandYieldsTables/Yields_optB_highMET.tex")
+  AllGlobal("EffandYieldsTables/Yields_optB_lowMET.tex")
 

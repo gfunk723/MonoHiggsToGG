@@ -15,6 +15,7 @@ void makeEfficiencyList()
 {
 
   TString indir   = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/";
+  TString outdir  = "EffandYieldsTables/";
   Float_t lumi    = 35821.4; //in pb^-1 (for weighting)
 
   // ----------------------------------------------------------------
@@ -25,24 +26,25 @@ void makeEfficiencyList()
   if (addname.Contains("optA",TString::kExact)) skim="newskim";
   if (addname.Contains("optB",TString::kExact)) skim="newskimv2";
 
+
   // ----------------------------------------------------------------
   // Call function for each category 
   // ----------------------------------------------------------------
   TString outfile;
   cout << "Computing Efficiency highMET region" << endl;
-  outfile = Form("PlainEff%s_highMET.tex",addname.Data());
+  outfile = Form("%sPlainEff%s_highMET.tex",outdir.Data(),addname.Data());
   GetEfficiencies(indir,outfile,skim,lumi,true,false);
 
   cout << "Computing Efficiency lowMET region" << endl;
-  outfile = Form("PlainEff%s_lowMET.tex",addname.Data());
+  outfile = Form("%sPlainEff%s_lowMET.tex",outdir.Data(),addname.Data());
   GetEfficiencies(indir,outfile,skim,lumi,false,false); 
 
   cout << "Computing Yields highMET region" << endl;
-  outfile = Form("Yields%s_highMET.tex",addname.Data());
+  outfile = Form("%sYields%s_highMET.tex",outdir.Data(),addname.Data());
   GetEfficiencies(indir,outfile,skim,lumi,true,true);
 
   cout << "Computing Yields lowMET region" << endl;
-  outfile = Form("Yields%s_lowMET.tex",addname.Data());
+  outfile = Form("%sYields%s_lowMET.tex",outdir.Data(),addname.Data());
   GetEfficiencies(indir,outfile,skim,lumi,false,true);
 
 }
