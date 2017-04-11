@@ -6,8 +6,8 @@
 
 using namespace std;
 
-void    GetEfficiencies(TString, TString, Float_t, Bool_t, Bool_t);
-void    GetEfficiency(TString, TString, Float_t, Bool_t, Bool_t, Bool_t, Float_t &, Float_t &);
+void    GetEfficiencies(TString, TString, TString, Float_t, Bool_t, Bool_t);
+void    GetEfficiency(TString, TString, TString, Float_t, Bool_t, Bool_t, Bool_t, Float_t &, Float_t &);
 void    CalculateNumbers(TTree*, TH1D*, Int_t &, Int_t &, Float_t &, Float_t &);
 Float_t CalculateEff(Int_t, Float_t, Int_t, Float_t, Float_t &);
 
@@ -16,27 +16,38 @@ void makeEfficiencyList()
 
   TString indir   = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/";
   Float_t lumi    = 35821.4; //in pb^-1 (for weighting)
+
+  // ----------------------------------------------------------------
+  // which skim to use 
+  // ----------------------------------------------------------------
+  TString addname="";
+  TString skim="skimmedtree"; //default
+  if (addname.Contains("optA",TString::kExact)) skim="newskim";
+  if (addname.Contains("optB",TString::kExact)) skim="newskimv2";
+
+  // ----------------------------------------------------------------
+  // Call function for each category 
+  // ----------------------------------------------------------------
   TString outfile;
+  cout << "Computing Efficiency highMET region" << endl;
+  outfile = Form("PlainEff%s_highMET.tex",addname.Data());
+  GetEfficiencies(indir,outfile,skim,lumi,true,false);
 
-  //cout << "Computing Efficiency highMET region" << endl;
-  //outfile = "PlainEff_highMET.tex";
-  //GetEfficiencies(indir,outfile,lumi,true,false);
-
-  //cout << "Computing Efficiency lowMET region" << endl;
-  //outfile = "PlainEff_lowMET.tex";
-  //GetEfficiencies(indir,outfile,lumi,false,false); 
+  cout << "Computing Efficiency lowMET region" << endl;
+  outfile = Form("PlainEff%s_lowMET.tex",addname.Data());
+  GetEfficiencies(indir,outfile,skim,lumi,false,false); 
 
   cout << "Computing Yields highMET region" << endl;
-  outfile = "Yields_highMET.tex";
-  GetEfficiencies(indir,outfile,lumi,true,true);
+  outfile = Form("Yields%s_highMET.tex",addname.Data());
+  GetEfficiencies(indir,outfile,skim,lumi,true,true);
 
   cout << "Computing Yields lowMET region" << endl;
-  outfile = "Yields_lowMET.tex";
-  GetEfficiencies(indir,outfile,lumi,false,true);
+  outfile = Form("Yields%s_lowMET.tex",addname.Data());
+  GetEfficiencies(indir,outfile,skim,lumi,false,true);
 
 }
 
-void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETeff, Bool_t yields)
+void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi, Bool_t hiMETeff, Bool_t yields)
 {
 
   // ----------------------------------------------------------------
@@ -179,7 +190,7 @@ void GetEfficiencies(TString indir, TString outfile, Float_t lumi, Bool_t hiMETe
     // get efficiency for each sample & write to table 
     // ----------------------------------------------------------------
     for (UInt_t n=0; n < nSamples; n++){
-      GetEfficiency(indir,Samples[n],lumi,true,hiMETeff,yields,Eff[n],Err[n]);
+      GetEfficiency(indir,Samples[n],skim,lumi,true,hiMETeff,yields,Eff[n],Err[n]);
       if (yields && hiMETeff) outResults << Samples[n] << " & " << Form("%1.1f",Eff[n]) << " $ \\pm $ " << Form("%1.1f",Err[n]) << " \\\\" << endl;
       else if (yields)        outResults << Samples[n] << " & " << Form("%1.2f",Eff[n]) << " $ \\pm $ " << Form("%1.2f",Err[n]) << " \\\\" << endl;
       else                    outResults << Samples[n] << " & " << Form("%1.3f",Eff[n]) << " $ \\pm $ " << Form("%1.3f",Err[n]) << " \\\\" << endl;
@@ -212,14 +223,14 @@ Float_t CalculateEff(Int_t iden, Float_t fden, Int_t inum, Float_t fnum, Float_t
    return eff;
 }
 
-void GetEfficiency(TString indir, TString name, Float_t lumi, Bool_t totEff, Bool_t hiMETeff, Bool_t yields, Float_t & Eff, Float_t & Err)
+void GetEfficiency(TString indir, TString name, TString skim, Float_t lumi, Bool_t totEff, Bool_t hiMETeff, Bool_t yields, Float_t & Eff, Float_t & Err)
 {
 
   cout << " Working on Sample: " << name << endl;
   // ----------------------------------------------------------------
   // get file, tree, h_selection histos 
   // ----------------------------------------------------------------
-  TFile *file = TFile::Open(Form("%s%s_skimmedtree.root",indir.Data(),name.Data()));
+  TFile *file = TFile::Open(Form("%s%s_%s.root",indir.Data(),name.Data(),skim.Data()));
   if (!file){ cout << "Sample does not exist! Exiting..." << endl; return;} 
   TTree *tree = (TTree*)file->Get("DiPhotonTree");
   if (!tree){ cout << "Tree does not exist! Exiting..." << endl; return;} 
