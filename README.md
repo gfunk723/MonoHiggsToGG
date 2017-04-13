@@ -35,7 +35,7 @@ Extract the processed json (used as an input in the analyzer) and used to comput
 
 This json corresponds to the processed (through FLASHgg) dataset. We are interested in the the AND of this json and the golden json. 
 The convolution json is applyed in the analyzer to make sure we are restricted to the right portion of the data.
-This is specified in the diPhoAna.py (and diPhoAnaBATCH.py) in `JSONfile`.
+This is specified in the diPhoAna.py (and moriond17diPhoAnaBATCH.py) in `JSONfile`.
 To get this convolution of these jsons use brilcalc:
 - `compareJSON.py --and processed.json golden.json >> processedANDgolden.json`
  
@@ -103,7 +103,7 @@ NB. The structure of how to use these scripts can be seen in `doAll.sh`
 If you add additional variables to the ntuples in the analyzer, you need to modify addWeightsToTree.cc to include these variables.
 
 ## Step 7) Produce plots 
-The analysis is done in CMSSW_8_0_8_patch1
+The analysis is done in CMSSW_8_0_26_patch1
 - `make` (to compile) 
 - `./main` (to run)
 Can use `make clean` to clean.
@@ -162,7 +162,7 @@ Additional categories can be applied by adding the selection in fitterFormatting
 # Copy the Framework from Github
 -----------------------------------------------------------
 ```
-cmsrel CMSSW_8_0_8_patch1
+cmsrel CMSSW_8_0_26_patch1
 cmsenv 
 
 cd ${CMSSW_BASE}/src
@@ -173,15 +173,46 @@ cd ${CMSSW_BASE}/src
 git clone https://github.com/cms-analysis/flashgg.git
 cd flashgg
 
-ADD LEPTON INFO from Chiara to FLASHgg:
-https://github.com/crovelli/flashgg/blob/dec2015/Taggers/interface/LeptonSelection.h
-
-https://github.com/crovelli/flashgg/blob/dec2015/Taggers/src/LeptonSelection.cc
-
-
 cd ${CMSSW_BASE}/src
 bash flashgg/setup.sh | tee setup.log
 
+```
+
+Then customize flashgg:
+
+1) flashgg/MicroAOD/test/microAODstd.py 
+=> just add these three lines:
+from flashgg.MicroAOD.flashggDiPhotons_cfi import flashggDiPhotons
+process.flashggDiPhotons0vtx = flashggDiPhotons.clone()
+process.flashggDiPhotons0vtx.VertexSelectorName = "FlashggZerothVertexSelector"
+
+2) flashgg/MicroAOD/plugins/ZerothVertexSelector.cc
+=> to set the vertex you want (i.e.:0)
+
+3) flashgg/interface/LeptonSelection.hh
+=> replace with analysis/addfiles/LeptonSelection.hh
+
+4) flashgg/src/LeptonSelection.cc
+=> replace with analysis/addfiles/LeptonSelection.cc
+
+Get egamma updates for smear/scale corr:
+From https://twiki.cern.ch/twiki/bin/viewauth/CMS/EGMRegression
+```
+git cms-merge-topic cms-egamma:EGM_gain_v1 
+```
+
+There will be merge conflicts:
+-EgammaAnalysis/ElectronTools/src/PhotonEnergyCalibratorRun2.cc
+-EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc
+-EgammaAnalysis/ElectronTools/src/ElectronEnergyCalibratorRun2.cc
+-EgammaAnalysis/ElectronTools/plugins/CalibratedPhotonProducersRun2.cc
+-EgammaAnalysis/ElectronTools/plugins/CalibratedElectronProducersRun2.cc
+-EgammaAnalysis/ElectronTools/interface/PhotonEnergyCalibratorRun2.h
+-EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h
+-EgammaAnalysis/ElectronTools/interface/ElectronEnergyCalibratorRun2.h
+The conflicts have been resolved, so replace the default verions with the corresponding files stored in analysis/addFiles.
+
+```
 # clone this repository
 cd ${CMSSW_BASE}/src
 git clone git@github.com:mez34/MonoHiggsToGG.git
