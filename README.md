@@ -210,6 +210,7 @@ There will be merge conflicts:
 - EgammaAnalysis/ElectronTools/interface/PhotonEnergyCalibratorRun2.h
 - EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h
 - EgammaAnalysis/ElectronTools/interface/ElectronEnergyCalibratorRun2.h
+
 The conflicts have been resolved, so replace the default verions with the corresponding files stored in analysis/addFiles.
 
 ```
