@@ -202,14 +202,14 @@ git cms-merge-topic cms-egamma:EGM_gain_v1
 ```
 
 There will be merge conflicts:
--EgammaAnalysis/ElectronTools/src/PhotonEnergyCalibratorRun2.cc
--EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc
--EgammaAnalysis/ElectronTools/src/ElectronEnergyCalibratorRun2.cc
--EgammaAnalysis/ElectronTools/plugins/CalibratedPhotonProducersRun2.cc
--EgammaAnalysis/ElectronTools/plugins/CalibratedElectronProducersRun2.cc
--EgammaAnalysis/ElectronTools/interface/PhotonEnergyCalibratorRun2.h
--EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h
--EgammaAnalysis/ElectronTools/interface/ElectronEnergyCalibratorRun2.h
+- EgammaAnalysis/ElectronTools/src/PhotonEnergyCalibratorRun2.cc
+- EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc
+- EgammaAnalysis/ElectronTools/src/ElectronEnergyCalibratorRun2.cc
+- EgammaAnalysis/ElectronTools/plugins/CalibratedPhotonProducersRun2.cc
+- EgammaAnalysis/ElectronTools/plugins/CalibratedElectronProducersRun2.cc
+- EgammaAnalysis/ElectronTools/interface/PhotonEnergyCalibratorRun2.h
+- EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h
+- EgammaAnalysis/ElectronTools/interface/ElectronEnergyCalibratorRun2.h
 The conflicts have been resolved, so replace the default verions with the corresponding files stored in analysis/addFiles.
 
 ```
