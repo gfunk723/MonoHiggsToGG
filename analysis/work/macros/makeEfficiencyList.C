@@ -2,12 +2,14 @@
 #include <TTree.h>
 #include <TBranch.h>
 #include <TH1.h>
+#include <TH2.h>
 #include <iostream>
 
 using namespace std;
 
-void    GetEfficiencies(TString, TString, TString, Float_t, Bool_t, Bool_t);
+void    GetEfficiencies(TString, TString, TFile*, TString, Float_t, Bool_t, Bool_t);
 void    GetEfficiency(TString, TString, TString, Float_t, Bool_t, Bool_t, Bool_t, Float_t &, Float_t &);
+void    GetXandY(TString, Double_t &, Double_t &);
 void    CalculateNumbers(TTree*, TH1D*, Int_t &, Int_t &, Float_t &, Float_t &);
 Float_t CalculateEff(Int_t, Float_t, Int_t, Float_t, Float_t &);
 
@@ -16,10 +18,10 @@ void makeEfficiencyList()
 
   TString indir   = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/";
   TString outdir  = "EffandYieldsTables/";
-  Float_t lumi    = 35821.4; //in pb^-1 (for weighting)
+  Float_t lumi    = 35921.4; //in pb^-1 (for weighting)
 
   // ----------------------------------------------------------------
-  // which skim to use 
+  // Which skim to use 
   // ----------------------------------------------------------------
   TString addname="_optB";
   TString skim="skimmedtree"; //default
@@ -28,29 +30,44 @@ void makeEfficiencyList()
   if (addname.Contains("optB",TString::kExact)) skim="skim_woVetos";// no lep or jet vetoes
 
   // ----------------------------------------------------------------
+  // Make root file to store efficiencies 
+  // ----------------------------------------------------------------
+  TFile *outroot = new TFile(Form("%sOutput_Eff.root",outdir.Data()),"RECREATE");
+
+  // ----------------------------------------------------------------
   // Call function for each category 
   // ----------------------------------------------------------------
   TString outfile;
   cout << "Computing Efficiency highMET region" << endl;
   outfile = Form("%sPlainEff%s_highMET.tex",outdir.Data(),addname.Data());
-  GetEfficiencies(indir,outfile,skim,lumi,true,false);
+  GetEfficiencies(indir,outfile,outroot,skim,lumi,true,false);
 
   cout << "Computing Efficiency lowMET region" << endl;
   outfile = Form("%sPlainEff%s_lowMET.tex",outdir.Data(),addname.Data());
-  GetEfficiencies(indir,outfile,skim,lumi,false,false); 
+  GetEfficiencies(indir,outfile,outroot,skim,lumi,false,false); 
 
-  //cout << "Computing Yields highMET region" << endl;
-  //outfile = Form("%sYields%s_highMET.tex",outdir.Data(),addname.Data());
-  //GetEfficiencies(indir,outfile,skim,lumi,true,true);
+  cout << "Computing Yields highMET region" << endl;
+  outfile = Form("%sYields%s_highMET.tex",outdir.Data(),addname.Data());
+  GetEfficiencies(indir,outfile,outroot,skim,lumi,true,true);
 
-  //cout << "Computing Yields lowMET region" << endl;
-  //outfile = Form("%sYields%s_lowMET.tex",outdir.Data(),addname.Data());
-  //GetEfficiencies(indir,outfile,skim,lumi,false,true);
+  cout << "Computing Yields lowMET region" << endl;
+  outfile = Form("%sYields%s_lowMET.tex",outdir.Data(),addname.Data());
+  GetEfficiencies(indir,outfile,outroot,skim,lumi,false,true);
 
 }
 
-void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi, Bool_t hiMETeff, Bool_t yields)
+void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString skim, Float_t lumi, Bool_t hiMETeff, Bool_t yields)
 {
+  // ----------------------------------------------------------------
+  // Setup histos for output root file
+  // ----------------------------------------------------------------
+  TString type = (yields)? "Yield":"Eff";
+  TString cat  = (hiMETeff)? "HighMET":"LowMET";
+  TString name = Form("%s_%s",type.Data(),cat.Data());
+  TH2D* dat_2HDM = new TH2D(Form("h_2HDM_%s",name.Data()),Form("h_2HDM_%s",name.Data()),2500,500,3000,700,200,900);
+  TH2D* err_2HDM = new TH2D(Form("h_2HDM_%s_err",name.Data()),Form("h_2HDM_%s_err",name.Data()),2500,500,3000,700,200,900);
+  TH2D* dat_BARY = new TH2D(Form("h_BARY_%s",name.Data()),Form("h_BARY_%s",name.Data()),2500,0,2500,1500,0,1500); 
+  TH2D* err_BARY = new TH2D(Form("h_BARY_%s_err",name.Data()),Form("h_BARY_%s_err",name.Data()),2500,0,2500,1500,0,1500); 
 
   // ----------------------------------------------------------------
   // samples to use 
@@ -171,7 +188,6 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
   Samples.push_back("ScalarZp_mZP995_mChi500"   );
   Samples.push_back("ScalarZp_mZP15_mChi10"     );
 
-
   UInt_t nSamples = Samples.size();
   vector< Float_t > Eff;  Eff.resize(nSamples);
   vector< Float_t > Err;  Err.resize(nSamples);
@@ -196,7 +212,10 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
     // ----------------------------------------------------------------
     // get efficiency for each sample & write to table 
     // ----------------------------------------------------------------
+    Double_t mX = 0;
+    Double_t mY = 0;
     for (UInt_t n=0; n < nSamples; n++){
+      GetXandY(Samples[n],mX,mY);
       GetEfficiency(indir,Samples[n],skim,lumi,true,hiMETeff,yields,Eff[n],Err[n]);
       if (!yields){ // convert to percentage
         Eff[n]*=100;
@@ -205,6 +224,19 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
       if (yields && hiMETeff) outResults << Samples[n] << " & " << Form("%1.1f",Eff[n]) << " $ \\pm $ " << Form("%1.1f",Err[n]) << " \\\\" << endl;
       else if (yields)        outResults << Samples[n] << " & " << Form("%1.2f",Eff[n]) << " $ \\pm $ " << Form("%1.2f",Err[n]) << " \\\\" << endl;
       else                    outResults << Samples[n] << " & " << Form("%1.1f",Eff[n]) << " $ \\pm $ " << Form("%1.1f",Err[n]) << " \\\\" << endl;
+
+      // ----------------------------------------------------------------
+      // fill the histograms 
+      // ----------------------------------------------------------------
+      if (Samples[n].Contains("2HDM",TString::kExact)){
+        dat_2HDM->Fill(mX,mY,Eff[n]);
+        err_2HDM->Fill(mX,mY,Err[n]);
+      }
+      if (Samples[n].Contains("Baryonic",TString::kExact)){
+        dat_BARY->Fill(mX,mY,Eff[n]);
+        err_BARY->Fill(mX,mY,Err[n]);
+      }
+
     }
 
     // ----------------------------------------------------------------
@@ -217,6 +249,33 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
   }
   else cout << "Error with output file..." << endl; 
 
+  // ----------------------------------------------------------------
+  // save the histograms then delete
+  // ----------------------------------------------------------------
+  outroot->cd();
+  dat_2HDM->Write();
+  err_2HDM->Write();
+  dat_BARY->Write();
+  err_BARY->Write();
+  delete dat_2HDM;
+  delete err_2HDM;
+  delete dat_BARY;
+  delete err_BARY;
+
+}
+
+void GetXandY(TString name, Double_t & mX, Double_t & mY)
+{
+  TString strX = "_mZP";
+  TString strY = (name.Contains("2HDM",TString::kExact))? "_mA0":"_mChi";
+  Ssiz_t lenX = strX.Length();
+  Ssiz_t lenY = strY.Length();
+  Ssiz_t indX = name.Index(strX);
+  Ssiz_t indY = name.Index(strY);
+  TString tmpX(name((indX+lenX),indY-indX-lenX));
+  TString tmpY(name(indY+lenY,name.Length()-indY-lenY));
+  mX = (Double_t) tmpX.Atoi();
+  mY = (Double_t) tmpY.Atoi(); 
 }
 
 Float_t CalculateEff(Int_t iden, Float_t fden, Int_t inum, Float_t fnum, Float_t & err)
