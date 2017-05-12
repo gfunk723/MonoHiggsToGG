@@ -21,11 +21,11 @@ void makeEfficiencyList()
   // ----------------------------------------------------------------
   // which skim to use 
   // ----------------------------------------------------------------
-  TString addname="";
+  TString addname="_optB";
   TString skim="skimmedtree"; //default
   if (addname.Contains("optA",TString::kExact)) skim="newskim";
-  if (addname.Contains("optB",TString::kExact)) skim="newskimv2";
-
+  //if (addname.Contains("optB",TString::kExact)) skim="newskimv2"; // has lep & jet vetoes
+  if (addname.Contains("optB",TString::kExact)) skim="skim_woVetos";// no lep or jet vetoes
 
   // ----------------------------------------------------------------
   // Call function for each category 
@@ -39,13 +39,13 @@ void makeEfficiencyList()
   outfile = Form("%sPlainEff%s_lowMET.tex",outdir.Data(),addname.Data());
   GetEfficiencies(indir,outfile,skim,lumi,false,false); 
 
-  cout << "Computing Yields highMET region" << endl;
-  outfile = Form("%sYields%s_highMET.tex",outdir.Data(),addname.Data());
-  GetEfficiencies(indir,outfile,skim,lumi,true,true);
+  //cout << "Computing Yields highMET region" << endl;
+  //outfile = Form("%sYields%s_highMET.tex",outdir.Data(),addname.Data());
+  //GetEfficiencies(indir,outfile,skim,lumi,true,true);
 
-  cout << "Computing Yields lowMET region" << endl;
-  outfile = Form("%sYields%s_lowMET.tex",outdir.Data(),addname.Data());
-  GetEfficiencies(indir,outfile,skim,lumi,false,true);
+  //cout << "Computing Yields lowMET region" << endl;
+  //outfile = Form("%sYields%s_lowMET.tex",outdir.Data(),addname.Data());
+  //GetEfficiencies(indir,outfile,skim,lumi,false,true);
 
 }
 
@@ -115,6 +115,8 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
   Samples.push_back("BaryonicZp_mZP10_mChi10"     );
   Samples.push_back("BaryonicZp_mZP10_mChi1"      );
   Samples.push_back("BaryonicZp_mZP10_mChi50"     );
+  Samples.push_back("BaryonicZp_mZP10_mChi150"    );
+  Samples.push_back("BaryonicZp_mZP10_mChi500"    );
   //Samples.push_back("BaryonicZp_mZP15_mChi10"   );
   Samples.push_back("BaryonicZp_mZP1995_mChi1000" );
   Samples.push_back("BaryonicZp_mZP2000_mChi1"    );
@@ -125,11 +127,14 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
   Samples.push_back("BaryonicZp_mZP20_mChi1"      );
   Samples.push_back("BaryonicZp_mZP295_mChi150"   );
   Samples.push_back("BaryonicZp_mZP300_mChi50"    );
+  Samples.push_back("BaryonicZp_mZP300_mChi1"     );
   Samples.push_back("BaryonicZp_mZP500_mChi150"   );
   Samples.push_back("BaryonicZp_mZP500_mChi1"     );
   Samples.push_back("BaryonicZp_mZP500_mChi500"   );
+  Samples.push_back("BaryonicZp_mZP50_mChi50"     );
   Samples.push_back("BaryonicZp_mZP50_mChi10"     );
   Samples.push_back("BaryonicZp_mZP50_mChi1"      );
+  Samples.push_back("BaryonicZp_mZP95_mChi50"     );
   Samples.push_back("BaryonicZp_mZP995_mChi500"   );
 
   Samples.push_back("ScalarZp_mZP10000_mChi1"   );
@@ -193,9 +198,13 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
     // ----------------------------------------------------------------
     for (UInt_t n=0; n < nSamples; n++){
       GetEfficiency(indir,Samples[n],skim,lumi,true,hiMETeff,yields,Eff[n],Err[n]);
+      if (!yields){ // convert to percentage
+        Eff[n]*=100;
+        Err[n]*=100;
+      }
       if (yields && hiMETeff) outResults << Samples[n] << " & " << Form("%1.1f",Eff[n]) << " $ \\pm $ " << Form("%1.1f",Err[n]) << " \\\\" << endl;
       else if (yields)        outResults << Samples[n] << " & " << Form("%1.2f",Eff[n]) << " $ \\pm $ " << Form("%1.2f",Err[n]) << " \\\\" << endl;
-      else                    outResults << Samples[n] << " & " << Form("%1.3f",Eff[n]) << " $ \\pm $ " << Form("%1.3f",Err[n]) << " \\\\" << endl;
+      else                    outResults << Samples[n] << " & " << Form("%1.1f",Eff[n]) << " $ \\pm $ " << Form("%1.1f",Err[n]) << " \\\\" << endl;
     }
 
     // ----------------------------------------------------------------
@@ -213,14 +222,18 @@ void GetEfficiencies(TString indir, TString outfile, TString skim, Float_t lumi,
 Float_t CalculateEff(Int_t iden, Float_t fden, Int_t inum, Float_t fnum, Float_t & err)
 {
    Float_t eff  = fnum/fden;
-   err = eff*(1.0-eff)/fden;
+   if (eff <= 0) eff = 0;
+   //err = eff*sqrt(fnum*(1.0-eff))/fden;
+   err = sqrt(eff*(1.0-eff)/fden);
 
    Float_t ieff = (Float_t)inum/(Float_t)iden;
-   Float_t ierr = ieff*(1.0-ieff)/(Double_t)iden;
-   cout << "den = " << iden << " OR " << fden << endl;
-   cout << "num = " << inum << " OR " << fnum << endl;
-   cout << "Eff = " << ieff << " OR " << eff << endl; 
-   cout << "Err = " << ierr << " OR " << err << endl;
+   //Float_t ierr = ieff*sqrt((Float_t)inum*(1.0-ieff)/(Double_t)iden);
+   Float_t ierr = sqrt(ieff*(1.0-ieff)/(Double_t)iden);
+
+   //cout << "den = " << iden << " OR " << fden << endl;
+   //cout << "num = " << inum << " OR " << fnum << endl;
+   //cout << "Eff = " << ieff << " OR " << eff << endl; 
+   //cout << "Err = " << ierr << " OR " << err << endl;
  
    return eff;
 }
@@ -283,6 +296,7 @@ void CalculateNumbers(TTree* tree, TH1D* hNum, Int_t & numi_loMET, Int_t & numi_
   Float_t t1pfmetCorr;		tree->SetBranchAddress("t1pfmetCorr",&t1pfmetCorr);
   Float_t dphiggmet;		tree->SetBranchAddress("dphiggmet",&dphiggmet);
   Float_t mindphijmet;		tree->SetBranchAddress("mindphijmet",&mindphijmet);
+  Int_t nJets30;		tree->SetBranchAddress("nJets30",&nJets30);
 
   // ----------------------------------------------------------------
   // loop over input tree
@@ -296,13 +310,14 @@ void CalculateNumbers(TTree* tree, TH1D* hNum, Int_t & numi_loMET, Int_t & numi_
     // ----------------------------------------------------------------
     if (dphiggmet < 2.1)        continue;
     if (mindphijmet < 0.5)      continue;
-    if (mgg < 115 || mgg > 135) continue; 
+    if (mgg < 115 || mgg > 135) continue;
+    if (nJets30 > 2)            continue; 
 
     // ----------------------------------------------------------------
     // store the final number of events 
     // ----------------------------------------------------------------
-    if (t1pfmetCorr <= 130){ numi_loMET++; numf_loMET+=weight; }
-    if (t1pfmetCorr >  130){ numi_hiMET++; numf_hiMET+=weight; }
+    if (t1pfmetCorr > 50 && t1pfmetCorr <= 130){ numi_loMET++; numf_loMET+=weight; }
+    if (t1pfmetCorr >  130){                     numi_hiMET++; numf_hiMET+=weight; }
   }
 }
 
