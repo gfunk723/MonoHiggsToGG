@@ -74,8 +74,6 @@ void StackPlots::FixPlotStyling(const Int_t th1f)
   fOutRatioTH1FHists[th1f]->GetXaxis()->SetTickLength(0.07);
   fOutRatioTH1FHists[th1f]->GetXaxis()->SetTickSize(0.11);
   
-  
-
   //------------------------------------------------------------------------
   // Make axis labels pretty 
   //------------------------------------------------------------------------
@@ -267,6 +265,7 @@ void StackPlots::DrawLowerPad(const Int_t th1f)
   fOutRatioTH1FHists[th1f]->GetYaxis()->CenterTitle();
 
   fOutRatioTH1FHists[th1f]->Draw("EP SAME"); // redraw to go over line
+  fOutRatioErrors[th1f]->Draw("E SAME");     // draw errors when ratio bigger than max
   fOutRatioMCErrs[th1f]->Draw("E2 SAME");    // plots MC error copy
   fRatioLegends[th1f]->Draw("SAME");         // draw legend
 }
@@ -345,10 +344,10 @@ void StackPlots::MakeStackPlots(std::ofstream & yields)
     // Use Gjets weighted to QCD as QCD
     //------------------------------------------------------------------------
     if (Config::doQCDrewgt){
-      Double_t qcdint  = fInBkgTH1FHists[th1f][fBkgIndicesMap["QCD"]]->Integral();
-      Double_t gjetint = fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Integral();
+      qcdint  = fInBkgTH1FHists[th1f][fBkgIndicesMap["QCD"]]->Integral();
+      gjetint = fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Integral(); 
       fGJetsClone[th1f] = (TH1F*)fInBkgTH1FHists[th1f][fBkgIndicesMap["GJets"]]->Clone();
-      fGJetsClone[th1f]->Scale(qcdint/gjetint);
+      if (qcdint > 0 && gjetint > 0) fGJetsClone[th1f]->Scale(qcdint/gjetint);
     }  
 
     //------------------------------------------------------------------------
@@ -359,10 +358,11 @@ void StackPlots::MakeStackPlots(std::ofstream & yields)
       if (fInBkgTH1FHists[th1f][mc]->Integral() <= 0) continue;
       else{ index_non0int = mc; break; }
     }
-    for (Int_t mc = 0; mc < fNBkg; mc++){
-      if      (fInBkgTH1FHists[th1f][mc]->Integral() <= 0) continue;
-      else if (mc == index_non0int) fOutBkgTH1FHists[th1f] = (TH1F*)fInBkgTH1FHists[th1f][mc]->Clone();
-      else if (fBkgNames[mc]=="QCD" && Config::doQCDrewgt) fOutBkgTH1FHists[th1f]->Add(fGJetsClone[th1f]);
+    fOutBkgTH1FHists[th1f] = (TH1F*)fInBkgTH1FHists[th1f][index_non0int]->Clone();
+    for (Int_t mc = index_non0int+1; mc < fNBkg; mc++){
+      if (fBkgNames[mc]=="QCD" && qcdint > 0){
+        if (Config::doQCDrewgt) fOutBkgTH1FHists[th1f]->Add(fGJetsClone[th1f]);
+        else                    fOutBkgTH1FHists[th1f]->Add(fInBkgTH1FHists[th1f][mc]); }
       else    fOutBkgTH1FHists[th1f]->Add(fInBkgTH1FHists[th1f][mc]);
     }
 
@@ -383,7 +383,7 @@ void StackPlots::MakeStackPlots(std::ofstream & yields)
       }
       Double_t scale = dataint/bkgint;
       fOutBkgTH1FHists[th1f]->Scale(scale);
-      if (Config::doQCDrewgt) fGJetsClone[th1f]->Scale(scale);
+      if (Config::doQCDrewgt && qcdint > 0) fGJetsClone[th1f]->Scale(scale);
       for (Int_t mc = 0; mc < fNBkg; mc++ ){
         if (fBkgNames[mc]!="GluGluHToGG" && fBkgNames[mc]!="VHToGG" && fBkgNames[mc]!="VBFHToGG" && fBkgNames[mc]!="ttHJetToGG"){// dont rewgt SM hgg
           fInBkgTH1FHists[th1f][mc]->Scale(scale);
@@ -479,10 +479,12 @@ void StackPlots::MakeStackPlots(std::ofstream & yields)
       // Data 
       //------------------------------------------------------------------------
       double dataint1, dataerr1, dataint2, dataerr2, dataint, dataerr; 
-      dataint1 = GetIntegralAndError(fOutDataTH1FHists[th1f],m0,m1,dataerr1);
-      dataint2 = GetIntegralAndError(fOutDataTH1FHists[th1f],m2,m3,dataerr2);
-      if (Config::doBlind){ dataint = dataint1 + dataint2; dataerr = TMath::Sqrt(dataint); }
-      else{ dataint = GetIntegralAndError(fOutDataTH1FHists[th1f],m0,m3,dataerr); }
+      if (Config::useData){
+        dataint1 = GetIntegralAndError(fOutDataTH1FHists[th1f],m0,m1,dataerr1);
+        dataint2 = GetIntegralAndError(fOutDataTH1FHists[th1f],m2,m3,dataerr2);
+        if (Config::doBlind){ dataint = dataint1 + dataint2; dataerr = TMath::Sqrt(dataint); }
+        else{ dataint = GetIntegralAndError(fOutDataTH1FHists[th1f],m0,m3,dataerr); }
+      }
 
       //------------------------------------------------------------------------
       // Bkg MC 
@@ -550,7 +552,7 @@ void StackPlots::MakeRatioPlots()
     else             fOutRatioTH1FHists[th1f] = (TH1F*)fOutBkgTH1FHists[th1f]->Clone();
 
     //fOutRatioTH1FHists[th1f]->Add(fOutBkgTH1FHists[th1f],-1.0);  
-    fOutRatioTH1FHists[th1f]->Divide(fOutBkgTH1FHists[th1f]);  
+    fOutRatioTH1FHists[th1f]->Divide(fOutBkgTH1FHists[th1f]); 
     fOutRatioTH1FHists[th1f]->SetTitle("");
     fOutRatioTH1FHists[th1f]->GetYaxis()->SetTitle("Data/MC");
     TString xtitle  = fOutBkgTH1FHists[th1f]->GetXaxis()->GetTitle();
@@ -559,6 +561,22 @@ void StackPlots::MakeRatioPlots()
     fOutRatioTH1FHists[th1f]->SetMinimum(-0.1); // Define Y ..
     fOutRatioTH1FHists[th1f]->SetMaximum(2.2);  // .. range
     fOutRatioTH1FHists[th1f]->SetStats(0);      // No statistics on lower plot
+
+    //------------------------------------------------------------------------
+    // error for when ratio is above max 
+    //------------------------------------------------------------------------
+    fOutRatioErrors[th1f] = (TH1F*)fOutRatioTH1FHists[th1f]->Clone();
+    fOutRatioErrors[th1f]->SetMarkerStyle(0);
+    for (UInt_t bin=0; bin<=fOutRatioTH1FHists[th1f]->GetNbinsX(); bin++){
+      float bincontent = fOutRatioTH1FHists[th1f]->GetBinContent(bin);
+      float binerror   = fOutRatioTH1FHists[th1f]->GetBinError(bin);
+      float histomax   = fOutRatioTH1FHists[th1f]->GetMaximum();
+      if (bincontent > histomax){ 
+        float difference = bincontent - histomax;
+        fOutRatioErrors[th1f]->SetBinContent(bin,histomax-0.000001);
+        fOutRatioErrors[th1f]->SetBinError(bin,binerror-difference);
+      }
+    }
 
     //------------------------------------------------------------------------
     // ratio MC error plot
@@ -580,7 +598,8 @@ void StackPlots::InitRatioPlots()
   // Initialize ratio plots 
   //------------------------------------------------------------------------
   fOutRatioTH1FHists.resize(fNTH1F); // th1f hists
-  fOutRatioMCErrs.resize(fNTH1F);    // mc err hists 
+  fOutRatioMCErrs.resize(fNTH1F);    // mc err hists
+  fOutRatioErrors.resize(fNTH1F);    // err for ratios above max 
 }
 
 void StackPlots::InitRatioLines()
@@ -635,7 +654,7 @@ void StackPlots::InitOutputLegends()
   fRatioLegends.resize(fNTH1F);
 
   for (Int_t th1f = 0; th1f < fNTH1F; th1f++){
-    fTH1FLegends[th1f] = new TLegend(0.51,0.69,0.91,0.92,NULL,"brNDC"); // (x1,y1,x2,y2)
+    fTH1FLegends[th1f] = new TLegend(0.45,0.69,0.92,0.92,NULL,"brNDC"); // (x1,y1,x2,y2)
     fTH1FLegends[th1f]->SetTextSize(0.036);
     fTH1FLegends[th1f]->SetNColumns(2);
     fTH1FLegends[th1f]->SetBorderSize(0);
@@ -646,7 +665,7 @@ void StackPlots::InitOutputLegends()
     fTH1FLegends[th1f]->SetFillStyle(0);
     fTH1FLegends[th1f]->SetTextFont(42);
 
-    fSigLegends[th1f] = new TLegend(0.51,0.57,0.83,0.69); // (x1,y1,x2,y2)
+    fSigLegends[th1f] = new TLegend(0.45,0.55,0.74,0.68); // (x1,y1,x2,y2)
     //fSigLegends[th1f]->SetHeader("m_{A} = 300 GeV");
     fSigLegends[th1f]->SetTextSize(0.036);
     fSigLegends[th1f]->SetNColumns(1);

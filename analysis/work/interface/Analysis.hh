@@ -45,6 +45,8 @@ public:
   void OutputStandardPlots();
   void OutputNminus1Plots();
 
+  TH1F * MakeVarBinPlot( TStrMap& subdirmap, TString subdir, TString hname, TString htitle,
+                      Int_t nbins, Float_t bins[], TString xtitle, TString ytitle);
   TH1F * MakeTH1Plot( TStrMap& subdirmap, TString subdir, TString hname, TString htitle,
                       Int_t nbins, Double_t xlow, Double_t xhigh, TString xtitle, TString ytitle);
   void SaveTH1s(TH1Map & th1map, TStrMap & subdirmap);

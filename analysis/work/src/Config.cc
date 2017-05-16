@@ -7,8 +7,6 @@ namespace Config{
   //------------------------------------------------------------------------
   TString outdir      = "diPhoPlots";
   Bool_t  doBlind     = true; 
-  Bool_t  doOptimize  = false;
-  TString variable    = "ptgg";
   Bool_t  doAnalysis  = false;
   Bool_t  doStack     = false;
   Bool_t  doComb      = false;

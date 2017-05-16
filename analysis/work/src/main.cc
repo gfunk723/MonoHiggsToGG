@@ -12,7 +12,6 @@
 #include "../interface/OverlayPlots.hh"
 #include "../interface/CardMaker.hh"
 #include "../interface/METcorr.hh"
-#include "../interface/Optimization.hh"
 
 #include "TROOT.h"
 #include <iostream>
@@ -36,7 +35,7 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   // Set sample map 
   //------------------------------------------------------------------------
   if (Config::useData) Config::SampleMap["DoubleEG"] = true;  // isData
-  if (Config::doAnalysis || Config::doStack || Config::makeCards || Config::doComb || Config::doOptimize)
+  if (Config::doAnalysis || Config::doStack || Config::makeCards || Config::doComb)
   {
     Config::SampleMap["VHToGG"]			= false; // !isData
     Config::SampleMap["GluGluHToGG"]		= false; // !isData
@@ -57,8 +56,9 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
     Config::SampleMap["QCD"]			= false; // !isData
     Config::SampleMap["GJets"]			= false; // !isData
     Config::SampleMap["2HDM_mZP600_mA0300"]	= false; // !isData
-    Config::SampleMap["2HDM_mZP800_mA0300"]     = false; // !isData
-    Config::SampleMap["2HDM_mZP1000_mA0300"]    = false; // !isData 
+    Config::SampleMap["BaryonicZp_mZP10_mChi1"]	= false; // !isData
+    //Config::SampleMap["2HDM_mZP800_mA0300"]     = false; // !isData
+    //Config::SampleMap["2HDM_mZP1000_mA0300"]    = false; // !isData 
   }
 
   //------------------------------------------------------------------------
@@ -70,68 +70,70 @@ void InitializeMain(std::ofstream &yields, TStyle *& tdrStyle)
   //------------------------------------------------------------------------
   // Set color map 
   //------------------------------------------------------------------------
-  Config::colorMap["DoubleEG"]		   = kBlack;
-  Config::colorMap["2HDM_mZP600_mA0300"]   = kBlue;
-  Config::colorMap["2HDM_mZP800_mA0300"]   = kMagenta;
-  Config::colorMap["2HDM_mZP1000_mA0300"]  = kGreen;
-  Config::colorMap["DiPhoton"]		   = kTeal-1;
-  Config::colorMap["SMHiggs"]		   = kOrange-2;
-  Config::colorMap["EWK1pho"]		   = kAzure+8;
-  Config::colorMap["EWK2pho"]		   = kAzure+2;
-  Config::colorMap["Jetspho"]		   = kGreen-9;
-  Config::colorMap["DYJetsToLL"]	   = kTeal-7;
-  Config::colorMap["VHToGG"]		   = kRed-10;
+  Config::colorMap["DoubleEG"]		     = kBlack;
+  Config::colorMap["2HDM_mZP600_mA0300"]     = kBlue;
+  Config::colorMap["BaryonicZp_mZP10_mChi1"] = kMagenta;
+  //Config::colorMap["2HDM_mZP800_mA0300"]     = kMagenta;
+  //Config::colorMap["2HDM_mZP1000_mA0300"]    = kGreen;
+  Config::colorMap["DiPhoton"]		     = kTeal-1;
+  Config::colorMap["SMHiggs"]		     = kOrange-2;
+  Config::colorMap["EWK1pho"]		     = kAzure+8;
+  Config::colorMap["EWK2pho"]		     = kAzure+2;
+  Config::colorMap["Jetspho"]		     = kGreen-9;
+  Config::colorMap["DYJetsToLL"]	     = kTeal-7;
+  Config::colorMap["VHToGG"]		     = kRed-10;
   // colors only used if writing out all samples separately
-  Config::colorMap["QCD"] 		   = kYellow+8;
-  Config::colorMap["GJets"] 		   = kGreen-9;
-  Config::colorMap["GluGluHToGG"]	   = kOrange-2;
-  Config::colorMap["ttHJetToGG"]	   = kOrange-4;
-  Config::colorMap["VBFHToGG"]		   = kYellow-7;
-  Config::colorMap["TGJets"]		   = kAzure+3;
-  Config::colorMap["TTGJets"]		   = kAzure+2;
-  Config::colorMap["TTGG_0Jets"]	   = kBlue-9;
-  Config::colorMap["TTJets"]		   = kBlue-7;
-  Config::colorMap["ZJets"]		   = kBlue;
-  Config::colorMap["ZGTo2LG"]		   = kCyan;
-  Config::colorMap["ZGTo2NuG"]		   = kCyan+2;
-  Config::colorMap["WZTo2L2Q"]		   = kTeal;
-  Config::colorMap["WJetsToLNu"]	   = kBlue+1;
-  Config::colorMap["ZZTo2L2Nu"]		   = kTeal+1;
-  Config::colorMap["ZZTo2L2Q"]		   = kTeal+5;
-  Config::colorMap["WGToLNuG"]		   = kAzure+8;
+  Config::colorMap["QCD"] 		     = kYellow+8;
+  Config::colorMap["GJets"] 		     = kGreen-9;
+  Config::colorMap["GluGluHToGG"]	     = kOrange-2;
+  Config::colorMap["ttHJetToGG"]	     = kOrange-4;
+  Config::colorMap["VBFHToGG"]		     = kYellow-7;
+  Config::colorMap["TGJets"]		     = kAzure+3;
+  Config::colorMap["TTGJets"]		     = kAzure+2;
+  Config::colorMap["TTGG_0Jets"]	     = kBlue-9;
+  Config::colorMap["TTJets"]		     = kBlue-7;
+  Config::colorMap["ZJets"]		     = kBlue;
+  Config::colorMap["ZGTo2LG"]		     = kCyan;
+  Config::colorMap["ZGTo2NuG"]		     = kCyan+2;
+  Config::colorMap["WZTo2L2Q"]		     = kTeal;
+  Config::colorMap["WJetsToLNu"]	     = kBlue+1;
+  Config::colorMap["ZZTo2L2Nu"]		     = kTeal+1;
+  Config::colorMap["ZZTo2L2Q"]		     = kTeal+5;
+  Config::colorMap["WGToLNuG"]		     = kAzure+8;
 
   //------------------------------------------------------------------------
   // Set outputname map 
   //------------------------------------------------------------------------
-  Config::nameMap["DoubleEG"]              = "Data";
-  Config::nameMap["2HDM_mZP600_mA0300"]    = "m_{A} = 300 GeV, m_{Z'} = 600 GeV";
-  Config::nameMap["2HDM_mZP800_mA0300"]    = "m_{A} = 300 GeV, m_{Z'} = 800 GeV";
-  Config::nameMap["2HDM_mZP1000_mA0300"]   = "m_{A} = 300 GeV, m_{Z'} = 1000 GeV";
-  Config::nameMap["DiPhoton"]              = "#gamma#gamma";
-  Config::nameMap["SMHiggs"]               = "SM h #rightarrow #gamma#gamma";
-  Config::nameMap["EWK1pho"]               = "EW + #gamma";
-  Config::nameMap["EWK2pho"]               = "EW + #gamma#gamma";
-  Config::nameMap["Jetspho"]               = "QCD, #gamma + jets";
-  Config::nameMap["DYJetsToLL"]            = "DY + jets";
-  Config::nameMap["VHToGG"]                = "Vh"; 
+  Config::nameMap["DoubleEG"]                = "Data";
+  Config::nameMap["2HDM_mZP600_mA0300"]      = "2HDM: m_{A} = 300 GeV, m_{Z'} = 600 GeV";
+  Config::nameMap["BaryonicZp_mZP10_mChi1"]  = "Baryonic: m_{Z'} = 10 GeV, m_{#chi} = 1 GeV";
+  //Config::nameMap["2HDM_mZP800_mA0300"]      = "m_{A} = 300 GeV, m_{Z'} = 800 GeV";
+  //Config::nameMap["2HDM_mZP1000_mA0300"]     = "m_{A} = 300 GeV, m_{Z'} = 1000 GeV";
+  Config::nameMap["DiPhoton"]                = "#gamma#gamma";
+  Config::nameMap["SMHiggs"]                 = "h #rightarrow #gamma#gamma (ggF,VBF,tth)";
+  Config::nameMap["EWK1pho"]                 = "#gamma + t, tt, W, Z";
+  Config::nameMap["EWK2pho"]                 = "ZZ, ZW, tt + #gamma#gamma";
+  Config::nameMap["Jetspho"]                 = "QCD, #gamma + jets";
+  Config::nameMap["DYJetsToLL"]              = "DY + jets";
+  Config::nameMap["VHToGG"]                  = "Vh"; 
   // names only used if writing out all samples separately
-  Config::nameMap["QCD"]                   = "QCD"; 
-  Config::nameMap["GJets"]                 = "#gamma + jets"; 
-  Config::nameMap["GluGluHToGG"]           = "SM h (GluGlu)"; 
-  Config::nameMap["ttHJetToGG"]            = "SM h (tth)"; 
-  Config::nameMap["VBFHToGG"]              = "SM h (VBF)"; 
-  Config::nameMap["TGJets"]                = "T + #gamma"; 
-  Config::nameMap["TTGJets"]               = "TT + #gamma"; 
-  Config::nameMap["TTGG_0Jets"]	           = "TT + #gamma#gamma"; 
-  Config::nameMap["TTJets"]                = "TT"; 
-  Config::nameMap["ZJets"]                 = "Z + jets"; 
-  Config::nameMap["ZGTo2LG"]               = "Z(ll) + #gamma"; 
-  Config::nameMap["ZGTo2NuG"]              = "Z(#nu#nu) + #gamma"; 
-  Config::nameMap["WZTo2L2Q"]              = "WZ #rightarrow llqq"; 
-  Config::nameMap["WJetsToLNu"]            = "W(l#nu) + jets"; 
-  Config::nameMap["ZZTo2L2Nu"]             = "ZZ #rightarrow ll#nu#nu"; 
-  Config::nameMap["ZZTo2L2Q"]              = "ZZ #rightarrow llqq"; 
-  Config::nameMap["WGToLNuG"]              = "W(l#nu) + #gamma"; 
+  Config::nameMap["QCD"]                     = "QCD"; 
+  Config::nameMap["GJets"]                   = "#gamma + jets"; 
+  Config::nameMap["GluGluHToGG"]             = "SM h (GluGlu)"; 
+  Config::nameMap["ttHJetToGG"]              = "SM h (tth)"; 
+  Config::nameMap["VBFHToGG"]                = "SM h (VBF)"; 
+  Config::nameMap["TGJets"]                  = "T + #gamma"; 
+  Config::nameMap["TTGJets"]                 = "TT + #gamma"; 
+  Config::nameMap["TTGG_0Jets"]	             = "TT + #gamma#gamma"; 
+  Config::nameMap["TTJets"]                  = "TT"; 
+  Config::nameMap["ZJets"]                   = "Z + jets"; 
+  Config::nameMap["ZGTo2LG"]                 = "Z(ll) + #gamma"; 
+  Config::nameMap["ZGTo2NuG"]                = "Z(#nu#nu) + #gamma"; 
+  Config::nameMap["WZTo2L2Q"]                = "WZ #rightarrow llqq"; 
+  Config::nameMap["WJetsToLNu"]              = "W(l#nu) + jets"; 
+  Config::nameMap["ZZTo2L2Nu"]               = "ZZ #rightarrow ll#nu#nu"; 
+  Config::nameMap["ZZTo2L2Q"]                = "ZZ #rightarrow llqq"; 
+  Config::nameMap["WGToLNuG"]                = "W(l#nu) + #gamma"; 
   
 
 }// end initializing
@@ -162,8 +164,6 @@ int main(int argc, const char* argv[])
         "Options:\n"
 	"  --outdir        <string>      name of ouput directory (def: %s)\n"
         "  --unblind       <bool>        unblind the data (def: %s)\n"
-        "  --optimize      <bool>        run optimization (def: %s)\n" 
-        "  --variable      <string>      which variable to run optimization on (def: %s)\n" 
         "  --do-analysis   <bool>        run analysis cuts (def: %s)\n"
         "  --do-stack      <bool>        run stacking for plots (def: %s)\n"
         "  --do-comb       <bool>        run overlay for plots (def: %s)\n"
@@ -184,8 +184,6 @@ int main(int argc, const char* argv[])
         argv[0],
         Config::outdir.Data(),
         (Config::doBlind    ? "false" : "true"),
-        (Config::doOptimize ? "true" : "false"),
-        Config::variable.Data(),
         (Config::doAnalysis ? "true" : "false"),
         (Config::doStack    ? "true" : "false"),
         (Config::doComb     ? "true" : "false"),
@@ -208,8 +206,6 @@ int main(int argc, const char* argv[])
 
     else if (*i == "--outdir")      { next_arg_or_die(mArgs, i); Config::outdir = i->c_str(); }
     else if (*i == "--unblind")     { Config::doBlind      = false; }
-    else if (*i == "--optimize")    { Config::doOptimize   = true; }
-    else if (*i == "--variable")    { next_arg_or_die(mArgs, i); Config::variable = i->c_str(); }
     else if (*i == "--do-analysis") { Config::doAnalysis   = true; }
     else if (*i == "--do-stack")    { Config::doStack      = true; }
     else if (*i == "--do-comb")     { Config::doComb       = true; }
@@ -250,17 +246,6 @@ int main(int argc, const char* argv[])
     if (input == "y") std::cout << "Proceeding" << std::endl;
     else{ std::cout << "Please do not use flag: --unblind ... exiting..." << std::endl; exit(1); }
   }
-
-  //------------------------------------------------------------------------
-  // Run optimization
-  //------------------------------------------------------------------------
-  if (Config::doOptimize)
-  {
-    std::cout << "Running optimization on variable: " << Config::variable << std::endl;
-    Optimization * opt = new Optimization(inDir);
-    opt->RunOptimization();
-    delete opt;
-  } 
 
   //------------------------------------------------------------------------
   // Get the MET correction

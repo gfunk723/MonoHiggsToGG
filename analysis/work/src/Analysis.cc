@@ -99,8 +99,11 @@ void Analysis::DoPlots(int prompt)
   //------------------------------------------------------------------------
   // Setup MET threshold  
   //------------------------------------------------------------------------
-  Double_t metCut = 100;          // OrigSel
-  if (fWhichSel==1) metCut = 130; // OptSel1
+  Double_t metCut = 100;            // OrigSel
+  if (fWhichSel==1) metCut = 130;   // OptSel1
+  if (fWhichSel==2) metCut = 130;   // OptSel2
+  Double_t lowMetCut = 0;
+  if (fWhichSel==2) lowMetCut = 50; // OptSel2
 
   //------------------------------------------------------------------------
   // Setup counters  
@@ -204,7 +207,10 @@ void Analysis::DoPlots(int prompt)
     //------------------------------------------------------------------------
     Bool_t passSel = false;
     if (fWhichSel==0) passSel = true; // original selection
-    if (fWhichSel==1 && (pt1 > 0.5*mgg && pt2 > 0.25*mgg && ptgg > 90)) passSel = true;   
+    if (fWhichSel==1 && (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)) passSel = true; // OptSel1: high-MET cuts only 
+    Bool_t passLowMetSel  = (t1pfmetCorr < metCut  && pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg > 75)? true:false;
+    Bool_t passHighMetSel = (t1pfmetCorr >= metCut && pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)? true:false;    
+    if (fWhichSel==2 && (passLowMetSel || passHighMetSel)) passSel = true;               // OptSel2: low- and high-MET cuts
     if (!passSel) continue;
 
     //------------------------------------------------------------------------
@@ -227,7 +233,7 @@ void Analysis::DoPlots(int prompt)
     //------------------------------------------------------------------------
     // Apply all other selection 
     //------------------------------------------------------------------------
-    if (nEle >= 1 || nMuons >= 1) continue; // lepton veto
+    //if (nEle >= 1 || nMuons >= 1) continue; // lepton veto
     if (nJets30 > 2) continue;              // jet veto
     if (!pass_dphi) continue;               // dphi cuts
  
@@ -238,7 +244,7 @@ void Analysis::DoPlots(int prompt)
     //--------> Fill the standard plots
     if (Config::doStandard){
        if (mggPlot) standardTH1Map["mgg"]->Fill(mgg,wgt);
-       if (mggPlot && t1pfmetCorr < metCut)  standardTH1Map["mgg_loMET"]->Fill(mgg,wgt);
+       if (mggPlot && t1pfmetCorr > lowMetCut && t1pfmetCorr < metCut)  standardTH1Map["mgg_loMET"]->Fill(mgg,wgt);
        if (mggPlot && t1pfmetCorr >= metCut) standardTH1Map["mgg_hiMET"]->Fill(mgg,wgt);
        if (mggOkay) standardTH1Map["t1pfmetCorr"]->Fill(t1pfmetCorr,wgt);
        if (mggOkay) standardTH1Map["t1pfmet"]->Fill(t1pfmet,wgt);
@@ -389,6 +395,22 @@ void Analysis::DeleteTH2s(TH2Map & th2map)
     delete (mapiter->second);
   }
   th2map.clear();
+}
+
+TH1F* Analysis::MakeVarBinPlot(TStrMap& subdirmap, TString subdir, TString hname, TString htitle, Int_t nbins, Float_t bins[], TString xtitle, TString ytitle){
+  //------------------------------------------------------------------------
+  // Setup Variable binned TH1s  
+  //------------------------------------------------------------------------
+  TString ytitleNew;
+  if (ytitle=="") ytitleNew = Form("Events / GeV");
+  else ytitleNew = ytitle;
+
+  TH1F * hist = new TH1F(hname.Data(),htitle.Data(),nbins,bins);
+  hist->GetXaxis()->SetTitle(xtitle.Data());
+  hist->GetYaxis()->SetTitle(ytitleNew.Data());
+  hist->Sumw2();
+  gStyle->SetOptStat(1111111); 
+  return hist;
 }
 
 TH1F* Analysis::MakeTH1Plot(TStrMap& subdirmap, TString subdir, TString hname, TString htitle, Int_t nbins, Double_t xlow, Double_t xhigh, TString xtitle, TString ytitle){

@@ -81,6 +81,8 @@ private:
   TH1FVec	fOutJetsBkgHists;
   TH1FVec	fOutHiggsBkgHists;
   TH1FVec	fGJetsClone;
+  Double_t	qcdint;
+  Double_t	gjetint;
  
   TStrIntMap	fBkgIndicesMap;
   TLegVec	fTH1FLegends;
@@ -92,6 +94,7 @@ private:
   TPadVec	fOutTH1FRatioPads;
   TLineVec	fOutTH1FRatioLines;
   TH1FVec	fOutRatioTH1FHists;
+  TH1FVec	fOutRatioErrors;
   TH1FVec	fOutRatioMCErrs;
 
 };

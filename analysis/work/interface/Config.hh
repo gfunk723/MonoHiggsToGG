@@ -9,7 +9,7 @@ namespace Config{
   // General configuration
   //------------------------------------------------------------------------
 
-  constexpr    Float_t lumi = 35.8; // fb^-1
+  constexpr    Float_t lumi = 35.9; // fb^-1
   static const TString extraText = "Preliminary";
 
   //------------------------------------------------------------------------
@@ -38,8 +38,6 @@ namespace Config{
 
   extern TString      outdir;
   extern Bool_t       doBlind;
-  extern Bool_t       doOptimize;
-  extern TString      variable;
   extern Bool_t       doAnalysis;
   extern Bool_t       doStack;
   extern Bool_t       doComb;
