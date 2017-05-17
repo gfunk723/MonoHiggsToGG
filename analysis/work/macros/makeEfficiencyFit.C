@@ -67,14 +67,14 @@ void Get1DEfficiency(TFile* infile, TString outdir, TFile* outfile, TString sig,
   TString eqn = "[0] + [1]*x";
   if (deg.EqualTo("deg2",TString::kExact)) eqn = "[0] + [1]*x + [2]*x^2";
   TF1 *polN = new TF1("polN",Form("%s",eqn.Data()),-20,20);
-  TH1D* h_prob = new TH1D("h_prob","",mY.size(),0,mY.size()); // histo w/ prob for each fit
+  TH1D* h_prob = new TH1D("h_prob",Form("h_prob_%s_%s_%s",deg.Data(),sig.Data(),met.Data()),mY.size(),0,mY.size()); // histo w/ prob for each fit
 
   outfile->cd();
   TCanvas *c = new TCanvas();
 
   for (UInt_t m=0; m < mY.size(); m++){
-    TH1D* h_eff_1D = new TH1D(Form("h_eff_1D_m%1.f",mY[m]),Form("h_eff_1D_m%1.f",mY[m]),(maxX-minX),minX,maxX);
-    h_eff_1D = h_eff->ProjectionX(Form("h_eff_1D_m%1.f",mY[m]),mY[m]-1,mY[m]+1); 
+    TH1D* h_eff_1D = new TH1D(Form("h_eff_1D_m%1.f",mY[m]),Form("h_eff_1D_%s_%s_%s_m%1.f",deg.Data(),sig.Data(),met.Data(),mY[m]),(maxX-minX),minX,maxX);
+    h_eff_1D = h_eff->ProjectionX(Form("h_eff_1D_%s_%s_%s_m%1.f",deg.Data(),sig.Data(),met.Data(),mY[m]),mY[m]-1,mY[m]+1); 
     h_eff_1D->GetXaxis()->SetRange(minX,maxX);
 
     // ----------------------------------------------------------------
