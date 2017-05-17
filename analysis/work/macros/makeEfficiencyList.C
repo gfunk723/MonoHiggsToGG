@@ -66,8 +66,8 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
   TString name = Form("%s_%s",type.Data(),cat.Data());
   TH2D* dat_2HDM = new TH2D(Form("h_2HDM_%s",name.Data()),Form("h_2HDM_%s",name.Data()),2500,500,3000,700,200,900);
   TH2D* err_2HDM = new TH2D(Form("h_2HDM_%s_err",name.Data()),Form("h_2HDM_%s_err",name.Data()),2500,500,3000,700,200,900);
-  TH2D* dat_BARY = new TH2D(Form("h_BARY_%s",name.Data()),Form("h_BARY_%s",name.Data()),2500,0,2500,1500,0,1500); 
-  TH2D* err_BARY = new TH2D(Form("h_BARY_%s_err",name.Data()),Form("h_BARY_%s_err",name.Data()),2500,0,2500,1500,0,1500); 
+  TH2D* dat_BARY = new TH2D(Form("h_BARY_%s",name.Data()),Form("h_BARY_%s",name.Data()),10005,0,10005,1500,0,1500); 
+  TH2D* err_BARY = new TH2D(Form("h_BARY_%s_err",name.Data()),Form("h_BARY_%s_err",name.Data()),10005,0,10005,1500,0,1500); 
 
   // ----------------------------------------------------------------
   // samples to use 
