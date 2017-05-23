@@ -147,7 +147,7 @@ void Analysis::DoPlots(int prompt)
     //------------------------------------------------------------------------
     // Check that data passes trigger
     //------------------------------------------------------------------------
-    Bool_t passTrigger      = (isData)? (hltDiphoton30Mass95==1):true;
+    Bool_t passTrigger      = (isData)? (hltDiphoton30Mass95):true;
     if (!passTrigger) continue;
 
     //------------------------------------------------------------------------
@@ -205,11 +205,12 @@ void Analysis::DoPlots(int prompt)
     //------------------------------------------------------------------------
     // Apply kinematic selection 
     //------------------------------------------------------------------------
+    //if (mgg < 100 || mgg > 300) continue;
     Bool_t passSel = false;
     if (fWhichSel==0) passSel = true; // original selection
-    if (fWhichSel==1 && (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)) passSel = true; // OptSel1: high-MET cuts only 
-    Bool_t passLowMetSel  = (t1pfmetCorr < metCut  && pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg > 75)? true:false;
+    Bool_t passLowMetSel  = (t1pfmetCorr <  metCut && pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg > 75)? true:false;
     Bool_t passHighMetSel = (t1pfmetCorr >= metCut && pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)? true:false;    
+    if (fWhichSel==1 && (pt1 > 0.50*mgg && pt2 > 0.25*mgg && ptgg > 90)) passSel = true; // OptSel1: high-MET cuts only 
     if (fWhichSel==2 && (passLowMetSel || passHighMetSel)) passSel = true;               // OptSel2: low- and high-MET cuts
     if (!passSel) continue;
 
@@ -246,6 +247,7 @@ void Analysis::DoPlots(int prompt)
        if (mggPlot) standardTH1Map["mgg"]->Fill(mgg,wgt);
        if (mggPlot && t1pfmetCorr > lowMetCut && t1pfmetCorr < metCut)  standardTH1Map["mgg_loMET"]->Fill(mgg,wgt);
        if (mggPlot && t1pfmetCorr >= metCut) standardTH1Map["mgg_hiMET"]->Fill(mgg,wgt);
+       if (mggOkay) standardTH1Map["t1pfmetCorr_var"]->Fill(t1pfmetCorr,wgt);
        if (mggOkay) standardTH1Map["t1pfmetCorr"]->Fill(t1pfmetCorr,wgt);
        if (mggOkay) standardTH1Map["t1pfmet"]->Fill(t1pfmet,wgt);
        standardTH1Map["nvtx"]->Fill(nvtx,wgt);
@@ -265,6 +267,25 @@ void Analysis::DoPlots(int prompt)
 
   }// end loop over entries!
   
+  //------------------------------------------------------------------------
+  // Normalize variable bin histograms 
+  //------------------------------------------------------------------------
+  if (Config::doStandard){
+    for (TH1MapIter iter = standardTH1Map.begin(); iter != standardTH1Map.end(); iter++){
+      TString hname = (*iter).first;
+      if (hname.Contains("_var",TString::kExact)){
+        for (UInt_t bin = 1; bin < (*iter).second->GetSize()-1; bin++){
+          Float_t bincontent = (*iter).second->GetBinContent(bin);
+          Float_t binwidth   = (*iter).second->GetBinWidth(bin);
+          Float_t binerr     = (*iter).second->GetBinError(bin);
+          Float_t newbinerr  = binerr/binwidth;
+          (*iter).second->SetBinContent(bin,bincontent/binwidth);
+          (*iter).second->SetBinError(bin,newbinerr);
+        }
+      }
+    }
+  }
+
   //------------------------------------------------------------------------
   // Save the histograms 
   //------------------------------------------------------------------------
@@ -286,6 +307,8 @@ void Analysis::SetupStandardPlots()
   //------------------------------------------------------------------------
   // Photon or general event variables 
   //------------------------------------------------------------------------
+  Float_t METbins[] = {0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,200,250,300};
+  Int_t numbins = sizeof(METbins)/sizeof(Float_t) -1;
   standardTH1Map["nvtx"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nvtx","",50,0.,50.,"nVertices","");
   standardTH1Map["mgg"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");
   standardTH1Map["mgg_loMET"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","mgg_loMET","",38,105.,181.,"m_{#gamma#gamma} [GeV]","");
@@ -299,6 +322,7 @@ void Analysis::SetupStandardPlots()
   standardTH1Map["pt2"]			= Analysis::MakeTH1Plot(standardSubDirMap,"norm","pt2","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
   standardTH1Map["t1pfmet"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","t1pfmet","",70,0.,350.,"p_{T}^{miss} [GeV]","");
   standardTH1Map["t1pfmetCorr"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","t1pfmetCorr","",70,0.,350.,"p_{T}^{miss} [GeV]","");
+  standardTH1Map["t1pfmetCorr_var"]	= Analysis::MakeVarPlot(standardSubDirMap,"norm","t1pfmetCorr_var","",numbins,METbins,"p_{T}^{miss} [GeV]","");
   standardTH1Map["nElec"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nElec","",10,0.,10.,"nElec","");
   standardTH1Map["nMuon"]		= Analysis::MakeTH1Plot(standardSubDirMap,"norm","nMuon","",10,0.,10.,"nMuon","");
 
@@ -397,7 +421,7 @@ void Analysis::DeleteTH2s(TH2Map & th2map)
   th2map.clear();
 }
 
-TH1F* Analysis::MakeVarBinPlot(TStrMap& subdirmap, TString subdir, TString hname, TString htitle, Int_t nbins, Float_t bins[], TString xtitle, TString ytitle){
+TH1F* Analysis::MakeVarPlot(TStrMap& subdirmap, TString subdir, TString hname, TString htitle, Int_t nbins, Float_t bins[], TString xtitle, TString ytitle){
   //------------------------------------------------------------------------
   // Setup Variable binned TH1s  
   //------------------------------------------------------------------------
@@ -410,6 +434,12 @@ TH1F* Analysis::MakeVarBinPlot(TStrMap& subdirmap, TString subdir, TString hname
   hist->GetYaxis()->SetTitle(ytitleNew.Data());
   hist->Sumw2();
   gStyle->SetOptStat(1111111); 
+
+  //------------------------------------------------------------------------
+  // Set the subdir  
+  //------------------------------------------------------------------------
+  subdirmap[hname] = subdir;
+
   return hist;
 }
 

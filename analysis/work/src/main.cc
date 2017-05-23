@@ -295,7 +295,7 @@ int main(int argc, const char* argv[])
   {
     Int_t prompt = 0; //Do prompt removal
     for (TStrBoolMapIter iter = Config::SampleMap.begin(); iter != Config::SampleMap.end(); ++iter){
-      std::cout << "Working on " << (*iter).first << " sample" << std::endl;
+      std::cout << "Working on " << (*iter).first << " sample with Sel = " << Config::whichSel << std::endl;
       if ( (*iter).first=="GJets")    prompt=1;
       else if ( (*iter).first=="QCD") prompt=2;
       else prompt=0;

@@ -153,7 +153,12 @@ void StackPlots::DrawUpperPad(const Int_t th1f, const Bool_t isLogY)
   else        fOutDataTH1FHists[th1f]->SetMaximum(max*1.5); 
   if (isLogY) fOutDataTH1FHists[th1f]->SetMinimum(0.05); 
   else        fOutDataTH1FHists[th1f]->SetMinimum(0); 
-  
+  //------------------------------------------------------------------------
+  // Customization for specific histos
+  //------------------------------------------------------------------------
+  if (isLogY && fTH1FNames[th1f].Contains("t1pfmetCorr",TString::kExact)) fOutDataTH1FHists[th1f]->SetMinimum(0.001);  
+  if (isLogY && fTH1FNames[th1f].Contains("t1pfmetCorr",TString::kExact)) fOutDataTH1FHists[th1f]->SetMaximum(max*0.5E1);  
+ 
   //------------------------------------------------------------------------
   // Draw the data, stack, sig histos, legend
   //------------------------------------------------------------------------
@@ -381,7 +386,8 @@ void StackPlots::MakeStackPlots(std::ofstream & yields)
         Float_t mggint = fOutBkgTH1FHists[th1f]->Integral(binLo,binHi);
         dataint += mggint;
       }
-      Double_t scale = dataint/bkgint;
+      //Double_t scale = dataint/bkgint;
+      Double_t scale = 1.082;
       fOutBkgTH1FHists[th1f]->Scale(scale);
       if (Config::doQCDrewgt && qcdint > 0) fGJetsClone[th1f]->Scale(scale);
       for (Int_t mc = 0; mc < fNBkg; mc++ ){
