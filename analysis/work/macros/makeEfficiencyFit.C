@@ -22,7 +22,7 @@ void makeEfficiencyFit()
   // ----------------------------------------------------------------
   // Fit w/ deg1 polynomial 
   // ----------------------------------------------------------------
-  //// BARYONIC
+  ////// BARYONIC
   Get1DEfficiency(infile,outdir,outfile,"BARY",true, true, "deg1"); // fit mDM, highMET
   Get1DEfficiency(infile,outdir,outfile,"BARY",false,true, "deg1"); // fit mZp, highMET
   Get1DEfficiency(infile,outdir,outfile,"BARY",true, false,"deg1"); // fit mDM, lowMET
@@ -32,19 +32,19 @@ void makeEfficiencyFit()
   Get1DEfficiency(infile,outdir,outfile,"2HDM",false,true, "deg1"); // fit mZp, highMET 
   Get1DEfficiency(infile,outdir,outfile,"2HDM",true, false,"deg1"); // fit mA,  lowMET  
   Get1DEfficiency(infile,outdir,outfile,"2HDM",false,false,"deg1"); // fit mZp, lowMET 
-  // ----------------------------------------------------------------
-  // Fit w/ deg2 polynomial 
-  // ----------------------------------------------------------------
-  // BARYONIC
-  Get1DEfficiency(infile,outdir,outfile,"BARY",true, true, "deg2"); // fit mDM, highMET  
-  Get1DEfficiency(infile,outdir,outfile,"BARY",false,true, "deg2"); // fit mZp, highMET
-  Get1DEfficiency(infile,outdir,outfile,"BARY",true, false,"deg2"); // fit mDM, lowMET
-  Get1DEfficiency(infile,outdir,outfile,"BARY",false,false,"deg2"); // fit mZp, lowMET 
-  // 2HDM                                                                               
-  Get1DEfficiency(infile,outdir,outfile,"2HDM",true, true, "deg2"); // fit mA,  highMET
-  Get1DEfficiency(infile,outdir,outfile,"2HDM",false,true, "deg2"); // fit mZp, highMET  
-  Get1DEfficiency(infile,outdir,outfile,"2HDM",true, false,"deg2"); // fit mA,  lowMET   
-  Get1DEfficiency(infile,outdir,outfile,"2HDM",false,false,"deg2"); // fit mZp, lowMET 
+  //// ----------------------------------------------------------------
+  //// Fit w/ deg2 polynomial 
+  //// ----------------------------------------------------------------
+  //// BARYONIC
+  //Get1DEfficiency(infile,outdir,outfile,"BARY",true, true, "deg2"); // fit mDM, highMET  
+  //Get1DEfficiency(infile,outdir,outfile,"BARY",false,true, "deg2"); // fit mZp, highMET
+  //Get1DEfficiency(infile,outdir,outfile,"BARY",true, false,"deg2"); // fit mDM, lowMET
+  //Get1DEfficiency(infile,outdir,outfile,"BARY",false,false,"deg2"); // fit mZp, lowMET 
+  //// 2HDM                                                                               
+  //Get1DEfficiency(infile,outdir,outfile,"2HDM",true, true, "deg2"); // fit mA,  highMET
+  //Get1DEfficiency(infile,outdir,outfile,"2HDM",false,true, "deg2"); // fit mZp, highMET  
+  //Get1DEfficiency(infile,outdir,outfile,"2HDM",true, false,"deg2"); // fit mA,  lowMET   
+  //Get1DEfficiency(infile,outdir,outfile,"2HDM",false,false,"deg2"); // fit mZp, lowMET 
  
   // ----------------------------------------------------------------
   // Close the file 
@@ -63,10 +63,10 @@ void Get1DEfficiency(TFile* infile, TString outdir, TFile* outfile, TString sig,
   Int_t model = 0;                                    // BARY
   if (sig.EqualTo("2HDM",TString::kExact)) model = 1; // 2HDM
   std::vector< Double_t > mY;
-  if (model==0 && useY)  mY = {1, 10, 50, 150, 500, 1000};                         // BARY DM
-  if (model==1 && useY)  mY = {300, 400, 500, 600, 700, 800};                      // 2HDM A
-  if (model==0 && !useY) mY = {10, 20, 50, 100, 200, 300, 500, 1000, 2000, 10000}; // BARY Zp
-  if (model==1 && !useY) mY = {600, 800, 1000, 1200, 1400, 1700, 2000, 2500};      // 2HDM Zp
+  if (model==0 && useY)  mY = {1, 10, 50, 150, 500, 1000};                         // Plot for each of these BARY DM masses
+  if (model==1 && useY)  mY = {300, 400, 500, 600, 700, 800};                      // Plot for each of these 2HDM A  masses
+  if (model==0 && !useY) mY = {10, 20, 50, 100, 200, 300, 500, 1000, 2000, 10000}; // Plot for each of these BARY Zp masses
+  if (model==1 && !useY) mY = {600, 800, 1000, 1200, 1400, 1700, 2000, 2500};      // Plot for each of these 2HDM Zp masses
   TString xname = "DM";
   if (model==1 && useY) xname = "A";
   if (!useY)            xname = "Zp";
@@ -97,14 +97,19 @@ void Get1DEfficiency(TFile* infile, TString outdir, TFile* outfile, TString sig,
   TCanvas *c = new TCanvas();
 
   for (UInt_t m=0; m < mY.size(); m++){
+    Double_t mbin = 0;
+    if (useY) mbin = h_eff->GetYaxis()->FindBin(mY[m]);
+    else      mbin = h_eff->GetXaxis()->FindBin(mY[m]);
+    Double_t minbin = mbin - 1; 
+    Double_t maxbin = mbin + 1;
     // ----------------------------------------------------------------
     // Get Efficiencies (projection from 2D plot) 
     // ----------------------------------------------------------------
     TString hname = Form("h_eff_1D_%s_%s_%s_m%s%1.f",deg.Data(),sig.Data(),met.Data(),xname.Data(),mY[m]);
     TH1D* h_eff_1D = new TH1D(hname,hname,(maxX-minX),minX,maxX);
-    if (useY) h_eff_1D = h_eff->ProjectionX(hname,mY[m]-1,mY[m]+1); 
-    else      h_eff_1D = h_eff->ProjectionY(hname,mY[m]-1,mY[m]+1); 
-    h_eff_1D->GetXaxis()->SetRange(minX,maxX);
+    if (useY) h_eff_1D = h_eff->ProjectionX(hname,minbin,maxbin); 
+    else      h_eff_1D = h_eff->ProjectionY(hname,minbin,maxbin);
+    if (model==0) h_eff_1D->GetXaxis()->SetRange(minX,maxX);
 
     // ----------------------------------------------------------------
     // Get errors on efficiencies 
