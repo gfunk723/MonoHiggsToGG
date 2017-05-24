@@ -74,6 +74,9 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
     eff_2HDM->SetNameTitle(Form("graph_2HDM_%s",name.Data()),Form("graph_2HDM_%s",name.Data()));
     eff_BARY->SetNameTitle(Form("graph_BARY_%s",name.Data()),Form("graph_BARY_%s",name.Data()));
   }
+  Double_t mZp[11]={0.1,15,35,75,150,250,400,750,1500,6000,16000};
+  Double_t mDM[9] ={0.1,5,15,25,75,125,325,750,1250};
+  TH2F* var_BARY = new TH2F(Form("var_BARY_%s",name.Data()),Form("var_BARY_Eff_%s",name.Data()),10,mZp,8,mDM);
 
   // ----------------------------------------------------------------
   // samples to use 
@@ -248,6 +251,10 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
         dat_BARY->Fill(mX,mY,Eff[n]);
         err_BARY->Fill(mX,mY,Err[n]);
         if (!yields){
+          var_BARY->Fill(mX,mY,Eff[n]);
+          Double_t binX = var_BARY->GetXaxis()->FindBin(mX);
+          Double_t binY = var_BARY->GetYaxis()->FindBin(mY);
+          var_BARY->SetBinError(binX,binY,Err[n]);
           eff_BARY->SetPoint(nBARY,mX,mY,Eff[n]);
           eff_BARY->SetPointError(nBARY,0,0,Err[n]);
         }
@@ -271,12 +278,14 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
   // save the histograms then delete
   // ----------------------------------------------------------------
   outroot->cd();
+  if (!yields) var_BARY->Write();
   if (!yields) eff_2HDM->Write();
   if (!yields) eff_BARY->Write();
   dat_2HDM->Write();
   err_2HDM->Write();
   dat_BARY->Write();
   err_BARY->Write();
+  if (!yields) delete var_BARY;
   if (!yields) delete eff_2HDM;
   if (!yields) delete eff_BARY;
   delete dat_2HDM;
