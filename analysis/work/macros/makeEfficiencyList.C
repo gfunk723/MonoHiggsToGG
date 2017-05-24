@@ -1,7 +1,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TBranch.h>
-#include <TH1.h>
+#include <TGraph2DErrors.h>
 #include <TH2.h>
 #include <iostream>
 
@@ -33,11 +33,11 @@ void makeEfficiencyList()
   // Make root file to store efficiencies 
   // ----------------------------------------------------------------
   TFile *outroot = new TFile(Form("%sOutput_Eff.root",outdir.Data()),"RECREATE");
+  TString outfile;
 
   // ----------------------------------------------------------------
   // Call function for each category 
   // ----------------------------------------------------------------
-  TString outfile;
   cout << "Computing Efficiency highMET region" << endl;
   outfile = Form("%sPlainEff%s_highMET.tex",outdir.Data(),addname.Data());
   GetEfficiencies(indir,outfile,outroot,skim,lumi,true,false);
@@ -68,6 +68,12 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
   TH2D* err_2HDM = new TH2D(Form("h_2HDM_%s_err",name.Data()),Form("h_2HDM_%s_err",name.Data()),2500,500,3000,700,200,900);
   TH2D* dat_BARY = new TH2D(Form("h_BARY_%s",name.Data()),Form("h_BARY_%s",name.Data()),10005,0,10005,1500,0,1500); 
   TH2D* err_BARY = new TH2D(Form("h_BARY_%s_err",name.Data()),Form("h_BARY_%s_err",name.Data()),10005,0,10005,1500,0,1500); 
+  TGraph2DErrors* eff_2HDM = new TGraph2DErrors();
+  TGraph2DErrors* eff_BARY = new TGraph2DErrors(); 
+  if (!yields){
+    eff_2HDM->SetNameTitle(Form("graph_2HDM_%s",name.Data()),Form("graph_2HDM_%s",name.Data()));
+    eff_BARY->SetNameTitle(Form("graph_BARY_%s",name.Data()),Form("graph_BARY_%s",name.Data()));
+  }
 
   // ----------------------------------------------------------------
   // samples to use 
@@ -154,39 +160,39 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
   Samples.push_back("BaryonicZp_mZP95_mChi50"     );
   Samples.push_back("BaryonicZp_mZP995_mChi500"   );
 
-  Samples.push_back("ScalarZp_mZP10000_mChi1"   );
-  Samples.push_back("ScalarZp_mZP10000_mChi10"  );
-  Samples.push_back("ScalarZp_mZP10000_mChi1000");
-  Samples.push_back("ScalarZp_mZP10000_mChi150" );
-  Samples.push_back("ScalarZp_mZP10000_mChi50"  );
-  Samples.push_back("ScalarZp_mZP10000_mChi500" );
-  Samples.push_back("ScalarZp_mZP1000_mChi1000" );
-  Samples.push_back("ScalarZp_mZP1000_mChi1"    );
-  Samples.push_back("ScalarZp_mZP1000_mChi150"  );
-  Samples.push_back("ScalarZp_mZP100_mChi1"     );
-  Samples.push_back("ScalarZp_mZP100_mChi10"    );
-  Samples.push_back("ScalarZp_mZP10_mChi1"      );
-  Samples.push_back("ScalarZp_mZP10_mChi10"     );
-  Samples.push_back("ScalarZp_mZP10_mChi150"    );
-  Samples.push_back("ScalarZp_mZP10_mChi50"     );
-  Samples.push_back("ScalarZp_mZP10_mChi1000"   );
-  Samples.push_back("ScalarZp_mZP10_mChi500"    );
-  Samples.push_back("ScalarZp_mZP200_mChi1"     );
-  Samples.push_back("ScalarZp_mZP200_mChi150"   );
-  Samples.push_back("ScalarZp_mZP200_mChi50"    );
-  Samples.push_back("ScalarZp_mZP20_mChi1"      );
-  Samples.push_back("ScalarZp_mZP295_mChi150"   );
-  Samples.push_back("ScalarZp_mZP300_mChi1"     );
-  Samples.push_back("ScalarZp_mZP300_mChi50"    );
-  Samples.push_back("ScalarZp_mZP500_mChi1"     );
-  Samples.push_back("ScalarZp_mZP500_mChi150"   );
-  Samples.push_back("ScalarZp_mZP500_mChi500"   );
-  Samples.push_back("ScalarZp_mZP50_mChi1"      );
-  Samples.push_back("ScalarZp_mZP50_mChi10"     );
-  Samples.push_back("ScalarZp_mZP50_mChi50"     );
-  Samples.push_back("ScalarZp_mZP95_mChi50"     );
-  Samples.push_back("ScalarZp_mZP995_mChi500"   );
-  Samples.push_back("ScalarZp_mZP15_mChi10"     );
+  //Samples.push_back("ScalarZp_mZP10000_mChi1"   );
+  //Samples.push_back("ScalarZp_mZP10000_mChi10"  );
+  //Samples.push_back("ScalarZp_mZP10000_mChi1000");
+  //Samples.push_back("ScalarZp_mZP10000_mChi150" );
+  //Samples.push_back("ScalarZp_mZP10000_mChi50"  );
+  //Samples.push_back("ScalarZp_mZP10000_mChi500" );
+  //Samples.push_back("ScalarZp_mZP1000_mChi1000" );
+  //Samples.push_back("ScalarZp_mZP1000_mChi1"    );
+  //Samples.push_back("ScalarZp_mZP1000_mChi150"  );
+  //Samples.push_back("ScalarZp_mZP100_mChi1"     );
+  //Samples.push_back("ScalarZp_mZP100_mChi10"    );
+  //Samples.push_back("ScalarZp_mZP10_mChi1"      );
+  //Samples.push_back("ScalarZp_mZP10_mChi10"     );
+  //Samples.push_back("ScalarZp_mZP10_mChi150"    );
+  //Samples.push_back("ScalarZp_mZP10_mChi50"     );
+  //Samples.push_back("ScalarZp_mZP10_mChi1000"   );
+  //Samples.push_back("ScalarZp_mZP10_mChi500"    );
+  //Samples.push_back("ScalarZp_mZP200_mChi1"     );
+  //Samples.push_back("ScalarZp_mZP200_mChi150"   );
+  //Samples.push_back("ScalarZp_mZP200_mChi50"    );
+  //Samples.push_back("ScalarZp_mZP20_mChi1"      );
+  //Samples.push_back("ScalarZp_mZP295_mChi150"   );
+  //Samples.push_back("ScalarZp_mZP300_mChi1"     );
+  //Samples.push_back("ScalarZp_mZP300_mChi50"    );
+  //Samples.push_back("ScalarZp_mZP500_mChi1"     );
+  //Samples.push_back("ScalarZp_mZP500_mChi150"   );
+  //Samples.push_back("ScalarZp_mZP500_mChi500"   );
+  //Samples.push_back("ScalarZp_mZP50_mChi1"      );
+  //Samples.push_back("ScalarZp_mZP50_mChi10"     );
+  //Samples.push_back("ScalarZp_mZP50_mChi50"     );
+  //Samples.push_back("ScalarZp_mZP95_mChi50"     );
+  //Samples.push_back("ScalarZp_mZP995_mChi500"   );
+  //Samples.push_back("ScalarZp_mZP15_mChi10"     );
 
   UInt_t nSamples = Samples.size();
   vector< Float_t > Eff;  Eff.resize(nSamples);
@@ -214,6 +220,8 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
     // ----------------------------------------------------------------
     Double_t mX = 0;
     Double_t mY = 0;
+    Int_t n2HDM = 0;
+    Int_t nBARY = 0;
     for (UInt_t n=0; n < nSamples; n++){
       GetXandY(Samples[n],mX,mY);
       GetEfficiency(indir,Samples[n],skim,lumi,true,hiMETeff,yields,Eff[n],Err[n]);
@@ -231,11 +239,21 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
       if (Samples[n].Contains("2HDM",TString::kExact)){
         dat_2HDM->Fill(mX,mY,Eff[n]);
         err_2HDM->Fill(mX,mY,Err[n]);
+        if (!yields){
+          eff_2HDM->SetPoint(n2HDM,mX,mY,Eff[n]);
+          eff_2HDM->SetPointError(n2HDM,0,0,Err[n]);
+        }
       }
       if (Samples[n].Contains("Baryonic",TString::kExact)){
         dat_BARY->Fill(mX,mY,Eff[n]);
         err_BARY->Fill(mX,mY,Err[n]);
+        if (!yields){
+          eff_BARY->SetPoint(nBARY,mX,mY,Eff[n]);
+          eff_BARY->SetPointError(nBARY,0,0,Err[n]);
+        }
       }
+      if (Samples[n].Contains("2HDM",TString::kExact)) n2HDM++;
+      if (Samples[n].Contains("Bary",TString::kExact)) nBARY++;
 
     }
 
@@ -253,14 +271,19 @@ void GetEfficiencies(TString indir, TString outfile, TFile* outroot, TString ski
   // save the histograms then delete
   // ----------------------------------------------------------------
   outroot->cd();
+  if (!yields) eff_2HDM->Write();
+  if (!yields) eff_BARY->Write();
   dat_2HDM->Write();
   err_2HDM->Write();
   dat_BARY->Write();
   err_BARY->Write();
+  if (!yields) delete eff_2HDM;
+  if (!yields) delete eff_BARY;
   delete dat_2HDM;
   delete err_2HDM;
   delete dat_BARY;
   delete err_BARY;
+
 
 }
 
