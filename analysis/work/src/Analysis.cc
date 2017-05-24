@@ -68,7 +68,7 @@ Analysis::Analysis(TString inName, TString outName, TString inSpecies, Double_t 
   fOutDir+=species.Data();
   MakeOutDir(fOutDir.Data());
   // Make output ROOT file
-  outFile = new TFile(Form("%s/plots_%s.root",fOutDir.Data(),species.Data()),"RECREATE");
+  outFile = new TFile(Form("%s/plots_%s.root",fOutDir.Data(),species.Data()),"UPDATE");
   CheckValidFile(outFile,Form("%s/plots_%s.root",fOutDir.Data(),species.Data()));
 
 }// end Analysis::Analysis
@@ -95,6 +95,7 @@ void Analysis::DoPlots(int prompt)
   //------------------------------------------------------------------------
   if (Config::doStandard) Analysis::SetupStandardPlots();
   if (Config::doNminus1)  Analysis::SetupNminus1Plots();
+  if (Config::doEffPlots) Analysis::SetupEffPlots();
 
   //------------------------------------------------------------------------
   // Setup MET threshold  
@@ -203,9 +204,22 @@ void Analysis::DoPlots(int prompt)
     Bool_t mggPlot = (isData)? (mggOkay):true;                     // check for data the mgg ok (use for mgg plots)
 
     //------------------------------------------------------------------------
+    // Fill histograms -- before all cuts
+    //------------------------------------------------------------------------
+    //--------> Fill the n minus 1 plots
+    if (Config::doNminus1){
+       nminus1TH1Map["n1_pt1"]->Fill(pt1,wgt);
+       nminus1TH1Map["n1_pt2"]->Fill(pt2,wgt);
+       nminus1TH1Map["n1_ptgg"]->Fill(ptgg,wgt);
+       nminus1TH1Map["n1_nvtx"]->Fill(nvtx,wgt);
+       if (mggPlot) nminus1TH1Map["n1_mgg"]->Fill(mgg,wgt);
+       if (mggOkay) nminus1TH1Map["n1_met"]->Fill(t1pfmetCorr,wgt);
+    }
+
+    //------------------------------------------------------------------------
     // Apply kinematic selection 
     //------------------------------------------------------------------------
-    //if (mgg < 100 || mgg > 300) continue;
+    //if (mgg < 105 || mgg > 200) continue; // to match the inputs to the fit
     Bool_t passSel = false;
     if (fWhichSel==0) passSel = true; // original selection
     Bool_t passLowMetSel  = (t1pfmetCorr <  metCut && pt1 > 0.45*mgg && pt2 > 0.25*mgg && ptgg > 75)? true:false;
@@ -217,7 +231,6 @@ void Analysis::DoPlots(int prompt)
     //------------------------------------------------------------------------
     // Fill the histograms -- after kin. cuts, before lep,jet,dphi cuts
     //------------------------------------------------------------------------
-    
     //--------> Fill the standard plots
     if (Config::doStandard){
        if (t1pfmetCorr >= metCut) standardTH1Map["nElec"]->Fill(nEle,wgt);
@@ -241,7 +254,6 @@ void Analysis::DoPlots(int prompt)
     //------------------------------------------------------------------------
     // Fill the histograms -- after final cuts 
     //------------------------------------------------------------------------
-    
     //--------> Fill the standard plots
     if (Config::doStandard){
        if (mggPlot) standardTH1Map["mgg"]->Fill(mgg,wgt);
@@ -260,9 +272,33 @@ void Analysis::DoPlots(int prompt)
        standardTH1Map["eta2"]->Fill(eta2,wgt);
     }
 
-    //--------> Fill the n minus 1 plots
-    if (Config::doNminus1){
-       if (mggPlot) nminus1TH1Map["n1_mgg"]->Fill(mgg,wgt);
+    //--------> Fill the efficiency plots
+    if (Config::doEffPlots){
+       //--------> MET uncertainty plots
+       effTH1Map["met_unc"]->Fill(t1pfmetCorr,wgt);
+       effTH1Map["met_unc_JetEnUp"]->Fill(t1pfmetJetEnUp,wgt);
+       effTH1Map["met_unc_JetEnDown"]->Fill(t1pfmetJetEnDown,wgt);
+       effTH1Map["met_unc_JetResUp"]->Fill(t1pfmetJetResUp,wgt);
+       effTH1Map["met_unc_JetResDown"]->Fill(t1pfmetJetResDown,wgt);
+       effTH1Map["met_unc_MuonEnUp"]->Fill(t1pfmetMuonEnUp,wgt);
+       effTH1Map["met_unc_MuonEnDown"]->Fill(t1pfmetMuonEnDown,wgt);
+       effTH1Map["met_unc_ElEnUp"]->Fill(t1pfmetElectronEnUp,wgt);
+       effTH1Map["met_unc_ElEnDown"]->Fill(t1pfmetElectronEnDown,wgt);
+       effTH1Map["met_unc_TauEnUp"]->Fill(t1pfmetTauEnUp,wgt);
+       effTH1Map["met_unc_TauEnDown"]->Fill(t1pfmetTauEnDown,wgt);
+       effTH1Map["met_unc_PhoEnUp"]->Fill(t1pfmetPhotonEnUp,wgt);
+       effTH1Map["met_unc_PhoEnDown"]->Fill(t1pfmetPhotonEnDown,wgt);
+       effTH1Map["met_unc_UnclEnUp"]->Fill(t1pfmetUnclusteredEnUp,wgt);
+       effTH1Map["met_unc_UnclEnDown"]->Fill(t1pfmetUnclusteredEnDown,wgt);
+
+       //--------> Vertex studies plots
+       effTH1Map["vtx_eff_met_d"]->Fill(t1pfmetCorr);
+       Double_t vtxBDT_Zdiff = TMath::Abs(genVtxZ-vtxZ); // currently vtxZ=vtx0Z (FIXME analyzer)
+       Double_t vtx0_Zdiff   = TMath::Abs(genVtxZ-vtx0Z);
+       Bool_t goodVtxB = ( vtxBDT_Zdiff < 1.0 )? true:false;
+       Bool_t goodVtx0 = ( vtx0_Zdiff < 1.0   )? true:false;
+       if ( goodVtxB ) effTH1Map["vtxB_eff_met_n"]->Fill(t1pfmetCorr); 
+       if ( goodVtx0 ) effTH1Map["vtx0_eff_met_n"]->Fill(t1pfmetCorr);
     }
 
   }// end loop over entries!
@@ -291,7 +327,7 @@ void Analysis::DoPlots(int prompt)
   //------------------------------------------------------------------------
   if (Config::doStandard) Analysis::OutputStandardPlots();
   if (Config::doNminus1)  Analysis::OutputNminus1Plots();
-
+  if (Config::doEffPlots) Analysis::OutputEffPlots();
 
 }// end Analysis::DoPlots
 
@@ -341,9 +377,49 @@ void Analysis::SetupStandardPlots()
 
 void Analysis::SetupNminus1Plots()
 {
+
+  //------------------------------------------------------------------------
+  // Plots before kinematic selection 
+  //------------------------------------------------------------------------
+  nminus1TH1Map["n1_nvtx"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_nvtx","",50,0.,50.,"nVertices","");
   nminus1TH1Map["n1_mgg"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_mgg","",41,99.,181.,"m_{#gamma#gamma} [GeV]","");
+  nminus1TH1Map["n1_ptgg"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_ptgg","",60,0.,600.,"p_{T,#gamma#gamma} [GeV]","");
+  nminus1TH1Map["n1_pt1"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_pt1","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
+  nminus1TH1Map["n1_pt2"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_pt2","",60,0.,600.,"p_{T,#gamma1} [GeV]","");
+  nminus1TH1Map["n1_met"]		= Analysis::MakeTH1Plot(nminus1SubDirMap,"nmin1","n1_t1pfmet","",70,0.,350.,"p_{T}^{miss} [GeV]","");
 
 }// end Analysis::SetupNminus1Plots
+
+void Analysis::SetupEffPlots()
+{
+
+  //------------------------------------------------------------------------
+  // Vtx efficiency plots 
+  //------------------------------------------------------------------------
+  effTH1Map["vtx0_eff_met_n"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","vtx0_eff_met_n","",200,0.,1000.,"p_{T}^{miss} [GeV]", "Vtx Efficiency");
+  effTH1Map["vtxB_eff_met_n"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","vtxB_eff_met_n","",200,0.,1000.,"p_{T}^{miss} [GeV]", "Vtx Efficiency");
+  effTH1Map["vtx_eff_met_d"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","vtx_eff_met_d","",200,0.,1000.,"p_{T}^{miss} [GeV]", "Vtx Efficiency");
+
+  //------------------------------------------------------------------------
+  // MET uncertainty plots 
+  //------------------------------------------------------------------------
+  effTH1Map["met_unc"]			= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc","",            70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_JetEnUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_JetEnUp","",    70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_JetEnDown"]	= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_JetEnDown","",  70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_JetResUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_JetResUp","",   70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_JetResDown"]	= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_JetResDown","", 70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_MuonEnUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_MuonEnUp","",   70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_MuonEnDown"]	= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_MuonEnDown","", 70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_ElEnUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_ElEnUp","",     70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_ElEnDown"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_ElEnDown","",   70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_TauEnUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_TauEnUp","",    70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_TauEnDown"]	= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_TauEnDown","",  70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_PhoEnUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_PhoEnUp","",    70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_PhoEnDown"]	= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_PhoEnDown","",  70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_UnclEnUp"]		= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_UnclEnUp","",   70,0.,350.,"p_{T}^{miss} [GeV]","");
+  effTH1Map["met_unc_UnclEnDown"]	= Analysis::MakeTH1Plot(effSubDirMap,"eff","met_unc_UnclEnDown","", 70,0.,350.,"p_{T}^{miss} [GeV]","");
+
+}// end Analysis::SetupEffPlots
 
 void Analysis::OutputStandardPlots()
 {
@@ -366,6 +442,17 @@ void Analysis::OutputNminus1Plots()
    Analysis::DeleteTH1s(nminus1TH1Map);
 
 }// end Analysis::OutputStandardPlots
+
+void Analysis::OutputEffPlots()
+{
+  //------------------------------------------------------------------------
+  // Save and delete plots 
+  //------------------------------------------------------------------------
+   MakeSubDirs(effSubDirMap,fOutDir);
+   Analysis::SaveTH1s(effTH1Map,effSubDirMap);
+   Analysis::DeleteTH1s(effTH1Map);
+
+}// end Analysis::OutputEffPlots
 
 void Analysis::SaveTH1s(TH1Map & th1map, TStrMap & subdirmap)
 {

@@ -42,8 +42,10 @@ public:
 
   void SetupStandardPlots();
   void SetupNminus1Plots();
+  void SetupEffPlots();
   void OutputStandardPlots();
   void OutputNminus1Plots();
+  void OutputEffPlots();
 
   TH1F * MakeVarPlot( TStrMap& subdirmap, TString subdir, TString hname, TString htitle,
                       Int_t nbins, Float_t bins[], TString xtitle, TString ytitle);
@@ -84,9 +86,11 @@ private:
 
   TH1Map		standardTH1Map;
   TH1Map		nminus1TH1Map;
+  TH1Map		effTH1Map;
  
   TStrMap		standardSubDirMap;
   TStrMap		nminus1SubDirMap;
+  TStrMap		effSubDirMap;
 
   //------------------------------------------------------------------------
   // Declaration of leaf types
