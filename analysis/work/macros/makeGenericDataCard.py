@@ -1,9 +1,13 @@
-import sys, numpy, ROOT
+import sys, os, numpy, ROOT
 from ROOT import TObjString
 from ROOT import RooWorkspace
 from ROOT import TProcessID
 from ROOT import RooRealVar
 from ROOT import RooArgList
+from ROOT import RooArgSet
+from ROOT import RooDataSet
+from ROOT import RooDataHist
+from ROOT import RooAbsReal
 
 def getEff(cat,mZp,mDM):
   eff = 1.0
@@ -53,9 +57,14 @@ def makeCard(mZp,mChi):
   var1 = in_RooWorkspace.var('mgg')
   var2 = in_RooWorkspace.var('model_signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130_norm')
   var3 = in_RooWorkspace.var('model_signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130_norm')
-  var4 = RooRealVar("sig_scale_lowMET","sig_scale_lowMET",scale_lowMET)
-  var5 = RooRealVar("sig_scale_highMET","sig_scale_highMET",scale_highMET)
-  varlist = ROOT.RooArgList(var1,var2,var3,var4,var5)
+  valnorm_lowMET  = scale_lowMET*var2.getValV()
+  valnorm_highMET = scale_highMET*var3.getValV()
+  norm1 = RooRealVar("model_signal"+new_str+"_13TeV_met0-130_norm","model_signal"+new_str+"13TeV_met0-130_norm",valnorm_lowMET)
+  norm2 = RooRealVar("model_signal"+new_str+"_13TeV_met130_norm","model_signal"+new_str+"13TeV_met130_norm",valnorm_highMET)
+  varlist = ROOT.RooArgList(var1,norm1,norm2)
+  #print("%f * %f" %(scale_lowMET,var2.getValV()))
+  #print("%f" %valnorm_lowMET)
+  #print("%f" %norm1.getValV())
 
   pdf1 = in_RooWorkspace.pdf('model_signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130')
   pdf2 = in_RooWorkspace.pdf('model_signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130_energyScalemet0-130Down')
@@ -64,21 +73,22 @@ def makeCard(mZp,mChi):
   pdf5 = in_RooWorkspace.pdf('model_signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130_energyScalemet130Down')
   pdf6 = in_RooWorkspace.pdf('model_signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130_energyScalemet130Up')
 
-  #dat1 = in_RooWorkspace.data('signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130','signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130',varlist)
   dat1 = in_RooWorkspace.data('signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130')
   dat2 = in_RooWorkspace.data('signalforPdf_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130')
   dat3 = in_RooWorkspace.data('signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130')
   dat4 = in_RooWorkspace.data('signalforPdf_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130')
+  #print("%f" %dat1.sumEntries())
+
+  #dat = ROOT.RooDataSet('test','test',RooArgSet(var2,var3),var1) 
 
   # Write to output file
   out_TObjString.Write()
   w1.rooImport(var1)
-  w1.rooImport(var2)
-  w1.rooImport(var3)
-  w1.rooImport(var4)
-  w1.rooImport(var5)
+  w1.rooImport(norm1)
+  w1.rooImport(norm2)
 
   #w1.rooImport(dat1)
+  #dat.Write()
 
   w1.rooImport(pdf1)
   w1.rooImport(pdf2)
@@ -89,7 +99,6 @@ def makeCard(mZp,mChi):
 
   w1.Print()
   w1.Write()
-  #out_RooWorkspace.Write()
   rout.Close()
 
 if __name__ == "__main__":
