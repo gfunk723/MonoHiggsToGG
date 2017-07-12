@@ -51,9 +51,10 @@ def makeCard(mZp,mChi):
   in_TObjString    = TObjString(rin.cfg)
   out_TObjString   = in_TObjString.Clone()
   in_RooWorkspace  = RooWorkspace(rin.wtemplates)
-
+  in_RooWorkspace.Print()
   w1 = ROOT.RooWorkspace("wtemplates")
   w1.rooImport = getattr(w1,'import')
+
   var1 = in_RooWorkspace.var('mgg')
   var2 = in_RooWorkspace.var('model_signal_'+old_str+'_13TeV_met0-130_norm')
   var3 = in_RooWorkspace.var('model_signal_'+old_str+'_13TeV_met130_norm')
@@ -81,11 +82,18 @@ def makeCard(mZp,mChi):
   pdf5new = ROOT.RooHistPdf(pdf5,"model_signal_"+new_str+"_13TeV_met130_energyScalemet130Down") 
   pdf6new = ROOT.RooHistPdf(pdf6,"model_signal_"+new_str+"_13TeV_met130_energyScalemet130Up") 
 
-  dat1 = in_RooWorkspace.data('signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130')
-  dat2 = in_RooWorkspace.data('signalforPdf_sig_ZpBaryonic_mZP10_mChi1_13TeV_met130')
-  dat3 = in_RooWorkspace.data('signal_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130')
-  dat4 = in_RooWorkspace.data('signalforPdf_sig_ZpBaryonic_mZP10_mChi1_13TeV_met0-130')
+  dat1 = in_RooWorkspace.data('signal_'+old_str+'_13TeV_met130')
+  dat2 = in_RooWorkspace.data('signalforPdf_'+old_str+'_13TeV_met130')
+  dat3 = in_RooWorkspace.data('signal_'+old_str+'_13TeV_met0-130')
+  dat4 = in_RooWorkspace.data('signalforPdf_'+old_str+'_13TeV_met0-130')
+  if dat1: 
+    print("okay")
+  else:
+    print("null")
   #print("%f" %dat1.sumEntries())
+
+  #dat1new = ROOT.RooDataHist(dat1,'signal_'+new_str+'_13TeV_met130') 
+  #print("%f" %dat1new.sumEntries())
   #dat = ROOT.RooDataSet('test','test',RooArgSet(var2,var3),var1) 
 
   # Write to output file
@@ -101,10 +109,9 @@ def makeCard(mZp,mChi):
   w1.rooImport(pdf5new)
   w1.rooImport(pdf6new)
 
-  #w1.rooImport(dat1)
-  #dat.Write()
+  #w1.rooImport(dat1new)
 
-  w1.Print()
+  #w1.Print() # print contents of workspace
   w1.Write()
   rout.Close()
 
