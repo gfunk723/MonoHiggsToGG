@@ -17,10 +17,10 @@ def getEff(cat,mZp,mDM):
     eff=(-3e-04*mZp-4e-03*mDM-1.3e-08*mZp*mZp-4.4e-07*mDM*mDM-3.8e-07*mZp*mDM+6.5448)
   return eff
 
-def makeCard(mZp,mChi):
+def makeCard(mZp,mChi,DIR):
 
   # Setup input and output files
-  indir = ""
+  indir = DIR 
   old_str = "sig_ZpBaryonic_mZP10_mChi1"
   new_str = "sig_ZpBaryonic_mZP"+mZp+"_mChi"+mChi
   fin  = open(indir+"dataCard_"+old_str+"_13TeV.txt","r")
@@ -51,7 +51,7 @@ def makeCard(mZp,mChi):
   in_TObjString    = TObjString(rin.cfg)
   out_TObjString   = in_TObjString.Clone()
   in_RooWorkspace  = RooWorkspace(rin.wtemplates)
-  in_RooWorkspace.Print()
+  #in_RooWorkspace.Print() # print obj in input rooWorkspace
   w1 = ROOT.RooWorkspace("wtemplates")
   w1.rooImport = getattr(w1,'import')
 
@@ -82,19 +82,13 @@ def makeCard(mZp,mChi):
   pdf5new = ROOT.RooHistPdf(pdf5,"model_signal_"+new_str+"_13TeV_met130_energyScalemet130Down") 
   pdf6new = ROOT.RooHistPdf(pdf6,"model_signal_"+new_str+"_13TeV_met130_energyScalemet130Up") 
 
+  # these are null pointers -- probably don't have right classes (missing from dipho analysis) to read them
+  # but they are also not needed for running higgs combine so left out for now 
   dat1 = in_RooWorkspace.data('signal_'+old_str+'_13TeV_met130')
   dat2 = in_RooWorkspace.data('signalforPdf_'+old_str+'_13TeV_met130')
   dat3 = in_RooWorkspace.data('signal_'+old_str+'_13TeV_met0-130')
   dat4 = in_RooWorkspace.data('signalforPdf_'+old_str+'_13TeV_met0-130')
-  if dat1: 
-    print("okay")
-  else:
-    print("null")
   #print("%f" %dat1.sumEntries())
-
-  #dat1new = ROOT.RooDataHist(dat1,'signal_'+new_str+'_13TeV_met130') 
-  #print("%f" %dat1new.sumEntries())
-  #dat = ROOT.RooDataSet('test','test',RooArgSet(var2,var3),var1) 
 
   # Write to output file
   out_TObjString.Write()
@@ -109,25 +103,25 @@ def makeCard(mZp,mChi):
   w1.rooImport(pdf5new)
   w1.rooImport(pdf6new)
 
-  #w1.rooImport(dat1new)
-
   #w1.Print() # print contents of workspace
   w1.Write()
   rout.Close()
 
 if __name__ == "__main__":
   filename = ""
+  DIR = ""
 
   if len(sys.argv) < 3: 
-    print("Invalid usage! Correct usage is: python makeGenericDataCard.py [mZp] [mChi]")
+    print("Invalid usage! Correct usage is: python makeGenericDataCard.py [mZp] [mChi] [DIR]")
     sys.exit()
   else:
     MZP = sys.argv[1]
     MCHI = sys.argv[2]
+    DIR = sys.argv[3]
   if MZP=="10" and MCHI=="1": 
     print("Can't use mZp = 10 and mChi = 1. That is the input! Can't be the output!")
     sys.exit()
   
   print("Making datacard for mZp = %s , mChi = %s" %(MZP, MCHI))
-  makeCard(MZP,MCHI)
+  makeCard(MZP,MCHI,DIR)
   print("Finished")
