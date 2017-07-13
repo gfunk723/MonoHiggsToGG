@@ -26,5 +26,8 @@ analysis/scripts/outputjobs*
 *.root
 *.png
 *.pdf
+*.txt
+*.tex
 analysis/macro/data/
 analysis/macro/diPhoPlots/
+analysis/work/diPhoPlots/
