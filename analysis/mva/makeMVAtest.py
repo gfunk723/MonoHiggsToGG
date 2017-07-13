@@ -1,19 +1,17 @@
-import random, numpy, ROOT
-
-indir = '/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/'
-signame = '2HDM_mZP600_mA0300'
-bkgname = 'DiPhoton'
+# import needed
+import random
+import numpy 
+import ROOT
 
 # Input file
-root_in_sig = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/2HDM_mZP600_mA0300_rawskim.root')
-root_in_bkg1 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/DiPhoton_rawskim.root')
-#root_in_bkg1 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/NonResBkg_rawskim.root')
-root_in_bkg2 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/EWKBkg_rawskim.root')
-root_in_bkg3 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/GluGluHToGG_rawskim.root')
-root_in_bkg4 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/VHToGG_rawskim.root')
-root_in_bkg5 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/ttHJetToGG_rawskim.root')
-root_in_bkg6 = ROOT.TFile.Open('/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/VBFHToGG_rawskim.root')
-tree_in_sig = root_in_sig.Get('DiPhotonTree')
+root_in_sig  = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/2HDM_mZP600_mA0300_rawskim.root")
+root_in_bkg1 = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/DiPhoton_rawskim.root")
+root_in_bkg2 = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/EWKBkg_rawskim.root")
+root_in_bkg3 = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/GluGluHToGG_rawskim.root")
+root_in_bkg4 = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/VHToGG_rawskim.root")
+root_in_bkg5 = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/ttHJetToGG_rawskim.root")
+root_in_bkg6 = ROOT.TFile.Open("/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/VBFHToGG_rawskim.root")
+tree_in_sig  = root_in_sig.Get('DiPhotonTree')
 tree_in_bkg1 = root_in_bkg1.Get('DiPhotonTree')
 tree_in_bkg2 = root_in_bkg2.Get('DiPhotonTree')
 tree_in_bkg3 = root_in_bkg3.Get('DiPhotonTree')
@@ -29,17 +27,17 @@ ROOT.TMVA.Tools.Instance()
 factory = ROOT.TMVA.Factory("TMVAClassification", root_out, "AnalysisType=Classification")
 
 # Add the variables to the TMVA factory as floats
-for x in ['ptgg','mgg','t1pfmetCorr']:
+for x in ['pt1','pt2','ptgg','eta1','eta2','t1pfmetCorr','t1pfmetCorrPhi','dphiggmet','dphig1met','dphig2met','detag1g2']:
   factory.AddVariable(x,"F")
 
 # Link signal and background to root ntuple
 factory.AddSignalTree(tree_in_sig)
 factory.AddBackgroundTree(tree_in_bkg1)
-#factory.AddBackgroundTree(tree_in_bkg2)
-#factory.AddBackgroundTree(tree_in_bkg3)
-#factory.AddBackgroundTree(tree_in_bkg4)
-#factory.AddBackgroundTree(tree_in_bkg5)
-#factory.AddBackgroundTree(tree_in_bkg6)
+factory.AddBackgroundTree(tree_in_bkg2)
+factory.AddBackgroundTree(tree_in_bkg3)
+factory.AddBackgroundTree(tree_in_bkg4)
+factory.AddBackgroundTree(tree_in_bkg5)
+factory.AddBackgroundTree(tree_in_bkg6)
 
 # Cuts defining the signal and background sample
 #sigCut = ROOT.TCut("truth > 0.5")

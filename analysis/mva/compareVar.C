@@ -1,44 +1,66 @@
 #include <TFile.h>
 #include <TH1.h>
+#include <TLorentzVector.h>
+#include "../../../DataFormats/Math/interface/deltaPhi.h"
 
-void  runVar(string, int, float, float);
+void runVar(TString, TString, TString, bool, string, int, float, float);
 TH1F* prepTree(TString, string, int, float, float, TString);
+TH1F* newVar(TString, string, int, float, float, TString); 
 
 void compareVar(){
- 
-  runVar("mgg",		26, 99, 151);
-  runVar("t1pfmetCorr",	90, 0,  900);
-  runVar("ptgg",	60, 0,  600);
-  runVar("pt1",		30, 0,  300);
-  runVar("pt2",		30, 0,  300);
-  runVar("eta1",	20, -4, 4);
-  runVar("eta2",	20, -4, 4);
-  runVar("nJets30",	10, 0,  10);
-  runVar("nEle",	5,  0,  5);
-  runVar("nMuons",	5,  0,  5);
-  runVar("dphiggmet",	20, 0,  4);
-  runVar("mindphijmet",	20, 0,  4);
-  
-}
 
-void runVar(string VAR, int BIN, float MIN, float MAX){
- 
-  std::cout << "Comparing variable " << VAR << std::endl;
   TString indir  = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_moriond17_v3/";
   TString outdir = "~/www/Plots/MonoHgg2017/VariableShapes/"; 
   TString skim  = "_rawskim"; 
 
-  TFile* fout = new TFile("OutputVarComparison.root","UPDATE");
+  //runVar(indir,outdir,skim,0,"mgg",		26, 99, 151);
+  //runVar(indir,outdir,skim,0,"t1pfmetCorr",	90, 0,  900);
+  //runVar(indir,outdir,skim,0,"ptgg",		60, 0,  600);
+  //runVar(indir,outdir,skim,0,"pt1",		30, 0,  300);
+  //runVar(indir,outdir,skim,0,"pt2",		30, 0,  300);
+  //runVar(indir,outdir,skim,0,"eta1",		20, -4, 4);
+  //runVar(indir,outdir,skim,0,"eta2",		20, -4, 4);
+  //runVar(indir,outdir,skim,0,"nJets30",		10, 0,  10);
+  //runVar(indir,outdir,skim,0,"nEle",		5,  0,  5);
+  //runVar(indir,outdir,skim,0,"nMuons",		5,  0,  5);
+  //runVar(indir,outdir,skim,0,"dphiggmet",	20, 0,  4);
+  //runVar(indir,outdir,skim,0,"mindphijmet",	20, 0,  4);
+  runVar(indir,outdir,skim,1,"dphig1met",	20, 0,  4);
+  runVar(indir,outdir,skim,1,"dphig2met",	20, 0,  4);
+  runVar(indir,outdir,skim,1,"detag1g2",	20, 0,  4);
+ 
+}
+
+void runVar(TString indir, TString outdir, TString skim, bool NewVar, string VAR, int BIN, float MIN, float MAX){
+ 
+  std::cout << "Comparing variable " << VAR << std::endl;
+
+  TFile* fout = new TFile(outdir+"OutputVarComparison.root","UPDATE");
   TCanvas* c = new TCanvas("","",800,800);
   TLegend* l = new TLegend(0.5,0.70,0.85,0.88,"","brNDC");// x1,y1,x2,y2
   TPad* p = new TPad("","",0.01,0.01,0.99,0.99); 
   l->SetBorderSize(0); 
 
-  TH1F* sig1 = prepTree(indir+"2HDM_mZP600_mA0300"+skim,     VAR,BIN,MIN,MAX,"");
-  TH1F* sig2 = prepTree(indir+"BaryonicZp_mZP10_mChi1"+skim, VAR,BIN,MIN,MAX,"");
-  TH1F* bkg1 = prepTree(indir+"DiPhoton"+skim,               VAR,BIN,MIN,MAX,"");
-  TH1F* bkg2 = prepTree(indir+"VHToGG"+skim,                 VAR,BIN,MIN,MAX,"");
-  TH1F* bkg3 = prepTree(indir+"WGToLNuG"+skim,               VAR,BIN,MIN,MAX,"");
+  TH1F* sig1; 
+  TH1F* sig2; 
+  TH1F* bkg1; 
+  TH1F* bkg2; 
+  TH1F* bkg3; 
+
+  if (NewVar){
+   sig1 = newVar(indir+"2HDM_mZP600_mA0300"+skim,     VAR,BIN,MIN,MAX,"");
+   sig2 = newVar(indir+"BaryonicZp_mZP10_mChi1"+skim, VAR,BIN,MIN,MAX,"");
+   bkg1 = newVar(indir+"DiPhoton"+skim,               VAR,BIN,MIN,MAX,"");
+   bkg2 = newVar(indir+"VHToGG"+skim,                 VAR,BIN,MIN,MAX,"");
+   bkg3 = newVar(indir+"WGToLNuG"+skim,               VAR,BIN,MIN,MAX,"");
+  }
+  else {
+   sig1 = prepTree(indir+"2HDM_mZP600_mA0300"+skim,     VAR,BIN,MIN,MAX,"");
+   sig2 = prepTree(indir+"BaryonicZp_mZP10_mChi1"+skim, VAR,BIN,MIN,MAX,"");
+   bkg1 = prepTree(indir+"DiPhoton"+skim,               VAR,BIN,MIN,MAX,"");
+   bkg2 = prepTree(indir+"VHToGG"+skim,                 VAR,BIN,MIN,MAX,"");
+   bkg3 = prepTree(indir+"WGToLNuG"+skim,               VAR,BIN,MIN,MAX,"");
+  }
 
   float max1 = sig1->GetMaximum();
   float max2 = (max1 > sig2->GetMaximum())? max1:sig2->GetMaximum();
@@ -62,6 +84,9 @@ void runVar(string VAR, int BIN, float MIN, float MAX){
   else if (VAR=="nJets30")	varname = "Num. jets";
   else if (VAR=="nEle")		varname = "Num. electrons";
   else if (VAR=="nMuons")	varname = "Num. muons";
+  else if (VAR=="dphig1met")	varname = "|#Delta#phi(#gamma_{1},p_{T}^{miss})|";
+  else if (VAR=="dphig2met")	varname = "|#Delta#phi(#gamma_{2},p_{T}^{miss})|";
+  else if (VAR=="detag1g2")	varname = "|#Delta#eta(#gamma_{1},#gamma_{2})|";
   else varname = VAR;
   std::cout << "Variable name: " << varname << std::endl;
   sig1->GetXaxis()->SetTitle(varname);
@@ -111,6 +136,52 @@ TH1F* prepTree(TString fin, string VAR, int BIN, float MIN, float MAX, TString c
   if (cut!="") cutstr = "("+cut+")*";
   cutstr += "weight"; 
   t->Draw((VAR+">>h").c_str(),cutstr);
+  float totint = h->Integral();
+  h->Scale(1/totint);
+  return h; 
+}
+
+TH1F* newVar(TString fin, string VAR, int BIN, float MIN, float MAX, TString cut=""){
+  std::cout << "Running " << fin << std::endl;
+  TFile* f = new TFile(fin+".root");
+  TTree* t = (TTree*)f->Get("DiPhotonTree");
+  TH1F*  h = new TH1F("h","",BIN,MIN,MAX);
+ 
+  // variables needed
+  Float_t weight;	t->SetBranchAddress("weight",&weight);
+  Float_t eta1;		t->SetBranchAddress("eta1",&eta1);
+  Float_t eta2;		t->SetBranchAddress("eta2",&eta2);
+  Float_t phi1;		t->SetBranchAddress("phi1",&phi1);
+  Float_t phi2;		t->SetBranchAddress("phi2",&phi2);
+  Float_t pt1;		t->SetBranchAddress("pt1",&pt1);
+  Float_t pt2;		t->SetBranchAddress("pt2",&pt2);
+  Float_t met;		t->SetBranchAddress("t1pfmetCorr",&met);
+  Float_t metphi;	t->SetBranchAddress("t1pfmetCorrPhi",&metphi);
+  
+  // new variables made
+  Float_t dphig1met;
+  Float_t dphig2met;
+  Float_t detag1g2;
+
+  TLorentzVector lorVecPho1;
+  TLorentzVector lorVecPho2;
+
+  // loop over entries
+  for (UInt_t entry = 0; entry < t->GetEntries(); entry++)
+  {
+    t->GetEntry(entry);
+    lorVecPho1.SetPtEtaPhiM(pt1,eta1,phi1,0.);
+    lorVecPho2.SetPtEtaPhiM(pt2,eta2,phi2,0.);
+    
+    dphig1met = TMath::Abs(deltaPhi(lorVecPho1.Phi(),metphi));
+    dphig2met = TMath::Abs(deltaPhi(lorVecPho2.Phi(),metphi));
+    detag1g2  = TMath::Abs(lorVecPho1.Eta()-lorVecPho2.Eta());
+  
+    if (VAR=="dphig1met") h->Fill(dphig1met,weight);
+    if (VAR=="dphig2met") h->Fill(dphig2met,weight);
+    if (VAR=="detag1g2")  h->Fill(detag1g2,weight);  
+  }
+ 
   float totint = h->Integral();
   h->Scale(1/totint);
   return h; 
