@@ -19,7 +19,7 @@ void getIntMasses(TString, int, int &, int &);
 void getHCombFile(TString, TString, int, TFile* &);
 void getContours(int, TGraph2D*, TGraph* &);
 void setStyle(TCanvas*, TPad*);
-void setCMSLabels(TCanvas*, TPad*, int);
+void setCMSLabels(TLatex* &, TLatex* &, TLatex* &, TLatex* &, int);
 
 void makeLimitPlotNicer(){
   std::cout << "Making 2D limit plot" << std::endl;
@@ -115,7 +115,6 @@ void run(TString inDir, TString outDir, int type){
   TCanvas *c_copy = new TCanvas("c_copy","c_copy",525,1113,800,795);
   TPad *p         = new TPad("p","",0.01,0.03,0.98,1.00);
   c_copy->cd();
-  p->Draw();
   p->cd();
   setStyle(c_copy,p);
   c_copy->Update();
@@ -125,9 +124,6 @@ void run(TString inDir, TString outDir, int type){
   h2_obs->SetMinimum(0.1);
   h2_obs->SetMaximum(50);
   g2d_obs->Draw("COLZ SAME");
-
-  // add CMS labels
-  setCMSLabels(c_copy,p,type);
 
   // setup axis labels
   TLatex *lxex = new TLatex(0.5363409,0.1963589,"m_{Z'} [GeV]"); 
@@ -184,25 +180,32 @@ void run(TString inDir, TString outDir, int type){
 
   // save plot
   c_copy->cd();
-  c_copy->SaveAs(Form("%sTEST_ZpBaryContour.png",outDir.Data())); 
-  c_copy->SaveAs(Form("%sTEST_ZpBaryContour.pdf",outDir.Data())); 
+  c_copy->SetLogz();
+  TLatex *l1; TLatex *l2; TLatex *l3; TLatex *l4;
+  setCMSLabels(l1,l2,l3,l4,type); // add CMS labels
+  l1->Draw("same");
+  l2->Draw("same");
+  l3->Draw("same");
+  //l4->Draw("same");
+  c_copy->SaveAs(TString::Format("%sTEST_ZpBaryContour.png",outDir.Data())); 
+  c_copy->SaveAs(TString::Format("%sTEST_ZpBaryContour.pdf",outDir.Data())); 
 
 }
 
-void setCMSLabels(TCanvas* c, TPad* p, int type){
+void setCMSLabels(TLatex* & l1, TLatex* & l2, TLatex* & l3, TLatex* & l4, int type){
 
   TString latexCMSname = "#bf{CMS} #it{Preliminary}";
-  TLatex *l1 = new TLatex(0.13,1.01,latexCMSname);
-  l1->SetTextSize(0.040);
+  l1 = new TLatex(0.16,0.97,latexCMSname);
+  l1->SetTextSize(0.036);
   l1->SetTextAlign(12);
   l1->SetNDC(kTRUE);
   l1->SetTextFont(42);
-  
+
   TString latexlumi = "35.9 fb^{-1}";
   TString latexenergy = " (13 TeV)";
   TString latexname = latexlumi+latexenergy;
-  TLatex *l2 = new TLatex(0.72,1.01,latexname);
-  l2->SetTextSize(0.034);
+  l2 = new TLatex(0.505,.97,latexname);
+  l2->SetTextSize(0.033);
   l2->SetTextAlign(12);
   l2->SetNDC(kTRUE);
   l2->SetTextFont(42);
@@ -212,23 +215,16 @@ void setCMSLabels(TCanvas* c, TPad* p, int type){
   if (type==0) addmodel = "(Baryonic)";
   if (type==1) addmodel = "(2HDM)"; 
 
-  TLatex *l3 = new TLatex(0.11,0.86,thestring);
+  l3 = new TLatex(0.20,0.90,thestring);
   l3->SetTextSize(0.031);
   l3->SetTextAlign(12);
   l3->SetNDC(kTRUE);
   l3->SetTextFont(42);
-  TLatex *l4 = new TLatex(0.11,0.83,addmodel);
+  l4 = new TLatex(0.20,0.87,addmodel);
   l4->SetTextSize(0.031);
   l4->SetTextAlign(12);
   l4->SetNDC(kTRUE);
   l4->SetTextFont(42);
-
-  c->cd();
-  //p->cd();
-  l1->Draw("same");
-  l2->Draw("same");
-  l3->Draw("same");
-  //l4->Draw("same");
 
 }
 
@@ -307,9 +303,9 @@ void getInterpolation(TGraph* gc, bool isFirst, Double_t & xobs){
 }
 
 void getContours(int j, TGraph2D* g, TGraph* & gc){
-  TCanvas* c = new TCanvas("c","c",800,800); 
+  TCanvas* c = new TCanvas(TString::Format("c%d",j),"",800,800); 
   c->cd();
-  TH2D* h = new TH2D(Form("h%d",j),"",990,10,1000,500,1,500);
+  TH2D* h = new TH2D(TString::Format("h%d",j),"",990,10,1000,500,1,500);
   h = g->GetHistogram();
    
   Double_t contours[1];
@@ -400,7 +396,7 @@ void getLimitVal(TFile* file, Double_t quantile, Double_t & Limit){
 void getHCombFile(TString inDir, TString name, int type, TFile* & higgsCombineFile){
   int m1, m2;
   getIntMasses(name,type,m1,m2);
-  higgsCombineFile = new TFile(Form("%s/higgsCombineMonoHgg_sig_%s.Asymptotic.mH%d.root",inDir.Data(),name.Data(),m1));
+  higgsCombineFile = new TFile(TString::Format("%s/higgsCombineMonoHgg_sig_%s.Asymptotic.mH%d.root",inDir.Data(),name.Data(),m1));
 }
 
 void getIntMasses(TString name, int type, int & m1, int & m2){
