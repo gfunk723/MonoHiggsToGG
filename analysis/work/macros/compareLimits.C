@@ -71,7 +71,7 @@ void drawGraphs(TString outdir, std::vector<std::pair<TString,TString>> names, s
   TLegend *l = new TLegend(0.55,0.60,0.85,0.85);
   l->SetBorderSize(0);
 
-  g[0]->GetXaxis()->SetRangeUser(10,1000);
+  g[0]->GetXaxis()->SetRangeUser(10,10000);
   g[0]->GetYaxis()->SetRangeUser(0.01,500);
   g[0]->Draw("ACP");
 

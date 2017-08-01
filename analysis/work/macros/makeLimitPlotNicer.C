@@ -6,6 +6,7 @@
 #include "TLegend.h"
 #include "TH2.h"
 #include "TStyle.h"
+#include "TGraph.h"
 #include "TGraph2D.h"
 #include <iostream>
 
@@ -18,11 +19,13 @@ void getInterpolation(TGraph*, bool, Double_t &); // not used
 void getIntMasses(TString, int, int &, int &);
 void getHCombFile(TString, TString, int, TFile* &);
 void getContours(int, TGraph2D*, TGraph* &);
+void compare1DmuPlots(TString, std::vector<int>, std::vector<TString>, int, std::map<TString,Double_t>, std::map<TString,Double_t>);
+void get1DmuPlots(TGraph* &, TGraph* &, int, std::vector<TString>, int, std::map<TString,Double_t>, std::map<TString,Double_t>);
 void setStyle(TCanvas*, TPad*);
 void setCMSLabels(TLatex* &, TLatex* &, TLatex* &, TLatex* &, int);
 
 void makeLimitPlotNicer(){
-  std::cout << "Making 2D limit plot" << std::endl;
+  std::cout << "Making exclusion plots..." << std::endl;
   
   TString inDir  = "ntuples4fit";
   TString outDir = "~/www/Plots/13TeV_v80X_moriond17/ContourPlots_mine/";
@@ -85,6 +88,12 @@ void run(TString inDir, TString outDir, int type){
     g2d_p1s->SetPoint(i,m1,m2,p1sMuMap[sampleNames[i]]);
     g2d_n1s->SetPoint(i,m1,m2,n1sMuMap[sampleNames[i]]);
   }
+
+  std::vector<int> masses;
+  masses.push_back(10);
+  masses.push_back(100);
+  masses.push_back(1000);
+  compare1DmuPlots(outDir,masses,sampleNames,type,expMuMap,obsMuMap); 
 
   // convert tgraph to histo
   TH2D* h2_exp = new TH2D("h2_exp","h2_exp",990,10,1000,499,1,500);
@@ -192,6 +201,114 @@ void run(TString inDir, TString outDir, int type){
   //l4->Draw("same");
   c_copy->SaveAs(TString::Format("%sTEST_ZpBaryContour.png",outDir.Data())); 
   c_copy->SaveAs(TString::Format("%sTEST_ZpBaryContour.pdf",outDir.Data())); 
+
+}
+
+void compare1DmuPlots(TString outDir, std::vector<int> masses, std::vector<TString> sampleNames, int type, std::map<TString,Double_t> expMuMap, std::map<TString,Double_t> obsMuMap){
+
+  int nSig = masses.size();
+  std::vector< TGraph* > muExp;
+  std::vector< TGraph* > muObs;
+  muExp.resize(nSig);
+  muObs.resize(nSig);
+
+  for (UInt_t i = 0; i < nSig; i++){
+    // make the 1D plots for each sample
+    muExp[i] = new TGraph();
+    muObs[i] = new TGraph(); 
+    get1DmuPlots(muExp[i],muObs[i],masses[i],sampleNames,type,expMuMap,obsMuMap);
+  } 
+
+  TCanvas * c1D = new TCanvas("c1D");
+  c1D->cd();
+  c1D->SetLogx();
+  c1D->SetLogy();
+
+  muExp[0]->GetXaxis()->SetTitle("m_{Z'} [GeV]");
+  muExp[0]->GetYaxis()->SetTitle("#sigma_{95\% CL} / #sigma_{th}");
+  muExp[0]->SetMaximum(10);
+  muExp[0]->SetMinimum(0.1);
+  muExp[0]->Draw(); 
+
+  // mu = 1 line
+  TLine* line = new TLine();
+  line->SetX1(muExp[0]->GetXaxis()->GetXmin());
+  line->SetX2(muExp[0]->GetXaxis()->GetXmax());
+  line->SetY1(1.0);
+  line->SetY2(1.0);
+  line->SetLineColor(kRed);
+  line->SetLineWidth(2);
+  line->Draw("SAME");
+
+  // legend
+  TLegend * lty = new TLegend(0.12,0.80,0.35,0.88,NULL,"brNDC"); // (x1,y1,x2,y2)
+  lty->SetBorderSize(0);
+  lty->SetLineColor(1);
+  lty->SetLineWidth(1);
+  lty->SetLineStyle(1);
+  lty->SetTextSize(0.03);
+  lty->SetFillColor(0);
+  muExp[0]->SetLineColor(kBlack);
+  muExp[0]->SetLineWidth(2);
+  muExp[0]->SetLineStyle(2);
+  muObs[0]->SetLineColor(kBlack);
+  muObs[0]->SetLineWidth(2);
+  muObs[0]->SetLineStyle(1);
+  lty->AddEntry(muExp[0],"Expected","L");
+  lty->AddEntry(muObs[0],"Observed","L");
+  
+  TLegend * l1D = new TLegend(0.12,0.65,0.35,0.78,NULL,"brNDC"); // (x1,y1,x2,y2)
+  l1D->SetBorderSize(0);
+  l1D->SetLineColor(1);
+  l1D->SetLineWidth(1);
+  l1D->SetLineStyle(1);
+  l1D->SetTextSize(0.03);
+  l1D->SetFillColor(0);
+ 
+  for (UInt_t i = 0; i < nSig; i++){
+    // style plots
+    muExp[i]->SetLineStyle(2);
+    muObs[i]->SetLineStyle(1);
+    muExp[i]->SetLineWidth(2);
+    muObs[i]->SetLineWidth(2);
+    if (i > 0){
+      muExp[i]->SetLineColor(10*(i+1));
+      muObs[i]->SetLineColor(10*(i+1));
+    }
+    // draw
+    muExp[i]->Draw("L SAME");
+    muObs[i]->Draw("L SAME");
+    l1D->AddEntry(muObs[i],TString::Format("m_{#chi} = %i",masses[i]),"L"); 
+  }
+  
+  TLatex *l1; TLatex *l2; TLatex *l3; TLatex *l4;
+  setCMSLabels(l1,l2,l3,l4,type); // add CMS labels
+  //l1->Draw("same");
+  //l2->Draw("same");
+  //l3->Draw("same");
+  lty->Draw("same");
+  l1D->Draw("same");
+  c1D->SaveAs(TString::Format("%sTEST_ZpBary1DMu.png",outDir.Data()));
+  c1D->SaveAs(TString::Format("%sTEST_ZpBary1DMu.pdf",outDir.Data()));
+
+}
+
+void get1DmuPlots(TGraph* & muExp, TGraph* & muObs, int m, std::vector<TString> samples, int type, std::map<TString,Double_t> exp, std::map<TString,Double_t> obs){
+
+  // select the samples to graph
+  int m1, m1use;
+  int m2, m2use;
+  std::vector<TString> useSamples;
+  for (UInt_t i = 0; i < samples.size(); i++){
+    getIntMasses(samples[i],type,m1,m2); // get int values of masses
+    if (m==m2) useSamples.push_back(samples[i]);
+  } 
+
+  for (UInt_t i = 0; i < useSamples.size(); i++){
+    getIntMasses(useSamples[i],type,m1use,m2use); // get int values of masses
+    muExp->SetPoint(i,m1use,exp[useSamples[i]]);  // set Expected graph points
+    muObs->SetPoint(i,m1use,obs[useSamples[i]]);  // set Observed graph points
+  }   
 
 }
 
@@ -448,7 +565,6 @@ void getXsec2HDM(TFile* file, int mA0, int mZp, Double_t & xsec){
 void getMassPoints( std::vector<TString> & names ){
 
   int mZp[25] = {10,20,30,50,75,100,150,200,250,300,400,500,600,700,900,1200,1500,2000,2500,3000,4000,5000,6000,8000,10000}; 
-  //int mDM[28] = {5,10,20,40,50,60,75,100,125,150,175,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000};
   int mDM[21] = {5,10,20,40,60,100,125,150,175,200,250,300,350,400,450,500,600,700,800,900,1000};
   for (int m1 = 0; m1 < 25; m1++){
     for (int m2 = 0; m2 < 21; m2++){
