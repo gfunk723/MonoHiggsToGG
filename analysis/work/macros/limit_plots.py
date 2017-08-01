@@ -38,6 +38,28 @@ def guessLabel(name):
     elif "13TeV" in name: return "13TeV"
     else: return "Combined"
     
+def scaleGraph2(graph,scl):
+    graph = graph.Clone()
+    graph.GetListOfFunctions().Clear()
+    ## graph.Print()
+    
+    xvals = graph.GetX()
+    yvals = graph.GetY()
+    yerrl = graph.GetEYlow()
+    yerrh = graph.GetEYhigh()
+    for ip in xrange(graph.GetN()):
+        #scl = scale(xvals[ip]) 
+        #print scl
+        graph.SetPoint( ip, xvals[ip], yvals[ip]*scl )
+        try:
+            graph.SetPointEYlow( ip, yerrl[ip]*scl )
+            graph.SetPointEYhigh( ip, yerrh[ip]*scl )
+        except:
+            pass
+    
+    graph.Print()
+    
+    return graph
 
 def scaleGraph(graph,scl):
     graph = graph.Clone()
@@ -49,7 +71,7 @@ def scaleGraph(graph,scl):
     yerrl = graph.GetEYlow()
     yerrh = graph.GetEYhigh()
     for ip in xrange(graph.GetN()):
-        #scl = scale(xvals[ip])  #MARGARET
+        scl = scale(xvals[ip])  #MARGARET
         ## print scl
         graph.SetPoint( ip, xvals[ip], yvals[ip]*scl )
         try:
@@ -74,6 +96,8 @@ class LimitPlot(PlotApp):
 
     def __init__(self):
         super(LimitPlot,self).__init__(option_list=[
+                make_option("--addName",action="store",dest="addName",type="string",
+                            default=[]),    #MARGARET
                 make_option("--mZP",action="store",dest="mZP",
                             default=10000), #MARGARET
                 make_option("--mDM",action="store",dest="mDM",
@@ -455,9 +479,9 @@ class LimitPlot(PlotApp):
         print "N ex68 = ",expected68Orig.GetN()
         print "N ex95 = ",expected95Orig.GetN()
         print "-------------------------------------------------------"
-        observed   = scaleGraph(observedOrig,1)   #MARGARET
-        expected68 = scaleGraph(expected68Orig,1) #MARGARET
-        expected95 = scaleGraph(expected95Orig,1) #MARGARET
+        observed   = scaleGraph2(observedOrig,2)   #MARGARET
+        expected68 = scaleGraph2(expected68Orig,2) #MARGARET
+        expected95 = scaleGraph2(expected95Orig,2) #MARGARET
         if options.cleanup:
           self.cleanup(observed)
         if options.smoothen:
@@ -486,7 +510,7 @@ class LimitPlot(PlotApp):
         
         style_utils.apply( observed, [["SetName","observed_%s"%coup]]+observedStyle)
       
-        canv  = ROOT.TCanvas("limits_ZPBaryonic_mDM%s"%options.mDM,"limits_ZPBaryonic_mDM%s"%options.mDM) #MARGARET
+        canv  = ROOT.TCanvas("limits_ZPBaryonic_mDM%s%s"%(options.mDM,options.addName),"limits_ZPBaryonic_mDM%s%s"%(options.mDM,options.addName)) #MARGARET
         canv.SetLogx()
         canv.SetLogy()
         canv.SetGridx()
