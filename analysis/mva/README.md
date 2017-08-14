@@ -8,3 +8,6 @@ To run the MVAs:
 
 Run SVN with batch:
 `bsub -q 2nw jobscript.sh`
+
+To make plots for the MVA (use makeMVAPlots.py with various options): 
+- `python makeMVAPlots.py --mva DNN -i TMVA_DNN_BARY.root -O ~/www/Plots/MonoHgg2017/MVAplots/ --suffix "_BARY" `

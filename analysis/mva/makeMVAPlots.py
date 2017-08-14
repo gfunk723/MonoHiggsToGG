@@ -28,7 +28,7 @@ class PlotMaker(pyapp):
   def __call__(self,options,args):
     print("Making plots for : %s" %options.mvatype)
     fin     = ROOT.TFile.Open(options.infile)
-    fout    = ROOT.TFile.Open(options.outdir+'plotsMVAstudies_'+options.mvatype+'.root','RECREATE')
+    fout    = ROOT.TFile.Open(options.outdir+'plotsMVAstudies_'+options.mvatype+''+options.suffix+'.root','RECREATE')
 
     addtree = ''
     if self.options.mvatype == 'DNN':
@@ -91,8 +91,8 @@ class PlotMaker(pyapp):
     l.AddEntry(h_test_ROC,"Test Sample, AUC = "+str(rnd_test),"L")
     l.Draw('SAME')
     
-    c1.Print(options.outdir+'plot_ROC_'+options.mvatype+'.png')
-    c1.Print(options.outdir+'plot_ROC_'+options.mvatype+'.pdf')
+    c1.Print(options.outdir+'plot_ROC_'+options.mvatype+''+options.suffix+'.png')
+    c1.Print(options.outdir+'plot_ROC_'+options.mvatype+''+options.suffix+'.pdf')
     h_train_ROC.Write()
     h_test_ROC.Write()
 
@@ -101,8 +101,8 @@ class PlotMaker(pyapp):
     c2.cd()
     
     h_corr.Draw("COLZ")
-    c2.Print(options.outdir+'plot_Corr'+which+'_'+options.mvatype+'.png') 
-    c2.Print(options.outdir+'plot_Corr'+which+'_'+options.mvatype+'.pdf') 
+    c2.Print(options.outdir+'plot_Corr'+which+'_'+options.mvatype+''+options.suffix+'.png') 
+    c2.Print(options.outdir+'plot_Corr'+which+'_'+options.mvatype+''+options.suffix+'.pdf') 
     h_corr.Write()
    
   def plotClassifier(self,options,h_train_S,h_train_B,h_test_S,h_test_B):
@@ -143,8 +143,8 @@ class PlotMaker(pyapp):
     h_test_S.Draw('EP SAME')
     h_test_B.Draw('EP SAME')
     l3.Draw('SAME')
-    c3.Print(options.outdir+'plot_Classifier_'+options.mvatype+'.png')
-    c3.Print(options.outdir+'plot_Classifier_'+options.mvatype+'.pdf')
+    c3.Print(options.outdir+'plot_Classifier_'+options.mvatype+''+options.suffix+'.png')
+    c3.Print(options.outdir+'plot_Classifier_'+options.mvatype+''+options.suffix+'.pdf')
     h_train_S.Write()
     h_train_B.Write()
     h_test_S.Write()

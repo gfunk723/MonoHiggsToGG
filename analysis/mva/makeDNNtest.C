@@ -16,23 +16,33 @@
 #include "TMVA/DataLoader.h"
 #include "TMVA/TMVAGui.h"
 
-void deepnn()
+void makeDNNtest()
 {
 
   TMVA::Tools::Instance();
   TString path  = "/afs/cern.ch/work/m/mzientek/public/25ns_v80X_MVA/";
-  TString sig   = "2HDM_mZP600_mA0300";
-  TString bkg   = "DiPhoton";
+  //TString sign  = "2HDM_mZP600_mA0300";
+  TString sign  = "BaryonicZp_mZP10_mChi1";
   TString skim  = "_skim_woVetos.root";
 
-  TFile *sig_in = TFile::Open( TString::Format("%s%s%s",path.Data(),sig.Data(),skim.Data()));
-  TFile *bkg_in = TFile::Open( TString::Format("%s%s%s",path.Data(),bkg.Data(),skim.Data()));
+  TFile *sig_in = TFile::Open( TString::Format("%s%s%s",path.Data(),sign.Data(),skim.Data()));
+  TFile *bkg1_in = TFile::Open( TString::Format("%sDiPhoton%s", path.Data(),skim.Data()));
+  TFile *bkg2_in = TFile::Open( TString::Format("%sEWKBkg%s", path.Data(),skim.Data()));
+  TFile *bkg3_in = TFile::Open( TString::Format("%sGluGluHToGG%s", path.Data(),skim.Data()));
+  TFile *bkg4_in = TFile::Open( TString::Format("%sVHToGG%s", path.Data(),skim.Data()));
+  TFile *bkg5_in = TFile::Open( TString::Format("%sttHJetToGG%s", path.Data(),skim.Data()));
+  TFile *bkg6_in = TFile::Open( TString::Format("%sVBFHToGG%s", path.Data(),skim.Data()));
  
   TMVA::DataLoader *loader = new TMVA::DataLoader("dataset");
  
   // --- Register training and testing trees
-  TTree *signal     = (TTree*)sig_in->Get("DiPhotonTree");
-  TTree *background = (TTree*)bkg_in->Get("DiPhotonTree");
+  TTree *sig  = (TTree*)sig_in->Get("DiPhotonTree");
+  TTree *bkg1 = (TTree*)bkg1_in->Get("DiPhotonTree");
+  TTree *bkg2 = (TTree*)bkg2_in->Get("DiPhotonTree");
+  TTree *bkg3 = (TTree*)bkg3_in->Get("DiPhotonTree");
+  TTree *bkg4 = (TTree*)bkg4_in->Get("DiPhotonTree");
+  TTree *bkg5 = (TTree*)bkg5_in->Get("DiPhotonTree");
+  TTree *bkg6 = (TTree*)bkg6_in->Get("DiPhotonTree");
   
   // --- Create output root file
   TString outfileName = "TMVA_DNN.root";
@@ -42,14 +52,23 @@ void deepnn()
 
   loader->AddVariable("ptgg",'F');
   loader->AddVariable("t1pfmetCorr",'F');
+  loader->AddVariable("dphiggmet",'F');
+  loader->AddVariable("dphig1met",'F');
+  loader->AddVariable("dphig2met",'F');
+  loader->AddVariable("detag1g2",'F');
 
   // --- Global event weights
   Double_t sigWeight = 1.0;
   Double_t bkgWeight = 1.0;
 
   // --- Add arbitrary number of signal or background trees
-  loader->AddSignalTree    ( signal, sigWeight );
-  loader->AddBackgroundTree( background, bkgWeight );
+  loader->AddSignalTree    ( sig, sigWeight );
+  loader->AddBackgroundTree( bkg1, bkgWeight );
+  loader->AddBackgroundTree( bkg2, bkgWeight );
+  loader->AddBackgroundTree( bkg3, bkgWeight );
+  loader->AddBackgroundTree( bkg4, bkgWeight );
+  loader->AddBackgroundTree( bkg5, bkgWeight );
+  loader->AddBackgroundTree( bkg6, bkgWeight );
 
   // --- Apply additional cuts
   TCut mycutsig = "";
