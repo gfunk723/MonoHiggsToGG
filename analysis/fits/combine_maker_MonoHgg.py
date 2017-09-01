@@ -66,36 +66,7 @@ class CombineApp(TemplatesApp):
                                     help="Per category observable ranges : [%default]",
                                     ),
                         make_option("--norm-nuisances",dest="norm_nuisances",action="callback",callback=optpars_utils.Load(scratch=True),type="string",
-                                    default={ 
-                                "eff13TeV_38T" : {
-                                    "EBEB" : 0.08,
-                                    "EBEE" : 0.08
-                                    },
-                                "eff13TeV_38T_016" : {
-                                    "EBEB016" : 0.06,
-                                    "EBEE016" : 0.06,
-                                    },
-                                "eff13TeV_0T" : {
-                                    "EBEB0T" : 0.16,
-                                    "EBEE0T" : 0.16,
-                                    },
-                                "PDFs" : { "default" : 0.06
-                                    },
-                                "lumi13TeV_38T" : {
-                                    "EBEB" : 0.027,
-                                    "EBEE" : 0.027,
-                                    "EBEB016" : 0.027,
-                                    "EBEE016" : 0.027,
-                                    },
-                                "lumi13TeV_38T_016" : {
-                                    "EBEB016" : 0.053,
-                                    "EBEE016" : 0.053,
-                                    },
-                                "lumi13TeV_0T" : {
-                                    "EBEB0T" : 0.12,
-                                    "EBEE0T" : 0.12,
-                                    },
-                                              },
+                                    default={},
                                     help="normalization uncertainties"),
                         make_option("--make-pr-plot",dest="make_pr_plot",action="store_true",default=False,
                                     help="Fit background",
@@ -1014,6 +985,260 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             datacard.write("----------------------------------------------------------------------------------------------------------------------------------\n")
             
             # normalization nuisances
+            datacard.write("lumi  lnN".ljust(20))
+            for cat in categories:
+              if not cat=="allMetLow": 
+                datacard.write(" 1.023".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" 1.023".ljust(15) )         
+                    datacard.write(" 1.023".ljust(15) )         
+                    datacard.write(" 1.023".ljust(15) )         
+                    datacard.write(" 1.023".ljust(15) )         
+                for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")        
+
+            datacard.write("eff  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow": 
+                datacard.write(" 1.03".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" 1.03".ljust(15) )        
+                    datacard.write(" 1.03".ljust(15) )        
+                    datacard.write(" 1.03".ljust(15) )        
+                    datacard.write(" 1.03".ljust(15) )        
+                for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")     
+
+            datacard.write("hgg_BR_theo  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow": 
+                datacard.write(" 0.9828/1.0173".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" 0.9828/1.0173".ljust(15) )
+                    datacard.write(" 0.9828/1.0173".ljust(15) )
+                    datacard.write(" 0.9828/1.0173".ljust(15) )
+                    datacard.write(" 0.9828/1.0173".ljust(15) )
+                for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")     
+
+            datacard.write("hgg_BR_mq  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow": 
+                datacard.write(" 0.9901/1.0093".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" 0.9901/1.0093".ljust(15) )
+                    datacard.write(" 0.9901/1.0093".ljust(15) )
+                    datacard.write(" 0.9901/1.0093".ljust(15) )
+                    datacard.write(" 0.9901/1.0093".ljust(15) )
+                for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")     
+
+            datacard.write("hgg_xsec_theo  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow":
+                 datacard.write(" -".ljust(15) )             # taken from Hgg, untagged2, ggH
+                 if options.generate_higgs_dataset:
+                     datacard.write(" 0.8/1.2".ljust(15) )             # taken from Hgg, untagged2                                                                       
+                     datacard.write("0.979/1.021".ljust(15) )             # taken from Hgg, untagged2                                                                        
+                     datacard.write("0.975/1.025".ljust(15) )             # taken from Hgg, untagged2                                                                         
+                     datacard.write("0.964/1.036".ljust(15) )             # taken from Hgg, untagged2                                                                        
+                 for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")       
+
+  #          datacard.write("hgg_xsec_pdf_as  lnN".ljust(20))
+  #          for cat in categories:
+  #             if not cat=="allMetLow" and not cat== "met130": 
+  #              datacard.write(" -".ljust(15) )    
+  #              if options.generate_higgs_dataset:
+  #                  datacard.write(" 0.968/1.032".ljust(15) )
+  #                  datacard.write(" 0.979/1.021".ljust(15) )
+  #                  datacard.write(" 0.975/1.025".ljust(15) )
+  #                  datacard.write(" 0.964/1.036".ljust(15) )
+  #              for comp in options.components:
+  #                  datacard.write(" -".ljust(15) )
+  #          datacard.write("\n")
+            
+            datacard.write("RealMet  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="met130": 
+                datacard.write(" 0.9925/1.0094".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" 0.9891/1.0181".ljust(15) )
+                    datacard.write(" 0.9891/1.0181".ljust(15) )
+               if cat=="met130": 
+                datacard.write(" 0.9881/1.0098".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" 0.9983/1.0027".ljust(15) )
+                    datacard.write(" 0.9983/1.0027".ljust(15) )
+               for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")
+
+#            datacard.write("JetEnDown  lnN".ljust(20))
+#            for cat in categories:
+#               if not cat=="allMetLow": 
+#                datacard.write(" 1.005".ljust(15) )
+#                if options.generate_higgs_dataset:
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                for comp in options.components:
+#                    datacard.write(" -".ljust(15) )
+#            datacard.write("\n")
+
+#            datacard.write("PhotonEnUp  lnN".ljust(20))
+#            for cat in categories:
+#               if not cat=="allMetLow": 
+#                datacard.write(" 1.005".ljust(15) )
+#                if options.generate_higgs_dataset:
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                for comp in options.components:
+#                    datacard.write(" -".ljust(15) )
+#            datacard.write("\n")
+
+#            datacard.write("PhotonEnDown  lnN".ljust(20))
+#            for cat in categories:
+#               if not cat=="allMetLow": 
+#                datacard.write(" 1.005".ljust(15) )
+#                if options.generate_higgs_dataset:
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                for comp in options.components:
+#                    datacard.write(" -".ljust(15) )
+#            datacard.write("\n")
+
+#            datacard.write("UnclusteredEnUp  lnN".ljust(20))
+#            for cat in categories:
+#               if not cat=="allMetLow": 
+#                datacard.write(" 1.005".ljust(15) )
+#                if options.generate_higgs_dataset:
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                for comp in options.components:
+#                    datacard.write(" -".ljust(15) )
+#            datacard.write("\n")
+
+#            datacard.write("UnclusteredEnDown  lnN".ljust(20))
+#            for cat in categories:
+#               if not cat=="allMetLow": 
+#                datacard.write(" 1.005".ljust(15) )
+#                if options.generate_higgs_dataset:
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" -".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                    datacard.write(" 1.005".ljust(15) )
+#                for comp in options.components:
+#                    datacard.write(" -".ljust(15) )
+#            datacard.write("\n")
+
+            datacard.write("FakeMet  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow": 
+                datacard.write(" -".ljust(15) )
+                if options.generate_higgs_dataset:
+                    datacard.write(" 0.5/1.5".ljust(15) )
+                    datacard.write(" 0.5/1.5".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+                for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")
+
+            datacard.write("DPhiGGMET  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow": 
+                datacard.write(" -".ljust(15) )
+               if options.generate_higgs_dataset:
+                    datacard.write(" 0.96/1.04".ljust(15) )
+                    datacard.write(" 0.96/1.04".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+               for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+            datacard.write("\n")
+           
+            datacard.write("DPhiJMET  lnN".ljust(20))
+            for cat in categories:
+               if not cat=="allMetLow": 
+                datacard.write(" -".ljust(15) )
+               if options.generate_higgs_dataset:
+                    datacard.write(" 0.99/1.01".ljust(15) )
+                    datacard.write(" 0.99/1.01".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+                    datacard.write(" -".ljust(15) )
+               for comp in options.components:
+                    datacard.write(" -".ljust(15) )
+
+            datacard.write("\n")
+
+            #add also electron, muon, jer
+            # shape nuiances 
+            shapeNuis = fit.get("shape_unc",{}).get(signame,{})
+            for nuis,nuisCats in shapeNuis.iteritems():
+               print nuisCats
+               if not nuisCats=="allMetLow": 
+                datacard.write(("%s shape" % nuis).ljust(20))
+                for cat in categories:
+                   if not cat=="allMetLow": 
+                       if not cat in nuisCats:
+                          datacard.write(" -".ljust(15) )
+                          if options.generate_higgs_dataset:
+                              datacard.write(" -".ljust(15) )
+                              datacard.write(" -".ljust(15) )
+
+
+                              datacard.write(" -".ljust(15) )
+                              datacard.write(" -".ljust(15) )
+                          for comp in options.components:
+                              datacard.write(" -".ljust(15) )
+                          
+                       if cat in nuisCats: 
+                          datacard.write(" 1".ljust(15) )
+                    #else: datacard.write(" -".ljust(15) )
+                          if options.generate_higgs_dataset:
+                              datacard.write(" 1".ljust(15) )
+                              datacard.write(" 1".ljust(15) )
+                              datacard.write(" 1".ljust(15) )
+                              datacard.write(" 1".ljust(15) )
+                          for comp in options.components:
+                              datacard.write(" -".ljust(15) )
+                       #if not cat in nuisCats:
+                       #   datacard.write(" -".ljust(15) )
+                       #   if options.generate_higgs_dataset:
+                       #       datacard.write(" -".ljust(15) )
+                       #       datacard.write(" -".ljust(15) )
+                       #       datacard.write(" -".ljust(15) )
+                       #   for comp in options.components:
+                       #       datacard.write(" -".ljust(15) )
+                          
+                datacard.write("\n")
+            datacard.write("\n")
+                
+            # other nuisance parameters
+            datacard.write("\n")
+            for param in fit.get("params",[]) + fit.get("sig_params",{}).get(signame,[]):
+                if (param[-1] == 0):
+                    datacard.write("# ")
+                datacard.write("#%s param %1.3g %1.3g\n" % tuple(param) )            
+            
+            # normalization nuisances
             for nuis,uncs in options.norm_nuisances.iteritems():
                 datacard.write(("%s  lnN"%nuis).ljust(20))
                 for cat in categories:
@@ -1052,22 +1277,22 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             for param in fit.get("flat_params",[]):
                 if (param[-1] == 0):
                     datacard.write("# ")
-                datacard.write("%s flatParam\n" % param )
+                datacard.write("#%s flatParam\n" % param )
             
-            # groups of nuisances
-            datacard.write("\n")
-            for group,params in fit.get("groups",{}).iteritems():
-                if len(params) == 0: continue
-                if not options.include_flat_params_in_groups:
-                    flatp = fit.get("flat_params",[])
-                    ## remove flat parameters from group
-                    flat_params = [ p for p in params if not p in flatp ]
-                    if len(flat_params) != 0:
-                        pars = " ".join( set(flat_params) )
-                        datacard.write("%s group = %s\n" % (group,pars ))
-                    datacard.write("# "); ## leave full group definition in datacard, but commented
-                pars = " ".join( set(params) )
-                datacard.write("%s group = %s\n" % (group,pars ))
+            ## groups of nuisances
+            #datacard.write("\n")
+            #for group,params in fit.get("groups",{}).iteritems():
+            #    if len(params) == 0: continue
+            #    if not options.include_flat_params_in_groups:
+            #        flatp = fit.get("flat_params",[])
+            #        ## remove flat parameters from group
+            #        flat_params = [ p for p in params if not p in flatp ]
+            #        if len(flat_params) != 0:
+            #            pars = " ".join( set(flat_params) )
+            #            datacard.write("%s group = %s\n" % (group,pars ))
+            #        datacard.write("# "); ## leave full group definition in datacard, but commented
+            #    pars = " ".join( set(params) )
+            #    datacard.write("%s group = %s\n" % (group,pars ))
                 
             datacard.write("----------------------------------------------------------------------------------------------------------------------------------\n\n")
             
@@ -3087,6 +3312,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             
 
                 if options.do_energy_scale_uncertainty:
+		    print "computing energy scale"
                     one = RooFit.RooConst(1.)
                     ecustom = ROOT.RooCustomizer(pdf,"")
                     obsCat = self.getObservable(cat)
