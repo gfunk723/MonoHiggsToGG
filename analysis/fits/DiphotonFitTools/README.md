@@ -48,6 +48,8 @@ SCRAM_IGNORE_PACKAGES="flashgg/Validation" scram b -j 10
 ## RUN
 
 ```
+cd $CMSSW/src/diphotons/Analysis/macros/
+
 # Run the fit
 ./combine_maker_MonoHgg.sh {INDIR} --lumi 35.9 --fit-name cic --mc-file Output_MC.root --fit-background --redo-input 1
 
