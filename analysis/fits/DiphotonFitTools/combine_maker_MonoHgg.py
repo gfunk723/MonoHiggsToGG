@@ -358,6 +358,9 @@ class CombineApp(TemplatesApp):
                         make_option("--do-energy-scale-uncertainty",dest="do_energy_scale_uncertainty",action="store_true",default=True,
                                     help="Add energy scale uncertainty",
                                     ),
+                        make_option("--do-energy-smear-uncertainty",dest="do_energy_smear_uncertainty",action="store_true",default=False,
+                                    help="Add energy smearing uncertainty",
+                                    ),
                         make_option("--no-energy-scale-uncertainty",dest="do_energy_scale_uncertainty",action="store_false",
                                     help="Add energy scale uncertainty",
                                     ),
@@ -711,7 +714,7 @@ class CombineApp(TemplatesApp):
         ## isNameProvided = False
         if (options.signal_name != None):
             signals = [options.signal_name]
-            fname_prefix = None
+            fname_prefix = options.signal_root_file.replace(".root","_") if options.signal_root_file else "" #None
         else:
             signals = options.signals.keys()
             fname_prefix = options.signal_root_file.replace(".root","_") if options.signal_root_file else ""
@@ -733,30 +736,32 @@ class CombineApp(TemplatesApp):
             ### if (not isNameProvided or (isNameProvided and options.signal_root_file == None)):
             ###     options.signal_root_file = signame+".root" 
 
-            if fname_prefix:
-                options.signal_root_file = "%s%s.root" % ( fname_prefix, signame )
-            elif not options.signal_root_file:
-                options.signal_root_file = signame+".root" 
+            #if fname_prefix:
+            #    options.signal_root_file = "%s%s.root" % ( fname_prefix, signame )
+            #elif not options.signal_root_file:
+            #    options.signal_root_file = signame+".root"
+            options.signal_root_file = signame+".root"
             if bkname_prefix:
                 bkgfile = "%s%s.root" % ( bkname_prefix, signame )
             else:
                 bkgfile = options.background_root_file
-                
+
             ### if(options.cardname != None):    
             ###     datacard = self.open(options.cardname,"w+")
             ### else:
             ###     datacard = self.open("dataCard_"+signame+".txt","w+")
 
+            #cardname = "dataCard_"+signame+".txt"
+            #if options.cardname:
+            #    if options.signal_name:
+            #        cardname = "dataCard_"+signame+".txt" #options.cardname
+            #    else:
+            #        cardname = "%s_%s.txt" % ( options.cardname.replace(".txt",""), signame )
             cardname = "dataCard_"+signame+".txt"
-            if options.cardname:
-                if options.signal_name:
-                    cardname = options.cardname
-                else:
-                    cardname = "%s_%s.txt" % ( options.cardname.replace(".txt",""), signame )
             datacard = self.open(cardname,"w+",folder=options.ws_dir)
 
             for gghname in ggh:
-               options.ggh_root_file = gghname+".root" 
+                options.ggh_root_file = gghname+".root" 
             for vbfname in vbf:
                 options.vbf_root_file = vbfname+".root" 
             for vhname in vh:
@@ -1256,14 +1261,14 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 
             # shape nuiances 
             shapeNuis = fit.get("shape_unc",{}).get(signame,{})
-            for nuis,nuisCats in shapeNuis.iteritems():
-                datacard.write(("%s shape" % nuis).ljust(20))
-                for cat in categories:
-                    if cat in nuisCats: datacard.write(nuisCats[cat].ljust(15) )
-                    else: datacard.write(" -".ljust(15) )
-                    for comp in options.components:
-                        datacard.write(" -".ljust(15) )
-                datacard.write("\n")
+            #for nuis,nuisCats in shapeNuis.iteritems():
+            #    datacard.write(("%s shape" % nuis).ljust(20))
+            #    for cat in categories:
+            #        if cat in nuisCats: datacard.write(nuisCats[cat].ljust(15) )
+            #        else: datacard.write(" -".ljust(15) )
+            #        for comp in options.components:
+            #            datacard.write(" -".ljust(15) )
+            #    datacard.write("\n")
                 
             # other nuisance parameters
             datacard.write("\n")
@@ -2290,7 +2295,13 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                         fractions[comp].setVal(nreduced.sumEntries()/ndata[cat])
                         ## fractions[comp].setConstant(True) # set constant by default
                 else:
-                    norm.setVal(nreduced.sumEntries()) 
+                    #norm.setVal(nreduced.sumEntries()) 
+                    norm.setConstant(True)
+                    lumi = float(options.luminosity)
+                    eff  = 1.
+                    br   = 2.
+                    xsec = 1.*br #fb
+                    norm.setVal(lumi*eff*xsec) 
                 
                 ## define groups of parameters and set them constant if requested
                 params = pdf.getDependents(self.pdfPars_)
@@ -2946,13 +2957,13 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
         isPrefix = False
         if (options.signal_name != None):
                 isNameProvided = True
-        
+       
         if (not isNameProvided and options.output_file != None):
             isPrefix = True
             prefix_output = options.output_file.replace(".root","")
             options.signal_root_file = options.output_file ## copy this in case we want to run --generate-datacard at the same time
             if not options.cardname:
-                options.cardname = "datacard_%s.txt" % prefix_output
+                options.cardname = "dataCard_%s.txt" % signame #prefix_output
         
         ## book roo observable
         ### roobs = self.buildRooVar(*(self.getVar(options.observable)), recycle=False, importToWs=True)
@@ -2991,13 +3002,13 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             self.bookNewWs()
 
             # In case nothing specified about the output file, set: output_file = signame.root
-            if ( options.output_file == None ):
-                options.output_file = "%s.root" % (signame)
+            #if ( options.output_file == None ):
+            options.output_file = "%s.root" % (signame)
 
             # In case we loop over all signals, we can give inside options.output_file the prefix
             # ... for all generated signal files (e.g. a common directory)
-            elif (isPrefix):
-                options.output_file = "%s_%s.root" % (prefix_output,signame)
+            #elif (isPrefix):
+            #    options.output_file = "%s_%s.root" % (prefix_output,signame)
             nameFileOutput = options.output_file
            
             sublist_fwhm = {}
@@ -3199,6 +3210,103 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                 ## import pdf and normalization
                 self.workspace_.rooImport(pdf,RooFit.RecycleConflictNodes())
                 self.workspace_.rooImport(norm)
+
+                if options.do_energy_smear_uncertainty:
+
+                    obsCatSmearUp = self.getObservableSmearUp(cat)
+                    obsCatSmearDown = self.getObservableSmearDown(cat)
+
+                    rooObsSmearUp = ROOT.RooArgSet(obsCatSmearUp) 
+                    rooObsSmearDown = ROOT.RooArgSet(obsCatSmearDown) 
+
+                    dsetSmearUp = dset.reduce(RooFit.SelectVars(rooObsSmearUp),RooFit.Range("fullRange"))
+                    dsetSmearUpPdf = dsetPdf.reduce(RooFit.SelectVars(rooObsSmearUp),RooFit.Range("fullRange"))
+
+                    dsetSmearDown = dset.reduce(RooFit.SelectVars(rooObsSmearDown),RooFit.Range("fullRange"))
+                    dsetSmearDownPdf = dsetPdf.reduce(RooFit.SelectVars(rooObsSmearDown),RooFit.Range("fullRange"))
+
+
+                    dsetSmearUpBinned= dsetSmearUp.binnedClone()
+                    dsetSmearDownBinned= dsetSmearDownPdf.binnedClone()
+                    dsetSmearUpPdfBinned= dsetSmearUp.binnedClone()
+                    dsetSmearDownPdfBinned= dsetSmearDownPdf.binnedClone()
+
+                    binnedpdfUp=ROOT.RooHistPdf("binnedpdfUp", "",ROOT.RooArgSet(rooObsSmearUp),dsetSmearUpPdfBinned)
+                    binnedpdfDown=ROOT.RooHistPdf("binnedpdfDown", "",ROOT.RooArgSet(rooObsSmearDown),dsetSmearDownPdfBinned)
+                    ecustomSmearUp = ROOT.RooCustomizer(binnedpdfUp,"")
+                    ecustomSmearDown = ROOT.RooCustomizer(binnedpdfDown,"")
+                    edsetSmearUpPdf = ecustomSmearUp.build(True)
+                    edsetSmearDownPdf = ecustomSmearDown.build(True)
+
+                    smearNuis = ROOT.RooRealVar("energySmear%s" % cat, "energySmear%s" % cat, 0., -5., 5. )
+                    nuisName = smearNuis.GetName()
+                    if not "shape_unc" in fit:
+                        fit["shape_unc"] = {}
+                    if not signame in fit["shape_unc"]:
+                        fit["shape_unc"][signame] = {}
+                    if not nuisName in fit["shape_unc"][signame]:
+                        fit["shape_unc"][signame][nuisName] = [cat]
+                    else:
+                        fit["shape_unc"][signame][nuisName].append(cat)
+                        
+
+                    dataHistSmearUp = edsetSmearUpPdf.generateBinned(ROOT.RooArgSet(rooObsSmearUp),1000.,True)
+                    dataHistSmearUp.SetName("%s_dataSet_energySmear%sUp" % (pdf.GetName(),cat) )
+                    pdfSmearUp = ROOT.RooHistPdf("%s_energySmear%sUp" % (pdf.GetName(),cat),"%s_energySmear%sUp" % (pdf.GetName(),cat),ROOT.RooArgSet(roobs),dataHistSmearUp)
+             
+
+                    dataHistSmearDown = edsetSmearDownPdf.generateBinned(ROOT.RooArgSet(rooObsSmearDown),1000.,True)
+                    dataHistSmearDown.SetName("%s_dataSet_energySmear%sDown" % (pdf.GetName(),cat) )
+                    pdfSmearDown = ROOT.RooHistPdf("%s_energySmear%sDown" % (pdf.GetName(),cat),"%s_energySmear%sDown" % (pdf.GetName(),cat),ROOT.RooArgSet(roobs),dataHistSmearDown)
+                    
+                    pdfSmearUp.Print()
+                    pdfSmearDown.Print()
+                    self.workspace_.rooImport(pdfSmearUp,RooFit.RecycleConflictNodes())
+                    self.workspace_.rooImport(pdfSmearDown,RooFit.RecycleConflictNodes())
+                    self.plotBkgFit(cat,False,options,reduced,pdfSmearUp,roobs,"signalSemarUp_%s_%s_%s" % (signame,roobs.GetName(),cat),poissonErrs=False,sig=True,hig=False,logx=False,logy=False,plot_binning=plot_signal_binning, forceSkipBands=True)
+                    
+                
+                if options.do_energy_scale_uncertainty:
+                    print "computing energy scale"
+                    one = RooFit.RooConst(1.)
+                    ecustom = ROOT.RooCustomizer(pdf,"")
+                    obsCat = self.getObservable(cat)
+                    obsCat.setVal(125)
+                    scaleNuis = ROOT.RooRealVar("energyScale%s" % cat, "energyScale%s" % cat, 0., -5., 5. )
+                    scaleNuis.setConstant(True)
+                    print "here1"
+                        ## fit["sig_params"][signame].append( (scaleNuis.GetName(),0.,options.energy_scale_uncertainties.get(cat,options.energy_scale_uncertainty)) )
+                    scaleShift =  ROOT.RooProduct("energyScaleShift%s" %cat, "energyScaleShift%s" %cat, ROOT.RooArgList(obsCat, scaleNuis))
+                    shiftObs = ROOT.RooLinearVar("shifted%s%s" % (obsCat.GetName(),cat), "shifted%s%s" % (obsCat.GetName(),cat), obsCat, one, scaleShift )
+                        ## shiftObs = ROOT.RooAddition("shifted%s%s" % (obsIn.GetName(),cat), "shifted%s%s" % (obsIn.GetName(),cat), ROOT.RooArgList(obsCat, scaleShift) )
+                    nuisName = scaleNuis.GetName()
+                    if not "shape_unc" in fit:
+                        fit["shape_unc"] = {}
+                    if not signame in fit["shape_unc"]:
+                        fit["shape_unc"][signame] = {}
+                    if not nuisName in fit["shape_unc"][signame]:
+                        fit["shape_unc"][signame][nuisName] = [cat]
+                    else:
+                        fit["shape_unc"][signame][nuisName].append(cat)
+                    print "here2"    
+                    ecustom.replaceArg(obsCat,shiftObs)
+                    epdf = ecustom.build(True)
+                    unc = options.energy_scale_uncertainties.get(cat,options.energy_scale_uncertainty)
+                    scaleNuis.setVal(unc)
+                    dataHistShiftUp = epdf.generateBinned(ROOT.RooArgSet(obsCat),1000.,True)
+                    dataHistShiftUp.SetName("%s_dataSet_energyScale%sUp" % (pdf.GetName(),cat) )
+                    pdfShiftUp = ROOT.RooHistPdf("%s_energyScale%sUp" % (pdf.GetName(),cat),"%s_energyScale%sUp" % (pdf.GetName(),cat),ROOT.RooArgSet(obsCat),
+                                                 dataHistShiftUp)
+                    
+                    scaleNuis.setVal(-unc)
+                    dataHistShiftDown = epdf.generateBinned(ROOT.RooArgSet(obsCat),1000.,True)
+                    dataHistShiftDown.SetName("%s_dataSet_energyScale%sDown" % (pdf.GetName(),cat) )
+                    pdfShiftDown = ROOT.RooHistPdf("%s_energyScale%sDown" % (pdf.GetName(),cat),"%s_energyScale%sDown" % (pdf.GetName(),cat),ROOT.RooArgSet(obsCat),
+                                                   dataHistShiftDown)
+                    pdfShiftUp.Print()
+                    pdfShiftDown.Print()
+                    self.workspace_.rooImport(pdfShiftUp,RooFit.RecycleConflictNodes())
+                    self.workspace_.rooImport(pdfShiftDown,RooFit.RecycleConflictNodes())
             
             list_fwhm[signame] = sublist_fwhm
             self.saveWs(options)

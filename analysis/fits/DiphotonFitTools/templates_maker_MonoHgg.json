@@ -50,16 +50,40 @@
 
      "#" : "mc dataset",
       "signals" : {
-               "sig_ZpBaryonic_mZP10_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10_mChi1_13TeV:__infile__/genmc" ]
+               "sig_ZpBaryonic_mZP10_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP20_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP20_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP50_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP50_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP100_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP100_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP200_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP200_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP300_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP300_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP500_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP500_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP1000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP1000_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP2000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP2000_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP10000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10000_mChi1_13TeV:__infile__/genmc" ]
       },
-
       "_signals" : { 
-               "sig_ZpBaryonic_mZP10_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10_mChi1_13TeV:__infile__/genmc" ]
-
+               "sig_ZpBaryonic_mZP10_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP20_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP20_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP50_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP50_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP100_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP100_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP200_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP200_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP300_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP300_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP500_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP500_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP1000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP1000_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP2000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP2000_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP10000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10000_mChi1_13TeV:__infile__/genmc" ]
       },
       "_signals" : { 
-               "sig_ZpBaryonic_mZP10_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10_mChi1_13TeV:__infile__/genmc" ]
-
+               "sig_ZpBaryonic_mZP10_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP20_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP20_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP50_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP50_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP100_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP100_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP200_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP200_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP300_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP300_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP500_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP500_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP1000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP1000_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP2000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP2000_mChi1_13TeV:__infile__/genmc" ],
+               "sig_ZpBaryonic_mZP10000_mChi1_13TeV" : [ "sig_ZpBaryonic_mZP10000_mChi1_13TeV:__infile__/genmc" ]
       },
       "#" : "mc dataset",
          "higgs" : {		
