@@ -20,9 +20,11 @@ def getEffBary(cat,mZp,mDM):
 def getEff2HDM(cat,mZp,mDM):
   eff = 1.0
   if cat==1: #highMET
-    eff = 1.0
+    if (mZp > 2500): mZp = 2500 # flatten efficiency after mZp=2500
+    eff=(0.0556*mZp-0.03818*mDM-1.67e-05*mZp*mZp+4.66e-06*mDM*mDM+1.59e-05*mZp*mDM+7.50587)
   if cat==0: #lowMET
-    eff = 1.0
+    eff=(-9.50e-04*mZp+5.52e-04*mDM+2.67e-07*mZp*mZp+1.44e-07*mDM*mDM-3.16e-07*mZp*mDM+0.810386)
+  if (eff < 0): eff = 0.001 # make sure no negative efficiencies
   return eff
 
 def makeCard(TYPE,mZp,mChi,DIR):
@@ -115,7 +117,7 @@ def makeCard(TYPE,mZp,mChi,DIR):
   #print("%f" %dat1.sumEntries())
 
   # Write to output file
-  out_TObjString.Write()
+  #out_TObjString.Write()
   w1.rooImport(var1)
   w1.rooImport(norm1)
   w1.rooImport(norm2)
@@ -150,7 +152,6 @@ if __name__ == "__main__":
     print("2HDM: Can't use mZp = 600 and mA = 300. That is the input! Can't be the output!")
     sys.exit()
     
-  
   print("Making datacard (%s) for mZp = %s , mChi = %s" %(TYPE, MZP, MCHI))
   makeCard(TYPE,MZP,MCHI,DIR)
   print("Finished")
