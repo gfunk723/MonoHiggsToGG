@@ -1,4 +1,4 @@
-pileupfile="/afs/cern.ch/user/m/mzientek/public/pileupWeights_moriond17_v1.rOOT"
+pileupfile="/afs/cern.ch/user/m/mzientek/public/pileupWeights_moriond17_v1.root"
 
 # -------------------------------------------------------------------------------
 
@@ -133,7 +133,6 @@ pileupfile="/afs/cern.ch/user/m/mzientek/public/pileupWeights_moriond17_v1.rOOT"
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-1000_13TeV		1 196 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-1_13TeV		1 197 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-50_13TeV		1 198 ${pileupFile} 0.002 1 
-./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-15_MChi-10_13TeV		1 199 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-1995_MChi-1000_13TeV	1 200 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-2000_MChi-1_13TeV		1 201 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-2000_MChi-500_13TeV	1 202 ${pileupFile} 0.002 1 
@@ -146,9 +145,11 @@ pileupfile="/afs/cern.ch/user/m/mzientek/public/pileupWeights_moriond17_v1.rOOT"
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-50_MChi-10_13TeV		1 209 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-50_MChi-1_13TeV		1 210 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-995_MChi-500_13TeV		1 211 ${pileupFile} 0.002 1 
+./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-15_MChi-10_13TeV		1 199 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-150_13TeV		1 212 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-10_MChi-500_13TeV		1 213 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-50_MChi-50_13TeV		1 214 ${pileupFile} 0.002 1 
+./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-95_MChi-50_13TeV		1 211 ${pileupFile} 0.002 1 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py ZpBaryonic_MZp-300_MChi-1_13TeV		1 215 ${pileupFile} 0.002 1 
 
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py Scalar_MZp-10000_MChi-1000_13TeV		1 252 ${pileupFile} 0.002 1
@@ -185,4 +186,5 @@ pileupfile="/afs/cern.ch/user/m/mzientek/public/pileupWeights_moriond17_v1.rOOT"
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py Scalar_MZp-95_MChi-50_13TeV     		1 283 ${pileupFile} 0.002 1
 ./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py Scalar_MZp-995_MChi-500_13TeV   		1 284 ${pileupFile} 0.002 1 
 
-
+./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py SMS-T2bH_mSbottom-500_mLSP-1   		1 285 ${pileupFile} 0.002 1 
+./submitBatchDiPho.py --cfg moriond17diPhoAnaBATCH.py SMS-T2bH_mSbottom-500_mLSP-50   		1 286 ${pileupFile} 0.002 1 

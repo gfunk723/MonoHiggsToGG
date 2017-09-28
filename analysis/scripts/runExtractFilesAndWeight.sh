@@ -43,6 +43,9 @@ python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/ZGTo2LG.json			-o ZGTo2
 python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/ZGTo2NuG.json			-o ZGTo2NuG			-d lists_25ns_v80X_v2
 python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/ZZTo2L2Q.json			-o ZZTo2L2Q			-d lists_25ns_v80X_v2
 
+python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/SMS-T2bH_mSbottom-500_mLSP-1.json	-o SMS-T2bH_mSbottom-500_mLSP-1         -d lists_25ns_v80X_v2
+python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/SMS-T2bH_mSbottom-500_mLSP-50.json	-o SMS-T2bH_mSbottom-500_mLSP-50        -d lists_25ns_v80X_v2
+
 python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/Scalar_MZp-10000_MChi-1000_13TeV.json	-o Scalar_MZp-10000_MChi-1000_13TeV	-d lists_25ns_v80X_v2
 python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/Scalar_MZp-10000_MChi-10_13TeV.json 	-o Scalar_MZp-10000_MChi-10_13TeV 	-d lists_25ns_v80X_v2
 python extractFilesAndWeight.py -i lists_25ns_v80X_v2/MC/Scalar_MZp-10000_MChi-150_13TeV.json 	-o Scalar_MZp-10000_MChi-150_13TeV 	-d lists_25ns_v80X_v2

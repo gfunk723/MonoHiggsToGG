@@ -43,6 +43,9 @@ python extractJSONS.py -i datasets/datasets_moriond17_bkg_v0.json		-o ZGTo2LG			
 python extractJSONS.py -i datasets/datasets_moriond17_bkg_v0.json		-o ZGTo2NuG				-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_bkg_v0.json		-o ZZTo2L2Q				-d lists_25ns_v80X_v2/MC
 
+python extractJSONS.py -i datasets/datasets_moriond17_susy_v0.json		-o SMS-T2bH_mSbottom-500_mLSP-1 	-d lists_25ns_v80X_v2/MC
+python extractJSONS.py -i datasets/datasets_moriond17_susy_v0.json		-o SMS-T2bH_mSbottom-500_mLSP-50 	-d lists_25ns_v80X_v2/MC
+
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm_v0.json		-o 2HDM_MZp-600_MA0-300			-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm_v0.json		-o 2HDM_MZp-800_MA0-300			-d lists_25ns_v80X_v2/MC
 python extractJSONS.py -i datasets/datasets_moriond17_add2hdm_v0.json		-o 2HDM_MZp-1000_MA0-300		-d lists_25ns_v80X_v2/MC
