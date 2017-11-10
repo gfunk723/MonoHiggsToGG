@@ -77,7 +77,7 @@ class CombineApp(TemplatesApp):
                         make_option("--run-ks-test",dest="run_ks_test",action="store_true",default=False,
                                     help="Run KS test on  background fit",
                                     ),                       
-                        make_option("--use-custom-pdfs",dest="use_custom_pdfs",action="store_true",default=True,
+                        make_option("--use-custom-pdfs",dest="use_custom_pdfs",action="store_true",default=False,
                                     help="Use custom pdfs from diphotons/Utils",
                                     ),                        
                         make_option("--no-use-custom-pdfs",dest="use_custom_pdfs",action="store_false",
@@ -364,7 +364,7 @@ class CombineApp(TemplatesApp):
                         make_option("--no-energy-scale-uncertainty",dest="do_energy_scale_uncertainty",action="store_false",
                                     help="Add energy scale uncertainty",
                                     ),
-                        make_option("--energy-scale-uncertainty",dest="energy_scale_uncertainty",action="store",default=1.e-2,type="float",
+                        make_option("--energy-scale-uncertainty",dest="energy_scale_uncertainty",action="store",default=1.0e-2,type="float",
                                     help="Add energy scale uncertainty",
                                     ),
                         make_option("--energy-scale-eigenvec",dest="energy_scale_eigenvec",action="callback",callback=optpars_utils.Load(scratch=True),
@@ -518,7 +518,7 @@ class CombineApp(TemplatesApp):
                                     help="Not running on real data",
                                     ),
                         make_option("--signal-scalefactor-forpdf",dest="signal_scalefactor_forpdf",action="store",type="string",
-                                    default="100",
+                                    default="1",
                                     help="Specify luminosity for generating data, background and signal workspaces",
                                     ),
                         make_option("--higgs-scalefactor-forpdf",dest="higgs_scalefactor_forpdf",action="store",type="string",
@@ -769,6 +769,16 @@ class CombineApp(TemplatesApp):
             for tthname in tth:
                 options.tth_root_file = tthname+".root"
  
+            gghfile = ROOT.TFile.Open("%s/%s" % (options.ws_dir,options.ggh_root_file),"read")
+            vbffile = ROOT.TFile.Open("%s/%s" % (options.ws_dir,options.vbf_root_file),"read")
+            tthfile = ROOT.TFile.Open("%s/%s" % (options.ws_dir,options.tth_root_file),"read")
+            vhfile  = ROOT.TFile.Open("%s/%s" % (options.ws_dir,options.vh_root_file),"read")
+            
+            gghws   = gghfile.Get("wtemplates")
+            vbfws   = vbffile.Get("wtemplates")
+            tthws   = tthfile.Get("wtemplates")
+            vhws    = vhfile.Get("wtemplates")
+ 
             print 
             print "signal        : %s" % signame
             print "ggh           : %s" % gghname
@@ -794,6 +804,11 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 ----------------------------------------------------------------------------------------------------------------------------------\n""" % signame)
                         
             hasShapeUnc = len(fit.get("shape_unc",{}).get(signame,{}).keys())>0
+
+            do_ggh  = {}
+            do_vbf  = {}
+            do_tth  = {}
+            do_vh   = {}
             
             for cat in categories:
 		if not cat=="allMetLow":
@@ -807,59 +822,82 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     if hasShapeUnc: datacard.write(" wtemplates:model_signal_%s_%s_$SYSTEMATIC"% (signame,cat))
                 datacard.write("\n")
 
+                dsetggh = gghws.data("higgs_%s_%s"%(gghname,cat))
+                dsetvbf = vbfws.data("higgs_%s_%s"%(vbfname,cat))
+                dsettth = tthws.data("higgs_%s_%s"%(tthname,cat))
+                dsetvh  = vhws.data("higgs_%s_%s"%(vhname,cat))
+
+                nggh    = dsetggh.sumEntries()
+                nvbf    = dsetvbf.sumEntries()
+                ntth    = dsettth.sumEntries()
+                nvh     = dsetvh.sumEntries()
+
+                do_ggh[cat] = False 
+                do_vbf[cat] = False 
+                do_tth[cat] = False 
+                do_vh[cat]  = False  
+                if (nggh > 0): do_ggh[cat] = True
+                if (nvbf > 0): do_vbf[cat] = True
+                if (ntth > 0): do_tth[cat] = True
+                if (nvh  > 0): do_vh[cat]  = True
+
                 if options.generate_higgs_dataset:
-                    datacard.write("shapes ggh".ljust(20))
-                    datacard.write((" %s  %s" % (cat,options.ggh_root_file)).ljust(50))
-                    if options.use_higgs_datahist:
-                        datacard.write(" wtemplates:higgs_%s_%s"% (gghname,cat))
-                        if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (gghname,cat))       
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (gghname,cat))                 
-                    else:
-                        datacard.write(" wtemplates:model_higgs_%s_%s"% (gghname,cat))
-#                        datacard.write(" wtemplates:higgsforPdf_%s_%s"% (gghname,cat))
+                    if (do_ggh[cat]):
+                        datacard.write("shapes ggh".ljust(20))
+                        datacard.write((" %s  %s" % (cat,options.ggh_root_file)).ljust(50))
+                        if options.use_higgs_datahist:
+                            datacard.write(" wtemplates:higgs_%s_%s"% (gghname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (gghname,cat))       
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (gghname,cat))                 
+                        else:
+                            datacard.write(" wtemplates:model_higgs_%s_%s"% (gghname,cat))
+                            #datacard.write(" wtemplates:higgsforPdf_%s_%s"% (gghname,cat))
 
-                        if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (gghname,cat))
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (gghname,cat))
-                    datacard.write("\n")
-                            
-                    datacard.write("shapes vbf".ljust(20))
-                    datacard.write((" %s  %s" % (cat,options.vbf_root_file)).ljust(50))
-                    if options.use_higgs_datahist:
-                        datacard.write(" wtemplates:higgs_%s_%s"% (vbfname,cat))
-                        if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (vbfname,cat))                        
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vbfname,cat))                        
-                    else:
-                        datacard.write(" wtemplates:model_higgs_%s_%s"% (vbfname,cat))
- #                       datacard.write(" wtemplates:higgsforPdf_%s_%s"% (vbfname,cat))
-                        if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (vbfname,cat))
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vbfname,cat))
-                    datacard.write("\n")
+                            if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (gghname,cat))
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (gghname,cat))
+                        datacard.write("\n")
+                           
+                    if (do_vbf[cat]): 
+                        datacard.write("shapes vbf".ljust(20))
+                        datacard.write((" %s  %s" % (cat,options.vbf_root_file)).ljust(50))
+                        if options.use_higgs_datahist:
+                            datacard.write(" wtemplates:higgs_%s_%s"% (vbfname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (vbfname,cat))                        
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vbfname,cat))                        
+                        else:
+                            datacard.write(" wtemplates:model_higgs_%s_%s"% (vbfname,cat))
+                            #datacard.write(" wtemplates:higgsforPdf_%s_%s"% (vbfname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (vbfname,cat))
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vbfname,cat))
+                        datacard.write("\n")
 
-                    datacard.write("shapes vh".ljust(20))
-                    datacard.write((" %s  %s" % (cat,options.vh_root_file)).ljust(50))
-                    if options.use_higgs_datahist:
-                        datacard.write(" wtemplates:higgs_%s_%s"% (vhname,cat))
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (vhname,cat))      
-                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vhname,cat))                  
-                    else:
-                        datacard.write(" wtemplates:model_higgs_%s_%s"% (vhname,cat))
-#                        datacard.write(" wtemplates:higgsforPdf_%s_%s"% (vhname,cat))
-                        if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (vhname,cat))
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vhname,cat))
-                    datacard.write("\n")
+                    if (do_vh[cat]):
+                        datacard.write("shapes vh".ljust(20))
+                        datacard.write((" %s  %s" % (cat,options.vh_root_file)).ljust(50))
+                        if options.use_higgs_datahist:
+                            datacard.write(" wtemplates:higgs_%s_%s"% (vhname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (vhname,cat))      
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vhname,cat))                  
+                        else:
+                            datacard.write(" wtemplates:model_higgs_%s_%s"% (vhname,cat))
+                            #datacard.write(" wtemplates:higgsforPdf_%s_%s"% (vhname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (vhname,cat))
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (vhname,cat))
+                        datacard.write("\n")
 
-                    datacard.write("shapes tth".ljust(20))
-                    datacard.write((" %s  %s" % (cat,options.tth_root_file)).ljust(50))
-                    if options.use_higgs_datahist:
-                        datacard.write(" wtemplates:higgs_%s_%s"% (tthname,cat))
-                        if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (tthname,cat))      
-#                        if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (tthname,cat))
-                    else:
-                        datacard.write(" wtemplates:model_higgs_%s_%s"% (tthname,cat))
-#                        datacard.write(" wtemplates:higgsforPdf_%s_%s"% (tthname,cat))
-                        if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (tthname,cat))
-           #             if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (tthname,cat))
-                    datacard.write("\n")
+                    if (do_tth[cat]):
+                        datacard.write("shapes tth".ljust(20))
+                        datacard.write((" %s  %s" % (cat,options.tth_root_file)).ljust(50))
+                        if options.use_higgs_datahist:
+                            datacard.write(" wtemplates:higgs_%s_%s"% (tthname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:higgs_%s_%s_$SYSTEMATIC"% (tthname,cat))      
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (tthname,cat))
+                        else:
+                            datacard.write(" wtemplates:model_higgs_%s_%s"% (tthname,cat))
+                            #datacard.write(" wtemplates:higgsforPdf_%s_%s"% (tthname,cat))
+                            if hasShapeUnc: datacard.write(" wtemplates:model_higgs_%s_%s_$SYSTEMATIC"% (tthname,cat))
+                            #if hasShapeUnc: datacard.write(" wtemplates:higgsforPdf_%s_%s_$SYSTEMATIC"% (tthname,cat))
+                        datacard.write("\n")
 
                 for comp in options.components:
                     datacard.write(("shapes %s" % comp).ljust(20))
@@ -904,10 +942,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
               if not cat=="allMetLow":
                 datacard.write((" %s" % cat).ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write((" %s" % cat).ljust(15) )      
-                    datacard.write((" %s" % cat).ljust(15) )      
-                    datacard.write((" %s" % cat).ljust(15) )      
-                    datacard.write((" %s" % cat).ljust(15) )      
+                    if (do_ggh[cat]) : datacard.write((" %s" % cat).ljust(15) )      
+                    if (do_vbf[cat]) : datacard.write((" %s" % cat).ljust(15) )      
+                    if (do_vh[cat])  : datacard.write((" %s" % cat).ljust(15) )      
+                    if (do_tth[cat]) : datacard.write((" %s" % cat).ljust(15) )      
                 for comp in options.components:
                     datacard.write((" %s" % cat).ljust(15) )
             for cat in sidebands:                
@@ -921,10 +959,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
               if not cat=="allMetLow":
                 datacard.write(" sig".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" ggh".ljust(15) )
-                    datacard.write(" vbf".ljust(15) )
-                    datacard.write(" vh".ljust(15) )
-                    datacard.write(" tth".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" ggh".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" vbf".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" vh".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" tth".ljust(15) )
                 for comp in options.components:
                     datacard.write((" %s" % comp).ljust(15) )
             for cat in sidebands:                
@@ -948,10 +986,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                         icomp[comp] = i 
                     datacard.write((" %d" % j).ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" 2".ljust(15) )    
-                    datacard.write(" 3".ljust(15) )    
-                    datacard.write(" 4".ljust(15) )    
-                    datacard.write(" 5".ljust(15) )    
+                    if (do_ggh[cat]) : datacard.write(" 2".ljust(15) )    
+                    if (do_vbf[cat]) : datacard.write(" 3".ljust(15) )    
+                    if (do_vh[cat])  : datacard.write(" 4".ljust(15) )    
+                    if (do_tth[cat]) : datacard.write(" 5".ljust(15) )    
             for cat in sidebands:                
                 for comp in  fit["sidebands"][cat]:
                     if comp in icomp:
@@ -971,15 +1009,15 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                 else:
                     datacard.write((" %s" % options.datacard_sig_rate).ljust(15))
                 if options.use_higgs_datahist and options.generate_higgs_dataset:
-                    datacard.write(" -1".ljust(15) ) 
-                    datacard.write(" -1".ljust(15) )
-                    datacard.write(" -1".ljust(15) )
-                    datacard.write(" -1".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" -1".ljust(15) ) 
+                    if (do_vbf[cat]) : datacard.write(" -1".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" -1".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" -1".ljust(15) )
                 elif options.generate_higgs_dataset:
-                    datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
-                    datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
-                    datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
-                    datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
+                    if (do_ggh[cat]) : datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
+                    if (do_vbf[cat]) : datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
+                    if (do_vh[cat])  : datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
+                    if (do_tth[cat]) : datacard.write((" %s" % options.datacard_hig_rate).ljust(15))
                 for comp in options.components:
                     datacard.write((" %s" % options.datacard_bkg_rate).ljust(15))
             for cat in sidebands:                
@@ -995,10 +1033,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
               if not cat=="allMetLow": 
                 datacard.write(" 1.023".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" 1.023".ljust(15) )         
-                    datacard.write(" 1.023".ljust(15) )         
-                    datacard.write(" 1.023".ljust(15) )         
-                    datacard.write(" 1.023".ljust(15) )         
+                    if (do_ggh[cat]) : datacard.write(" 1.023".ljust(15) )         
+                    if (do_vbf[cat]) : datacard.write(" 1.023".ljust(15) )         
+                    if (do_vh[cat])  : datacard.write(" 1.023".ljust(15) )         
+                    if (do_tth[cat]) : datacard.write(" 1.023".ljust(15) )         
                 for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")        
@@ -1008,10 +1046,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow": 
                 datacard.write(" 1.03".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" 1.03".ljust(15) )        
-                    datacard.write(" 1.03".ljust(15) )        
-                    datacard.write(" 1.03".ljust(15) )        
-                    datacard.write(" 1.03".ljust(15) )        
+                    if (do_ggh[cat]) : datacard.write(" 1.03".ljust(15) )        
+                    if (do_vbf[cat]) : datacard.write(" 1.03".ljust(15) )        
+                    if (do_vh[cat])  : datacard.write(" 1.03".ljust(15) )        
+                    if (do_tth[cat]) : datacard.write(" 1.03".ljust(15) )        
                 for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")     
@@ -1021,10 +1059,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow": 
                 datacard.write(" 0.9828/1.0173".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" 0.9828/1.0173".ljust(15) )
-                    datacard.write(" 0.9828/1.0173".ljust(15) )
-                    datacard.write(" 0.9828/1.0173".ljust(15) )
-                    datacard.write(" 0.9828/1.0173".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" 0.9828/1.0173".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" 0.9828/1.0173".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" 0.9828/1.0173".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" 0.9828/1.0173".ljust(15) )
                 for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")     
@@ -1034,10 +1072,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow": 
                 datacard.write(" 0.9901/1.0093".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" 0.9901/1.0093".ljust(15) )
-                    datacard.write(" 0.9901/1.0093".ljust(15) )
-                    datacard.write(" 0.9901/1.0093".ljust(15) )
-                    datacard.write(" 0.9901/1.0093".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" 0.9901/1.0093".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" 0.9901/1.0093".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" 0.9901/1.0093".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" 0.9901/1.0093".ljust(15) )
                 for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")     
@@ -1047,10 +1085,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow":
                  datacard.write(" -".ljust(15) )             # taken from Hgg, untagged2, ggH
                  if options.generate_higgs_dataset:
-                     datacard.write(" 0.8/1.2".ljust(15) )             # taken from Hgg, untagged2                                                                       
-                     datacard.write("0.979/1.021".ljust(15) )             # taken from Hgg, untagged2                                                                        
-                     datacard.write("0.975/1.025".ljust(15) )             # taken from Hgg, untagged2                                                                         
-                     datacard.write("0.964/1.036".ljust(15) )             # taken from Hgg, untagged2                                                                        
+                     if (do_ggh[cat]) : datacard.write(" 0.8/1.2".ljust(15) )     # taken from Hgg, untagged2   
+                     if (do_vbf[cat]) : datacard.write(" 0.979/1.021".ljust(15) )  # taken from Hgg, untagged2
+                     if (do_vh[cat])  : datacard.write(" 0.975/1.025".ljust(15) )  # taken from Hgg, untagged2
+                     if (do_tth[cat]) : datacard.write(" 0.964/1.036".ljust(15) )  # taken from Hgg, untagged2
                  for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")       
@@ -1060,10 +1098,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
   #             if not cat=="allMetLow" and not cat== "met130": 
   #              datacard.write(" -".ljust(15) )    
   #              if options.generate_higgs_dataset:
-  #                  datacard.write(" 0.968/1.032".ljust(15) )
-  #                  datacard.write(" 0.979/1.021".ljust(15) )
-  #                  datacard.write(" 0.975/1.025".ljust(15) )
-  #                  datacard.write(" 0.964/1.036".ljust(15) )
+  #                  if (do_ggh[cat]) : datacard.write(" 0.968/1.032".ljust(15) )
+  #                  if (do_vbf[cat]) : datacard.write(" 0.979/1.021".ljust(15) )
+  #                  if (do_vh[cat])  : datacard.write(" 0.975/1.025".ljust(15) )
+  #                  if (do_tth[cat]) : datacard.write(" 0.964/1.036".ljust(15) )
   #              for comp in options.components:
   #                  datacard.write(" -".ljust(15) )
   #          datacard.write("\n")
@@ -1073,17 +1111,17 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="met130": 
                 datacard.write(" 0.9925/1.0094".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" 0.9891/1.0181".ljust(15) )
-                    datacard.write(" 0.9891/1.0181".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" 0.9891/1.0181".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" 0.9891/1.0181".ljust(15) )
                if cat=="met130": 
                 datacard.write(" 0.9881/1.0098".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" 0.9983/1.0027".ljust(15) )
-                    datacard.write(" 0.9983/1.0027".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" 0.9983/1.0027".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" 0.9983/1.0027".ljust(15) )
                for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")
@@ -1093,10 +1131,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 #               if not cat=="allMetLow": 
 #                datacard.write(" 1.005".ljust(15) )
 #                if options.generate_higgs_dataset:
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
+#                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vh[cat])  : datacard.write(" 1.005".ljust(15) )
+#                    if (do_tth[cat]) : datacard.write(" 1.005".ljust(15) )
 #                for comp in options.components:
 #                    datacard.write(" -".ljust(15) )
 #            datacard.write("\n")
@@ -1106,10 +1144,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 #               if not cat=="allMetLow": 
 #                datacard.write(" 1.005".ljust(15) )
 #                if options.generate_higgs_dataset:
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
+#                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vh[cat])  : datacard.write(" 1.005".ljust(15) )
+#                    if (do_tth[cat]) : datacard.write(" 1.005".ljust(15) )
 #                for comp in options.components:
 #                    datacard.write(" -".ljust(15) )
 #            datacard.write("\n")
@@ -1119,10 +1157,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 #               if not cat=="allMetLow": 
 #                datacard.write(" 1.005".ljust(15) )
 #                if options.generate_higgs_dataset:
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
+#                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vh[cat])  : datacard.write(" 1.005".ljust(15) )
+#                    if (do_tth[cat]) : datacard.write(" 1.005".ljust(15) )
 #                for comp in options.components:
 #                    datacard.write(" -".ljust(15) )
 #            datacard.write("\n")
@@ -1132,10 +1170,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 #               if not cat=="allMetLow": 
 #                datacard.write(" 1.005".ljust(15) )
 #                if options.generate_higgs_dataset:
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
+#                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vh[cat])  : datacard.write(" 1.005".ljust(15) )
+#                    if (do_tth[cat]) : datacard.write(" 1.005".ljust(15) )
 #                for comp in options.components:
 #                    datacard.write(" -".ljust(15) )
 #            datacard.write("\n")
@@ -1145,10 +1183,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
 #               if not cat=="allMetLow": 
 #                datacard.write(" 1.005".ljust(15) )
 #                if options.generate_higgs_dataset:
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" -".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
-#                    datacard.write(" 1.005".ljust(15) )
+#                    if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+#                    if (do_vh[cat])  : datacard.write(" 1.005".ljust(15) )
+#                    if (do_tth[cat]) : datacard.write(" 1.005".ljust(15) )
 #                for comp in options.components:
 #                    datacard.write(" -".ljust(15) )
 #            datacard.write("\n")
@@ -1158,10 +1196,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow": 
                 datacard.write(" -".ljust(15) )
                 if options.generate_higgs_dataset:
-                    datacard.write(" 0.5/1.5".ljust(15) )
-                    datacard.write(" 0.5/1.5".ljust(15) )
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" -".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" 0.5/1.5".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" 0.5/1.5".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" -".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" -".ljust(15) )
                 for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")
@@ -1171,10 +1209,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow": 
                 datacard.write(" -".ljust(15) )
                if options.generate_higgs_dataset:
-                    datacard.write(" 0.96/1.04".ljust(15) )
-                    datacard.write(" 0.96/1.04".ljust(15) )
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" -".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" 0.96/1.04".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" 0.96/1.04".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" -".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" -".ljust(15) )
                for comp in options.components:
                     datacard.write(" -".ljust(15) )
             datacard.write("\n")
@@ -1184,10 +1222,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                if not cat=="allMetLow": 
                 datacard.write(" -".ljust(15) )
                if options.generate_higgs_dataset:
-                    datacard.write(" 0.99/1.01".ljust(15) )
-                    datacard.write(" 0.99/1.01".ljust(15) )
-                    datacard.write(" -".ljust(15) )
-                    datacard.write(" -".ljust(15) )
+                    if (do_ggh[cat]) : datacard.write(" 0.99/1.01".ljust(15) )
+                    if (do_vbf[cat]) : datacard.write(" 0.99/1.01".ljust(15) )
+                    if (do_vh[cat])  : datacard.write(" -".ljust(15) )
+                    if (do_tth[cat]) : datacard.write(" -".ljust(15) )
                for comp in options.components:
                     datacard.write(" -".ljust(15) )
 
@@ -1205,12 +1243,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                        if not cat in nuisCats:
                           datacard.write(" -".ljust(15) )
                           if options.generate_higgs_dataset:
-                              datacard.write(" -".ljust(15) )
-                              datacard.write(" -".ljust(15) )
-
-
-                              datacard.write(" -".ljust(15) )
-                              datacard.write(" -".ljust(15) )
+                              if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+                              if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+                              if (do_vh[cat])  : datacard.write(" -".ljust(15) )
+                              if (do_tth[cat]) : datacard.write(" -".ljust(15) )
                           for comp in options.components:
                               datacard.write(" -".ljust(15) )
                           
@@ -1218,18 +1254,19 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                           datacard.write(" 1".ljust(15) )
                     #else: datacard.write(" -".ljust(15) )
                           if options.generate_higgs_dataset:
-                              datacard.write(" 1".ljust(15) )
-                              datacard.write(" 1".ljust(15) )
-                              datacard.write(" 1".ljust(15) )
-                              datacard.write(" 1".ljust(15) )
+                              if (do_ggh[cat]) : datacard.write(" 1".ljust(15) )
+                              if (do_vbf[cat]) : datacard.write(" 1".ljust(15) )
+                              if (do_vh[cat])  : datacard.write(" 1".ljust(15) )
+                              if (do_tth[cat]) : datacard.write(" 1".ljust(15) )
                           for comp in options.components:
                               datacard.write(" -".ljust(15) )
                        #if not cat in nuisCats:
                        #   datacard.write(" -".ljust(15) )
                        #   if options.generate_higgs_dataset:
-                       #       datacard.write(" -".ljust(15) )
-                       #       datacard.write(" -".ljust(15) )
-                       #       datacard.write(" -".ljust(15) )
+                       #       if (do_ggh[cat]) : datacard.write(" -".ljust(15) )
+                       #       if (do_vbf[cat]) : datacard.write(" -".ljust(15) )
+                       #       if (do_vh[cat])  : datacard.write(" -".ljust(15) )
+                       #       if (do_tth[cat]) : datacard.write(" -".ljust(15) )
                        #   for comp in options.components:
                        #       datacard.write(" -".ljust(15) )
                           
@@ -1345,6 +1382,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                 if options.plot_blind != None and len(options.plot_blind) == 0:
                     options.plot_blind = None
 
+                print("plotBkgFit called HERE 1")
                 self.plotBkgFit(options,data,model,roobs,"%s%s" % (comp,cat),poissonErrs=True, plot_binning=options.cat_plot_binning.get(cat,options.plot_binning),
                                 blabel=bias_name, signalmodel=signal, signalmodel_norm=(model_norm,signal_norm), blind=options.plot_blind)
 
@@ -1967,9 +2005,11 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             ndata[cat] = reduced.sumEntries()
             rooNdata[cat] = self.buildRooVar("%s_norm" % cat,[],recycle=False,importToWs=False)
             rooNdata[cat].setVal(ndata[cat])
-            
+
             self.workspace_.rooImport(reduced)
-            
+           
+            print("workspace------------ NORM  = %i" %reduced.sumEntries())
+
             binned = reduced.binnedClone("binned_data_%s" % cat)
             self.workspace_.rooImport(binned)
 
@@ -2258,6 +2298,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     
                     plbinned = ROOT.RooDataHist("%s_binned_tmp" % plreduced.GetName(), "%s_binned_tmp" % plreduced.GetName(), ROOT.RooArgSet(roobs,rootempl),"templateBinning%s"%cat )
                     plbinned.add(plreduced)
+                    print("plotBkgFit called HERE 2")
                     self.plotBkgFit(options,plbinned,templpdf,rootempl,"template_proj_%s%s" % (comp,cat),poissonErrs=True,logy=False,logx=False,
                                     plot_binning=list(unrol_binning),
                                     opts=[RooFit.ProjWData(ROOT.RooArgSet(roobs),plbinned)], bias_funcs={}, forceSkipBands=True )
@@ -2278,8 +2319,9 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                 if options.plot_blind != None and len(options.plot_blind) == 0:
                     options.plot_blind = None
                     
+                print("plotBkgFit called HERE 3")
                 self.plotBkgFit(cat,options,plreduced,pdf,roobs,"%s%s" % (comp,cat),poissonErrs=True, plot_binning=options.cat_plot_binning.get(cat,options.plot_binning),blabel=bias_name,signalmodel=signal,signalmodel_norm=signal_norm,blind=options.plot_blind)
-                ## self.plotBkgFit(options,plreduced,pdf,roobs,"%s%s_lin" % (comp,cat),poissonErrs=True, plot_binning=options.cat_plot_binning.get(cat,options.plot_binning),logy=False,blabel=bias_name,signalmodel=signal,signalmodel_norm=signal_norm,blind=options.plot_blind)
+                ## self.plotBkgFit(cat,False,options,plreduced,pdf,roobs,"%s%s_lin" % (comp,cat),poissonErrs=True, plot_binning=options.cat_plot_binning.get(cat,options.plot_binning),logy=False,blabel=bias_name,signalmodel=signal,signalmodel_norm=signal_norm,blind=options.plot_blind)
                 
                 ## normalization has to be called <pdfname>_norm or combine won't find it
                 if options.norm_as_fractions:
@@ -2295,13 +2337,13 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                         fractions[comp].setVal(nreduced.sumEntries()/ndata[cat])
                         ## fractions[comp].setConstant(True) # set constant by default
                 else:
-                    #norm.setVal(nreduced.sumEntries()) 
-                    norm.setConstant(True)
-                    lumi = float(options.luminosity)
-                    eff  = 1.
-                    br   = 2.
-                    xsec = 1.*br #fb
-                    norm.setVal(lumi*eff*xsec) 
+                    norm.setVal(nreduced.sumEntries()) 
+                    #norm.setConstant(True)
+                    #lumi = float(options.luminosity)
+                    #eff  = 1.
+                    #br   = 2.
+                    #xsec = 1.*br #fb
+                    #norm.setVal(lumi*eff*xsec) 
                 
                 ## define groups of parameters and set them constant if requested
                 params = pdf.getDependents(self.pdfPars_)
@@ -2471,7 +2513,8 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             ndata[cat] = reduced.sumEntries()
             rooNdata[cat] = self.buildRooVar("%s_norm" % cat,[],recycle=False,importToWs=False)
             rooNdata[cat].setVal(ndata[cat])
-            
+           
+            print("plotting------------ NORM  = %i" %reduced.sumEntries())
             self.workspace_.rooImport(reduced)
             
             binned = reduced.binnedClone("binned_data_%s" % cat)
@@ -2762,10 +2805,12 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     
                     plbinned = ROOT.RooDataHist("%s_binned_tmp" % plreduced.GetName(), "%s_binned_tmp" % plreduced.GetName(), ROOT.RooArgSet(roobs,rootempl),"templateBinning%s"%cat )
                     plbinned.add(plreduced)
+                    print("plotBkgFit called HERE 4")
                     self.plotBkgFit(cat,options,plbinned,templpdf,rootempl,"template_proj_%s%s" % (comp,cat),poissonErrs=True,logy=False,logx=False,
                                     plot_binning=list(unrol_binning),
                                     opts=[RooFit.ProjWData(ROOT.RooArgSet(roobs),plbinned)], bias_funcs={}, plotHiggs=True,forceSkipBands=True)
                     
+                    print("plotBkgFit called HERE 5")
                     self.plotBkgFit(cat,options,plbinned,pdf,rootempl,"template_cond_%s%s" % (comp,cat),poissonErrs=True,logy=False,logx=False,
                                     plot_binning=list(unrol_binning), bias_funcs={},plotHiggs=True)
                     
@@ -2774,7 +2819,9 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     bias_name = "%s_%s_%d_%d" % (cat,model,int(roobs.getMin()),int(roobs.getMax()))
                 else:
                     bias_name = None
+                print("plotBkgFit called HERE 6")
                 self.plotBkgFit(cat,options,plreduced,pdf,roobs,"%s%s" % (comp,cat),blabel=bias_name,poissonErrs=True, plot_binning=options.cat_plot_binning.get(cat,options.plot_binning),plotHiggs=True)
+                print("plotBkgFit called HERE 7")
                 self.plotBkgFit(cat,options,plreduced,pdf,roobs,"%s%s_lin" % (comp,cat),blabel=bias_name,poissonErrs=True, plot_binning=options.cat_plot_binning.get(cat,options.plot_binning),logy=False,plotHiggs=True)
                 
     ## ------------------------------------------------------------------------------------------------------------
@@ -3193,8 +3240,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                 if options.use_templates:
                     pdf = self.addTemplateToSignal(pdf,signame,cat,roobs,rootempl)
 
+                    print("plotBkgFit called HERE 8")
                     self.plotBkgFit(cat,options,binned,pdf,rootempl,"signal_%s_%s_%s" % (signame,rootempl.GetName(),cat),poissonErrs=False,logy=False,logx=False,plot_binning=rootempl_binning,opts=[RooFit.ProjWData(ROOT.RooArgSet(roobs),binned)], bias_funcs={},sig=True, forceSkipBands=True)
                 
+                print("plotBkgFit called HERE 9")
                 self.plotBkgFit(cat,options,reduced,pdf,roobs,"signal_%s_%s_%s" % (signame,roobs.GetName(),cat),poissonErrs=False,sig=True,logx=False,logy=False,
                                 plot_binning=plot_signal_binnning, forceSkipBands=True)
 
@@ -3263,6 +3312,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     pdfSmearDown.Print()
                     self.workspace_.rooImport(pdfSmearUp,RooFit.RecycleConflictNodes())
                     self.workspace_.rooImport(pdfSmearDown,RooFit.RecycleConflictNodes())
+                    print("plotBkgFit called HERE 10")
                     self.plotBkgFit(cat,False,options,reduced,pdfSmearUp,roobs,"signalSemarUp_%s_%s_%s" % (signame,roobs.GetName(),cat),poissonErrs=False,sig=True,hig=False,logx=False,logy=False,plot_binning=plot_signal_binning, forceSkipBands=True)
                     
                 
@@ -3274,11 +3324,10 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     obsCat.setVal(125)
                     scaleNuis = ROOT.RooRealVar("energyScale%s" % cat, "energyScale%s" % cat, 0., -5., 5. )
                     scaleNuis.setConstant(True)
-                    print "here1"
-                        ## fit["sig_params"][signame].append( (scaleNuis.GetName(),0.,options.energy_scale_uncertainties.get(cat,options.energy_scale_uncertainty)) )
+                    ## fit["sig_params"][signame].append( (scaleNuis.GetName(),0.,options.energy_scale_uncertainties.get(cat,options.energy_scale_uncertainty)) )
                     scaleShift =  ROOT.RooProduct("energyScaleShift%s" %cat, "energyScaleShift%s" %cat, ROOT.RooArgList(obsCat, scaleNuis))
                     shiftObs = ROOT.RooLinearVar("shifted%s%s" % (obsCat.GetName(),cat), "shifted%s%s" % (obsCat.GetName(),cat), obsCat, one, scaleShift )
-                        ## shiftObs = ROOT.RooAddition("shifted%s%s" % (obsIn.GetName(),cat), "shifted%s%s" % (obsIn.GetName(),cat), ROOT.RooArgList(obsCat, scaleShift) )
+                    ## shiftObs = ROOT.RooAddition("shifted%s%s" % (obsIn.GetName(),cat), "shifted%s%s" % (obsIn.GetName(),cat), ROOT.RooArgList(obsCat, scaleShift) )
                     nuisName = scaleNuis.GetName()
                     if not "shape_unc" in fit:
                         fit["shape_unc"] = {}
@@ -3288,7 +3337,6 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                         fit["shape_unc"][signame][nuisName] = [cat]
                     else:
                         fit["shape_unc"][signame][nuisName].append(cat)
-                    print "here2"    
                     ecustom.replaceArg(obsCat,shiftObs)
                     epdf = ecustom.build(True)
                     unc = options.energy_scale_uncertainties.get(cat,options.energy_scale_uncertainty)
@@ -3955,6 +4003,12 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                         scaleShift =  ROOT.RooProduct("energyScaleShift%s" %cat, "energyScaleShift%s" %cat, ROOT.RooArgList(MH, scaleNuis))
                         shiftObs = ROOT.RooLinearVar("shifted%s%s" % (obsIn.GetName(),cat), "shifted%s%s" % (obsIn.GetName(),cat), obsCat, one, scaleShift )
 
+                        nuisName = scaleNuis.GetName()
+                        if not nuisName in fit["shape_unc"][signame]:
+                            fit["shape_unc"][signame][nuisName] = [cat]
+                        else:
+                            fit["shape_unc"][signame][nuisName].append(cat)
+
                         ecustom.replaceArg(obsCat,shiftObs)
                         epdf = ecustom.build(True)
                         unc = options.energy_scale_uncertainties.get(cat,options.energy_scale_uncertainty)
@@ -3962,40 +4016,49 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                         scaleNuis.setVal(unc)
                         dataHistShiftUp = epdf.generateBinned(ROOT.RooArgSet(obsCat),1000.,True)
                         dataHistShiftUp.SetName("%s_dataSet_energyScale%sUp" % (pdf.GetName(),cat) )
+                        pdfShiftUp = ROOT.RooHistPdf("%s_energyScale%sUp" % (pdf.GetName(),cat),"%s_energyScale%sUp" % (pdf.GetName(),cat),ROOT.RooArgSet(obsCat),
+                                                     dataHistShiftUp)
                         
                         scaleNuis.setVal(-unc)
                         dataHistShiftDown = epdf.generateBinned(ROOT.RooArgSet(obsCat),1000.,True)
                         dataHistShiftDown.SetName("%s_dataSet_energyScale%sDown" % (pdf.GetName(),cat) )
-                        
-                        # break-down in terms of covariance matrix eigenvectors
-                        if len(options.energy_scale_eigenvec) > 0:
-                            variations = {}
-                            for eig,effects in options.energy_scale_eigenvec.iteritems():
-                                if cat in effects:
-                                    variations[eig] = effects[cat]
-                        else:
-                            variations = { cat : 1. }
-                            
-                        # make one shifted pdf per eigenvector
-                        for nam,val in variations.iteritems():
-                            if val == 0: continue
-                            nuisName = "energyScale%s" % nam
-                            if not nuisName in fit["shape_unc"][signame]:
-                                fit["shape_unc"][signame][nuisName] = { cat : " %1.3g" % fabs(val) }
-                            else:
-                                fit["shape_unc"][signame][nuisName][cat] = " %1.3g" % fabs(val)
-                                 
-                            histUp,histDown = (dataHistShiftUp,dataHistShiftDown) if val>0 else (dataHistShiftDown,dataHistShiftUp)
-                            
-                            
-                            pdfShiftUp = ROOT.RooHistPdf("%s_%sUp" % (pdf.GetName(),nuisName),"%s_%sUp" % (pdf.GetName(),nuisName),ROOT.RooArgSet(obsCat),
-                                                         histUp)
-                            
-                            pdfShiftDown = ROOT.RooHistPdf("%s_%sDown" % (pdf.GetName(),nuisName),"%s_%sDown" % (pdf.GetName(),nuisName),ROOT.RooArgSet(obsCat),
-                                                           histDown)
-                            
-                            self.workspace_.rooImport(pdfShiftUp,RooFit.RecycleConflictNodes())
-                            self.workspace_.rooImport(pdfShiftDown,RooFit.RecycleConflictNodes())
+                        pdfShiftDown = ROOT.RooHistPdf("%s_energyScale%sDown" % (pdf.GetName(),cat),"%s_energyScale%sDown" % (pdf.GetName(),cat),ROOT.RooArgSet(obsCat),
+                                                       dataHistShiftDown)
+                       
+                        pdfShiftUp.Print()
+                        pdfShiftDown.Print()
+                        self.workspace_.rooImport(pdfShiftUp,RooFit.RecycleConflictNodes())
+                        self.workspace_.rooImport(pdfShiftDown,RooFit.RecycleConflictNodes())
+ 
+                        ## break-down in terms of covariance matrix eigenvectors
+                        #if len(options.energy_scale_eigenvec) > 0:
+                        #    variations = {}
+                        #    for eig,effects in options.energy_scale_eigenvec.iteritems():
+                        #        if cat in effects:
+                        #            variations[eig] = effects[cat]
+                        #else:
+                        #    variations = { cat : 1. }
+                        #    
+                        ## make one shifted pdf per eigenvector
+                        #for nam,val in variations.iteritems():
+                        #    if val == 0: continue
+                        #    nuisName = "energyScale%s" % nam
+                        #    if not nuisName in fit["shape_unc"][signame]:
+                        #        fit["shape_unc"][signame][nuisName] = { cat : " %1.3g" % fabs(val) }
+                        #    else:
+                        #        fit["shape_unc"][signame][nuisName][cat] = " %1.3g" % fabs(val)
+                        #         
+                        #    histUp,histDown = (dataHistShiftUp,dataHistShiftDown) if val>0 else (dataHistShiftDown,dataHistShiftUp)
+                        #    
+                        #    
+                        #    pdfShiftUp = ROOT.RooHistPdf("%s_%sUp" % (pdf.GetName(),nuisName),"%s_%sUp" % (pdf.GetName(),nuisName),ROOT.RooArgSet(obsCat),
+                        #                                 histUp)
+                        #    
+                        #    pdfShiftDown = ROOT.RooHistPdf("%s_%sDown" % (pdf.GetName(),nuisName),"%s_%sDown" % (pdf.GetName(),nuisName),ROOT.RooArgSet(obsCat),
+                        #                                   histDown)
+                        #    
+                        #    self.workspace_.rooImport(pdfShiftUp,RooFit.RecycleConflictNodes())
+                        #    self.workspace_.rooImport(pdfShiftDown,RooFit.RecycleConflictNodes())
 
                     if options.do_parametric_signal_nuisances:
                         for nuisName,uncs in options.parametric_signal_nuisances.iteritems():
@@ -4078,6 +4141,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
     ## ------------------------------------------------------------------------------------------------------------
     def plotBkgFit(self,cat,options,dset,pdf,obs,label,blabel=None,extra=None,bias_funcs=None,poissonErrs=True,plot_binning=None,logx=True,logy=True,
                        opts=[],forceSkipBands=False,sig=False,hig=False,plotHiggs=False,signalmodel=None,signalmodel_norm=None, blind=None):
+ 
       if not sig:
         obs.setRange("sigRange", 122,128)
         obs.setRange("fullRange", 106,182)
@@ -4102,7 +4166,6 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
         print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~Integral value SIG: ",SInt, " +/- ",sigIntErr
         print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~Integral value SB : ",SBInt," +/- ",SBIntErr
         print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ALPHA: ",sigInt.getVal()/(lowSideInt.getVal()+highSideInt.getVal()), " +/- ",alphaErr
-	# print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~ p1: ",
         paramSet = pdf.getParameters(dset)
 	# paramSet.Print("v")
 
@@ -4128,18 +4191,21 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
         dataopts = [RooFit.MarkerSize(1.05)]+opts
         if poissonErrs:
             dataopts.append(RooFit.DataError(ROOT.RooAbsData.Poisson))
-        curveopts = [RooFit.LineColor(ROOT.kBlue),RooFit.Normalization(dset.sumEntries(),ROOT.RooAbsReal.NumEvent)]
-        
+        curveopts = [RooFit.LineColor(ROOT.kBlack),RooFit.LineStyle(ROOT.kDashed)]
+        #curveopts = [RooFit.LineColor(ROOT.kBlue),RooFit.Normalization(dset.sumEntries(),ROOT.RooAbsReal.NumEvent)]
+        curveopts2 = curveopts        
+
         if not plot_binning:
             plot_binning = options.plot_binning
 
         binning = None
         bandBinning = None
         nbins = 0
-        print dset
-        dset.get().Print()
-        obs.Print()
+        #print dset
+        #dset.get().Print()
+        #obs.Print()
         rngmin,rngmax=0,0
+
         if type(plot_binning) == list:
             if len(plot_binning) > 0:
                 if len(plot_binning) == 3:
@@ -4166,9 +4232,11 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             obs.setRange("upRange", 135, 181)
             obs.setRange("downRange", 105, 115)
 
-
         if binning:
-            dataopts.append(RooFit.Binning(binning))        
+            dataopts.append(RooFit.Binning(binning))       
+            if sig:
+               curveopts2.append(RooFit.Binning(binning)) 
+
             ### if( "Shift" in obs.GetName() ):
             ###     if "EBEB" in obs.GetName():
             ###         frame = obs.frame(227.7,1606.7)
@@ -4182,8 +4250,8 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             if signalmodel:
                 frame = obs.frame(105,181)
                 resid = obs.frame(105,181)
-                rngmin = 610
-                rngmax = 930
+                rngmin = 105 
+                rngmax = 181 
                 ### frame = obs.frame(610,930)
                 ### resid = obs.frame(610,930)
                 ### rngmin = 610
@@ -4206,7 +4274,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
         else:
             frame = obs.frame()
             resid  = obs.frame()
-        
+
         ## curveopts.append(RooFit.NormRange("plotBinning"))
         if rngmin == 0 and rngmax == 0:
             rngmin, rngmax = frame.GetXaxis().GetXmin(), frame.GetXaxis().GetXmax()
@@ -4224,13 +4292,18 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             plotDset = dset
 
         print "Plotting dataset"
-        dset.plotOn(frame,*(dataopts+invisible+[RooFit.Invisible()]))
+        dset.plotOn(frame)#,*(dataopts+invisible+[RooFit.Invisible()]))
         if not doBands:
              plotDset.plotOn(frame,*(dataopts+invisible))
         print "Plotting pdf....",
-        pdf.plotOn(frame,*(curveopts+invisible))
+        pdf.plotOn(frame,*(curveopts))#+invisible))
         fitc   = frame.getObject(int(frame.numItems()-1))
         hist   = frame.getObject(int(frame.numItems()-2))
+
+        if sig:
+            obs.setRange("range",105,181)
+            dset.plotOn(frameSig, RooFit.NormRange("range"), RooFit.Range("range"), RooFit.Bins(10))
+            pdf.plotOn(frameSig, RooFit.NormRange("range"), RooFit.Range("range"), RooFit.Bins(10))
 
         if signalmodel:
             totNev = signalmodel_norm[0]+signalmodel_norm[1]
@@ -4242,7 +4315,6 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             ## signalmodel.plotOn(frame,*(curveopts+stylopts+[RooFit.Normalization(signalmodel_norm[1],ROOT.RooAbsReal.NumEvent)]))
             signalmodel = frame.getObject(int(frame.numItems()-1))
         print "done"        
-
 
         if poissonErrs:
             alpha = (1. - 0.6827)*0.5
@@ -4263,7 +4335,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
         if extra:
             extra.plotOn(frame,RooFit.LineColor(ROOT.kGreen))
             
-        if doBands:
+        if doBands and not sig:
             print "Making fit error bands...",
             if options.read_fit_bands:
                 cat,cat = label.split("_")[1]
@@ -4413,18 +4485,23 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
                     ## legend = ROOT.TLegend(0.6,0.6,1,0.95)
                     legend = ROOT.TLegend(0.55,0.65,0.95,0.95)
             else:
-                    legend = ROOT.TLegend(0.6,0.55,1.1,0.9)
-        legend.SetTextSize(0.075)
-        
+                    legend = ROOT.TLegend(0.55,0.55,0.95,0.95)
+        legend.SetTextSize(0.065)
+       
+        canv.SetLeftMargin(0.12)
+        canv.SetRightMargin(0.025)
+        canv.SetTopMargin(0.085)
+        canv.SetBottomMargin(0.12) 
+
         canv.Divide(1,2)
-                
+
         canv.cd(1)
         ROOT.gPad.SetPad(0.,0.38,1.,0.95)
         ROOT.gPad.SetTopMargin(0.0015),ROOT.gPad.SetBottomMargin(0.02)
         ROOT.gPad.SetLogy(logy)
         ROOT.gPad.SetFillStyle(0)
         ROOT.gPad.SetTickx()
-        
+
         canv.cd(2)        
         ROOT.gPad.SetPad(0.,0.,1.,0.38)
         ROOT.gPad.SetFillStyle(0)
@@ -4459,25 +4536,7 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
         if not logy:
             frame.GetYaxis().SetNdivisions(505)
         frame.Draw()
-        if legend:
-            legend.SetFillColor(ROOT.kWhite)
-            legend.SetFillStyle(0)
-            legend.SetShadowColor(ROOT.kWhite)
-            legend.AddEntry(hist,"Data","pe")
-            legend.AddEntry(fitc,"Non-Res Backgruond Pdf","l")
-            if doBands:
-                legend.AddEntry(onesigma,"#pm 1 std. dev.","f")
-                legend.AddEntry(twosigma,"#pm 2 std. dev.","f")
-            if plotHiggs:
-		legend.AddEntry(frame.getObject(int(frame.numItems()-3)),"SM Higgs Contribution","l")
-		legend.AddEntry(frame.getObject(int(frame.numItems()-1)),"Total Background Pdf","l")
-            if signalmodel:
-                 ## legend.AddEntry(signalmodel,"#scale[0.9]{G(#scale[0.7]{#tilde{#kappa}=0.01})#rightarrow#gamma#gamma #times 2#upoint10^{-2}}","l")
-                legend.AddEntry(signalmodel,"#scale[0.9]{J=0 #sigma = 3.6fb}","l")
-                 
-                
-            legend.Draw("same")
-            self.keep(legend)
+
         ## pt=ROOT.TPaveText(0.35,0.88,0.46,0.97,"nbNDC")
         pt=ROOT.TPaveText(0.35,0.8,0.46,0.89,"nbNDC")
         ## pt=ROOT.TPaveText(0.25,0.8,0.4,0.89,"nbNDC")
@@ -4520,12 +4579,12 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             dsettth=tthws.data("higgs_ttHJetToGG_13TeV_%s"% (cat))
             pdftth=tthws.pdf("model_higgs_ttHJetToGG_13TeV_%s"% (cat))
             
-
-            dsetggh.add(dsetvh.get(),1)
-            dsetggh.add(dsetvbf.get(),1)
-            dsetggh.add(dsettth.get(),1)
-            dsetggh.plotOn(frame,RooFit.Invisible())
-            print dsetggh.sumEntries()
+            dsethigg = dsetvh.Clone()
+            if (dsetvbf.sumEntries() > 0.0) : dsethigg.add(dsetvbf.get(),1) 
+            if (dsettth.sumEntries() > 0.0) : dsethigg.add(dsettth.get(),1)
+            if (dsetggh.sumEntries() > 0.0) : dsethigg.add(dsetggh.get(),1)
+            dsethigg.plotOn(frame,RooFit.Invisible())
+            dsethigg.plotOn(frame,RooFit.LineColor(ROOT.kRed))
             pdfvh.plotOn(frame,RooFit.LineColor(ROOT.kRed))
             
             ##plotsum higgs and non resonant pdf                                                                                                                        
@@ -4534,17 +4593,21 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             rooNdata = self.buildRooVar("%s_norm" % cat,[],recycle=False,importToWs=False)
             rooNdata.setVal(dset.sumEntries())
             rooNhiggs = self.buildRooVar("%s_higgs_norm" % cat,[],recycle=False,importToWs=False)
-            rooNhiggs.setVal(dsetggh.sumEntries())
+            rooNhiggs.setVal(dsethigg.sumEntries())
             pdfBkg_norm = ROOT.RooFormulaVar("pdfBkg_%s_norm" % (cat),"pdfBkg_%s_norm" % (cat),"@0",ROOT.RooArgList(rooNdata))
             pdfHiggs_norm = ROOT.RooFormulaVar("pdfHiggs_%s_norm" % (cat),"pdfHiggs_%s_norm" % (cat),"@0",ROOT.RooArgList(rooNhiggs))
             fracbkg = ROOT.RooFormulaVar("background_%s_frac" % (cat), "background_%s_frac" % (cat), "1.-@0/@1",ROOT.RooArgList(pdfHiggs_norm,pdfBkg_norm))
             roolist.add(fracbkg)
             roopdflist.add(pdf)
-            roopdflist.add(pdfvh)
+            if (dsetvh.sumEntries() > 0.0)  : roopdflist.add(pdfvh)
+            if (dsetvbf.sumEntries() > 0.0) : roopdflist.add(pdfvbf)
+            if (dsettth.sumEntries() > 0.0) : roopdflist.add(pdftth)
+            if (dsetggh.sumEntries() > 0.0) : roopdflist.add(pdfggh)
             pdfSum = ROOT.RooAddPdf("pdfSum_%s" % (cat),"pdfSum_%s" % (cat), roopdflist, roolist)
             
-            dset.add(dsetggh.get(),1)
-            dset.plotOn(frame,RooFit.Invisible())
+	    dsettemp = dset.Clone()
+            dsettemp.add(dsethigg.get(),1)
+            dsettemp.plotOn(frame,RooFit.Invisible())
             pdfSum.plotOn(frame,RooFit.LineColor(ROOT.kBlue))
             print "------------------------------------------->",rooNdata.getVal(),rooNhiggs.getVal(),fracbkg.getVal()
             
@@ -4552,10 +4615,37 @@ kmax * number of nuisance parameters (source of systematic uncertainties)
             obs.setRange("signalForTable", 122,128)
             int_sigRegion_bkg = pdf.createIntegral(ROOT.RooArgSet(obs),RooFit.Range("signalForTable"))
             int_fullRegion_bkg = pdf.createIntegral(ROOT.RooArgSet(obs),RooFit.Range("fullRange"))
-            int_sigRegion_data = dset.sumEntries("signalForTable")
-            print "int_sigRegion_bkg = ",int_sigRegion_bkg.getVal()*dset.sumEntries()/int_fullRegion_bkg.getVal()
-            print "data= ",dset.sumEntries()
-            print "data= ",dset.sumEntries("","signalForTable")
+            #int_sigRegion_data = dsettemp.sumEntries("signalForTable")
+            #print "int_sigRegion_bkg = ",int_sigRegion_bkg.getVal()*dsettemp.sumEntries()/int_fullRegion_bkg.getVal()
+            #print "data= ",dset.sumEntries()
+            #print "data= ",dset.sumEntries("signalForTable")
+
+        if legend:
+            legend.SetFillColor(ROOT.kWhite)
+            legend.SetFillStyle(0)
+            legend.SetShadowColor(ROOT.kWhite)
+            legend.AddEntry(hist,"Data","pe")
+            legend.AddEntry(fitc,"Non-Res Bkg","l")
+            if doBands:
+                legend.AddEntry(onesigma,"#pm 1 std. dev.","f")
+                legend.AddEntry(twosigma,"#pm 2 std. dev.","f")
+            if plotHiggs:
+		legend.AddEntry(frame.getObject(int(frame.numItems()-3)),"SM H","l")
+		legend.AddEntry(frame.getObject(int(frame.numItems()-1)),"Total Bkg","l")
+            if signalmodel:
+                 ## legend.AddEntry(signalmodel,"#scale[0.9]{G(#scale[0.7]{#tilde{#kappa}=0.01})#rightarrow#gamma#gamma #times 2#upoint10^{-2}}","l")
+                legend.AddEntry(signalmodel,"#scale[0.9]{J=0 #sigma = 3.6fb}","l")
+                 
+            # hack to get the smhiggs and totalbkg to draw FIXME
+            smhiggs  = frame.getObject(int(frame.numItems()-3))
+            totalbkg = frame.getObject(int(frame.numItems()-1))
+            if plotHiggs: smhiggs.Draw("same") 
+            totalbkg.Draw("same")            
+            data     = frame.getObject(int(0))
+            data.Draw("same ep") #redraw data on top
+    
+            legend.Draw("same")
+            self.keep(legend)
 
         canv.cd(2)
         ROOT.gPad.SetGridy()
