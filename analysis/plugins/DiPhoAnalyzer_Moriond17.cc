@@ -174,6 +174,7 @@ struct diphoTree_struc_ {
   float t1pfmetPhotonEnDown     ;
   float t1pfmetUnclusteredEnUp;
   float t1pfmetUnclusteredEnDown;
+  float t1pfmetCorrSig;
   float t1pfmetCorr;
   float t1pfmetCorrPhi;
   float t1pfmetCorrPx;
@@ -1443,7 +1444,7 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
 		      float genVtxX, genVtxY, genVtxZ; 
 		      int eleveto1, eleveto2;
 		      float pfmet,pfmetPhi, pfmetSumEt,t1pfmet,t1pfmetPhi,t1pfmetSumEt;
-                      float t1pfmetCorr,t1pfmetCorrPhi,t1pfmetCorrPx,t1pfmetCorrPy; 
+                      float t1pfmetCorrSig,t1pfmetCorr,t1pfmetCorrPhi,t1pfmetCorrPx,t1pfmetCorrPy; 
                       float calomet,calometPhi, calometSumEt, t1p2pfmet;
 		      float t1pfmetJetEnUp,t1pfmetJetEnDown ,t1pfmetJetResUp,t1pfmetJetResDown,t1pfmetMuonEnUp, t1pfmetMuonEnDown;
                       float t1pfmetElectronEnUp,t1pfmetElectronEnDown,t1pfmetTauEnUp,t1pfmetTauEnDown;
@@ -1476,6 +1477,7 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
 		      t1pfmetSumEt	= theMET->sumEt();                   // uncorr sumEt
 		      t1pfmet		= theMET->pt();                      // uncorr MET 
 		      t1pfmetPhi	= theMET->corPhi(pat::MET::Type1);   // uncorr phi 
+		      t1pfmetCorrSig    = theMET->metSignificance();   // uncorr met sig
 		      t1pfmetCorrPhi	= theMET->corPhi(pat::MET::Type1XY); // corr phi
                       t1pfmetCorrPx	= theMET->corPx(pat::MET::Type1XY);  // corr px
                       t1pfmetCorrPy	= theMET->corPy(pat::MET::Type1XY);  // corr py
@@ -2344,6 +2346,7 @@ DiPhoAnalyzer_Moriond17::~DiPhoAnalyzer_Moriond17() {
 		      treeDipho_.t1pfmetUnclusteredEnUp  = t1pfmetUnclusteredEnUp  ;
 		      treeDipho_.t1pfmetUnclusteredEnDown= t1pfmetUnclusteredEnDown;
 
+                      treeDipho_.t1pfmetCorrSig = t1pfmetCorrSig;
 		      treeDipho_.t1pfmetCorr = t1pfmetCorr;
 		      treeDipho_.t1pfmetCorrPhi = t1pfmetCorrPhi;
 		      treeDipho_.t1pfmetCorrPx = t1pfmetCorrPy;
@@ -2742,6 +2745,7 @@ void DiPhoAnalyzer_Moriond17::beginJob() {
   DiPhotonTree->Branch("t1pfmetUnclusteredEnUp",&(treeDipho_.t1pfmetUnclusteredEnUp),"t1pfmetUnclusteredEnUp/F");
   DiPhotonTree->Branch("t1pfmetUnclusteredEnDown",&(treeDipho_.t1pfmetUnclusteredEnDown),"t1pfmetUnclusteredEnDown/F");
 
+  DiPhotonTree->Branch("t1pfmetCorrSig",&(treeDipho_.t1pfmetCorrSig),"t1pfmetCorrSig/F");
   DiPhotonTree->Branch("t1pfmetCorr",&(treeDipho_.t1pfmetCorr),"t1pfmetCorr/F");
   DiPhotonTree->Branch("t1pfmetCorrPhi",&(treeDipho_.t1pfmetCorrPhi),"t1pfmetCorrPhi/F");
   DiPhotonTree->Branch("t1pfmetCorrPx",&(treeDipho_.t1pfmetCorrPx),"t1pfmetCorrPx/F");
@@ -3047,6 +3051,7 @@ void DiPhoAnalyzer_Moriond17::initTreeStructure() {
   treeDipho_.pfmetSumEt = -500.;
   treeDipho_.t1pfmet = -500.;
   treeDipho_.t1pfmetCorr = -500.;
+  treeDipho_.t1pfmetCorrSig = -500.;
   treeDipho_.t1pfmetCorrPhi = -500.;
   treeDipho_.t1pfmetCorrPx = -500.;
   treeDipho_.t1pfmetCorrPy = -500.;
