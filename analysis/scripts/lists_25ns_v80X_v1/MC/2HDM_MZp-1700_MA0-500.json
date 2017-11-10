@@ -1,8 +1,0 @@
-    "/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-500_13TeV-madgraph/soffi-RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoH-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1-8c73ef8c798e927f28911756d18dfdd4/USER": {
-        "files": [
-            {
-                "bad": false, 
-                "name": "/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoH/2_3_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-1700_MA0-500_13TeV-madgraph/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-signalMonoH-2_3_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/161122_163323/0000/myMicroAODOutputFile_1.root", 
-                "nevents": 99200, 
-                "totEvents": 99200, 
-                "weights": 99200.0

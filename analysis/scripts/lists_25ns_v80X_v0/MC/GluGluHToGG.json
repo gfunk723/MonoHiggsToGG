@@ -1,8 +1,0 @@
-    "/GluGluHToGG_M-125_13TeV_powheg_pythia8/mzientek-RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1-5f34f30956f588e7d9662dc5308d49a5/USER": {
-        "files": [
-            {
-                "bad": false, 
-                "name": "/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/GluGluHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/161010_141021/0000/myMicroAODOutputFile_1.root", 
-                "nevents": 208360, 
-                "totEvents": 208360, 
-                "weights": 208360.0
