@@ -2,104 +2,73 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.Utilities.FileUtils as FileUtils
 import FWCore.PythonUtilities.LumiList as LumiList  
 import FWCore.ParameterSet.Types as CfgTypes  
-
-######################
-# SET THESE BOOLS BEFORE RUNNING:
-isMC  = False; 
-isSMh = False;
-is80X = True;
-isRunB = False;
-isRunH = True;
-is76X = False;
-######################
+import FWCore.ParameterSet.VarParsing as VarParsing
 
 process = cms.Process("diPhoAna")
-
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
+# Setup input variables
+options = VarParsing.VarParsing('analysis')
+options.register ('isMC',
+                  False, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.bool,           # string, int, float, bool
+                  "Bool isMC")
+options.register ('useVtx0',
+                  True, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.bool,           # string, int, float, bool
+                  "Bool useVtx0")
+options.parseArguments()
+
+if options.isMC: print'Sample is MC'
+else:            print'Sample is Data'
+
+# Pick up the GlobalTag
+from Configuration.AlCa.GlobalTag import GlobalTag
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-
-from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag.globaltag = 'POSTLS170_V5::All'     # Phys14 samples
-#process.GlobalTag.globaltag = 'MCRUN2_74_V9A'         # 50ns
-
-#-----------------------------------
-# Pick up GlobalTag
-if (isMC):
-    if (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_v14', '')
-        print "80X_mcRun2_asymptotic_v14"
-    elif (is76X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '')
-        print "76X_mcRun2_asymptotic_v12"
-    else:
-        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '')
-        print "74X_mcRun2_asymptotic_v2"
-     
+from Configuration.AlCa.autoCond import autoCond
+if options.isMC:
+   process.GlobalTag = GlobalTag(process.GlobalTag, autoCond['run2_mc'].replace("::All","") )
 else:
-    if (is80X):
-	if (isRunB): 
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
-            print "80X_dataRun2_2016SeptRepro_v4"
-	elif (isRunH): #runh
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v14', '') 
-            print "80X_dataRun2_Prompt_v14"
-	else: #runc,d,e,f,g 
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v3', '') 
-            print "80X_dataRun2_2016SeptRepro_v3"
-    elif (is76X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '')
-        print "76X_dataRun2_v15"
-    else:
-        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '')
-        print "74X_dataRun2_Prompt_v2"
-#-----------------------------------
+   process.GlobalTag = GlobalTag(process.GlobalTag, autoCond['run2_data'].replace("::All","") )
 
-#-----------------------------------
-# Pick up Trigger Info
-if (is80X):
-    if (isSMh):
-        bit = 'TriggerResults::HLT2'
-        print "Using HLT2"
-    else:
-        bit = 'TriggerResults::HLT'
-        print "Using HLT" 
+# Do pileup reweighting
+if options.isMC: do_pu = 1
+else:            do_pu = 0
+
+# Set sample index (testing only)
+if options.isMC: index = 101
+else:            index = 10001
+
+# Pick up trigger info
+if options.isMC: 
+   bit  = 'TriggerResults::HLT'
+   flag = 'TriggerResults::PAT'
 else:
-    bit = 'TriggerResults::HLT'
-    print "Using HLT"
-
-if (isMC):
-    flag = 'TriggerResults::PAT'
-    print "Using TriggerResults::PAT"
-else:
-    flag = 'TriggerResults::RECO'
-    print "Using TriggerResults::RECO"
-   
-#-----------------------------------
-
+   bit  = 'TriggerResults::HLT'
+   flag = 'TriggerResults::RECO' 
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( 10 ) )
 
 process.source = cms.Source("PoolSource",
                             fileNames=cms.untracked.vstring(
 	#"file:myMicroAODOutputFile.root"
-	# 80X_v1
-	"/store/user/soffi/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco/2_3_0/DoubleEG/RunIISpring16DR80X-2_3_0-25ns_PostICHEPReReco-2_3_0-v0-Run2016H-23Sep2016-v1-NewJSON/161123_131657/0000/myMicroAODOutputFile_1.root" 
-	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_3_0/MonoHaa_ZpBaryonic_MZp-100_MChi-10_13TeV-madgraph/RunIISpring16DR80X-2_3_0/161117_092117/0000/myMicroAODOutputFile_1.root", 
-	# 80X_v0
-	#"/store/user/mzientek/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/ZprimeToA0hToA0chichihAA_2HDM_MZp-600_MA0-300_13TeV-madgraph-pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-Run2016B-PromptReco-v1/161010_131921/0000/myMicroAODOutputFile_2.root",
+        # 2017 test
+        "/store/group/phys_higgs/cmshgg/sethzenz/flashgg/RunIIFall17-2_7_5/2_7_5/DoubleEG/RunIIFall17-2_7_5-2_7_5-v0-Run2017C-PromptReco-v1/171030_113309/0000/myMicroAODOutputFile_1.root",
       	)
     )
 
-if (isMC==False):
-    print "applying 2016 json"                                
-    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v1.json'
-    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
-    process.source.lumisToProcess.extend(myLumis)                              
-    print myLumis 
+#if (isMC==False):
+#    print "applying 2016 json"                                
+#    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
+#    #JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v1.json'
+#    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
+#    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
+#    process.source.lumisToProcess.extend(myLumis)                              
+#    print myLumis 
 
 process.load("flashgg/MicroAOD/flashggPhotons_cfi")
 process.load("flashgg/MicroAOD/flashggDiPhotons_cfi")
@@ -120,6 +89,13 @@ _messageSettings = cms.untracked.PSet(
 process.MessageLogger.cerr.GetManyWithoutRegistration = _messageSettings
 process.MessageLogger.cerr.GetByLabelWithoutRegistration = _messageSettings
 
+# get vtx0 diphoton collection
+if options.useVtx0:
+    from flashgg.MicroAOD.flashggDiPhotons_cfi import flashggDiPhotonsLite
+    process.flashggDiPhotonsVtx0 = flashggDiPhotonsLite.clone(VertexSelectorName="FlashggZerothVertexSelector",whichVertex=cms.uint32(0))
+    sourcediphotons = "flashggDiPhotonsVtx0"
+else: sourcediphotons = "flashggDiPhotons" # BDT photons
+
 # to make jets
 from flashgg.MicroAOD.flashggJets_cfi import flashggBTag, maxJetCollections
 process.flashggUnpackedJets = cms.EDProducer("FlashggVectorVectorJetUnpacker",  
@@ -131,9 +107,10 @@ UnpackedJetCollectionVInputTag = cms.VInputTag()
 for i in range(0,maxJetCollections):    
     UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJets',str(i)))  
 
+## check the event content 
+#process.content = cms.EDAnalyzer("EventContentAnalyzer")
 
-
-process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
+process.diPhoAna = cms.EDAnalyzer('DiPhoAnalyzer_Moriond17',
                                   VertexTag 		= cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag		= cms.untracked.InputTag('flashggMets::FLASHggMicroAOD'),#
 				  pfcands		= cms.InputTag("packedPFCandidates"),
@@ -143,26 +120,21 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer',
                                   bTag 			= cms.untracked.string(flashggBTag),                
 				  RhoTag		= cms.InputTag('fixedGridRhoAll'),
                                   genPhotonExtraTag 	= cms.InputTag("flashggGenPhotonsExtra"),    
-                                  DiPhotonTag 		= cms.untracked.InputTag('flashggDiPhotons0vtx'),
-                                  #DiPhotonTag 		= cms.untracked.InputTag('flashggDiPhotons'),
-                                  DiPhotonBDTVtxTag 	= cms.untracked.InputTag('flashggDiPhotons'),
+                                  DiPhotonTag 		= cms.untracked.InputTag(sourcediphotons),
+                                  DiPhotonBDTVtxTag     = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag 		= cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo 	= cms.InputTag('generator'),
-                                  dopureweight 		= cms.untracked.int32(1),
+                                  dopureweight 		= cms.untracked.int32(do_pu),
                                   bits         		= cms.InputTag(bit),
                                   flags        		= cms.InputTag(flag),
-				  sampleIndex  		= cms.untracked.int32(100),
-                                  puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_80X_v1.root'),  
-                                  xsec         		= cms.untracked.double(1), #pb
+				  sampleIndex  		= cms.untracked.int32(index),
+                                  puWFileName  		= cms.string('/afs/cern.ch/user/m/mzientek/public/pileupWeights_moriond17_v2.root'),
+                                  SSRewFileName         = cms.string('/afs/cern.ch/user/s/soffi/public/transformation_Moriond17_AfterPreApr_v1.root'), 
+                                  corrFileName		= cms.string('EgammaAnalysis/ElectronTools/data/Moriond17_74x_pho'),
                                   kfac         		= cms.untracked.double(1.),
                                   sumDataset   		= cms.untracked.double(1.0), 
                                   )
 
-process.p = cms.Path( process.flashggUnpackedJets*process.diPhoAna )     
-#process.p = cms.Path( process.diPhoAna )     
-
-#if (isMC==True):
-#    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSL1FastL2L3Corrector*process.diPhoAna )     
-#if (isMC==False):
-#    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSResidualCorrector*process.ak4PFCHSL1FastL2L3ResidualCorrector*process.diPhoAna )     
-#
+if options.useVtx0: process.p = cms.Path( process.flashggDiPhotonsVtx0*process.flashggUnpackedJets*process.diPhoAna )    
+else:               process.p = cms.Path( process.flashggUnpackedJets*process.diPhoAna )   
+ 

@@ -6,27 +6,29 @@ def main(argv):
    inputfile = ''
    outputfile = ''
    outputdir = ''
+   suffix = ''
    try:
-      opts, args = getopt.getopt(argv,"hi:o:d:",["ifile=","ofile=","odir"])
+      opts, args = getopt.getopt(argv,"hi:o:s:d:",["ifile=","ofile=","suffix=","odir"])
    except getopt.GetoptError:
-      print 'extractJSONS.py -i <inputfile> -o <outputfile> -d <outputdir>'
+      print 'extractJSONS.py -i <inputfile> -o <outputfile> -s <suffix> -d <outputdir>'
       sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-         print 'extractJSONS.py -i <inputfile> -o <outputfile> -d <outputdir>'
+         print 'extractJSONS.py -i <inputfile> -o <outputfile> -s <suffix> -d <outputdir>'
          sys.exit()
       elif opt in ("-i", "--ifile"):
          inputfile = arg
       elif opt in ("-o", "--ofile"):
          outputfile = arg
+      elif opt in ("-s", "--suffix"):
+         suffix = '_'+arg
       elif opt in ("-d", "--odir"):
-         outputdir = arg
+         outputdir = arg+'/'
    print 'Input file is ', inputfile
    hand = open(inputfile) # open catalogue from Flashgg
 
- 
-   outputname = outputdir+'/'+outputfile+'.list'
-   outputname2 = outputdir+'/'+outputfile+'.weight'
+   outputname = outputdir+outputfile+suffix+'.list'
+   outputname2 = outputdir+outputfile+suffix+'.weight'
    #check that output directory exists and if not create it
    dir = os.path.dirname(outputname)
    if not os.path.exists(dir):
