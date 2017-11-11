@@ -5,8 +5,9 @@ import FWCore.ParameterSet.Types as CfgTypes
 
 ######################
 # SET THESE BOOLS BEFORE RUNNING:
-isMC  = False;
+isMC  = True;
 isSMh = False;
+isMoriond17 = True;
 is80X = True;
 isRunB = False;
 isRunH = False;
@@ -29,7 +30,10 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 #-----------------------------------
 # Pick up GlobalTag
 if (isMC):
-    if (is80X):
+    if (isMoriond17):
+        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_TrancheIV_v6', '') 
+        print "80X_mcRun2_asymptotic_2016_TrancheIV_v6"
+    elif (is80X):
         process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_v14', '') 
         print "80X_mcRun2_asymptotic_v14"
     elif (is76X):
@@ -40,7 +44,14 @@ if (isMC):
         print "74X_mcRun2_asymptotic_v2"
     
 else:
-    if (is80X):
+    if (isMoriond17):
+	if (isRunH): #RunH
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v16', '') 
+            print "80X_dataRun2_Prompt_v16"
+        else:
+            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v7', '') 
+            print "80X_dataRun2_2016SeptRepro_v7"
+    elif (is80X and not isMoriond17):
 	if (isRunB): 
             process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
             print "80X_dataRun2_2016SeptRepro_v4"
@@ -84,9 +95,10 @@ process.source = cms.Source("PoolSource",
                            )                                   
 
 if (isMC==False):
-    print "applying 2016D json"                                
+    print "applying 2016 json"                                
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v1.json'
+    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
+    #JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
     process.source.lumisToProcess.extend(myLumis)  
 
@@ -183,11 +195,10 @@ for i in range(0,maxJetCollections):
 ##===========================================================================================================================#
 
 
-process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer', ## important -- have to keep format xx = xx (no tabs) for reading in batchjobs
+process.diPhoAna = cms.EDAnalyzer('DiPhoAnalyzer_Moriond17', ## important -- have to keep format xx = xx (no tabs) for reading in batchjobs
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag = cms.untracked.InputTag('flashggMets::FLASHggMicroAOD'),
 				  pfcands = cms.InputTag("packedPFCandidates"),
-                                  #JetCorrectorTag = cms.InputTag("ak4PFCHSL1FastjetCorrector"),
                                   inputTagJets = UnpackedJetCollectionVInputTag,  
                                   ElectronTag = cms.InputTag('flashggSelectedElectrons'),
                                   MuonTag = cms.InputTag('flashggSelectedMuons'), 
@@ -203,6 +214,8 @@ process.diPhoAna = cms.EDAnalyzer('NewDiPhoAnalyzer', ## important -- have to ke
                                   dopureweight = PU, 
                                   sampleIndex = SI,
                                   puWFileName = weights,
+                                  SSRewFileName = cms.string('/afs/cern.ch/user/s/soffi/public/transformation_Moriond17_AfterPreApr_v1.root'), 
+                                  corrFileName = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_74x_pho'),
                                   xsec = XS,
                                   kfac = KF,
                                   sumDataset = SDS,
