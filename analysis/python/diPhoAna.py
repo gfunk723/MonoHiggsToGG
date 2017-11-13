@@ -61,14 +61,13 @@ process.source = cms.Source("PoolSource",
       	)
     )
 
-#if (isMC==False):
-#    print "applying 2016 json"                                
-#    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-#    #JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_80X_v1.json'
-#    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
-#    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
-#    process.source.lumisToProcess.extend(myLumis)                              
-#    print myLumis 
+if (isMC==False):
+    print "applying 2017 json"                                
+    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange()) 
+    JSONfile = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-305636_13TeV_PromptReco_Collisions17_JSON.txt' 
+    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
+    process.source.lumisToProcess.extend(myLumis)                              
+    print myLumis 
 
 process.load("flashgg/MicroAOD/flashggPhotons_cfi")
 process.load("flashgg/MicroAOD/flashggDiPhotons_cfi")

@@ -52,13 +52,12 @@ process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring('/store/group/phys_higgs/cmshgg/musella/flashgg/ExoPhys14_v2/diphotonsPhys14V2/RSGravToGG_kMpl001_M_5000_Tune4C_13TeV_pythia8/ExoPhys14_v2-diphotonsPhys14V2-v0-Phys14DR-PU20bx25_PHYS14_25_V1-v1/150128_133931/0000/myOutputFile_1.root'
                            )                                   
 
-#if (options.isMC==False):
-#    print "applying 2016 json"                                
-#    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-#    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
-#    #JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
-#    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
-#    process.source.lumisToProcess.extend(myLumis)  
+if (options.isMC==False):
+    print "applying 2017 json"                                
+    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
+    JSONfile = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/PromptReco/Cert_294927-305636_13TeV_PromptReco_Collisions17_JSON.txt' 
+    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
+    process.source.lumisToProcess.extend(myLumis)  
 
 process.load("flashgg/MicroAOD/flashggPhotons_cfi")
 process.load("flashgg/MicroAOD/flashggDiPhotons_cfi")
