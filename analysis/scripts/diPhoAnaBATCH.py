@@ -2,105 +2,63 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.Utilities.FileUtils as FileUtils
 import FWCore.PythonUtilities.LumiList as LumiList  
 import FWCore.ParameterSet.Types as CfgTypes  
-
-######################
-# SET THESE BOOLS BEFORE RUNNING:
-isMC  = True;
-isSMh = False;
-isMoriond17 = True;
-is80X = True;
-isRunB = False;
-isRunH = False;
-is76X = False;
-######################
+import FWCore.ParameterSet.VarParsing as VarParsing
 
 process = cms.Process("diPhoAna")
-
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
+# Setup input variables
+options = VarParsing.VarParsing('analysis')
+options.register ('isMC',
+                  False, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.bool,           # string, int, float, bool
+                  "Bool isMC")
+options.register ('useVtx0',
+                  True, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.bool,           # string, int, float, bool
+                  "Bool useVtx0")
+options.parseArguments()
+
+if options.isMC: print'Sample is MC'
+else:            print'Sample is Data'
+
+
+# Pick up the GlobalTag
+from Configuration.AlCa.GlobalTag import GlobalTag
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-
-from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag.globaltag = 'POSTLS170_V5::All' 	#Phys14
-#process.GlobalTag.globaltag = 'MCRUN2_74_V9A' 		#50ns
-
-
-#-----------------------------------
-# Pick up GlobalTag
-if (isMC):
-    if (isMoriond17):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_TrancheIV_v6', '') 
-        print "80X_mcRun2_asymptotic_2016_TrancheIV_v6"
-    elif (is80X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_v14', '') 
-        print "80X_mcRun2_asymptotic_v14"
-    elif (is76X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_v12', '') 
-        print "76X_mcRun2_asymptotic_v12"
-    else:
-        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v2', '') 
-        print "74X_mcRun2_asymptotic_v2"
-    
+from Configuration.AlCa.autoCond import autoCond
+if options.isMC:
+   process.GlobalTag = GlobalTag(process.GlobalTag, autoCond['run2_mc'].replace("::All","") )
 else:
-    if (isMoriond17):
-	if (isRunH): #RunH
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v16', '') 
-            print "80X_dataRun2_Prompt_v16"
-        else:
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v7', '') 
-            print "80X_dataRun2_2016SeptRepro_v7"
-    elif (is80X and not isMoriond17):
-	if (isRunB): 
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v4', '') 
-            print "80X_dataRun2_2016SeptRepro_v4"
-	elif (isRunH): #RunH
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v14', '') 
-            print "80X_dataRun2_Prompt_v14"
-	else: #RunC,D,E,F,G 
-            process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_2016SeptRepro_v3', '') 
-            print "80X_dataRun2_2016SeptRepro_v3"
-    elif (is76X):
-        process.GlobalTag = GlobalTag(process.GlobalTag, '76X_dataRun2_v15', '') 
-        print "76X_dataRun2_v15"
-    else:
-        process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_Prompt_v2', '') 
-        print "74X_dataRun2_Prompt_v2"
-#-----------------------------------
+   process.GlobalTag = GlobalTag(process.GlobalTag, autoCond['run2_data'].replace("::All","") )
 
-#-----------------------------------
-# Pick up Trigger Info
-if (is80X and isSMh):
-    bit = 'TriggerResults::HLT2'
-    print "Using HLT2"
+# Pick up trigger info
+if options.isMC: 
+   bit  = 'TriggerResults::HLT'
+   flag = 'TriggerResults::PAT'
 else:
-    bit = 'TriggerResults::HLT'
-    print "Using HLT"
+   bit  = 'TriggerResults::HLT'
+   flag = 'TriggerResults::RECO' 
 
-if (isMC):
-    flag = 'TriggerResults::PAT'
-    print "Using name PAT"
-else:
-    flag = 'TriggerResults::RECO'
-    print "Using name RECO"
-#-----------------------------------
+
 
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 1000 )
-
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( -1 ) )
-
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring('/store/group/phys_higgs/cmshgg/musella/flashgg/ExoPhys14_v2/diphotonsPhys14V2/RSGravToGG_kMpl001_M_5000_Tune4C_13TeV_pythia8/ExoPhys14_v2-diphotonsPhys14V2-v0-Phys14DR-PU20bx25_PHYS14_25_V1-v1/150128_133931/0000/myOutputFile_1.root'
                            )                                   
 
-if (isMC==False):
-    print "applying 2016 json"                                
-    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
-    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
-    #JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
-    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
-    process.source.lumisToProcess.extend(myLumis)  
+#if (options.isMC==False):
+#    print "applying 2016 json"                                
+#    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())  
+#    JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
+#    #JSONfile = '/afs/cern.ch/user/m/mzientek/public/processedANDgolden_moriond17_v0.json'
+#    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')  
+#    process.source.lumisToProcess.extend(myLumis)  
 
 process.load("flashgg/MicroAOD/flashggPhotons_cfi")
 process.load("flashgg/MicroAOD/flashggDiPhotons_cfi")
@@ -111,90 +69,24 @@ process.options = cms.untracked.PSet(
     SkipEvent = cms.untracked.vstring('ProductNotFound')
 )
 
-# to make jets   
-##================================ Get the most recent JEC ==================================================================#
-#    # Setup the private SQLite -- Ripped from PhysicsTools/PatAlgos/test/corMETFromMiniAOD.py
-#usePrivateSQlite=True
-#applyL2L3Residuals = True
-#
-#if usePrivateSQlite:
-#    from CondCore.DBCommon.CondDBSetup_cfi import *
-#    import os
-#
-#    era = "Spring16_25nsV6"
-#    if isMC : 
-#        era += "_MC"
-#    else :
-#        era += "_DATA"
-#    #dBFile = os.path.expandvars(era+".db")
-#    dBFile = os.path.expandvars("/afs/cern.ch/user/m/mzientek/public/"+era+".db") 
-#
-#    if usePrivateSQlite:
-#        process.jec = cms.ESSource("PoolDBESSource",
-#                                   CondDBSetup,
-#                                   connect = cms.string("sqlite_file:"+dBFile),
-#                                   toGet =  cms.VPSet(
-#                cms.PSet(
-#                    record = cms.string("JetCorrectionsRecord"),
-#                    tag = cms.string("JetCorrectorParametersCollection_"+era+"_AK4PF"),
-#                    label= cms.untracked.string("AK4PF")
-#                    ),
-#                cms.PSet(
-#                        record = cms.string("JetCorrectionsRecord"),
-#                        tag = cms.string("JetCorrectorParametersCollection_"+era+"_AK4PFchs"),
-#                        label= cms.untracked.string("AK4PFchs")
-#                        ),
-#                )
-#                                   )
-#        process.es_prefer_jec = cms.ESPrefer("PoolDBESSource",'jec')
-##===========================================================================================================================#
-#
-##============================================Re do jets + JEC===================================================================#
-#
+# Get vtx0 diphoton collection
+if options.useVtx0:
+    from flashgg.MicroAOD.flashggDiPhotons_cfi import flashggDiPhotonsLite
+    process.flashggDiPhotonsVtx0 = flashggDiPhotonsLite.clone(VertexSelectorName="FlashggZerothVertexSelector",whichVertex=cms.uint32(0))
+    sourcediphotons = "flashggDiPhotonsVtx0"
+else: sourcediphotons = "flashggDiPhotons" # BDT photons
+
+# Make jets   
 from flashgg.MicroAOD.flashggJets_cfi import flashggBTag, maxJetCollections
 process.flashggUnpackedJets = cms.EDProducer("FlashggVectorVectorJetUnpacker",  
                                              JetsTag = cms.InputTag("flashggFinalJets"),          
                                              NCollections = cms.uint32(maxJetCollections) 
                                              )               
-#
-#process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-#
-#process.ak4PFCHSL1FastjetCorrector = cms.EDProducer(
-#    'L1FastjetCorrectorProducer',
-#    level       = cms.string('L1FastJet'),
-#    algorithm   = cms.string('AK4PFchs'),
-#    srcRho      = cms.InputTag( 'fixedGridRhoFastjetAll' )
-#    )
-#process.ak4PFCHSL2RelativeCorrector = cms.EDProducer(
-#    'LXXXCorrectorProducer',
-#    level     = cms.string('L2Relative'),
-#    algorithm = cms.string('AK4PFchs')
-#    )
-#process.ak4PFCHSL3AbsoluteCorrector = cms.EDProducer(
-#    'LXXXCorrectorProducer',
-#    level     = cms.string('L3Absolute'),
-#    algorithm = cms.string('AK4PFchs')
-#    )
-#process.ak4PFCHSL1FastL2L3Corrector = cms.EDProducer(
-#    'ChainedJetCorrectorProducer',
-#    correctors = cms.VInputTag('ak4PFCHSL1FastjetCorrector','ak4PFCHSL2RelativeCorrector','ak4PFCHSL3AbsoluteCorrector')
-#    )
-#
-#process.ak4PFCHSResidualCorrector = cms.EDProducer(
-#    'LXXXCorrectorProducer',
-#    level     = cms.string('L2L3Residual'),
-#    algorithm = cms.string('AK4PFchs')
-#    )
-#process.ak4PFCHSL1FastL2L3ResidualCorrector = cms.EDProducer(
-#    'ChainedJetCorrectorProducer',
-#    correctors = cms.VInputTag('ak4PFCHSL1FastjetCorrector','ak4PFCHSL2RelativeCorrector','ak4PFCHSL3AbsoluteCorrector','ak4PFCHSResidualCorrector')
-#    )
 UnpackedJetCollectionVInputTag = cms.VInputTag()       
 for i in range(0,maxJetCollections):    
     UnpackedJetCollectionVInputTag.append(cms.InputTag('flashggUnpackedJets',str(i)))  
+
 ##===========================================================================================================================#
-
-
 process.diPhoAna = cms.EDAnalyzer('DiPhoAnalyzer_Moriond17', ## important -- have to keep format xx = xx (no tabs) for reading in batchjobs
                                   VertexTag = cms.untracked.InputTag('offlineSlimmedPrimaryVertices'),
 				  METTag = cms.untracked.InputTag('flashggMets::FLASHggMicroAOD'),
@@ -205,7 +97,7 @@ process.diPhoAna = cms.EDAnalyzer('DiPhoAnalyzer_Moriond17', ## important -- hav
                                   bTag = cms.untracked.string(flashggBTag),      
 				  RhoTag = cms.InputTag('fixedGridRhoAll'),
                                   genPhotonExtraTag = cms.InputTag("flashggGenPhotonsExtra"),   
-                                  DiPhotonTag = cms.untracked.InputTag('flashggDiPhotons0vtx'),
+                                  DiPhotonTag = cms.untracked.InputTag(sourcediphotons),
                                   DiPhotonBDTVtxTag = cms.untracked.InputTag('flashggDiPhotons'),
                                   PileUpTag = cms.untracked.InputTag('slimmedAddPileupInfo'),
                                   generatorInfo = cms.InputTag('generator'),
@@ -215,16 +107,11 @@ process.diPhoAna = cms.EDAnalyzer('DiPhoAnalyzer_Moriond17', ## important -- hav
                                   sampleIndex = SI,
                                   puWFileName = weights,
                                   SSRewFileName = cms.string('/afs/cern.ch/user/s/soffi/public/transformation_Moriond17_AfterPreApr_v1.root'), 
-                                  corrFileName = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_74x_pho'),
+                                  corrFileName = cms.string('EgammaAnalysis/ElectronTools/data/Moriond17_74x_pho'),
                                   xsec = XS,
                                   kfac = KF,
                                   sumDataset = SDS,
                                   )
 
-process.p = cms.Path(process.flashggUnpackedJets*process.diPhoAna)
-
-#if (isMC==True):
-#    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSL1FastL2L3Corrector*process.diPhoAna )     
-#if (isMC==False):
-#    process.p = cms.Path(process.flashggUnpackedJets*process.ak4PFCHSL1FastjetCorrector*process.ak4PFCHSL2RelativeCorrector*process.ak4PFCHSL3AbsoluteCorrector*process.ak4PFCHSResidualCorrector*process.ak4PFCHSL1FastL2L3ResidualCorrector*process.diPhoAna )     
-#
+if options.useVtx0: process.p = cms.Path( process.flashggDiPhotonsVtx0*process.flashggUnpackedJets*process.diPhoAna )
+else:               process.p = cms.Path( process.flashggUnpackedJets*process.diPhoAna )

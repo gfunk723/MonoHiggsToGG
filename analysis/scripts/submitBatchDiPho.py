@@ -42,9 +42,12 @@ def main():
     PUweights = args[3]
     xsection = args[4]
     kfactor = args[5]
+    isMC = False
+    if (sampleIndex < 10000): isMC = True
+ 
 
-    inputlist="lists_25ns_v80X_v2/"+dataset+".list"
-    inputweights="lists_25ns_v80X_v2/"+dataset+".weight"
+    inputlist="lists_2017_v0/"+dataset+".list"
+    inputweights="lists_2017_v0/"+dataset+".weight"
     output = dataset
 
     print "the outputs will be in the directory: "+opt.prefix
@@ -52,7 +55,7 @@ def main():
     if opt.download=='pccmsrm':
         diskoutputdir = "" 
 
-    else: diskoutputdir = '/afs/cern.ch/work/m/mzientek/private/25ns_v80X_moriond17_v3'
+    else: diskoutputdir = '/afs/cern.ch/work/m/mzientek/private/Samples17_92x_v0'
     diskoutputmain = diskoutputdir+"/"+opt.prefix+"/"+output
 
     os.system("mkdir -p "+opt.prefix+"/"+output)
@@ -141,7 +144,9 @@ def main():
             outputfile.write('cd '+pwd+'\n')
             outputfile.write('eval `scramv1 runtime -sh`\n')
             outputfile.write('cd $WORKDIR\n')
-            outputfile.write(opt.application+' '+icfgfilename+' \n')
+            if isMC: outputfile.write(opt.application+' '+icfgfilename+' isMC=True \n')
+            else:    outputfile.write(opt.application+' '+icfgfilename+' isMC=False \n')
+          
             #if(opt.download=='pccmsrm'): outputfile.write('ls *.root | xargs -i scp -o BatchMode=yes -o StrictHostKeyChecking=no {} pccmsrm29:'+diskoutputmain+'/{}\n')
 #            if(opt.download=='test'): outputfile.write('ls *.root | xargs -i scp -o BatchMode=yes -o StrictHostKeyChecking=no {} soffi@lxplus.cern.ch:'+diskoutputmain+'/{}\n')
             if(opt.download=='test'): outputfile.write('ls *.root | xargs -i cp {} '+diskoutputmain+'/{}\n')
