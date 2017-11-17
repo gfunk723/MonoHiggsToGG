@@ -1,6 +1,5 @@
 import os
 from ROOT import *
-
 from dep.pyapp import *
 from dep.util import *
 from optparse import OptionParser, make_option
@@ -38,6 +37,16 @@ class PlotMaker(pyapp):
     var.append("phi2")
     var.append("r91")
     var.append("r92")
+    var.append("chiso1")
+    var.append("chiso2")
+    var.append("neuiso1")
+    var.append("neuiso2")
+    var.append("phoiso1")
+    var.append("phoiso2")
+    var.append("sieie1")
+    var.append("sieie2")
+    var.append("hoe1")
+    var.append("hoe2")
     var.append("mgg")
     var.append("ptgg")
     var.append("t1pfmetCorr")
@@ -56,7 +65,41 @@ class PlotMaker(pyapp):
     hform["eta2"]        = "20,-3,3"
     hform["r91"]         = "50,0,1.1"
     hform["r92"]         = "50,0,1.1"
+    hform["hoe1"]        = "25,0.,0.025"
+    hform["hoe2"]        = "25,0.,0.025"
+    hform["sieie1"]      = "50,0.,0.03"
+    hform["sieie2"]      = "50,0.,0.03"
+    hform["chiso1"]      = "40,-5,15"
+    hform["chiso2"]      = "40,-5,15"
+    hform["neuiso1"]     = "40,-5,15"
+    hform["neuiso2"]     = "40,-5,15"
+    hform["phoiso1"]     = "40,-5,15"
+    hform["phoiso2"]     = "40,-5,15"
     hform["t1pfmetCorr"] = "70,0,350"
+
+    vname = {}
+    vname["nvtx"]        = "# Vertices"
+    vname["pt1"]         = "p_{T,#gamma1} [GeV]"
+    vname["pt2"]         = "p_{T,#gamma2} [GeV]"
+    vname["ptgg"]        = "p_{T,#gamma#gamma} [GeV]"
+    vname["mgg"]         = "m_{#gamma#gamma} [GeV]"
+    vname["phi1"]        = "#phi_{#gamma1}"
+    vname["phi2"]        = "#phi_{#gamma2}"
+    vname["eta1"]        = "#eta_{1}"
+    vname["eta2"]        = "#eta_{2}"
+    vname["r91"]         = "r9_{1}"
+    vname["r92"]         = "r9_{2}"
+    vname["hoe1"]        = "H/E (#gamma1)"
+    vname["hoe2"]        = "H/E (#gamma2)"
+    vname["sieie1"]      = "#sigma_{i#eta i#eta} (#gamma1)"
+    vname["sieie2"]      = "#sigma_{i#eta i#eta} (#gamma2)"
+    vname["chiso1"]      = "Charged Hadron Iso (#gamma1)"
+    vname["chiso2"]      = "Charged Hadron Iso (#gamma2)"
+    vname["neuiso1"]     = "Neutral Hadron Iso (#gamma1)"
+    vname["neuiso2"]     = "Neutral Hadron Iso (#gamma2)"
+    vname["phoiso1"]     = "Photon Iso (#gamma1)"
+    vname["phoiso2"]     = "Photon Iso (#gamma2)"
+    vname["t1pfmetCorr"] = "Type-1 PF corrected E_{T}^{miss} [GeV]"
 
 
     # --- Path to input files
@@ -70,10 +113,10 @@ class PlotMaker(pyapp):
       trees[channel] = files[channel].Get("DiPhotonTree") 
 
     # --- Plot for each variable
-    for v in var: self.plotVar(options,args,v,channels,trees,hform[v])
+    for v in var: self.plotVar(options,args,v,channels,trees,hform[v],vname[v])
 
 
-  def plotVar(self,opts,args,var,channels,trees,hbins):
+  def plotVar(self,opts,args,var,channels,trees,hbins,vname):
     print("Making plot of : %s" %var)
 
     # --- Blinding
@@ -115,12 +158,16 @@ class PlotMaker(pyapp):
     c.SetLogy(1)
         
     for channel in channels:
-      hist[channel].GetXaxis().SetTitle(var)
+      hist[channel].GetXaxis().SetTitle(vname)
       hist[channel].SetLineColor(color[channel])
       hist[channel].SetMarkerColor(color[channel])
       hist[channel].SetMarkerStyle(style[channel])
       if channel == channels[0]: hist[channel].Draw("PEL")
       else:                      hist[channel].Draw("PEL SAME")      
+
+    # --- Latex
+    texts = []
+    texts.append(add_text(0.15,0.4,0.89,0.99,"#bf{CMS}  Preliminary"))
 
     # --- Legend
     l = ROOT.TLegend(0.55,0.80,0.80,0.88,"","brNDC")
