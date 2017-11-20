@@ -67,16 +67,24 @@ class PlotMaker(pyapp):
     ROOT.TMVA.Tools.Instance()
     factory = ROOT.TMVA.Factory("TMVAClassification", fileout, "!V:!Silent:Color:DrawProgressBar:AnalysisType=Classification")
     loader  = ROOT.TMVA.DataLoader(options.mvatype+"_"+options.sig+options.suffix)
+ 
+    # --- Parse suffix
+    suff  = options.suffix
+    split = suff.split('_')
+    opt = 0
+    for s in split: 
+      if 'opt' in s: opt = int(s[3])
 
     # --- Add the variables to the TMVA factory as floats
     var = []
     var.append('dphiggmet')
     var.append('ptgg')
-    if "opt2" in options.suffix: var.append('t1pfmetCorr')
-    if "opt3" in options.suffix: var.append('nJets30')
-    if "opt3" in options.suffix: var.append('nEle')
-    if "opt3" in options.suffix: var.append('nMuons')
-    if "opt4" in options.suffix: var.append('mgg')
+    if opt >= 2: var.append('t1pfmetCorr')
+    if opt >= 3: var.append('nJets30')
+    if opt >= 3: var.append('nEle')
+    if opt >= 3: var.append('nMuons')
+    if opt >= 4: var.append('phigg')
+    if opt >= 5: var.append('mgg')
     print var
     for v in var:
       if v[0]=="n": loader.AddVariable(v,'I') # integer variables 
