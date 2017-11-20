@@ -8,15 +8,16 @@ void drawGraphs(TString, std::vector<std::pair<TString,TString> >, string, TStri
 
 void compareLimits(){
 
-  TString indir  = "/afs/cern.ch/work/m/mzientek/private/FitDirectory/EXO_7_4_15/src/HiggsAnalysis/CombinedLimit/";
-  TString outdir = "~/www/Plots/13TeV_v80X_moriond17/TestLimits/";
+  TString indir_orig  = "/afs/cern.ch/work/m/mzientek/private/FitDirectory/EXO_7_4_15/src/HiggsAnalysis/CombinedLimit/ntuples4fit_orig/";
+  TString indir_new   = "/afs/cern.ch/work/m/mzientek/private/FitDirectory/CMSSW_8_0_28/src/diphotons/Analysis/macros/ntuples4fit_BDT_opt3_AllBkgs_Test_cic_default_shapes_lumi_35.9/";
+  TString outdir = "~/www/Plots/MonoHgg2017/BDTLimits/";
  
   //--------------------------------------------------------------------
   // choose files and the titles 
   //--------------------------------------------------------------------
   std::vector< std::pair<TString,TString> > fileNames;
-  fileNames.push_back(std::make_pair(TString::Format("%sntuples4fit_orig/graphs_ZpBaryonic_Asymptotic_1.root",indir.Data()),"Original Limits")); 
-  fileNames.push_back(std::make_pair(TString::Format("%sntuples4fit_mDM1/graphs_ZpBaryonic_Asymptotic_1.root",indir.Data()),"New Method Limits")); 
+  fileNames.push_back(std::make_pair(TString::Format("%sgraphs_ZpBaryonic_Asymptotic_1.root",indir_orig.Data()),"Original Limits")); 
+  fileNames.push_back(std::make_pair(TString::Format("%sgraphs_ZpBaryonic_Asymptotic_1.root",indir_new.Data()),"BDT Limits")); 
 
   int num  = fileNames.size();
   std::cout << "Comparing " << num << " limit curves... " << std::endl;

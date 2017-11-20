@@ -8,6 +8,8 @@ class PlotMaker(pyapp):
  
   def __init__(self):
     super(PlotMaker,self).__init__(option_list =[
+      make_option("--plotxsec",action="store_true",dest="do_xsec",
+                  default=False,help="Plot limits in xsec-M plane [default = %default]"),
       make_option("--noext",action="store_false",dest="do_ext",
                   default=True,help="Extend plot to lowest mDM on plot [default = %default]"),
       make_option("--exp",action="store_true",dest="do_exp",
@@ -56,7 +58,7 @@ class PlotMaker(pyapp):
       mR   = Double(0.939*mDM)/(0.939+mDM)
       xsec = Double(c_SI*(mR*mR)/(mMed*mMed*mMed*mMed))
       gout.SetPoint(i,mDM,xsec)
- 
+
   def __call__(self,options,args):
 
     # setup which channels to run   
@@ -104,11 +106,15 @@ class PlotMaker(pyapp):
     for channel in channels:
       tgraph_obs_new[channel] = TGraph()
       tgraph_exp_new[channel] = TGraph()
-      self.__convert__(tgraph_obs[channel],tgraph_obs_new[channel])
-      self.__convert__(tgraph_exp[channel],tgraph_exp_new[channel])
+      if options.do_xsec:
+        self.__convert__(tgraph_obs[channel],tgraph_obs_new[channel])
+        self.__convert__(tgraph_exp[channel],tgraph_exp_new[channel])
+      else:
+        tgraph_obs_new[channel] = tgraph_obs[channel].Clone()
+        tgraph_exp_new[channel] = tgraph_exp[channel].Clone()
 
     # extrapolate
-    if options.do_ext:
+    if options.do_ext and options.do_xsec:
       self.__extrapolate__(tgraph_obs_new, channels, 1)
       self.__extrapolate__(tgraph_exp_new, channels, 1)
 
@@ -117,13 +123,16 @@ class PlotMaker(pyapp):
     C.Divide(2)
     C.cd(1).SetPad(0.0,0,0.75,1.0)
     C.cd(1).SetLeftMargin(0.15)
-    C.cd(1).SetLogx()
-    C.cd(1).SetLogy()
-    frame = C.cd(1).DrawFrame(1,1e-44,2000,2*1e-35)
+    if options.do_xsec: C.cd(1).SetLogy()
+    if options.do_xsec: C.cd(1).SetLogx()
+    if options.do_xsec: frame = C.cd(1).DrawFrame(1,1e-44,2000,2*1e-35)
+    else:               frame = C.cd(1).DrawFrame(0,0,2500,1000)
     C.cd(1).SetTickx()
     C.cd(1).SetTicky()
-    frame.SetXTitle("Dark matter mass m_{DM} [GeV]")
-    frame.SetYTitle("#sigma^{SI}_{DM-nucleon} [cm^{2}]")
+    if options.do_xsec: frame.SetXTitle("Dark matter mass m_{DM} [GeV]")
+    else:               frame.SetXTitle("Mediator mass M_{ med} [GeV]")
+    if options.do_xsec: frame.SetYTitle("#sigma^{SI}_{DM-nucleon} [cm^{2}]")
+    else:               frame.SetYTitle("Dark matter mass m_{DM} [GeV]")
     frame.GetXaxis().SetTitleSize(0.045)
     frame.GetYaxis().SetTitleSize(0.045)
     frame.GetXaxis().SetTitleOffset(1.0)
@@ -179,9 +188,11 @@ class PlotMaker(pyapp):
     whichChannels = ""
     for channel in channels: 
       whichChannels += "_"
-      whichChannels += channel 
-    C.SaveAs(options.outdir+"SpinIndepend_MonoH"+whichChannels+"_Summary.pdf")
-    C.SaveAs(options.outdir+"SpinIndepend_MonoH"+whichChannels+"_Summary.png")
+      whichChannels += channel
+    if options.do_xsec: addname = "XsecDM"
+    else:               addname = "MmedDM" 
+    C.SaveAs(options.outdir+"SpinIndepend_"+addname+"_MonoH"+whichChannels+"_Summary.pdf")
+    C.SaveAs(options.outdir+"SpinIndepend_"+addname+"_MonoH"+whichChannels+"_Summary.png")
 
 # --- Call
 if __name__ == "__main__":
