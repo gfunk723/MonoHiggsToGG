@@ -84,7 +84,7 @@ def run():
     settingsfile.write("\nCuts applied: \n")
     for cut in cuts: 
         if cut[0]=="#": continue 
-        if cut==[]: settingsfile.write("\t n/a \n")
+        if len(cut)==0: settingsfile.write("\t n/a \n")
         else:       settingsfile.write("\t %s \n" %cut)
     settingsfile.write("\nSamples: \n")
     settingsfile.write("\t dir: %s \n"%options.indir)
@@ -104,7 +104,6 @@ def run():
         haddcmd += " "
         haddcmd += options.outdir
         haddcmd += bkg
-        haddcmd += options.ext
         haddcmd += "_new.root"
     print haddcmd
     os.system(haddcmd)
@@ -168,9 +167,9 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
 
     # setup output file & trees
     fOutName = opts.outdir
-    if (sampletype==0): fOutName = fOutName+"sig_"+infile+opts.ext+"_new.root" # signals
-    if (sampletype==1): fOutName = fOutName+infile+opts.ext+"_new.root"        # backgrounds
-    if (sampletype==2): fOutName = fOutName+"Output_Data.root"                 # data
+    if (sampletype==0): fOutName += "sig_"+infile+"_new.root" # signals
+    if (sampletype==1): fOutName += infile+"_new.root"        # backgrounds
+    if (sampletype==2): fOutName += "Output_Data.root"        # data
     fOut = TFile(fOutName,'RECREATE')
     dir1 = "cic" if sampletype==2 else "genmc"
     dir2 = "trees"
@@ -238,10 +237,21 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
     tOutName = [[""]*nPho]*nCat
     for c in range(0,nCat):
         for p in range(0,nPho):
-            tOutName[c][p] = "Data_13TeV_" if sampletype==2 else infile+"_13TeV_"
-            tmpCatStr = cats[c].replace("_","")
-            tmpCatStr = cats[c].replace(":","-")
-            tOutName[c][p] += tmpCatStr.replace(":all","")
+            if sampletype==0: tOutName[c][p] = "sig_"+infile+"_13TeV_"
+            if sampletype==1: tOutName[c][p] = infile+"_13TeV_"
+            if sampletype==2: tOutName[c][p] = "Data_13TeV_" 
+            parse_step1 = cats[c].split("_")
+            varval = parse_step1[0]
+            if varval=="mva": 
+              cutval1 = parse_step1[1].split(":")[0]
+              cutval2 = parse_step1[1].split(":")[1]
+              cutval1 = cutval1[0]+cutval1[2:]
+              if cutval2 != "all": 
+                cutval2 = cutval2[0]+cutval2[2:]
+              tmpCatStr = varval+cutval1+':'+cutval2
+            else: tmpCatStr = cats[c].replace("_","")
+            tmpCatStr = tmpCatStr.replace(":","-")
+            tOutName[c][p] += tmpCatStr.replace("-all","")
             if p!=0: tOutName[c][p] += phoCat[p]
             tOut[c][p].SetName(tOutName[c][p])
             tOut[c][p].Write()
