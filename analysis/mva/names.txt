@@ -1,0 +1,21 @@
+sig BaryonicZp_mZP10000_mChi1
+sig BaryonicZp_mZP1000_mChi1
+sig BaryonicZp_mZP100_mChi1
+sig BaryonicZp_mZP10_mChi1
+sig BaryonicZp_mZP2000_mChi1
+sig BaryonicZp_mZP200_mChi1
+sig BaryonicZp_mZP20_mChi1
+sig BaryonicZp_mZP300_mChi1
+sig BaryonicZp_mZP500_mChi1
+sig BaryonicZp_mZP50_mChi1
+#sig SMS_T2bH_mSb500_mLSP1
+#sig SMS_T2bH_mSb500_mLSP50
+
+bkg NonResBkg
+bkg EwkBkg
+bkg VHToGG
+bkg GluGluHToGG
+bkg ttHJetToGG
+bkg VBFHToGG 
+
+dat DoubleEG

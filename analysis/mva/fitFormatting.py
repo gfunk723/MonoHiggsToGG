@@ -29,8 +29,11 @@ def run():
     bkgs = []
     data = []
     pickupfiles(options.names_file,sigs,bkgs,data)
+    print 'sigs : '
     print sigs
+    print 'bkgs : '
     print bkgs
+    print 'data : '
     print data
 
     # make output dir
@@ -167,9 +170,10 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
 
     # setup output file & trees
     fOutName = opts.outdir
-    if (sampletype==0): fOutName += "sig_"+infile+"_new.root" # signals
-    if (sampletype==1): fOutName += infile+"_new.root"        # backgrounds
-    if (sampletype==2): fOutName += "Output_Data.root"        # data
+    siginfile = infile.replace("BaryonicZp","ZpBaryonic")
+    if (sampletype==0): fOutName += "sig_"+siginfile+"_new.root" # signals
+    if (sampletype==1): fOutName += infile+"_new.root"           # backgrounds
+    if (sampletype==2): fOutName += "Output_Data.root"           # data
     fOut = TFile(fOutName,'RECREATE')
     dir1 = "cic" if sampletype==2 else "genmc"
     dir2 = "trees"
@@ -177,7 +181,15 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
     fOut.cd(dir1)
     fOut.mkdir(dir1+"/"+dir2)
     fOut.cd(dir1+"/"+dir2)
-    tOut = [[tOrig.CloneTree(0)]*nPho]*nCat 
+    #tOut = [[tOrig.CloneTree(0)]*nPho]*nCat
+    tOut = []
+    tOutTmp = [None]*nPho
+    for c in range(0,nCat): 
+     tOut.append([None]*nPho)
+
+    for c in range(0,nCat):
+      for p in range(0,nPho):
+        tOut[c][p] = tOrig.CloneTree(0)  
 
     # run over events of tree 
     for i in range(0,tOrig.GetEntries()):
@@ -223,6 +235,13 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
         fOut.cd(dir1)
         fOut.cd(dir1+"/"+dir2)
         for c in range(0,nCat):
+            for p in range(0,nPho):
+                # rename branches
+                tOut[c][p].SetAlias('mass','mgg')
+                tOut[c][p].SetAlias('leadEta','eta1')
+                tOut[c][p].SetAlias('subleadEta','eta2')
+		tOut[c][p].SetAlias('leadChIso','chiso1')
+                tOut[c][p].SetAlias('subleadChIso','chiso2')
             if passCatSel[c]:
                 tOut[c][0].Fill()         # all
                 if EB : tOut[c][1].Fill() # EB
@@ -237,7 +256,9 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
     tOutName = [[""]*nPho]*nCat
     for c in range(0,nCat):
         for p in range(0,nPho):
-            if sampletype==0: tOutName[c][p] = "sig_"+infile+"_13TeV_"
+            # setup name
+            siginfile.replace("BaryonicZp","ZpBaryonic")
+            if sampletype==0: tOutName[c][p] = "sig_"+siginfile+"_13TeV_"
             if sampletype==1: tOutName[c][p] = infile+"_13TeV_"
             if sampletype==2: tOutName[c][p] = "Data_13TeV_" 
             parse_step1 = cats[c].split("_")
@@ -253,6 +274,7 @@ def formatting(opts,tree_t,sampletype,infile,cuts,cats):
             tmpCatStr = tmpCatStr.replace(":","-")
             tOutName[c][p] += tmpCatStr.replace("-all","")
             if p!=0: tOutName[c][p] += phoCat[p]
+            # save
             tOut[c][p].SetName(tOutName[c][p])
             tOut[c][p].Write()
     # close file
