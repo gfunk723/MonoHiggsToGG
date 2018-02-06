@@ -6,6 +6,11 @@ import re
 import json
 import types
 
+which = 'gg'
+indir = ''
+if (which=='gg'):    indir = 'gg_jsons/'
+if (which=='combo'): indir = 'combo_2HDM/'
+
 doFillAvg = 1
 doFillAvgAll = 1
 
@@ -56,15 +61,15 @@ limitPlotDown2 = ROOT.TH2F("lplotDown2","lplotDown2",binZp,minZp,maxZp,binA0,min
 
 limitPlotObs.GetXaxis().SetTitle("M_{Z'} [GeV]")
 limitPlotObs.GetYaxis().SetTitle("M_{A} [GeV]")
-
+limitPlotObs.GetZaxis().SetTitle("#sigma_{95\% CL}/#sigma_{th}")
 
 i=1
 for a in A:
     j=1
     for z in Z:
         data = {}
-        filename='Zprime'+str(z)+'A'+str(a)+'.json'
-        filenameObs='Zprime'+str(z)+'A'+str(a)+'.json'
+        filename=indir+'Zprime'+str(z)+'A'+str(a)+'.json'
+        filenameObs=indir+'Zprime'+str(z)+'A'+str(a)+'.json'
         #print 'Using filename ' 
         #print filename
         if os.path.isfile(filename):
@@ -446,6 +451,6 @@ leg.Draw()
 
 CMS_lumi(canv,4,0)
 
-limitPlot.SaveAs("test.root")
-canv.Print("test.pdf")
-canv.Print("test.png")
+limitPlot.SaveAs("limits2D_2HDM_"+which+".root")
+canv.Print("limits2D_2HDM_"+which+".pdf")
+canv.Print("limits2D_2HDM_"+which+".png")
