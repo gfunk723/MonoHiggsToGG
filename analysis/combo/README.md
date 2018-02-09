@@ -30,6 +30,7 @@ cp ../CombineTools/scripts/combineTool.py .
 
 ## Pick up files needed for running my tools
 ```
+# for running combine 
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/replaceZpNames.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/combineCards.sh
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/runCombineCards.sh
@@ -37,10 +38,17 @@ wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/runAll.sh
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/launch_job.sh
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/submitjob.tmpl
+# for plotting
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/collect2HDMLimits.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plot2HDM_interpFull.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plotting_interp.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/CMS_lumi.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/crosssectionZp2HDM.txt
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/crosssectionZpBaryonic.txt
 ```
 ## Running locally 
 Do this only for a small num of points because each point takes ~10min to run.
-Once you have things running locally, run in batch! (See next section.)
+Once you have checked things running locally, run in batch! (See next section.)
 
 Run by calling `./combineCards.sh [MODEL] [MASS]` where MASS = mA or mDM. 
 N.B. This script requires that combineTool.py and replaceZpNames.py be in the same dir. you are launching from. 
@@ -56,9 +64,9 @@ N.B. This script requires that combineTool.py and replaceZpNames.py be in the sa
 In principle `./runAll.sh [MODEL]` will launch lxplus batch jobs that run everything. However there are a few files that need modifying to put in your user area / correct inputs.
 
 Details:
-- `runAll.sh` will run `./launch_job.sh [MODEL] [MASS] over A0 or DM masses for [MODEL] = 2HDM or BARY
+- `runAll.sh` will run `./launch_job.sh [MODEL] [MASS]` over A0 or DM masses for [MODEL] = 2HDM or BARY
   if you want to run over different A0 or DM mass points, change **vals_mA**.
-- `launch_job.sh`copies the submitjob.tmpl`and replaces MODEL and MASS in the template to the specified values
+- `launch_job.sh` copies the submitjob.tmpl and replaces MODEL and MASS in the template to the specified values
   making one `submitjob_MODEL_MASS.tmpl` for every specified A0/DM mass in runAll.sh.
   Further, the `launch_job.sh` then takes these new files and sends them to the grid. 
 - The `submitjob.tmpl` **NEEDS to be updated to match your area. Change RUN_DIR**
@@ -68,10 +76,14 @@ Details:
   and then runs `./combineCards.sh [MODEL] [MASS]`.
 - `combineCards.sh` is the starting point for running in local (so see above for more info.) You will need to **specify here 
   the path to the input datacards (ggindir and ttindir)**. Keep in mind, if you use a relative path, that when launching batch jobs, 
-  you will actually be launching a copy of this script from the combo_mMASS dir. Also change in this script manually **vals_mZ** if you want to do something 
+  you will actually be launching a copy of this script from the combo_MODEL_mMASS dir. Also change in this script manually **vals_mZ** if you want to do something 
   other than the standard grid).
 
 ## Plotting
+- Translate higgsCombine output root file to jsons that go into the 2D plots: `python collect2HDMLimits.py`
+  specify: **model** and **indir** (takes root files from [indir]/combo_MODEL_mMASS/results_MASS), also setup needed **mZp and mA values**, and **outdir**. 
+- Weight by cross section: `python scaleByXsec.py` specify: **indir** and **outdir** and **xsecfile**. This script basically collects all of the json files in json format in the indir, finds the corresponding xsec value in the xsec file and rewrites the jsons to outdir/ with values that are orig.value/xsec.
+- Make 2D limit plot (Garrett's script): `python plot2HDM_interpFull.py` specify: **indir** (with weighted jsons), **A** and **Z** values.
  
 
 ## If needed, gg card production:

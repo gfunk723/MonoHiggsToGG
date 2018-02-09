@@ -1,6 +1,7 @@
 import sys, os, re
 
 xsecfile = open('crosssectionZp2HDM.txt','r')
+#xsecfile = open('crosssectionZpBaryonic.txt','r')
 limitpts = os.listdir('.')
 outdir   = 'weighted_limits'
 if not [os.path.isdir(outdir)]: os.mkdir(outdir)

@@ -1,6 +1,8 @@
 import os
 
-indir = 'combo_2HDM_bash_clean/'
+# input directory
+indir  = 'combo_2HDM_bash_clean/'
+outdir = 'combo_2HDM_results/' 
 
 # range of inputs
 mZp = range(600,2050,50)
@@ -19,8 +21,8 @@ for n in rename:
     breakname = breakname.split('A')
     zpname[n] = breakname[0]
     a0name[n] = breakname[1]
-    diname[n] = indir+'combo_m'+a0name[n]+'/results_'+a0name[n]+'/'
+    diname[n] = indir+'combo_'+model+'_m'+a0name[n]+'/results_'+a0name[n]+'/'
 
 for n in rename:
-   cmd = "combineTool.py -M CollectLimits "+n+" "+diname[n]+"*.limit.*"+zpname[n]+"* -o "+n+".json"
+   cmd = "combineTool.py -M CollectLimits "+n+" "+diname[n]+"*.limit.*"+zpname[n]+"* -o "+outdir+n+".json"
    os.system(cmd)
