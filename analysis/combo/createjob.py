@@ -1,14 +1,16 @@
 import sys, os
 
-def run(mass):
+def run(model,mass):
 
   infile  = open('submitjob.tmpl','r')
-  outfile = open('submitjob'+mass+'.tmpl','w')
+  outfile = open('submitjob_'+model+'_'+mass+'.tmpl','w')
   for line in infile:
-    lineout = line.replace('MASS',mass)
+    lineout = line.replace('MODEL',model)
+    lineout = lineout.replace('MASS',mass)
     outfile.write(lineout)
 
 if __name__=="__main__":
 
-  mass=sys.argv[1]
-  run(mass)
+  model=sys.argv[1]
+  mass=sys.argv[2]
+  run(model,mass)

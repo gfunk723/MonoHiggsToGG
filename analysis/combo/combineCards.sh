@@ -3,11 +3,11 @@
 #-----------------------------------------------------------------
 # Runs all scripts to do combination 
 #----------------------------------------------------------------- 
-model="2HDM"
-mass=$1
+model=$1
+mass=$2
 
 #--- Setup directories
-ggindir="../../gg_${model}_param_clean/"
+ggindir="../../gg_${model}/"
 ttindir="../../tt_${model}/"
 
 #--- Setup the range to run over
@@ -27,7 +27,7 @@ for mA in $mass; do
 #for mA in ${vals_mA[@]}; do
 for mZ in ${vals_mZ[@]}; do 
   if [[ $model == "BARY" ]]; then
-    ggcard="datacard_ntuples4fit_pho_allMC_woLepVetos_met50_met130_cic_default_shapes_lumi_35.9_MonoHgg_sig_2HDM_mZP${mZ}_mA0${mA}_13TeV.txt"
+    ggcard="datacard_ntuples4fit_pho_allMC_woLepVetos_met50_met130_cic_default_shapes_lumi_35.9_MonoHgg_sig_ZpBaryonic_mZP${mZ}_mChi${mA}_13TeV.txt"
   fi
   if [[ $model == "2HDM" ]]; then
     #ggcard="datacard_ntuples4fit_pho_met0_met130_cic_default_shapes_lumi_35.9_MonoHgg_sig_2HDM_mZP${mZ}_mA0${mA}_13TeV.txt"  # orig grid

@@ -1,7 +1,8 @@
 #! /bin/sh
 
-mass=$1
-dir="combo_m${mass}"
+model=$1
+mass=$2
+dir="combo_${model}_m${mass}"
 
 mkdir $dir
 cp combineCards.sh   "${dir}/"
@@ -9,4 +10,4 @@ cp combineTool.py    "${dir}/"
 cp replaceZpNames.py "${dir}/"
 
 cd $dir
-./combineCards.sh $mass
+./combineCards.sh $model $mass

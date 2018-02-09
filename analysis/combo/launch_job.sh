@@ -1,10 +1,12 @@
 #!/bin/bash
 
-mass=$1
+model=$1
+mass=$2
+
 echo "Mass ${mass}"
-python createjob.py $mass 
+python createjob.py $model $mass 
 
-chmod 755 submitjob${mass}.tmpl
+chmod 755 submitjob_${model}_${mass}.tmpl
 
-echo "bsub -q 1nd submitjob${mass}.tmpl"
-bsub -q 1nd submitjob${mass}.tmpl
+echo "bsub -q 1nd submitjob_${model}_${mass}.tmpl"
+bsub -q 1nd submitjob_${model}_${mass}.tmpl
