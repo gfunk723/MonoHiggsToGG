@@ -1,7 +1,13 @@
 # Directions for running combination
 
 ## Cards
-Location of cards and current combine output:
+Location of cards, current combine output, and jsons for plotting: 
+dir = `/afs/cern.ch/work/m/mzientek/public/datacards_monoh_combo/`
+
+* 2HDM cards: `[dir]/cards_2HDM/`
+* 2HDM jsons: `[dir]/jsons_2HDM/`
+* BARY cards: `[dir]/cards_BARY/`
+* BARY jsons: `[dir]/jsons_BARY/`
 
 ## Setup combine area
 ```
