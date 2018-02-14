@@ -26,6 +26,8 @@ class PlotMaker(pyapp):
                   default=False,help="Add ww plot [default = %default]"),
       make_option("--dd",action="store_true",dest="do_dd",
                   default=False,help="Add direct detection plots [default = %default]"),
+      make_option("--cmb",action="store_true",dest="do_cmb",
+                  default=False,help="Add combonation results [default = %default]"),
       make_option("--suffix",action="store",dest="suffix",type="string",
                   default="",help="Additional suffix [default = %default]"),
       ])
@@ -65,11 +67,12 @@ class PlotMaker(pyapp):
 
     # setup which channels to run   
     channels = [] 
-    if options.do_gg: channels.append("gg")
-    if options.do_bb: channels.append("bb")
-    if options.do_tt: channels.append("tt")
-    if options.do_zz: channels.append("zz")
-    if options.do_ww: channels.append("ww")
+    if options.do_gg:  channels.append("gg")
+    if options.do_bb:  channels.append("bb")
+    if options.do_tt:  channels.append("tt")
+    if options.do_zz:  channels.append("zz")
+    if options.do_ww:  channels.append("ww")
+    if options.do_cmb: channels.append("cmb")
     print("Make plot for channels: %s" %channels)
 
     # setup direct detection files
@@ -88,7 +91,8 @@ class PlotMaker(pyapp):
     filepath["bb"]       = "";
     filepath["tt"]       = "";
     filepath["zz"]       = "";
-    filepath["ww"]       = ""; 
+    filepath["ww"]       = "";
+    filepath["cmb"]      = ""; 
     filepath["LUX"]      = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/LUX_SI_Combination_Oct2016.txt"
     filepath["PandaX"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/pandax.txt"
     filepath["CDMSlite"] = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/cdmslite2015.txt"
@@ -103,6 +107,7 @@ class PlotMaker(pyapp):
     color["tt"]         = kRed+2
     color["zz"]         = kOrange+9
     color["ww"]         = kViolet+1
+    color["cmb"]        = kViolet
     color["vFloor"]     = kOrange+3
     color["Cresst"]     = kGreen+1
     color["CDMSlite"]   = kGreen+3
@@ -114,6 +119,7 @@ class PlotMaker(pyapp):
     text["tt"]         = "DM + h(#tau#tau)"
     text["zz"]         = "DM + h(ZZ)"
     text["ww"]         = "DM + h(WW)"
+    text["cmb"]        = "DM + h(#gamma#gamma + #tau#tau)"
     text["vFloor"]     = "#nu floor (permeable)"
     text["LUX"]        = "#bf{LUX}"
     text["PandaX"]     = "#bf{PandaX-II}"
