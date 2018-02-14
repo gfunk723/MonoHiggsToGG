@@ -24,6 +24,8 @@ class PlotMaker(pyapp):
                   default=False,help="Add zz plot [default = %default]"),
       make_option("--ww",action="store_true",dest="do_ww",
                   default=False,help="Add ww plot [default = %default]"),
+      make_option("--dd",action="store_true",dest="do_dd",
+                  default=False,help="Add direct detection plots [default = %default]"),
       make_option("--suffix",action="store",dest="suffix",type="string",
                   default="",help="Additional suffix [default = %default]"),
       ])
@@ -67,31 +69,56 @@ class PlotMaker(pyapp):
     if options.do_bb: channels.append("bb")
     if options.do_tt: channels.append("tt")
     if options.do_zz: channels.append("zz")
-    if options.do_ww: channels.append("ww") 
+    if options.do_ww: channels.append("ww")
     print("Make plot for channels: %s" %channels)
+
+    # setup direct detection files
+    dd_channels = []
+    if options.do_dd:
+      print("Also plotting direct detection results") 
+      dd_channels.append('Cresst')
+      dd_channels.append('CDMSlite')
+      dd_channels.append('PandaX')
+      dd_channels.append('LUX')
+      dd_channels.append('vFloor')
 
     # path to input files
     filepath   = {}
-    filepath["gg"] = "~/www/Plots/13TeV_v80X_moriond17/ContourPlots_mine/ContourPlot_OutputFile_BARY.root";
-    filepath["bb"] = "";
-    filepath["tt"] = "";
-    filepath["zz"] = "";
-    filepath["ww"] = ""; 
+    filepath["gg"]       = "~/www/Plots/13TeV_v80X_moriond17/ContourPlots_mine/ContourPlot_OutputFile_BARY.root";
+    filepath["bb"]       = "";
+    filepath["tt"]       = "";
+    filepath["zz"]       = "";
+    filepath["ww"]       = ""; 
+    filepath["LUX"]      = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/LUX_SI_Combination_Oct2016.txt"
+    filepath["PandaX"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/pandax.txt"
+    filepath["CDMSlite"] = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/cdmslite2015.txt"
+    filepath["Cresst"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/cresstii.txt"
+    filepath["vFloor"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/Neutrino_SI.txt"
 
     # style plots
     color = {}
     text  = {}
-    color["gg"] = kMagenta-7
-    color["bb"] = kOrange+3 
-    color["tt"] = kRed+2
-    color["zz"] = kOrange+9
-    color["ww"] = kViolet+1
+    color["gg"]         = kMagenta-7
+    color["bb"]         = kOrange 
+    color["tt"]         = kRed+2
+    color["zz"]         = kOrange+9
+    color["ww"]         = kViolet+1
+    color["vFloor"]     = kOrange+3
+    color["Cresst"]     = kGreen+1
+    color["CDMSlite"]   = kGreen+3
+    color["PandaX"]     = kGreen+2
+    color["LUX"]        = kGreen+4
 
-    text["gg"]  = "DM + H_{#gamma#gamma}"
-    text["bb"]  = "DM + H_{bb}"
-    text["tt"]  = "DM + H_{#tau#tau}"
-    text["zz"]  = "DM + H_{ZZ}"
-    text["ww"]  = "DM + H_{WW}"
+    text["gg"]         = "DM + h(#gamma#gamma)"
+    text["bb"]         = "DM + h(bb)"
+    text["tt"]         = "DM + h(#tau#tau)"
+    text["zz"]         = "DM + h(ZZ)"
+    text["ww"]         = "DM + h(WW)"
+    text["vFloor"]     = "#nu floor (permeable)"
+    text["LUX"]        = "#bf{LUX}"
+    text["PandaX"]     = "#bf{PandaX-II}"
+    text["CDMSlite"]   = "#bf{CDMSlite}"
+    text["Cresst"]     = "#bf{CRESST-II}"
 
     # pick up graphs
     tgraph_obs = {}
@@ -99,6 +126,8 @@ class PlotMaker(pyapp):
     for channel in channels:
       tgraph_obs[channel] = TFile(filepath[channel]).Get("observed_baryonic")
       tgraph_exp[channel] = TFile(filepath[channel]).Get("expected_baryonic")
+    for dd_channel in dd_channels:
+      tgraph_obs[dd_channel] = TGraph(filepath[dd_channel])
 
     # convert to mDM-xsec plane
     tgraph_obs_new = {}
@@ -112,6 +141,12 @@ class PlotMaker(pyapp):
       else:
         tgraph_obs_new[channel] = tgraph_obs[channel].Clone()
         tgraph_exp_new[channel] = tgraph_exp[channel].Clone()
+    for dd_channel in dd_channels:
+      tgraph_obs_new[dd_channel] = TGraph()
+      #if options.do_xsec:
+      #  self.__convert__(tgraph_obs[dd_channel],tgraph_obs_new[dd_channel])
+      #else:
+      tgraph_obs_new[dd_channel] = tgraph_obs[dd_channel].Clone()
 
     # extrapolate
     if options.do_ext and options.do_xsec:
@@ -125,7 +160,7 @@ class PlotMaker(pyapp):
     C.cd(1).SetLeftMargin(0.15)
     if options.do_xsec: C.cd(1).SetLogy()
     if options.do_xsec: C.cd(1).SetLogx()
-    if options.do_xsec: frame = C.cd(1).DrawFrame(1,1e-44,2000,2*1e-35)
+    if options.do_xsec: frame = C.cd(1).DrawFrame(1,1e-47,2000,2*1e-35)
     else:               frame = C.cd(1).DrawFrame(0,0,2500,1000)
     C.cd(1).SetTickx()
     C.cd(1).SetTicky()
@@ -152,12 +187,27 @@ class PlotMaker(pyapp):
       leg1.SetHeader("#splitline{#bf{CMS exclusion 90% CL}}{Vector med., Dirac DM; g_{ q} = 0.25, g_{ DM} = 1.0}")
     else:  
       leg1.SetHeader("#splitline{#bf{CMS observed exclusion 90% CL}}{Vector med., Dirac DM; g_{ q} = 0.25, g_{ DM} = 1.0}") 
+
+    leg2 = C.BuildLegend(0.7,0.05,0.95,0.4)
+    leg2.SetBorderSize(0)
+    leg2.SetTextFont(42)
+    leg2.SetTextSize(0.025)
+    leg2.SetTextAlign(12)
+    leg2.Clear()
+    leg2.SetHeader("#bf{DD observed exclusion 90% CL}")
+
     for channel in channels:
       if options.do_exp: 
         leg1.AddEntry(tgraph_obs_new[channel],text[channel]+" (Observed)","FL")
         leg1.AddEntry(tgraph_exp_new[channel],text[channel]+" (Expected)","L")
       else:  
         leg1.AddEntry(tgraph_obs_new[channel],text[channel],"L")
+    for dd_channel in dd_channels:
+        if dd_channel == "LUX"          : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1608.07648]}}","L") 
+        elif dd_channel == "PandaX"     : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1607.07400]}}","L")
+        elif dd_channel == "CDMSlite"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.02448]}}","L")
+        elif dd_channel == "Cresst"     : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.01515]}}","L")
+
 
     # draw
     C.cd(2).SetPad(0.75,0.0,1.0,1.0)
@@ -166,6 +216,21 @@ class PlotMaker(pyapp):
     C.Update()
 
     gStyle.SetHatchesLineWidth(2)
+
+    # draw direct detection results
+    for dd_channel in dd_channels:
+      print dd_channel
+      tgraph_obs_new[dd_channel].SetLineColor(color[dd_channel])
+      if dd_channel=="vFloor":  
+         tgraph_obs_new[dd_channel].SetLineWidth(-102)
+         #tgraph_obs_new[dd_channel].Draw("same")
+      else:
+         tgraph_obs_new[dd_channel].SetFillColor(kWhite)
+         tgraph_obs_new[dd_channel].SetFillStyle(4001)
+         tgraph_obs_new[dd_channel].SetLineWidth(2)
+         tgraph_obs_new[dd_channel].Draw("same")
+
+    # draw monoH channels
     for channel in channels:
       tgraph_obs_new[channel].SetLineColor(color[channel])
       tgraph_obs_new[channel].SetFillColor(color[channel])
