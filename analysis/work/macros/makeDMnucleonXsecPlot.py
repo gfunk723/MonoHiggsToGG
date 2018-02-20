@@ -51,7 +51,7 @@ class PlotMaker(pyapp):
           xsec = Double(0)
           gin[channel].GetPoint(i,mDM,xsec)
           gout[channel].SetPoint(i+num_extr,mDM,xsec)
-    gin[channel] = gout[channel] 
+      gin[channel] = gout[channel] 
 
   def __convert__(self,gin,gout): 
     c_SI = 6.9e-41*1e12
@@ -87,39 +87,39 @@ class PlotMaker(pyapp):
 
     # path to input files
     filepath   = {}
-    filepath["gg"]       = "~/www/Plots/13TeV_v80X_moriond17/ContourPlots_mine/ContourPlot_OutputFile_BARY.root";
+    filepath["cmb"]      = "~soffi/public/4MonoH/combo_inputs_90pCL.root"; 
+    filepath["gg"]       = "~soffi/public/4MonoH/gg_inputs_90pCL.root";
+    filepath["tt"]       = "~soffi/public/4MonoH/tt_inputs_90pCL.root";
     filepath["bb"]       = "";
-    filepath["tt"]       = "";
     filepath["zz"]       = "";
     filepath["ww"]       = "";
-    filepath["cmb"]      = ""; 
-    filepath["LUX"]      = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/LUX_SI_Combination_Oct2016.txt"
-    filepath["PandaX"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/pandax.txt"
-    filepath["CDMSlite"] = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/cdmslite2015.txt"
-    filepath["Cresst"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/cresstii.txt"
-    filepath["vFloor"]   = "/afs/cern.ch/work/m/mzientek/private/MetxCombo2016/DD/SI/Neutrino_SI.txt"
+    filepath["LUX"]      = "~mzientek/public/DD/LUX_SI_Combination_Oct2016.txt"
+    filepath["PandaX"]   = "~mzientek/public/DD/pandax.txt"
+    filepath["CDMSlite"] = "~mzientek/public/DD/cdmslite2015.txt"
+    filepath["Cresst"]   = "~mzientek/public/DD/cresstii.txt"
+    filepath["vFloor"]   = "~mzientek/public/DD/Neutrino_SI.txt"
 
     # style plots
     color = {}
     text  = {}
-    color["gg"]         = kMagenta-7
+    color["cmb"]        = kViolet+3 
+    color["gg"]         = kViolet+1
+    color["tt"]         = kViolet-2
     color["bb"]         = kOrange 
-    color["tt"]         = kRed+2
     color["zz"]         = kOrange+9
     color["ww"]         = kViolet+1
-    color["cmb"]        = kViolet
     color["vFloor"]     = kOrange+3
     color["Cresst"]     = kGreen+1
     color["CDMSlite"]   = kGreen+3
     color["PandaX"]     = kGreen+2
     color["LUX"]        = kGreen+4
 
-    text["gg"]         = "DM + h(#gamma#gamma)"
-    text["bb"]         = "DM + h(bb)"
-    text["tt"]         = "DM + h(#tau#tau)"
-    text["zz"]         = "DM + h(ZZ)"
-    text["ww"]         = "DM + h(WW)"
-    text["cmb"]        = "DM + h(#gamma#gamma + #tau#tau)"
+    text["gg"]         = "#bf{DM + h(#gamma#gamma)}"
+    text["bb"]         = "#bf{DM + h(bb)}"
+    text["tt"]         = "#bf{DM + h(#tau#tau)}"
+    text["zz"]         = "#bf{DM + h(ZZ)}"
+    text["ww"]         = "#bf{DM + h(WW)}"
+    text["cmb"]        = "#bf{DM + h(#gamma#gamma + #tau#tau)}"
     text["vFloor"]     = "#nu floor (permeable)"
     text["LUX"]        = "#bf{LUX}"
     text["PandaX"]     = "#bf{PandaX-II}"
@@ -130,8 +130,8 @@ class PlotMaker(pyapp):
     tgraph_obs = {}
     tgraph_exp = {}
     for channel in channels:
-      tgraph_obs[channel] = TFile(filepath[channel]).Get("observed_baryonic")
-      tgraph_exp[channel] = TFile(filepath[channel]).Get("expected_baryonic")
+      tgraph_obs[channel] = TFile(filepath[channel]).Get("observed_curve")
+      tgraph_exp[channel] = TFile(filepath[channel]).Get("expected_curve")
     for dd_channel in dd_channels:
       tgraph_obs[dd_channel] = TGraph(filepath[dd_channel])
 
@@ -162,8 +162,9 @@ class PlotMaker(pyapp):
     # canvas
     C = TCanvas("C","C",1000,600)
     C.Divide(2)
-    C.cd(1).SetPad(0.0,0,0.75,1.0)
+    C.cd(1).SetPad(0.0,0,0.75,0.99)
     C.cd(1).SetLeftMargin(0.15)
+    C.cd(1).SetBottomMargin(0.15)
     if options.do_xsec: C.cd(1).SetLogy()
     if options.do_xsec: C.cd(1).SetLogx()
     if options.do_xsec: frame = C.cd(1).DrawFrame(1,1e-47,2000,2*1e-35)
@@ -176,12 +177,12 @@ class PlotMaker(pyapp):
     else:               frame.SetYTitle("Dark matter mass m_{DM} [GeV]")
     frame.GetXaxis().SetTitleSize(0.045)
     frame.GetYaxis().SetTitleSize(0.045)
-    frame.GetXaxis().SetTitleOffset(1.0)
+    frame.GetXaxis().SetTitleOffset(1.5)
     frame.GetYaxis().SetTitleOffset(1.5)
     
     # legends
     texts = []
-    texts.append(add_text(0.15,0.4,0.89,0.99,"#bf{CMS} Preliminary"))
+    texts.append(add_text(0.15,0.4,0.89,0.99,"#bf{CMS}            "))
 
     leg1 = C.BuildLegend(0.7,0.4,0.95,0.95)
     leg1.SetBorderSize(0)
@@ -204,15 +205,15 @@ class PlotMaker(pyapp):
 
     for channel in channels:
       if options.do_exp: 
-        leg1.AddEntry(tgraph_obs_new[channel],text[channel]+" (Observed)","FL")
-        leg1.AddEntry(tgraph_exp_new[channel],text[channel]+" (Expected)","L")
+        leg1.AddEntry(tgraph_obs_new[channel],text[channel]+" Observed (35.9 fb^{-1}) ","FL")
+        leg1.AddEntry(tgraph_exp_new[channel],text[channel]+" Expected ","L")
       else:  
-        leg1.AddEntry(tgraph_obs_new[channel],text[channel],"L")
+        leg1.AddEntry(tgraph_obs_new[channel],text[channel],"  (35.9 fb^{-1}) ","FL")
     for dd_channel in dd_channels:
-        if dd_channel == "LUX"          : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1608.07648]}}","L") 
-        elif dd_channel == "PandaX"     : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1607.07400]}}","L")
-        elif dd_channel == "CDMSlite"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.02448]}}","L")
-        elif dd_channel == "Cresst"     : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.01515]}}","L")
+        if dd_channel == "LUX"        : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1608.07648]}}","L") 
+        elif dd_channel == "PandaX"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1607.07400]}}","L")
+        elif dd_channel == "CDMSlite" : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.02448]}}","L")
+        elif dd_channel == "Cresst"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.01515]}}","L")
 
 
     # draw
@@ -255,7 +256,7 @@ class PlotMaker(pyapp):
       tgraph_exp_new[channel].SetLineStyle(kDashed)
       if options.do_exp : tgraph_exp_new[channel].Draw("same")   
 
-    C.cd(1).RedrawAxis()
+    #C.cd(1).RedrawAxis()
     whichChannels = ""
     for channel in channels: 
       whichChannels += "_"
