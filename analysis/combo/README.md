@@ -24,11 +24,12 @@ git checkout v6.3.1
 scramv1 b clean; scramv1 b # always make a clean build, as scram doesn't always see updates to src/LinkDef.h
 
 # Setup combine harvester
+cd $CMSSW_BASE/src/
 git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester
 scram b
 
 # Setup area to run 
-cd $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/CombineHarvester/
+cd $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/
 mkdir MonoHCombo
 cd MonoHCombo/
 cp ../CombineTools/scripts/combineTool.py .
@@ -46,6 +47,7 @@ wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/submitjob.tmpl
 # for plotting
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/collect2HDMLimits.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plot1DlimitsAll.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plot2HDM_interpFull.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plotting_interp.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/CMS_lumi.py
@@ -89,8 +91,8 @@ Details:
 - Translate higgsCombine output root file to jsons that go into the 2D plots: `python collect2HDMLimits.py`
   specify: **model** and **indir** (takes root files from [indir]/combo_MODEL_mMASS/results_MASS), also setup needed **mZp and mA values**, and **outdir**. 
 - Weight by cross section: `python scaleByXsec.py` specify: **indir** and **outdir** and **xsecfile**. This script basically collects all of the json files in json format in the indir, finds the corresponding xsec value in the xsec file and rewrites the jsons to outdir/ with values that are orig.value/xsec.
+- Make 1D limit plots: `python plot1DlimitsAll.py [MODEL] [MASS]` specify: **outdir** in the script. 
 - Make 2D limit plot (Garrett's script): `python plot2HDM_interpFull.py` specify: **indir** (with weighted jsons), **A** and **Z** values.
- 
 
 ## If needed, gg card production:
 - Make cards (https://github.com/mez34/MonoHiggsToGG/blob/master/analysis/work/macros/makeGenericDataCard.py)
