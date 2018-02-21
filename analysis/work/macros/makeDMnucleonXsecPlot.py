@@ -83,6 +83,7 @@ class PlotMaker(pyapp):
       dd_channels.append('CDMSlite')
       dd_channels.append('PandaX')
       dd_channels.append('LUX')
+      dd_channels.append('XENON1T')
       dd_channels.append('vFloor')
 
     # path to input files
@@ -98,6 +99,7 @@ class PlotMaker(pyapp):
     filepath["CDMSlite"] = "~mzientek/public/DD/cdmslite2015.txt"
     filepath["Cresst"]   = "~mzientek/public/DD/cresstii.txt"
     filepath["vFloor"]   = "~mzientek/public/DD/Neutrino_SI.txt"
+    filepath["XENON1T"]  = "~mzientek/public/DD/xenon1t.txt"
 
     # style plots
     color = {}
@@ -113,6 +115,7 @@ class PlotMaker(pyapp):
     color["CDMSlite"]   = kGreen+3
     color["PandaX"]     = kGreen+2
     color["LUX"]        = kGreen+4
+    color["XENON1T"]    = kGreen-5
 
     text["gg"]         = "#bf{DM + h(#gamma#gamma)}"
     text["bb"]         = "#bf{DM + h(bb)}"
@@ -125,6 +128,7 @@ class PlotMaker(pyapp):
     text["PandaX"]     = "#bf{PandaX-II}"
     text["CDMSlite"]   = "#bf{CDMSlite}"
     text["Cresst"]     = "#bf{CRESST-II}"
+    text["XENON1T"]    = "#bf{XENON1T}"
 
     # pick up graphs
     tgraph_obs = {}
@@ -214,7 +218,7 @@ class PlotMaker(pyapp):
         elif dd_channel == "PandaX"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1607.07400]}}","L")
         elif dd_channel == "CDMSlite" : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.02448]}}","L")
         elif dd_channel == "Cresst"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1509.01515]}}","L")
-
+        elif dd_channel == "XENON1T"  : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1705.06655]}}","L")
 
     # draw
     C.cd(2).SetPad(0.75,0.0,1.0,1.0)
