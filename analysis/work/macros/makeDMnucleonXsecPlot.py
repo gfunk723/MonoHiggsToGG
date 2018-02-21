@@ -153,9 +153,6 @@ class PlotMaker(pyapp):
         tgraph_exp_new[channel] = tgraph_exp[channel].Clone()
     for dd_channel in dd_channels:
       tgraph_obs_new[dd_channel] = TGraph()
-      #if options.do_xsec:
-      #  self.__convert__(tgraph_obs[dd_channel],tgraph_obs_new[dd_channel])
-      #else:
       tgraph_obs_new[dd_channel] = tgraph_obs[dd_channel].Clone()
 
     # extrapolate
@@ -172,7 +169,7 @@ class PlotMaker(pyapp):
     if options.do_xsec: C.cd(1).SetLogy()
     if options.do_xsec: C.cd(1).SetLogx()
     if options.do_xsec: frame = C.cd(1).DrawFrame(1,1e-47,2000,2*1e-35)
-    else:               frame = C.cd(1).DrawFrame(0,0,2500,1000)
+    else:               frame = C.cd(1).DrawFrame(0,0,1500,500)
     C.cd(1).SetTickx()
     C.cd(1).SetTicky()
     if options.do_xsec: frame.SetXTitle("Dark matter mass m_{DM} [GeV]")
@@ -205,7 +202,7 @@ class PlotMaker(pyapp):
     leg2.SetTextSize(0.025)
     leg2.SetTextAlign(12)
     leg2.Clear()
-    leg2.SetHeader("#bf{DD observed exclusion 90% CL}")
+    if options.do_dd and options.do_xsec: leg2.SetHeader("#bf{DD observed exclusion 90% CL}")
 
     for channel in channels:
       if options.do_exp: 
