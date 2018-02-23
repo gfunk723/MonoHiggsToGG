@@ -1,10 +1,13 @@
 import sys, os, re
 
-xsecfile = open('crosssectionZp2HDM.txt','r')
-#xsecfile = open('crosssectionZpBaryonic.txt','r')
-limitpts = os.listdir('.')
-outdir   = 'weighted_limits'
-if not [os.path.isdir(outdir)]: os.mkdir(outdir)
+model = "2HDM"
+which = "tt"
+indir = 'json/'+which+'_'+model+'_results/' 
+if model=="2HDM": xsecfile = open('crosssectionZp2HDM.txt','r')
+if model=="BARY": xsecfile = open('crosssectionZpBaryonic.txt','r')
+limitpts = os.listdir(indir)
+outdir   = which+'_'+model+'_weighted_results'
+if not(os.path.isdir(outdir)): os.mkdir(outdir) 
 
 # pick up limit files
 regex = re.compile('Zprime.*json')
@@ -36,10 +39,11 @@ for l in lfile:
   zp   = name[0]
   a0   = name[1]
   findmass = zp+'_'+a0
+  if findmass not in mass: continue # don't make json for pts that don't have xsec
   xsecwgt  = xsecs[findmass] 
 
   # open new file
-  json_orig = open(l,'r')
+  json_orig = open(indir+l,'r')
   json_new  = open(outdir+'/'+l,'w')
 
   # loop over 

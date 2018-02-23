@@ -18,23 +18,23 @@ def run(opts):
   model   = opts.model
   which   = opts.which
   outdir  = opts.outdir
-  doScale = opts.dowgt
+  do90    = opts.do90
+  dowgt   = opts.dowgt
  
   # --- read in files
   indir = '/eos/cms/store/group/phys_exotica/MonoHgg/MonoH-COMBO-2016/'+model+'_jsons/'
-  if opts.dowgt: wfile = ''
-  else:          wfile = '_weighted'
-  if opts.do90:  indir += which+'_'+model+wfile'_results_90CL/' 
-  else:          indir += which+'_'+model+wfile'_results/'
+  if dowgt: wfile = ''
+  else:     wfile = '_weighted'
+  if do90:  indir += which+'_'+model+wfile+'_results_90CL/' 
+  else:     indir += which+'_'+model+wfile+'_results/'
 
   # --- options for plot averaging
-  doFillAvgLow   = True  # do averaging below line
-  doFillAvgHigh  = True  # do averaging above line
+  doFillAvgLow   = True  # do averaging below mMed = 2*mDM line
+  doFillAvgHigh  = True  # do averaging above mMed = 2*mDM line
   if model=="2HDM": doFillAvgLow  = False
   if model=="2HDM": doFillAvgHigh = False
-  doFillAvgRest  = True  # do averaging at line
+  doFillAvgRest  = True  # do averaging at line or average normally
   doFillAvgAll   = True  # do averaging for all plots not just observed
-  binsPerPoint = 1
 
   # --- setup general style 
   ROOT.gROOT.SetBatch(ROOT.kTRUE)
@@ -73,19 +73,19 @@ def run(opts):
 
   # --- setup histograms (different models have different binning)
   if model=="2HDM":
-    limitPlot      = ROOT.TH2F("lplot","lplot",binsPerPoint*len(Z),Z[0],Z[-1]+50,binsPerPoint*len(A),A[0],A[-1]+25)
-    limitPlotObs   = ROOT.TH2F("lplotObs","lplotObs",binsPerPoint*len(Z),Z[0],Z[-1]+50,binsPerPoint*len(A),A[0],A[-1]+25)
-    limitPlotUp    = ROOT.TH2F("lplotU","lplotU",binsPerPoint*len(Z),Z[0],Z[-1]+50,binsPerPoint*len(A),A[0],A[-1]+25)
-    limitPlotDown  = ROOT.TH2F("lplotDown","lplotDown",binsPerPoint*len(Z),Z[0],Z[-1]+50,binsPerPoint*len(A),A[0],A[-1]+25)
-    limitPlotUp2   = ROOT.TH2F("lplotU2","lplotU2",binsPerPoint*len(Z),Z[0],Z[-1]+50,binsPerPoint*len(A),A[0],A[-1]+25)
-    limitPlotDown2 = ROOT.TH2F("lplotDown2","lplotDown2",binsPerPoint*len(Z),Z[0],Z[-1]+50,binsPerPoint*len(A),A[0],A[-1]+25)
-  if model=="BARY":
-    limitPlot      = ROOT.TH2F("lplot","lplot",len(Z),array('d',BinningZ),len(A),array('d',BinningA))
-    limitPlotObs   = ROOT.TH2F("lplotObs","lplotObs",len(Z),array('d',BinningZ),len(A),array('d',BinningA))
-    limitPlotUp    = ROOT.TH2F("lplotU","lplotU",len(Z),array('d',BinningZ),len(A),array('d',BinningA))
-    limitPlotDown  = ROOT.TH2F("lplotDown","lplotDown",len(Z),array('d',BinningZ),len(A),array('d',BinningA))
-    limitPlotUp2   = ROOT.TH2F("lplotU2","lplotU2",len(Z),array('d',BinningZ),len(A),array('d',BinningA))
-    limitPlotDown2 = ROOT.TH2F("lplotDown2","lplotDown2",len(Z),array('d',BinningZ),len(A),array('d',BinningA))
+    limitPlot      = ROOT.TH2F("lplot",      "lplot",      len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+    limitPlotObs   = ROOT.TH2F("lplotObs",   "lplotObs",   len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+    limitPlotUp    = ROOT.TH2F("lplotU",     "lplotU",     len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+    limitPlotDown  = ROOT.TH2F("lplotDown",  "lplotDown",  len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+    limitPlotUp2   = ROOT.TH2F("lplotU2",    "lplotU2",    len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+    limitPlotDown2 = ROOT.TH2F("lplotDown2", "lplotDown2", len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+  if model=="BARY": # variable binning
+    limitPlot      = ROOT.TH2F("lplot",      "lplot",      len(Z), array('d',BinningZ), len(A), array('d',BinningA))
+    limitPlotObs   = ROOT.TH2F("lplotObs",   "lplotObs",   len(Z), array('d',BinningZ), len(A), array('d',BinningA))
+    limitPlotUp    = ROOT.TH2F("lplotU",     "lplotU",     len(Z), array('d',BinningZ), len(A), array('d',BinningA))
+    limitPlotDown  = ROOT.TH2F("lplotDown",  "lplotDown",  len(Z), array('d',BinningZ), len(A), array('d',BinningA))
+    limitPlotUp2   = ROOT.TH2F("lplotU2",    "lplotU2",    len(Z), array('d',BinningZ), len(A), array('d',BinningA))
+    limitPlotDown2 = ROOT.TH2F("lplotDown2", "lplotDown2", len(Z), array('d',BinningZ), len(A), array('d',BinningA))
 
   # --- read in json files
   for a in A:
@@ -95,11 +95,11 @@ def run(opts):
       if which=='gg' and model=='BARY': # BARY gg ONLY has DM instead of A in filename 
         filename = indir+'Zprime'+str(z)+'DM'+str(a)+'.json' 
       scale = 1.
-      if doScale: scale = scaleXS(model,z,a)
+      if dowgt: scale = scaleXS(model,z,a)
       if os.path.isfile(filename) and scale != "99999":
          with open(filename) as jsonfile:
           data = json.load(jsonfile)
-          for key in data:
+          for key in data: # fill plots from json
             limitPlot.SetBinContent(limitPlot.GetXaxis().FindBin(float(z)),limitPlot.GetYaxis().FindBin(float(a)),float(scale)*data[key][u'exp0'])
             limitPlotUp.SetBinContent(limitPlotUp.GetXaxis().FindBin(float(z)),limitPlot.GetYaxis().FindBin(float(a)),float(scale)*data[key][u'exp+1'])
             limitPlotDown.SetBinContent(limitPlotDown.GetXaxis().FindBin(float(z)),limitPlot.GetYaxis().FindBin(float(a)),float(scale)*data[key][u'exp-1'])
@@ -108,28 +108,25 @@ def run(opts):
             limitPlotObs.SetBinContent(limitPlotObs.GetXaxis().FindBin(float(z)),limitPlot.GetYaxis().FindBin(float(a)),float(scale)*data[key][u'obs'])
 
   # --- average plots to make smooth contours
-  if doFillAvgLow:  fillAvgLow(limitPlotObs,A,Z)
-  if doFillAvgHigh: fillAvgHigh(limitPlotObs,A,Z)
-  if doFillAvgRest: fillAvgRest(limitPlotObs,A,Z)
-  if doFillAvgAll:
-    if doFillAvgLow:
-      fillAvgLow(limitPlot,A,Z)
-      fillAvgLow(limitPlotUp,A,Z)
-      fillAvgLow(limitPlotDown,A,Z)
-      fillAvgLow(limitPlotUp2,A,Z)
-      fillAvgLow(limitPlotDown2,A,Z)
-    if doFillAvgHigh: 
-      fillAvgHigh(limitPlot,A,Z)
-      fillAvgHigh(limitPlotUp,A,Z)
-      fillAvgHigh(limitPlotDown,A,Z)
-      fillAvgHigh(limitPlotUp2,A,Z)
-      fillAvgHigh(limitPlotDown2,A,Z)
-    if doFillAvgRest: 
-      fillAvgRest(limitPlot,A,Z)
-      fillAvgRest(limitPlotUp,A,Z)
-      fillAvgRest(limitPlotDown,A,Z)
-      fillAvgRest(limitPlotUp2,A,Z)
-      fillAvgRest(limitPlotDown2,A,Z)
+  fillAvg(limitPlotObs, A, Z, doFillAvgLow, False,  False)
+  fillAvg(limitPlotObs, A, Z, False, doFillAvgHigh, False)
+  fillAvg(limitPlotObs, A, Z, False, False, doFillAvgRest)
+  if doFillAvgAll: 
+    fillAvg(limitPlot,      A, Z, doFillAvgLow, False,  False)
+    fillAvg(limitPlotUp,    A, Z, doFillAvgLow, False,  False)
+    fillAvg(limitPlotDown,  A, Z, doFillAvgLow, False,  False)
+    fillAvg(limitPlotUp2,   A, Z, doFillAvgLow, False,  False)
+    fillAvg(limitPlotDown2, A, Z, doFillAvgLow, False,  False)
+    fillAvg(limitPlot,      A, Z, False, doFillAvgHigh, False)
+    fillAvg(limitPlotUp,    A, Z, False, doFillAvgHigh, False)
+    fillAvg(limitPlotDown,  A, Z, False, doFillAvgHigh, False)
+    fillAvg(limitPlotUp2,   A, Z, False, doFillAvgHigh, False)
+    fillAvg(limitPlotDown2, A, Z, False, doFillAvgHigh, False)
+    fillAvg(limitPlot,      A, Z, False, False, doFillAvgRest)
+    fillAvg(limitPlotUp,    A, Z, False, False, doFillAvgRest)
+    fillAvg(limitPlotDown,  A, Z, False, False, doFillAvgRest)
+    fillAvg(limitPlotUp2,   A, Z, False, False, doFillAvgRest)
+    fillAvg(limitPlotDown2, A, Z, False, False, doFillAvgRest)
 
   # --- axis labels 
   limitPlotObs.GetXaxis().SetTitle("M_{Z'} [GeV]")
@@ -140,6 +137,11 @@ def run(opts):
   # --- set up min and max of z axis
   limitPlotObs.SetMaximum(100)
   limitPlotObs.SetMinimum(0.3)
+  # --- set range of x and y axis
+  if model=="BARY": limitPlotObs.GetXaxis().SetRangeUser(10,2000)
+  if model=="BARY": limitPlotObs.GetYaxis().SetRangeUser(1,1000)
+  if model=="2HDM": limitPlotObs.GetXaxis().SetRangeUser(450,2000)
+  if model=="2HDM": limitPlotObs.GetYaxis().SetRangeUser(300,700)
 
   # --- style plot
   limitPlotObs.GetYaxis().SetTitleOffset(0.95) # format axis labels 
@@ -224,93 +226,42 @@ def run(opts):
     canv.Print(outdir+'limits2D_'+model+'_'+which+'.pdf')
     canv.Print(outdir+'limits2D_'+model+'_'+which+'.png')
 
-def fillAvgLow(limitPlot,A,Z):
-  for i in range(1,limitPlot.GetNbinsY()+1):
-    for j in reversed(range (1,limitPlot.GetNbinsX()+1)):
+def fillAvg(limitPlot,A,Z,doL,doH,doR):
+  # --- ordering for each option
+  irange = range(1,limitPlot.GetNbinsY()+1)
+  jrange = range(1,limitPlot.GetNbinsX()+1)
+  if doL: jrange = list(reversed(range(1,limitPlot.GetNbinsX()+1)))
+  if doH: irange = list(reversed(range(1,limitPlot.GetNbinsY()+1)))
+
+  # --- average over 4 adjacent bins
+  for i in irange:
+    for j in jrange:
       aVal = A[i-1]
       zVal = Z[j-1]
       binVal = str(limitPlot.GetBinContent(j,i))
-      if binVal == "0.0" and 2*float(aVal) < float(zVal):  
+      # --- only if bin is 0 do averaging
+      if binVal == "0.0" and ((doL and 2*float(aVal) < float(zVal)) or (doH and 2*float(aVal) > float(zVal)) or (doR)):
         avg = 0.0
         div = 0.0
         back = limitPlot.GetBinContent(j-1,i)
-        if back != 0.0 and back < 50.:
+        forw = limitPlot.GetBinContent(j+1,i)
+        down = limitPlot.GetBinContent(j,i-1)
+        abov = limitPlot.GetBinContent(j,i+1)
+        if back != 0.0 and ((doL and back < 50.) or (doH and back > 50.) or (doR)):
           avg += back
           div += 1
-        forward = limitPlot.GetBinContent(j+1,i)
-        if forward != 0.0 and forward < 50.:
-          avg += forward
+        if forw != 0.0 and ((doL and forw < 50.) or (doH and forw > 50.) or (doR)):
+          avg += forw 
           div += 1
-        down = limitPlot.GetBinContent(j,i-1)
-        if down != 0.0 and down < 50.:
+        if down != 0.0 and ((doL and down < 50.) or (doH and down > 50.) or (doR)):
           avg += down
           div += 1
-        up = limitPlot.GetBinContent(j,i+1)
-        if up != 0.0 and up < 50.:
-          avg += up
+        if abov != 0.0 and ((doL and abov < 50.) or (doH and abov > 50.) or (doR)):
+          avg += abov
           div += 1
-        if div !=0:
+        if div != 0:
           avg = avg/div
           limitPlot.SetBinContent(j,i,avg)
-
-def fillAvgHigh(limitPlot,A,Z):
- for j in range (1,limitPlot.GetNbinsX()+1):
-   for i in  reversed(range(1,limitPlot.GetNbinsY()+1)):
-      aVal = A[i-1]
-      zVal = Z[j-1]
-      binVal = str(limitPlot.GetBinContent(j,i))
-      if binVal == "0.0" and 2*float(aVal) > float(zVal):
-        avg = 0.0
-        div = 0.0
-        back = limitPlot.GetBinContent(j-1,i)
-        if  back != 0.0 and  back > 50.:
-          avg += back
-          div += 1
-        forward = limitPlot.GetBinContent(j+1,i)
-        if forward != 0.0 and forward > 50.:
-          avg += forward
-          div += 1
-        down = limitPlot.GetBinContent(j,i-1)
-        if down != 0.0 and down > 50.:
-          avg += down
-          div += 1
-        up = limitPlot.GetBinContent(j,i+1)
-        if up != 0.0 and up > 50.:
-          avg += up
-          div += 1
-        if div !=0:
-          avg = avg/div
-          limitPlot.SetBinContent(j,i,avg)
-
-def fillAvgRest(limitPlot,A,Z):
-  for i in range (1,limitPlot.GetNbinsY()+1):
-    for j in range (1,limitPlot.GetNbinsX()+1):
-      aVal = A[i-1]
-      zVal = Z[j-1]
-      binVal = str(limitPlot.GetBinContent(j,i))
-      if binVal == "0.0":
-        avg = 0.0
-        div = 0.0
-        back = limitPlot.GetBinContent(j-1,i)
-        if back != 0.0:
-          avg += back
-          div += 1
-        forward = limitPlot.GetBinContent(j+1,i)
-        if forward != 0.0:
-          avg += forward
-          div += 1
-        down = limitPlot.GetBinContent(j,i-1)
-        if down != 0.0:
-          avg += down
-          div += 1
-        up = limitPlot.GetBinContent(j,i+1)
-        if up != 0.0:
-          avg += up
-          div += 1
-        if div !=0:
-          avg = avg/div
-          limitPlot.SetBinContent(j,i,avg)
-
 
 def InvertPalette():
    # --- Function to make inverted kBird palette

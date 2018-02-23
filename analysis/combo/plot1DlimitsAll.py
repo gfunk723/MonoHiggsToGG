@@ -9,9 +9,11 @@ import plotting_interp as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 plot.ModTDRStyle()
 
-def run(model,m1):
+def run(model,m1,obs,outdir):
  
-  outdir = '~/www/Plots/13TeV_v80X_moriond17/PaperPlots/'
+  addtxt = ''
+  if obs: addtxt='_obs'
+  do_prel = True # Write "Preliminary" on plots  
 
   channels = []
   channels.append('gg') # gamgam
@@ -88,6 +90,9 @@ def run(model,m1):
     tgraphs_exp[c].SetLineStyle(7)
     tgraphs_exp[c].SetLineWidth(3)
     tgraphs_exp[c].SetFillColor(0)
+    if c=='cm': 
+      tgraphs_exp[c].SetFillColor(color[c])
+      tgraphs_exp[c].SetFillStyle(3013)
     # observed
     tgraphs_obs[c].SetLineWidth(3)
     tgraphs_obs[c].SetMarkerStyle(33)
@@ -114,6 +119,7 @@ def run(model,m1):
   # theory
   tgraphs_the[channels[0]].SetMaximum(15)
   tgraphs_the[channels[0]].SetMinimum(0.01)
+  #tgraphs_the[channels[0]].GetXaxis().SetMoreLogLabels()
   if (model=="2HDM"): tgraphs_the[channels[0]].GetXaxis().SetRangeUser(450,2000)
   tgraphs_the[channels[0]].Draw("AC")
   # cmb
@@ -121,17 +127,24 @@ def run(model,m1):
     tgraphs_exp['cm'].Draw("C  SAME")
     tgraphs_obs['cm'].Draw("CP SAME")
     tgraphs_1si['cm'].Draw("F  SAME")
-  if ('gg' in channels): tgraphs_exp['gg'].Draw("C SAME")
-  if ('tt' in channels): tgraphs_exp['tt'].Draw("C SAME")
+  if ('gg' in channels):
+    if obs: tgraphs_obs['gg'].Draw("C SAME")
+    else:   tgraphs_exp['gg'].Draw("C SAME")
+  if ('tt' in channels): 
+    if obs: tgraphs_obs['tt'].Draw("C SAME")
+    else:   tgraphs_exp['tt'].Draw("C SAME")
   tgraphs_the[channels[0]].Draw("C SAME")
 
   # legend
-  if (model=="2HDM"): leg = ROOT.TLegend(0.5, 0.6, 0.8, 0.9)
-  if (model=="BARY"): leg = ROOT.TLegend(0.2, 0.2, 0.5, 0.5)
+  if (model=="2HDM"): leg = ROOT.TLegend(0.45, 0.60, 0.85, 0.90)
+  if (model=="BARY"): leg = ROOT.TLegend(0.20, 0.20, 0.60, 0.50)
   leg.SetFillColor(0)
   for chan in channels:
-    leg.AddEntry(tgraphs_exp[chan],text[chan]+' median expected', 'LF')
-    if (chan=='cm'): leg.AddEntry(tgraphs_1si[chan],text[chan]+' 68% expected', 'F')
+    if (chan=='cm'): leg.AddEntry(tgraphs_exp[chan],text[chan]+' median expected #pm 1 std. dev.', 'LF')
+    else:
+      if obs: leg.AddEntry(tgraphs_obs[chan],text[chan]+' observed', 'L')
+      else:   leg.AddEntry(tgraphs_exp[chan],text[chan]+' median expected', 'L')
+    #if (chan=='cm'): leg.AddEntry(tgraphs_1si[chan],text[chan]+' 68% expected', 'F')
     if (chan=='cm'): leg.AddEntry(tgraphs_obs[chan],text[chan]+' observed', 'L')
   leg.AddEntry(tgraphs_the['gg'],"#sigma_{th}", "L")
 
@@ -139,17 +152,22 @@ def run(model,m1):
   if (model=="2HDM"): text = "#bf{Z'-2HDM, m_{A} = 300 GeV}"
   if (model=="BARY"): text = "#bf{Baryonic Z', m_{#chi} = 1 GeV}"
   latex = ROOT.TLatex(0.18,0.84,text)
-  latex.SetNDC();
-  latex.SetTextAlign(12); # align left
-  latex.SetTextSize(0.03);
+  latex.SetNDC()
+  latex.SetTextAlign(12) # align left
+  latex.SetTextSize(0.03)
   latex.Draw("SAME") 
 
   # save plot
   leg.Draw("SAME")
+  prel = ROOT.TLatex(0.255,0.89,"#bf{#it{Preliminary}}")
+  prel.SetNDC()
+  prel.SetTextAlign(12)
+  prel.SetTextSize(0.035)
+  if (do_prel): prel.Draw("SAME")
   CMS_lumi(c,4,10)
   c.RedrawAxis() 
-  c.Print(outdir+"limits1D_"+model+".pdf")
-  c.Print(outdir+"limits1D_"+model+".png")
+  c.Print(outdir+"limits1D_"+model+addtxt+".pdf")
+  c.Print(outdir+"limits1D_"+model+addtxt+".png")
 
 def scaleBR(val,wgt):
    scaledval = array('d')
@@ -172,7 +190,9 @@ def setupGraph(chan,model,m1,m2,mstr,xsecs,wgt,filepath):
   # pick up jsons with limits
   for m in m2:
     newmassstr = str(m)+'_'+m1
+    # remove points w/o cross sections
     if newmassstr not in mstr: continue
+    # hardcoded removal of points that don't have gen-sim versions
     if (model=="BARY") and (newmassstr=='30_1' or newmassstr == '40_1' or newmassstr =='75_1' 
        or newmassstr == '850_1' or newmassstr == '150_1' or newmassstr == '400_1'
        or newmassstr == '700_1' or newmassstr == '750_1' or newmassstr == '800_1'): continue
@@ -217,6 +237,12 @@ def setupGraph(chan,model,m1,m2,mstr,xsecs,wgt,filepath):
   return limitPlotXsc, limitPlotExp, limitPlotObs, limitPlot1sig, limitPlot2sig
 
 if __name__=="__main__":
-  model = sys.argv[1]
-  m1    = sys.argv[2]
-  run(model,m1)
+  outdir = sys.argv[1]
+  model  = sys.argv[2]
+  m1     = sys.argv[3]
+  obs    = False
+  if len(sys.argv)==5:
+    if sys.argv[4]=='true' or sys.argv[4]=='True':
+      obs=True
+  
+  run(model,m1,obs,outdir)

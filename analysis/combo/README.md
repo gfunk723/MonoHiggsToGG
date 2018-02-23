@@ -48,7 +48,9 @@ wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo
 # for plotting
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/collect2HDMLimits.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plot1DlimitsAll.py
-wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plot2HDM_interpFull.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plot2DlimitsAll.py
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/runPlot1DLimits.sh
+wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/runPlot2DLimits.sh
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/plotting_interp.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/CMS_lumi.py
 wget https://raw.githubusercontent.com/mez34/MonoHiggsToGG/master/analysis/combo/crosssectionZp2HDM.txt
@@ -91,8 +93,8 @@ Details:
 - Translate higgsCombine output root file to jsons that go into the 2D plots: `python collect2HDMLimits.py`
   specify: **model** and **indir** (takes root files from [indir]/combo_MODEL_mMASS/results_MASS), also setup needed **mZp and mA values**, and **outdir**. 
 - Weight by cross section: `python scaleByXsec.py` specify: **indir** and **outdir** and **xsecfile**. This script basically collects all of the json files in json format in the indir, finds the corresponding xsec value in the xsec file and rewrites the jsons to outdir/ with values that are orig.value/xsec.
-- Make 1D limit plots: `python plot1DlimitsAll.py [MODEL] [MASS]` specify: **outdir** in the script. 
-- Make 2D limit plot (Garrett's script): `python plot2HDM_interpFull.py` specify: **indir** (with weighted jsons), **A** and **Z** values.
+- Make 1D limit plots: `python plot1DlimitsAll.py [OUTDIR] [MODEL] [MASS]` (Can be called by `runPlot1DLimits.sh`) 
+- Make 2D limit plots: `python plot2DlimitsAll.py -m [MODEL] -w [CHANNEL] -O [OUTDIR]` (Can be called by `runPlot2DLimits.sh`) 
 
 ## If needed, gg card production:
 - Make cards (https://github.com/mez34/MonoHiggsToGG/blob/master/analysis/work/macros/makeGenericDataCard.py)
