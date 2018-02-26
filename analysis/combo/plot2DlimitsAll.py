@@ -134,6 +134,9 @@ def run(opts):
   if model=="2HDM": limitPlotObs.GetYaxis().SetTitle("M_{A} [GeV]")
   if model=="BARY": limitPlotObs.GetYaxis().SetTitle("M_{#chi} [GeV]")
 
+  # --- clone obs to get contour 
+  limitPlotObsCopy = limitPlotObs.Clone()
+
   # --- set up min and max of z axis
   limitPlotObs.SetMaximum(100)
   limitPlotObs.SetMinimum(0.3)
@@ -163,7 +166,6 @@ def run(opts):
   # observed
   limitPlotObs.SetLineWidth(3)
   limitPlotObs.SetLineColor(2)
-  limitPlotObsCopy = limitPlotObs.Clone()
   limitPlotObsCopy.SetMinimum(1)
   limitPlotObsCopy.SetContour(1)
   limitPlotObsCopy.SetLineWidth(3)
