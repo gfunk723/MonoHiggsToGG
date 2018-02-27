@@ -20,6 +20,8 @@ def run(opts):
   outdir  = opts.outdir
   do90    = opts.do90
   dowgt   = opts.dowgt
+  dosmth  = opts.dosmth
+  smthfnc = opts.smthfnc
  
   # --- read in files
   indir = '/eos/cms/store/group/phys_exotica/MonoHgg/MonoH-COMBO-2016/'+model+'_jsons/'
@@ -62,30 +64,40 @@ def run(opts):
     Z=[10,50,100,200,250,300,350,400,450,500,550,600,675,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000]
 
   # --- binning for BARY model
-  BinningA = [0.0]
-  BinningZ = [0.0]
-  for i in range(0, len(A)-1):
-      BinningA.append( (A[i] + A[i+1])/2.0)
-  BinningA.append((A[-1] + A[-1] - ((A[-1] + A[-2])/2.0)))
-  for i in range(0, len(Z)-1):
-      BinningZ.append( (Z[i] + Z[i+1])/2.0)
-  BinningZ.append((Z[-1] + Z[-1] - ((Z[-1] + Z[-2])/2.0)))
+  # X axis
+  BinningA = [0.5,1.5] 
+  BinAAxis = [1.0,47.5]
+  for i in range(1, len(A)-1):
+      BinningA.append( (A[i] + A[i+1])/2.0 )
+      BinAAxis.append( (A[i] + A[i+1])/2.0 )
+  BinningA.append( (A[-1] + A[-1] - ((A[-1] + A[-2])/2.0)) )
+  BinAAxis.append( (A[-1] + A[-1] - ((A[-1] + A[-2])/2.0)) )
+  # Y axis
+  BinningZ = [9,11]
+  BinZAxis = [10,75]
+  for i in range(1, len(Z)-1):
+      BinningZ.append( (Z[i] + Z[i+1])/2.0 )
+      BinZAxis.append( (Z[i] + Z[i+1])/2.0 )
+  BinningZ.append( (Z[-1] + Z[-1] - ((Z[-1] + Z[-2])/2.0)) )
+  BinZAxis.append( (Z[-1] + Z[-1] - ((Z[-1] + Z[-2])/2.0)) )
 
   # --- setup histograms (different models have different binning)
   if model=="2HDM":
-    limitPlot      = ROOT.TH2F("lplot",      "lplot",      len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
-    limitPlotObs   = ROOT.TH2F("lplotObs",   "lplotObs",   len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
-    limitPlotUp    = ROOT.TH2F("lplotU",     "lplotU",     len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
-    limitPlotDown  = ROOT.TH2F("lplotDown",  "lplotDown",  len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
-    limitPlotUp2   = ROOT.TH2F("lplotU2",    "lplotU2",    len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
-    limitPlotDown2 = ROOT.TH2F("lplotDown2", "lplotDown2", len(Z), Z[0], Z[-1]+50, len(A), A[0], A[-1]+25)
+    limitPlotAxis  = ROOT.TH2F("lplotAxis",  "lplotAxis",  len(Z), Z[0],    Z[-1]+50, len(A), A[0],      A[-1]+25)
+    limitPlot      = ROOT.TH2F("lplot",      "lplot",      len(Z), Z[0]-25, Z[-1]+50, len(A), A[0]-12.5, A[-1]+25)
+    limitPlotObs   = ROOT.TH2F("lplotObs",   "lplotObs",   len(Z), Z[0]-25, Z[-1]+50, len(A), A[0]-12.5, A[-1]+25)
+    limitPlotUp    = ROOT.TH2F("lplotU",     "lplotU",     len(Z), Z[0]-25, Z[-1]+50, len(A), A[0]-12.5, A[-1]+25)
+    limitPlotDown  = ROOT.TH2F("lplotDown",  "lplotDown",  len(Z), Z[0]-25, Z[-1]+50, len(A), A[0]-12.5, A[-1]+25)
+    limitPlotUp2   = ROOT.TH2F("lplotU2",    "lplotU2",    len(Z), Z[0]-25, Z[-1]+50, len(A), A[0]-12.5, A[-1]+25)
+    limitPlotDown2 = ROOT.TH2F("lplotDown2", "lplotDown2", len(Z), Z[0]-25, Z[-1]+50, len(A), A[0]-12.5, A[-1]+25)
   if model=="BARY": # variable binning
-    limitPlot      = ROOT.TH2F("lplot",      "lplot",      len(Z), array('d',BinningZ), len(A), array('d',BinningA))
-    limitPlotObs   = ROOT.TH2F("lplotObs",   "lplotObs",   len(Z), array('d',BinningZ), len(A), array('d',BinningA))
-    limitPlotUp    = ROOT.TH2F("lplotU",     "lplotU",     len(Z), array('d',BinningZ), len(A), array('d',BinningA))
-    limitPlotDown  = ROOT.TH2F("lplotDown",  "lplotDown",  len(Z), array('d',BinningZ), len(A), array('d',BinningA))
-    limitPlotUp2   = ROOT.TH2F("lplotU2",    "lplotU2",    len(Z), array('d',BinningZ), len(A), array('d',BinningA))
-    limitPlotDown2 = ROOT.TH2F("lplotDown2", "lplotDown2", len(Z), array('d',BinningZ), len(A), array('d',BinningA))
+    limitPlotAxis  = ROOT.TH2F("lplotAxis",  "lplotAxis",  len(Z)-1,        array('d',BinZAxis), len(A)-1,        array('d',BinAAxis))
+    limitPlot      = ROOT.TH2F("lplot",      "lplot",      len(BinningZ)-1, array('d',BinningZ), len(BinningA)-1, array('d',BinningA))
+    limitPlotObs   = ROOT.TH2F("lplotObs",   "lplotObs",   len(BinningZ)-1, array('d',BinningZ), len(BinningA)-1, array('d',BinningA))
+    limitPlotUp    = ROOT.TH2F("lplotU",     "lplotU",     len(BinningZ)-1, array('d',BinningZ), len(BinningA)-1, array('d',BinningA))
+    limitPlotDown  = ROOT.TH2F("lplotDown",  "lplotDown",  len(BinningZ)-1, array('d',BinningZ), len(BinningA)-1, array('d',BinningA))
+    limitPlotUp2   = ROOT.TH2F("lplotU2",    "lplotU2",    len(BinningZ)-1, array('d',BinningZ), len(BinningA)-1, array('d',BinningA))
+    limitPlotDown2 = ROOT.TH2F("lplotDown2", "lplotDown2", len(BinningZ)-1, array('d',BinningZ), len(BinningA)-1, array('d',BinningA))
 
   # --- read in json files
   for a in A:
@@ -129,10 +141,10 @@ def run(opts):
     fillAvg(limitPlotDown2, A, Z, False, False, doFillAvgRest)
 
   # --- axis labels 
-  limitPlotObs.GetXaxis().SetTitle("M_{Z'} [GeV]")
+  limitPlotAxis.GetXaxis().SetTitle("M_{Z'} [GeV]")
   limitPlotObs.GetZaxis().SetTitle("#sigma_{95% CL}/#sigma_{th}")
-  if model=="2HDM": limitPlotObs.GetYaxis().SetTitle("M_{A} [GeV]")
-  if model=="BARY": limitPlotObs.GetYaxis().SetTitle("M_{#chi} [GeV]")
+  if model=="2HDM": limitPlotAxis.GetYaxis().SetTitle("M_{A} [GeV]")
+  if model=="BARY": limitPlotAxis.GetYaxis().SetTitle("M_{#chi} [GeV]")
 
   # --- clone obs to get contour 
   limitPlotObsCopy = limitPlotObs.Clone()
@@ -151,10 +163,12 @@ def run(opts):
   limitPlotObs.GetZaxis().SetTitleOffset(0.95) 
   limitPlotObs.GetXaxis().SetLabelSize(0.035) # format axis ticks
   limitPlotObs.GetYaxis().SetLabelSize(0.035)
-  if model=="2HDM": limitPlotObs.GetXaxis().SetNdivisions(9)
-  if model=="2HDM": limitPlotObs.GetYaxis().SetNdivisions(8)
+  if model=="2HDM": limitPlotAxis.GetXaxis().SetNdivisions(9)
+  if model=="2HDM": limitPlotAxis.GetYaxis().SetNdivisions(8)
+  if model=="BARY": limitPlotAxis.GetXaxis().SetNdivisions(9)
+  if model=="BARY": limitPlotAxis.GetYaxis().SetNdivisions(8)
  
-  # --- style each contour
+  # --- get and style each contour
   # 1 sigma up 
   limitPlotUp.SetMinimum(1)
   limitPlotUp.SetContour(1)
@@ -176,29 +190,54 @@ def run(opts):
   limitPlot.SetLineStyle(7)
   limitPlot.SetLineWidth(3)
 
-  # --- draw plots 
-  limitPlotObs.Draw("COLZ")
+  # --- smooth 
+  if dosmth:
+    limitPlot.Smooth(1,smthfnc)
+    limitPlotObs.Smooth(1,smthfnc)
+    limitPlotObsCopy.Smooth(1,smthfnc)
+    limitPlotUp.Smooth(1,smthfnc)
+    limitPlotDown.Smooth(1,smthfnc)
+
+  # --- draw plots
+  limitPlotAxis.Draw("COLZ") 
+  limitPlotObs.Draw("COLZ SAME")
   limitPlotUp.Draw("CONT3 SAME")
   limitPlotDown.Draw("CONT3 SAME")
   limitPlotObsCopy.Draw("CONT3 SAME")
   limitPlot.Draw("CONT3 SAME")
 
-  # --- legend and extra text
+  # --- legend and extra text box
   x1 = 0.18
-  y1 = 0.72
-  x2 = x1+0.35
-  y2 = y1+0.15
-  if model=="2HDM": text = "#bf{Z'-2HDM}"
-  if model=="BARY": text = "#bf{Baryonic Z'}"
-  text += ", Z' #rightarrow DM + h"
-  if which=='gg':    text = text+" (#gamma#gamma)"
-  if which=='tt':    text = text+" (#tau#tau)"
-  if which=='combo': text = text+" (#gamma#gamma + #tau#tau)"
-  leg = ROOT.TLegend(x1,y1,x2,y2)
-  leg.SetHeader(text)
+  y1 = 0.65
+  x2 = x1+0.45
+  y2 = y1+0.25
+ 
+  # --- make white box to put behind latex 
+  box = ROOT.TBox(x1,y1,x2,y2)
+  box.SetFillColor(ROOT.kWhite)
+  box.SetFillStyle(1001)
+  box.Paint("SAME")
+  box.Draw("F SAME")
+  # --- latex
+  if model=="2HDM":  text = "#splitline{Z'-2HDM"
+  if model=="BARY":  text = "#splitline{Baryonic Z'"
+  text += "#bf{, Z' #rightarrow DM + h"
+  if which=='gg':    text += " (#gamma#gamma)} }{"
+  if which=='tt':    text += " (#tau#tau)} }{"
+  if which=='combo': text += " (#gamma#gamma + #tau#tau)} }{"
+  if model=="2HDM":  text += "#bf{ Dirac DM, m_{#chi} = 100 GeV, tan(#beta) = 1, g_{Z'} = 0.8, g_{#chi} = 1.0} }"
+  if model=="BARY":  text += "#bf{ Dirac DM, g_{q} = 0.25, g_{#chi} = 1.0 } }"
+  txt = ROOT.TLatex(x1,y1+0.15,text)
+  txt.SetNDC()
+  txt.SetTextAlign(12)
+  txt.SetTextSize(0.03)
+  txt.Draw("SAME")
+  # --- legend
+  leg = ROOT.TLegend(x1,y1,x2,y2-0.15)
+  #leg.SetHeader(text)
   leg.SetBorderSize(0)
   leg.SetFillColor(0)
-  #leg.SetFillStyle(0)
+  leg.SetFillStyle(0)
   leg.SetTextFont(42)
   leg.SetTextSize(0.030)
   leg.AddEntry(limitPlotObs,"Observed 95% CL","L")
@@ -302,6 +341,10 @@ def init():
                     default=False,help="Weight by 1/xsec (if not already done) [default = %default]"),
   parser.add_option("--do90",action="store_true",dest="do90",
                     default=False,help="Store 90%CL root file [default = %default]"),
+  parser.add_option("--dosmooth",action="store_true",dest="dosmth",
+                    default=False,help="Smooth TH2 after filling and avg. [default = %default]"),
+  parser.add_option("--smth",action="store",dest="smthfnc",type="string",
+                    default="k5a",help="Smoothing function to apply [default = %default]"),
   (options, args) = parser.parse_args()
 
   if options.model!="2HDM" and options.model!="BARY": 
@@ -313,8 +356,9 @@ def init():
 
   #run
   print "Making 2D limit plot for: "+options.model+" "+options.which
-  if options.do90:  print "Using 90CL limits"
-  if options.dowgt: print "Weighting by 1/xsec"
+  if options.do90:   print "Using 90CL limits"
+  if options.dowgt:  print "Weighting by 1/xsec"
+  if options.dosmth: print "Smoothing applied"
   run(options)
 
 if __name__=="__main__":
