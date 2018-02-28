@@ -211,33 +211,28 @@ def run(opts):
   y1 = 0.65
   x2 = x1+0.45
   y2 = y1+0.25
- 
-  # --- make white box to put behind latex 
-  box = ROOT.TBox(x1,y1,x2,y2)
-  box.SetFillColor(ROOT.kWhite)
-  box.SetFillStyle(1001)
-  box.Paint("SAME")
-  box.Draw("F SAME")
   # --- latex
-  if model=="2HDM":  text = "#splitline{Z'-2HDM"
-  if model=="BARY":  text = "#splitline{Baryonic Z'"
-  text += "#bf{, Z' #rightarrow DM + h"
-  if which=='gg':    text += " (#gamma#gamma)} }{"
-  if which=='tt':    text += " (#tau#tau)} }{"
-  if which=='combo': text += " (#gamma#gamma + #tau#tau)} }{"
-  if model=="2HDM":  text += "#bf{ Dirac DM, m_{#chi} = 100 GeV, tan(#beta) = 1, g_{Z'} = 0.8, g_{#chi} = 1.0} }"
-  if model=="BARY":  text += "#bf{ Dirac DM, g_{q} = 0.25, g_{#chi} = 1.0 } }"
-  txt = ROOT.TLatex(x1,y1+0.15,text)
-  txt.SetNDC()
+  if model=="2HDM":  txt1 = "Z'-2HDM"
+  if model=="BARY":  txt1 = "Baryonic Z'"
+  txt1 += "#bf{, Z' #rightarrow DM + h"
+  if which=='gg':    txt1 += " (#gamma#gamma)}"
+  if which=='tt':    txt1 += " (#tau#tau)} "
+  if which=='combo': txt1 += " (#gamma#gamma + #tau#tau)}"
+  if model=="2HDM":  txt2 = "#bf{Dirac DM, m_{#chi} = 100 GeV, g_{Z'} = 0.8, g_{#chi} = 1.0}"
+  if model=="BARY":  txt2 = "#bf{Dirac DM, g_{q} = 0.25, g_{#chi} = 1.0 }" 
+  txt = ROOT.TPaveText(x1,y1+0.15,x2,y2,"NDC")
+  txt.AddText(txt1)
+  txt.AddText(txt2)
+  txt.SetFillColor(0)
   txt.SetTextAlign(12)
   txt.SetTextSize(0.03)
   txt.Draw("SAME")
   # --- legend
-  leg = ROOT.TLegend(x1,y1,x2,y2-0.15)
+  leg = ROOT.TLegend(x1,y1,x2,y1+0.15)
   #leg.SetHeader(text)
   leg.SetBorderSize(0)
   leg.SetFillColor(0)
-  leg.SetFillStyle(0)
+  #leg.SetFillStyle(0)
   leg.SetTextFont(42)
   leg.SetTextSize(0.030)
   leg.AddEntry(limitPlotObs,"Observed 95% CL","L")
