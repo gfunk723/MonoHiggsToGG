@@ -9,10 +9,9 @@ import plotting_interp as plot
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 plot.ModTDRStyle()
 
-def run(model,m1,obs,outdir):
+def run(model,m1,outdir):
  
   addtxt = ''
-  if obs: addtxt='_obs'
   do_prel = True # Write "Preliminary" on plots  
 
   channels = []
@@ -31,9 +30,12 @@ def run(model,m1,obs,outdir):
   text['cm'] = 'h(#gamma#gamma + #tau#tau)'
 
   color = {}
-  color['gg'] = ROOT.kOrange+7
-  color['tt'] = ROOT.kAzure-1
-  color['cm'] = ROOT.kSpring-8
+  color['gg'] = ROOT.kOrange-3#ROOT.kOrange+7
+  color['tt'] = ROOT.kSpring-8#ROOT.kAzure-1
+  color['cm'] = ROOT.kAzure-1#ROOT.kGreen+3#ROOT.kSpring-8
+
+  transcolor = {}
+  for c in channels: transcolor[c] = ROOT.TColor.GetColorTransparent(color[c],0.25)
 
   wgt = {}
   wgt['gg'] = 1.0 
@@ -85,28 +87,36 @@ def run(model,m1,obs,outdir):
     # style
     # theory curve 
     tgraphs_the[c].SetLineWidth(3)
+    tgraphs_the[c].SetLineStyle(8)
+    tgraphs_the[c].SetLineColor(ROOT.kRed)
     # expected
     tgraphs_exp[c].SetLineColor(color[c])
     tgraphs_exp[c].SetLineStyle(7)
     tgraphs_exp[c].SetLineWidth(3)
     tgraphs_exp[c].SetFillColor(0)
-    if c=='cm': 
-      tgraphs_exp[c].SetFillColor(color[c])
-      tgraphs_exp[c].SetFillStyle(3013)
+    tgraphs_exp[c].SetFillColor(transcolor[c])
+    tgraphs_exp[c].SetFillStyle(1001)
     # observed
     tgraphs_obs[c].SetLineWidth(3)
     tgraphs_obs[c].SetMarkerStyle(33)
     tgraphs_obs[c].SetMarkerColor(color[c])
     tgraphs_obs[c].SetLineColor(color[c])
     # 1 sigma 
-    tgraphs_1si[c].SetLineColor(color[c])
+    #tgraphs_1si[c].SetLineColor(0)
     tgraphs_1si[c].SetLineWidth(0)
-    tgraphs_1si[c].SetFillColor(color[c])
-    tgraphs_1si[c].SetFillStyle(3013)
+    tgraphs_1si[c].SetFillColor(transcolor[c])
+    tgraphs_1si[c].SetFillStyle(1001)
     # 2 sigma
     tgraphs_2si[c].SetFillColor(8)
     tgraphs_2si[c].SetFillStyle(3013)
-  
+ 
+  # pickup tgraphs to make legend
+  tgraphs_test_obs = tgraphs_obs[channels[0]].Clone()
+  tgraphs_test_obs.SetLineColor(ROOT.kBlack)
+  tgraphs_test_exp = tgraphs_exp[channels[0]].Clone()
+  tgraphs_test_exp.SetLineColor(ROOT.kBlack)
+  tgraphs_test_exp.SetFillColor(ROOT.TColor.GetColorTransparent(ROOT.kBlack,0.25))
+ 
   # plot   
   ROOT.gStyle.SetOptStat(0)
   c = ROOT.TCanvas('','')
@@ -122,36 +132,39 @@ def run(model,m1,obs,outdir):
   #tgraphs_the[channels[0]].GetXaxis().SetMoreLogLabels()
   if (model=="2HDM"): tgraphs_the[channels[0]].GetXaxis().SetRangeUser(450,2000)
   tgraphs_the[channels[0]].Draw("AC")
-  # cmb
+  # draw 1sig bands first 
+  if ('tt' in channels): tgraphs_1si['tt'].Draw("F SAME")
+  if ('gg' in channels): tgraphs_1si['gg'].Draw("F SAME")
+  if ('cm' in channels): tgraphs_1si['cm'].Draw("F SAME")
+  # then draw lines
   if ('cm' in channels):
-    tgraphs_exp['cm'].Draw("C  SAME")
-    tgraphs_obs['cm'].Draw("CP SAME")
-    tgraphs_1si['cm'].Draw("F  SAME")
+    tgraphs_exp['cm'].Draw("C SAME")
+    tgraphs_obs['cm'].Draw("C SAME")
   if ('gg' in channels):
-    if obs: tgraphs_obs['gg'].Draw("C SAME")
-    else:   tgraphs_exp['gg'].Draw("C SAME")
+    tgraphs_exp['gg'].Draw("C SAME")
+    tgraphs_obs['gg'].Draw("C SAME")
   if ('tt' in channels): 
-    if obs: tgraphs_obs['tt'].Draw("C SAME")
-    else:   tgraphs_exp['tt'].Draw("C SAME")
+    tgraphs_exp['tt'].Draw("C SAME")
+    tgraphs_obs['tt'].Draw("C SAME")
   tgraphs_the[channels[0]].Draw("C SAME")
 
   # legend
   if (model=="2HDM"): leg = ROOT.TLegend(0.45, 0.60, 0.85, 0.90)
   if (model=="BARY"): leg = ROOT.TLegend(0.20, 0.20, 0.60, 0.50)
   leg.SetFillColor(0)
+  leg.AddEntry(tgraphs_the[channels[0]],"#sigma_{th}", "L")
+  leg.AddEntry(tgraphs_test_obs,'Observed', 'L')
+  leg.AddEntry(tgraphs_test_exp,'Expected #pm 1 std. dev.', 'LF')
   for chan in channels:
-    if (chan=='cm'): leg.AddEntry(tgraphs_exp[chan],text[chan]+' median expected #pm 1 std. dev.', 'LF')
-    else:
-      if obs: leg.AddEntry(tgraphs_obs[chan],text[chan]+' observed', 'L')
-      else:   leg.AddEntry(tgraphs_exp[chan],text[chan]+' median expected', 'L')
-    #if (chan=='cm'): leg.AddEntry(tgraphs_1si[chan],text[chan]+' 68% expected', 'F')
-    if (chan=='cm'): leg.AddEntry(tgraphs_obs[chan],text[chan]+' observed', 'L')
-  leg.AddEntry(tgraphs_the['gg'],"#sigma_{th}", "L")
+    leg.AddEntry(tgraphs_obs[chan],text[chan]+'', 'L')
+    #leg.AddEntry(tgraphs_obs[chan],text[chan]+' observed', 'L')
+    #leg.AddEntry(tgraphs_exp[chan],text[chan]+' expected #pm 1 std. dev.', 'LF')
 
   # latex label
-  if (model=="2HDM"): text = "#bf{Z'-2HDM, m_{A} = 300 GeV}"
-  if (model=="BARY"): text = "#bf{Baryonic Z', m_{#chi} = 1 GeV}"
-  latex = ROOT.TLatex(0.18,0.84,text)
+  if (model=="2HDM"): text = "#splitline{#bf{Z'-2HDM, Dirac DM}}{#splitline{#bf{m_{A} = 300 GeV, m_{#chi} = 100 GeV}}{#bf{g_{Z'} = 0.8, g_{#chi} = 1}}}"
+  if (model=="BARY"): text = "#bf{Baryonic Z', Dirac DM, g_{q} = 0.25, g_{#chi} = 1, m_{#chi} = 1 GeV}"
+  if (model=="2HDM"): latex = ROOT.TLatex(0.18,0.80,text)
+  if (model=="BARY"): latex = ROOT.TLatex(0.18,0.84,text)
   latex.SetNDC()
   latex.SetTextAlign(12) # align left
   latex.SetTextSize(0.03)
@@ -159,12 +172,19 @@ def run(model,m1,obs,outdir):
 
   # save plot
   leg.Draw("SAME")
+
+  cms = ROOT.TLatex(0.18,0.90,"CMS")
+  cms.SetNDC()
+  cms.SetTextAlign(12)
+  cms.SetTextFont(61)
+  cms.SetTextSize(0.045)
+  cms.Draw("SAME") 
   prel = ROOT.TLatex(0.255,0.89,"#bf{#it{Preliminary}}")
   prel.SetNDC()
   prel.SetTextAlign(12)
   prel.SetTextSize(0.035)
   if (do_prel): prel.Draw("SAME")
-  CMS_lumi(c,4,10)
+  #CMS_lumi(c,4,10)
   c.RedrawAxis() 
   c.Print(outdir+"limits1D_"+model+addtxt+".pdf")
   c.Print(outdir+"limits1D_"+model+addtxt+".png")
@@ -240,9 +260,5 @@ if __name__=="__main__":
   outdir = sys.argv[1]
   model  = sys.argv[2]
   m1     = sys.argv[3]
-  obs    = False
-  if len(sys.argv)==5:
-    if sys.argv[4]=='true' or sys.argv[4]=='True':
-      obs=True
   
-  run(model,m1,obs,outdir)
+  run(model,m1,outdir)
