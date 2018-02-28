@@ -105,8 +105,8 @@ class PlotMaker(pyapp):
     color = {}
     text  = {}
     color["cmb"]        = kViolet+3 
-    color["gg"]         = kViolet+1
-    color["tt"]         = kViolet-2
+    color["gg"]         = kMagenta-4
+    color["tt"]         = kBlue-4
     color["bb"]         = kOrange 
     color["zz"]         = kOrange+9
     color["ww"]         = kViolet+1
@@ -183,9 +183,12 @@ class PlotMaker(pyapp):
     
     # legends
     texts = []
-    texts.append(add_text(0.15,0.4,0.89,0.99,"#bf{CMS}            "))
+    #texts.append(add_text(0.15,0.4,0.89,0.99,"#bf{CMS}            "))
+    texts.append(add_text(0.15,0.4,0.89,0.99,"#bf{CMS} Preliminary")) #x1,x2,y1,y2
+    texts.append(add_text(0.7,0.90,0.89,0.99,"35.9 fb^{-1} (13 TeV)"))
 
-    leg1 = C.BuildLegend(0.7,0.4,0.95,0.95)
+    #leg1 = C.BuildLegend(0.7,0.4,0.95,0.95)
+    leg1 = C.BuildLegend(0.7,0.6,0.95,0.90)
     leg1.SetBorderSize(0)
     leg1.SetTextFont(42)
     leg1.SetTextSize(0.025)
@@ -196,7 +199,8 @@ class PlotMaker(pyapp):
     else:  
       leg1.SetHeader("#splitline{#bf{CMS observed exclusion 90% CL}}{Vector med., Dirac DM; g_{ q} = 0.25, g_{ DM} = 1.0}") 
 
-    leg2 = C.BuildLegend(0.7,0.05,0.95,0.4)
+    #leg2 = C.BuildLegend(0.7,0.05,0.95,0.4)
+    leg2 = C.BuildLegend(0.7,0.15,0.95,0.6)
     leg2.SetBorderSize(0)
     leg2.SetTextFont(42)
     leg2.SetTextSize(0.025)
@@ -206,10 +210,10 @@ class PlotMaker(pyapp):
 
     for channel in channels:
       if options.do_exp: 
-        leg1.AddEntry(tgraph_obs_new[channel],text[channel]+" Observed (35.9 fb^{-1}) ","FL")
-        leg1.AddEntry(tgraph_exp_new[channel],text[channel]+" Expected ","L")
+        leg1.AddEntry(tgraph_obs_new[channel],text[channel]+" Observed","L")
+        leg1.AddEntry(tgraph_exp_new[channel],text[channel]+" Expected","FL")
       else:  
-        leg1.AddEntry(tgraph_obs_new[channel],text[channel],"  (35.9 fb^{-1}) ","FL")
+        leg1.AddEntry(tgraph_obs_new[channel],text[channel]+"","L")
     for dd_channel in dd_channels:
         if dd_channel == "LUX"        : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1608.07648]}}","L") 
         elif dd_channel == "PandaX"   : leg2.AddEntry(tgraph_obs_new[dd_channel],"#splitline{"+text[dd_channel]+"}{#it{[arXiv:1607.07400]}}","L")
@@ -263,9 +267,11 @@ class PlotMaker(pyapp):
       whichChannels += "_"
       whichChannels += channel
     if options.do_xsec: addname = "XsecDM"
-    else:               addname = "MmedDM" 
-    C.SaveAs(options.outdir+"SpinIndepend_"+addname+"_MonoH"+whichChannels+"_Summary.pdf")
-    C.SaveAs(options.outdir+"SpinIndepend_"+addname+"_MonoH"+whichChannels+"_Summary.png")
+    else:               addname = "MmedDM"
+    if options.do_exp:  addtxt  = ""
+    else:               addtxt   ="_obs"
+    C.SaveAs(options.outdir+"SpinIndepend_"+addname+"_MonoH"+whichChannels+addtxt+"_Summary.pdf")
+    C.SaveAs(options.outdir+"SpinIndepend_"+addname+"_MonoH"+whichChannels+addtxt+"_Summary.png")
 
 # --- Call
 if __name__ == "__main__":
