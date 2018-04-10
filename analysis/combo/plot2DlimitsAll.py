@@ -22,6 +22,7 @@ def run(opts):
   dowgt   = opts.dowgt
   dosmth  = opts.dosmth
   smthfnc = opts.smthfnc
+  #if dosmth: addtxt = '_smth'
  
   # --- read in files
   indir = '/eos/cms/store/group/phys_exotica/MonoHgg/MonoH-COMBO-2016/'+model+'_jsons/'
@@ -64,7 +65,7 @@ def run(opts):
     Z=[10,50,100,200,250,300,350,400,450,500,550,600,675,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000]
 
   # --- binning for BARY model
-  # X axis
+  # Y axis
   BinningA = [0.5,1.5] 
   BinAAxis = [1.0,47.5]
   for i in range(1, len(A)-1):
@@ -72,7 +73,7 @@ def run(opts):
       BinAAxis.append( (A[i] + A[i+1])/2.0 )
   BinningA.append( (A[-1] + A[-1] - ((A[-1] + A[-2])/2.0)) )
   BinAAxis.append( (A[-1] + A[-1] - ((A[-1] + A[-2])/2.0)) )
-  # Y axis
+  # X axis
   BinningZ = [9,11]
   BinZAxis = [10,75]
   for i in range(1, len(Z)-1):
@@ -141,10 +142,10 @@ def run(opts):
     fillAvg(limitPlotDown2, A, Z, False, False, doFillAvgRest)
 
   # --- axis labels 
-  limitPlotAxis.GetXaxis().SetTitle("M_{Z'} [GeV]")
+  limitPlotAxis.GetXaxis().SetTitle("m_{Z'} [GeV]")
   limitPlotObs.GetZaxis().SetTitle("#sigma_{95% CL}/#sigma_{th}")
-  if model=="2HDM": limitPlotAxis.GetYaxis().SetTitle("M_{A} [GeV]")
-  if model=="BARY": limitPlotAxis.GetYaxis().SetTitle("M_{#chi} [GeV]")
+  if model=="2HDM": limitPlotAxis.GetYaxis().SetTitle("m_{A} [GeV]")
+  if model=="BARY": limitPlotAxis.GetYaxis().SetTitle("m_{#chi} [GeV]")
 
   # --- clone obs to get contour 
   limitPlotObsCopy = limitPlotObs.Clone()
@@ -153,8 +154,8 @@ def run(opts):
   limitPlotObs.SetMaximum(100)
   limitPlotObs.SetMinimum(0.3)
   # --- set range of x and y axis
-  if model=="BARY": limitPlotObs.GetXaxis().SetRangeUser(10,2000)
-  if model=="BARY": limitPlotObs.GetYaxis().SetRangeUser(1,1000)
+  if model=="BARY": limitPlotObs.GetXaxis().SetRangeUser(10,2001)
+  if model=="BARY": limitPlotObs.GetYaxis().SetRangeUser(1,1001)
   if model=="2HDM": limitPlotObs.GetXaxis().SetRangeUser(450,2000)
   if model=="2HDM": limitPlotObs.GetYaxis().SetRangeUser(300,700)
 
@@ -165,8 +166,8 @@ def run(opts):
   limitPlotObs.GetYaxis().SetLabelSize(0.035)
   if model=="2HDM": limitPlotAxis.GetXaxis().SetNdivisions(9)
   if model=="2HDM": limitPlotAxis.GetYaxis().SetNdivisions(8)
-  if model=="BARY": limitPlotAxis.GetXaxis().SetNdivisions(9)
-  if model=="BARY": limitPlotAxis.GetYaxis().SetNdivisions(8)
+  if model=="BARY": limitPlotAxis.GetXaxis().SetNdivisions(10)
+  if model=="BARY": limitPlotAxis.GetYaxis().SetNdivisions(16)
  
   # --- get and style each contour
   # 1 sigma up 
@@ -193,7 +194,7 @@ def run(opts):
   # --- smooth 
   if dosmth:
     limitPlot.Smooth(1,smthfnc)
-    limitPlotObs.Smooth(1,smthfnc)
+    #limitPlotObs.Smooth(1,smthfnc)
     limitPlotObsCopy.Smooth(1,smthfnc)
     limitPlotUp.Smooth(1,smthfnc)
     limitPlotDown.Smooth(1,smthfnc)
@@ -212,12 +213,12 @@ def run(opts):
   x2 = x1+0.45
   y2 = y1+0.25
   # --- latex
-  if model=="2HDM":  txt1 = "Z'-2HDM"
-  if model=="BARY":  txt1 = "Baryonic Z'"
+  if model=="2HDM":  txt1 = "#bf{Z'-2HDM}"
+  if model=="BARY":  txt1 = "#bf{Baryonic Z'}"
   txt1 += "#bf{, Z' #rightarrow DM + h"
-  if which=='gg':    txt1 += " (#gamma#gamma)}"
-  if which=='tt':    txt1 += " (#tau#tau)} "
-  if which=='combo': txt1 += " (#gamma#gamma + #tau#tau)}"
+  if which=='gg':    txt1 += "(#gamma#gamma)}"
+  if which=='tt':    txt1 += "(#tau#tau)} "
+  if which=='combo': txt1 += "(#gamma#gamma + #tau#tau)}"
   if model=="2HDM":  txt2 = "#bf{Dirac DM, m_{#chi} = 100 GeV, g_{Z'} = 0.8, g_{#chi} = 1.0}"
   if model=="BARY":  txt2 = "#bf{Dirac DM, g_{q} = 0.25, g_{#chi} = 1.0 }" 
   txt = ROOT.TPaveText(x1,y1+0.15,x2,y2,"NDC")
@@ -237,7 +238,7 @@ def run(opts):
   leg.SetTextSize(0.030)
   leg.AddEntry(limitPlotObs,"Observed 95% CL","L")
   leg.AddEntry(limitPlot,"Expected 95% CL","L")
-  leg.AddEntry(limitPlotUp,"#pm 1 std. dev.","L")
+  leg.AddEntry(limitPlotUp,"#pm 1 s.d.","L")
   leg.Draw()
   
   canv.cd()

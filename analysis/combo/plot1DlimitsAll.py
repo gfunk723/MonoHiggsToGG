@@ -12,7 +12,7 @@ plot.ModTDRStyle()
 def run(model,m1,outdir):
  
   addtxt = ''
-  do_prel = True # Write "Preliminary" on plots  
+  do_prel = False # Write "Preliminary" on plots  
 
   channels = []
   channels.append('gg') # gamgam
@@ -30,9 +30,9 @@ def run(model,m1,outdir):
   text['cm'] = 'h(#gamma#gamma + #tau#tau)'
 
   color = {}
-  color['gg'] = ROOT.kOrange-3#ROOT.kOrange+7
-  color['tt'] = ROOT.kSpring-8#ROOT.kAzure-1
-  color['cm'] = ROOT.kAzure-1#ROOT.kGreen+3#ROOT.kSpring-8
+  color['gg'] = ROOT.kOrange-3 #ROOT.kTeal+7 	
+  color['tt'] = ROOT.kSpring-8 #ROOT.kTeal-6	
+  color['cm'] = ROOT.kAzure-1  #ROOT.kAzure-6	
 
   transcolor = {}
   for c in channels: transcolor[c] = ROOT.TColor.GetColorTransparent(color[c],0.25)
@@ -79,16 +79,16 @@ def run(model,m1,outdir):
     tgraphs_the[c],tgraphs_exp[c],tgraphs_obs[c],tgraphs_1si[c],tgraphs_2si[c] = setupGraph(c,model,m1,m2,mstr,xsecs,wgt[c],filepath[c])
     # axis names
     tgraphs_the[c].SetTitle("")
-    tgraphs_the[c].GetXaxis().SetTitle("M_{Z'} [GeV]")
-    if (model=="2HDM"): tgraphs_the[c].GetYaxis().SetTitle("#sigma_{95% CL}(pp #rightarrow Z' #rightarrow Ah) [pb]")
-    if (model=="BARY"): tgraphs_the[c].GetYaxis().SetTitle("#sigma_{95% CL}(pp #rightarrow Z' #rightarrow #chi#chi h) [pb]")
+    tgraphs_the[c].GetXaxis().SetTitle("m_{Z'} [GeV]")
+    if (model=="2HDM"): tgraphs_the[c].GetYaxis().SetTitle("#sigma(pp #rightarrow Z' #rightarrow Ah) [pb]")
+    if (model=="BARY"): tgraphs_the[c].GetYaxis().SetTitle("#sigma(pp #rightarrow Z' #rightarrow #chi#chi h) [pb]")
     #tgraphs_the[c].GetYaxis().SetTitleOffset(0.9)
 
     # style
     # theory curve 
     tgraphs_the[c].SetLineWidth(3)
     tgraphs_the[c].SetLineStyle(8)
-    tgraphs_the[c].SetLineColor(ROOT.kRed)
+    #tgraphs_the[c].SetLineColor(ROOT.kRed)
     # expected
     tgraphs_exp[c].SetLineColor(color[c])
     tgraphs_exp[c].SetLineStyle(7)
@@ -129,7 +129,8 @@ def run(model,m1,outdir):
   # theory
   tgraphs_the[channels[0]].SetMaximum(15)
   tgraphs_the[channels[0]].SetMinimum(0.01)
-  #tgraphs_the[channels[0]].GetXaxis().SetMoreLogLabels()
+  tgraphs_the[channels[0]].GetXaxis().SetMoreLogLabels()
+  tgraphs_the[channels[0]].GetXaxis().SetNoExponent()
   if (model=="2HDM"): tgraphs_the[channels[0]].GetXaxis().SetRangeUser(450,2000)
   tgraphs_the[channels[0]].Draw("AC")
   # draw 1sig bands first 
@@ -137,37 +138,47 @@ def run(model,m1,outdir):
   if ('gg' in channels): tgraphs_1si['gg'].Draw("F SAME")
   if ('cm' in channels): tgraphs_1si['cm'].Draw("F SAME")
   # then draw lines
-  if ('cm' in channels):
-    tgraphs_exp['cm'].Draw("C SAME")
-    tgraphs_obs['cm'].Draw("C SAME")
   if ('gg' in channels):
     tgraphs_exp['gg'].Draw("C SAME")
     tgraphs_obs['gg'].Draw("C SAME")
   if ('tt' in channels): 
     tgraphs_exp['tt'].Draw("C SAME")
     tgraphs_obs['tt'].Draw("C SAME")
+  if ('cm' in channels):
+    tgraphs_exp['cm'].Draw("C SAME")
+    tgraphs_obs['cm'].Draw("C SAME")
   tgraphs_the[channels[0]].Draw("C SAME")
 
+  # text about styling
+  styletxt  = "#splitline{#bf{Solid (dashed) lines: observed (expected) 95% CL}}{#bf{Shaded band: #pm 1 s.d. on expected}}"
+  styletext = ROOT.TLatex(0.18,0.20,styletxt)
+  styletext.SetNDC()
+  styletext.SetTextAlign(12) 
+  styletext.SetTextSize(0.035)
+  styletext.Draw("SAME")
+
   # legend
-  if (model=="2HDM"): leg = ROOT.TLegend(0.45, 0.60, 0.85, 0.90)
-  if (model=="BARY"): leg = ROOT.TLegend(0.20, 0.20, 0.60, 0.50)
+  #if (model=="2HDM"): leg = ROOT.TLegend(0.60, 0.60, 0.89, 0.90)
+  #if (model=="BARY"): leg = ROOT.TLegend(0.20, 0.20, 0.60, 0.50)
+  if (model=="2HDM"): leg = ROOT.TLegend(0.60, 0.70, 0.89, 0.90)
+  if (model=="BARY"): leg = ROOT.TLegend(0.20, 0.30, 0.60, 0.50)
   leg.SetFillColor(0)
   leg.AddEntry(tgraphs_the[channels[0]],"#sigma_{th}", "L")
-  leg.AddEntry(tgraphs_test_obs,'Observed', 'L')
-  leg.AddEntry(tgraphs_test_exp,'Expected #pm 1 std. dev.', 'LF')
+  #leg.AddEntry(tgraphs_test_obs,'Observed', 'L')
+  #leg.AddEntry(tgraphs_test_exp,'Expected #pm 1 s.d.', 'LF')
   for chan in channels:
-    leg.AddEntry(tgraphs_obs[chan],text[chan]+'', 'L')
+    leg.AddEntry(tgraphs_exp[chan],text[chan]+'', 'LF')
     #leg.AddEntry(tgraphs_obs[chan],text[chan]+' observed', 'L')
     #leg.AddEntry(tgraphs_exp[chan],text[chan]+' expected #pm 1 std. dev.', 'LF')
 
   # latex label
   if (model=="2HDM"): text = "#splitline{#bf{Z'-2HDM, Dirac DM}}{#splitline{#bf{m_{A} = 300 GeV, m_{#chi} = 100 GeV}}{#bf{g_{Z'} = 0.8, g_{#chi} = 1}}}"
   if (model=="BARY"): text = "#bf{Baryonic Z', Dirac DM, g_{q} = 0.25, g_{#chi} = 1, m_{#chi} = 1 GeV}"
-  if (model=="2HDM"): latex = ROOT.TLatex(0.18,0.80,text)
+  if (model=="2HDM"): latex = ROOT.TLatex(0.18,0.78,text)
   if (model=="BARY"): latex = ROOT.TLatex(0.18,0.84,text)
   latex.SetNDC()
   latex.SetTextAlign(12) # align left
-  latex.SetTextSize(0.03)
+  latex.SetTextSize(0.035)
   latex.Draw("SAME") 
 
   # save plot
